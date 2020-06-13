@@ -1,0 +1,27 @@
+{
+  "main": "node_modules/expo/AppEntry.js",
+  "scripts": {
+    "start": "expo start",
+    "android": "expo start --android",
+    "ios": "expo start --ios",
+    "eject": "expo eject"
+  },
+  "dependencies": {
+    "date-fns": "^2.14.0",
+    "expo": "^37.0.0",
+    "expo-constants": "~9.0.0",
+    "expo-crypto": "~8.1.0",
+    "expo-device": "~2.1.0",
+    "expo-web-browser": "~8.2.1",
+    "react": "16.9.0",
+    "react-native": "https://github.com/expo/react-native/archive/sdk-37.0.1.tar.gz",
+    "react-native-webview": "8.1.1"
+  },
+  "devDependencies": {
+    "@types/react": "^16.9.11",
+    "@types/react-native": "^0.60.22",
+    "babel-preset-expo": "^8.1.0",
+    "typescript": "^3.8.3"
+  },
+  "private": true
+}

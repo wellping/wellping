@@ -1,0 +1,52 @@
+{
+  "studyInfo": {
+    "id": "example_study",
+    "consentFormUrl": "https://www.example.com/",
+    "startDate": "2020-03-10T08:00:00.000Z",
+    "endDate": "2020-04-25T08:00:00.000Z",
+    "weekStartsOn": 1,
+    "frequency": {
+      "hoursEveryday": [9, 13, 17, 21],
+      "randomMinuteAddition": { "min": 0, "max": 119 }
+    },
+    "streamsOrder": {
+      "0": ["streamName", "streamName", "streamName", "streamName"],
+      "1": ["streamName", "streamName", "streamName", "streamName"],
+      "2": ["streamName", "streamName", "streamName", "streamName"],
+      "3": ["streamName", "streamName", "streamName", "streamName"],
+      "4": ["streamName", "streamName", "streamName", "streamName"],
+      "5": ["streamName", "streamName", "streamName", "streamName"],
+      "6": ["streamName", "streamName", "streamName", "streamName"]
+    },
+    "streamInCaseOfError": "streamName",
+    "streamsNotReplacedByFollowupStream": ["streamName"],
+    "notificationContent": {
+      "default": {
+        "title": "You have a new survey!",
+        "body": "It will expire in two hours."
+      },
+      "bonus": {
+        "title": "You have a new survey!",
+        "body": "It will expire in two hours. You are #n_ping# away from the weekly bonus.",
+        "numberOfCompletionEachWeek": 10
+      }
+    },
+    "serverURL": "https://wellping.hesyifei.com/"
+  },
+  "meta": {
+    "startingQuestionIds": {
+      "streamName": "startingId"
+    }
+  },
+  "streams": {
+    "streamName": {
+      "startingId": {
+        "id": "startingId",
+        "type": "slider",
+        "question": "Questions Test",
+        "slider": ["left", "right"],
+        "next": null
+      }
+    }
+  }
+}
