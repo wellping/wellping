@@ -44,6 +44,7 @@ import {
 import HowLongAgoQuestionScreen from "./questionScreens/HowLongAgoQuestion";
 import { addDays } from "date-fns";
 import { uploadDataAsync } from "./helpers/apiManager";
+import { displayProblemForUser } from "../config/debug";
 
 type ExtraMetaData = { [key: string]: any };
 
@@ -128,14 +129,14 @@ export default class SurveyScreen extends React.Component<
 
             const csaAnswer = prevQuestion as ChoicesWithSingleAnswerAnswer;
             if (csaAnswer.data == null) {
-              return "[INTERNAL ERROR: csaAnswer.data == null]";
+              return displayProblemForUser("csaAnswer.data == null");
             }
 
             const csaAnswerChoice = csaQuestion.choices.find(
               (choice) => choice.key === csaAnswer.data,
             );
             if (csaAnswerChoice == null) {
-              return "[INTERNAL ERROR: csaAnswerChoice == null]";
+              return displayProblemForUser("csaAnswerChoice == null");
             }
 
             return decapitalizeFirstCharacter(csaAnswerChoice.value);
