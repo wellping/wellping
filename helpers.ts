@@ -13,7 +13,7 @@ export enum QuestionType {
 
 export const decapitalizeFirstCharacter = (s: string): string => {
   return s.charAt(0).toLowerCase() + s.slice(1);
-}
+};
 
 export const withVariable = (varName: string) => `[__${varName}__]`;
 
@@ -51,7 +51,7 @@ export function shuffle(array: any[]): any[] {
     randomIndex: number;
 
   // While there remain elements to shuffle...
-  while (0 !== currentIndex) {
+  while (currentIndex !== 0) {
     // Pick a remaining element...
     randomIndex = Math.floor(Math.random() * currentIndex);
     currentIndex -= 1;

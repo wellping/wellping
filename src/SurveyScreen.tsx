@@ -1,5 +1,24 @@
+import { addDays } from "date-fns";
 import React from "react";
 import { Button, Text, View, ScrollView, Dimensions } from "react-native";
+
+import {
+  AnswersList,
+  QuestionScreen,
+  Answer,
+  YesNoAnswer,
+  MultipleTextAnswer,
+  SliderAnswer,
+  ChoicesWithSingleAnswerAnswer,
+  ChoicesWithMultipleAnswersAnswer,
+} from "../answerTypes";
+import { displayProblemForUser } from "../config/debug";
+import {
+  QuestionType,
+  withVariable,
+  replacePreviousAnswerPlaceholdersWithActualContent,
+  decapitalizeFirstCharacter,
+} from "../helpers";
 import {
   Question,
   TypedGroupQuestion,
@@ -15,25 +34,7 @@ import {
   ChoicesQuestion,
   StreamName,
 } from "../types";
-import {
-  AnswersList,
-  QuestionScreen,
-  Answer,
-  YesNoAnswer,
-  MultipleTextAnswer,
-  SliderAnswer,
-  ChoicesWithSingleAnswerAnswer,
-  ChoicesWithMultipleAnswersAnswer,
-} from "../answerTypes";
-import {
-  QuestionType,
-  withVariable,
-  replacePreviousAnswerPlaceholdersWithActualContent,
-  decapitalizeFirstCharacter,
-} from "../helpers";
-import ChoicesQuestionScreen from "./questionScreens/ChoicesQuestionScreen";
-import SliderQuestionScreen from "./questionScreens/SliderQuestionScreen";
-import MultipleTextQuestionScreen from "./questionScreens/MultipleTextQuestionScreen";
+import { uploadDataAsync } from "./helpers/apiManager";
 import {
   storePingStateAsync,
   addEndTimeToPingAsync,
@@ -41,10 +42,10 @@ import {
   enqueueToFuturePingQueue,
   getFuturePingsQueue,
 } from "./helpers/asyncStorage";
+import ChoicesQuestionScreen from "./questionScreens/ChoicesQuestionScreen";
 import HowLongAgoQuestionScreen from "./questionScreens/HowLongAgoQuestion";
-import { addDays } from "date-fns";
-import { uploadDataAsync } from "./helpers/apiManager";
-import { displayProblemForUser } from "../config/debug";
+import MultipleTextQuestionScreen from "./questionScreens/MultipleTextQuestionScreen";
+import SliderQuestionScreen from "./questionScreens/SliderQuestionScreen";
 
 type ExtraMetaData = { [key: string]: any };
 
@@ -116,7 +117,7 @@ export default class SurveyScreen extends React.Component<
 
     output = replacePreviousAnswerPlaceholdersWithActualContent(
       output,
-      questionId => {
+      (questionId) => {
         const prevQuestion = this.state.currentQuestionAnswers[questionId];
         if (!prevQuestion) {
           return null;
@@ -179,7 +180,7 @@ export default class SurveyScreen extends React.Component<
       }
 
       if (this.state.currentQuestionId == null) {
-        addEndTimeToPingAsync(pingId, new Date()).then(ping => {
+        addEndTimeToPingAsync(pingId, new Date()).then((ping) => {
           this.props.onFinish(ping);
         });
       }
@@ -195,7 +196,7 @@ export default class SurveyScreen extends React.Component<
 
     switch (survey[this.state.currentQuestionId].type) {
       case QuestionType.YesNo:
-        this.setState(prevState => {
+        this.setState((prevState) => {
           const currentQuestion = survey[
             prevState.currentQuestionId
           ] as YesNoQuestion;
@@ -211,7 +212,7 @@ export default class SurveyScreen extends React.Component<
               currentQuestion.addFollowupStream &&
               currentQuestion.addFollowupStream.yes
             ) {
-              let futureStreamName: StreamName =
+              const futureStreamName: StreamName =
                 currentQuestion.addFollowupStream.yes;
 
               // TODO: ADD SUPPORT TO CUSTOMIZE DATE AFTER
@@ -248,7 +249,7 @@ export default class SurveyScreen extends React.Component<
         break;
 
       case QuestionType.MultipleText:
-        this.setState(prevState => {
+        this.setState((prevState) => {
           const currentQuestion = survey[
             prevState.currentQuestionId
           ] as MultipleTextQuestion;
@@ -309,7 +310,7 @@ export default class SurveyScreen extends React.Component<
         break;
 
       case QuestionType.Branch:
-        this.setState(prevState => {
+        this.setState((prevState) => {
           const currentQuestion = survey[
             prevState.currentQuestionId
           ] as BranchQuestion;
@@ -364,7 +365,7 @@ export default class SurveyScreen extends React.Component<
         break;
 
       case QuestionType.BranchWithRelativeComparison:
-        this.setState(prevState => {
+        this.setState((prevState) => {
           const currentQuestion = survey[
             prevState.currentQuestionId
           ] as BranchWithRelativeComparisonQuestion;
@@ -461,7 +462,7 @@ export default class SurveyScreen extends React.Component<
           }
 
           if (fallbackNext) {
-            this.setState(prevState => {
+            this.setState((prevState) => {
               return {
                 currentQuestionId: fallbackNext,
               };
@@ -471,7 +472,7 @@ export default class SurveyScreen extends React.Component<
         }
       // If it is not the case, we go to default. So no break here.
       default:
-        this.setState(prevState => {
+        this.setState((prevState) => {
           const currentQuestion: Question = survey[prevState.currentQuestionId];
           let next: QuestionId | null = currentQuestion.next;
           let extraState = {};
@@ -516,7 +517,7 @@ export default class SurveyScreen extends React.Component<
     return new Promise((resolve, reject) => {
       const realQuestionId = this.getRealQuestionId(question);
       this.setState(
-        prevState => ({
+        (prevState) => ({
           currentQuestionAnswers: {
             ...prevState.currentQuestionAnswers,
             [realQuestionId]: {
@@ -614,13 +615,13 @@ export default class SurveyScreen extends React.Component<
         >
           <QuestionScreen
             question={survey[this.state.currentQuestionId]}
-            onDataChange={data => {
+            onDataChange={(data) => {
               this.addAnswerToAnswersListAsync(question, {
                 data,
               });
             }}
             allAnswers={this.state.currentQuestionAnswers}
-            pipeInExtraMetaData={input => this.pipeInExtraMetaData(input)}
+            pipeInExtraMetaData={(input) => this.pipeInExtraMetaData(input)}
           />
         </View>
         <View

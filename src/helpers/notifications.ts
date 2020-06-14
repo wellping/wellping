@@ -1,7 +1,3 @@
-import { Platform } from "react-native";
-import { Notifications } from "expo";
-import { LocalNotification } from "expo/build/Notifications/Notifications.types";
-import * as Permissions from "expo-permissions";
 import {
   addDays,
   addHours,
@@ -14,14 +10,19 @@ import {
   addSeconds,
   max,
 } from "date-fns";
+import { Notifications } from "expo";
+import * as Permissions from "expo-permissions";
+import { LocalNotification } from "expo/build/Notifications/Notifications.types";
+import { Platform } from "react-native";
+
+import { _DEBUG_CONFIGS } from "../../config/debug";
+import { StudyInfo } from "../../types";
 import {
   storeNotificationTimesAsync,
   getNotificationTimesAsync,
   getThisWeekPingsAsync,
 } from "./asyncStorage";
-import { StudyInfo } from "../../types";
 import { isTimeThisWeek } from "./configFiles";
-import { _DEBUG_CONFIGS } from "../../config/debug";
 
 const ANDROID_CHANNEL_NAME = "ssnlPingChannel";
 
@@ -96,11 +97,15 @@ export async function setNotificationsAsync(studyInfo: StudyInfo) {
       let notificationTime = setHours(setMinutes(date, 0), hour);
 
       // Randomly add `randomMinMinuteAddition` to `randomMaxMinuteAddition` minutes (inclusive) to the notification time.
-      const randomMinMinuteAddition = studyInfo.frequency.randomMinuteAddition.min;
-      const randomMaxMinuteAddition = studyInfo.frequency.randomMinuteAddition.max;
-      const randomMinuteAddition = Math.floor(
-        Math.random() * (randomMaxMinuteAddition + 1 - randomMinMinuteAddition),
-      ) + randomMinMinuteAddition;
+      const randomMinMinuteAddition =
+        studyInfo.frequency.randomMinuteAddition.min;
+      const randomMaxMinuteAddition =
+        studyInfo.frequency.randomMinuteAddition.max;
+      const randomMinuteAddition =
+        Math.floor(
+          Math.random() *
+            (randomMaxMinuteAddition + 1 - randomMinMinuteAddition),
+        ) + randomMinMinuteAddition;
       notificationTime = addMinutes(notificationTime, randomMinuteAddition);
 
       const randomSecond = Math.floor(Math.random() * 60) + 1;
@@ -119,11 +124,12 @@ export async function setNotificationsAsync(studyInfo: StudyInfo) {
   const numberOfPingsStartedThisWeek = startedPingsThisWeek.length;
 
   await Promise.all(
-    notificationTimes.map(async notificationTime => {
+    notificationTimes.map(async (notificationTime) => {
       if (notificationTime >= new Date()) {
         const configNotificationContent = studyInfo.notificationContent;
 
-        let remainingPingCount = configNotificationContent.bonus.numberOfCompletionEachWeek;
+        let remainingPingCount =
+          configNotificationContent.bonus.numberOfCompletionEachWeek;
         let shouldUseDefaultContent = false;
         if (isTimeThisWeek(notificationTime)) {
           if (
@@ -224,7 +230,7 @@ export async function getIncomingNotificationTimeAsync(): Promise<Date | null> {
   const currentTime = getCurrentTime();
 
   const currentIndex = notificationsTimes.findIndex(
-    notificationsTime => currentTime < notificationsTime,
+    (notificationsTime) => currentTime < notificationsTime,
   );
 
   if (currentIndex === -1) {

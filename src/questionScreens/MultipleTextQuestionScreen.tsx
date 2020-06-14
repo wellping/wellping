@@ -1,26 +1,29 @@
+import cloneDeep from "lodash/cloneDeep";
 import React from "react";
 import { View, Text } from "react-native";
-import cloneDeep from "lodash/cloneDeep";
-import SearchableDropdown from "../react-native-searchable-dropdown";
+
 import {
   QuestionScreen,
   MultipleTextAnswerData,
   MultipleTextAnswer,
 } from "../../answerTypes";
-import { MultipleTextQuestion, Names } from "../../types";
 import { withVariable } from "../../helpers";
+import { MultipleTextQuestion, Names } from "../../types";
 import { getNamesFile } from "../helpers/configFiles";
+import SearchableDropdown from "../react-native-searchable-dropdown";
 
 const names: Names = getNamesFile();
-const namesItems = names.map((name, index) => ({ id: `${index}`, name: name }));
+const namesItems = names.map((name, index) => ({ id: `${index}`, name }));
 
 interface MultipleTextQuestionScreenProps extends QuestionScreen {
   question: MultipleTextQuestion;
 }
 
-const MultipleTextQuestionScreen: React.ElementType<
-  MultipleTextQuestionScreenProps
-> = ({ question, onDataChange, allAnswers }) => {
+const MultipleTextQuestionScreen: React.ElementType<MultipleTextQuestionScreenProps> = ({
+  question,
+  onDataChange,
+  allAnswers,
+}) => {
   let numberOfTextFields = question.max;
   if (question.maxMinus) {
     const prevQuestionAnswer = allAnswers[
@@ -87,7 +90,7 @@ const MultipleTextQuestionScreen: React.ElementType<
     textFields.push(
       <SearchableDropdown
         key={index}
-        onItemSelect={item => {
+        onItemSelect={(item) => {
           updateName(item.name, index);
         }}
         containerStyle={{ padding: 5 }}

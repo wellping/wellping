@@ -1,5 +1,6 @@
 import React from "react";
 import { View, Text, Slider } from "react-native";
+
 import { QuestionScreen, SliderAnswer } from "../../answerTypes";
 import { SliderQuestion } from "../../types";
 
@@ -42,7 +43,7 @@ const SliderQuestionScreen: React.ElementType<SliderQuestionScreenProps> = ({
         maximumValue={100}
         minimumTrackTintColor="#2F2424"
         maximumTrackTintColor="#2F2424"
-        onValueChange={value => {
+        onValueChange={(value) => {
           setSliderValue(value);
           onDataChange(value);
         }}

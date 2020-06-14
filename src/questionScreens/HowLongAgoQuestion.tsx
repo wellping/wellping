@@ -6,13 +6,14 @@ import {
   FlatList,
   StyleSheet,
 } from "react-native";
+
 import {
   QuestionScreen,
   ChoicesWithMultipleAnswersAnswerChoices,
   HowLongAgoAnswerData,
 } from "../../answerTypes";
-import { HowLongAgoQuestion } from "../../types";
 import { QuestionType } from "../../helpers";
+import { HowLongAgoQuestion } from "../../types";
 
 function Item({ id, title, selected, onSelect }) {
   return (
@@ -32,9 +33,11 @@ interface HowLongAgoQuestionScreenProps extends QuestionScreen {
   question: HowLongAgoQuestion;
 }
 
-const HowLongAgoQuestionScreen: React.ElementType<
-  HowLongAgoQuestionScreenProps
-> = ({ question, onDataChange, pipeInExtraMetaData }) => {
+const HowLongAgoQuestionScreen: React.ElementType<HowLongAgoQuestionScreenProps> = ({
+  question,
+  onDataChange,
+  pipeInExtraMetaData,
+}) => {
   const numberChoices: { [key: string]: string } = {
     "1": "1",
     "2": "2",
@@ -67,7 +70,7 @@ const HowLongAgoQuestionScreen: React.ElementType<
   return (
     <View style={{ flexDirection: "row" }}>
       <FlatList
-        data={Object.keys(numberChoices).map(key => ({
+        data={Object.keys(numberChoices).map((key) => ({
           id: key,
           title: numberChoices[key],
         }))}
@@ -76,19 +79,19 @@ const HowLongAgoQuestionScreen: React.ElementType<
             id={item.id}
             title={item.title}
             selected={item.id === `${data[0]}`}
-            onSelect={id => {
+            onSelect={(id) => {
               const newData: HowLongAgoAnswerData = [Number(id), data[1]];
               setData(newData);
               onDataChange(newData);
             }}
           />
         )}
-        keyExtractor={item => item.id}
+        keyExtractor={(item) => item.id}
         extraData={data}
         style={{ marginRight: 5 }}
       />
       <FlatList
-        data={Object.keys(unitChoices).map(key => ({
+        data={Object.keys(unitChoices).map((key) => ({
           id: key,
           title: unitChoices[key],
         }))}
@@ -97,14 +100,14 @@ const HowLongAgoQuestionScreen: React.ElementType<
             id={item.id}
             title={item.title}
             selected={item.id === data[1]}
-            onSelect={id => {
+            onSelect={(id) => {
               const newData: HowLongAgoAnswerData = [data[0], id];
               setData(newData);
               onDataChange(newData);
             }}
           />
         )}
-        keyExtractor={item => item.id}
+        keyExtractor={(item) => item.id}
         extraData={data}
         style={{ marginLeft: 5 }}
       />

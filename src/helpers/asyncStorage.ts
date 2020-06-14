@@ -1,10 +1,11 @@
-import { AsyncStorage } from "react-native";
-import { Notifications } from "expo";
 import { isToday, addDays } from "date-fns";
+import { Notifications } from "expo";
+import { AsyncStorage } from "react-native";
+
+import { logError } from "../../config/debug";
+import { StreamName } from "../../types";
 import { SurveyScreenState } from "../SurveyScreen";
 import { getStudyId, isTimeThisWeek, getAllStreamNames } from "./configFiles";
-import { StreamName } from "../../types";
-import { logError } from "../../config/debug";
 
 export const ASYNC_STORAGE_PREFIX = `@WELLPING:Study_${getStudyId()}/`;
 
@@ -36,7 +37,7 @@ export async function getNotificationTimesAsync(): Promise<Date[] | null> {
       return null;
     }
     const timesString: string[] = JSON.parse(value);
-    const times = timesString.map(dateString => new Date(dateString));
+    const times = timesString.map((dateString) => new Date(dateString));
     return times;
   } catch (error) {
     // Error retrieving data
@@ -52,7 +53,7 @@ type TypesOfPingsAnswered = {
 
 async function initTypesOfPingsAnsweredAsync() {
   const initCount = {};
-  getAllStreamNames().map(key => {
+  getAllStreamNames().map((key) => {
     initCount[key] = 0;
   });
 
@@ -95,7 +96,9 @@ async function clearTypesOfPingsAnsweredAsync() {
   }
 }
 
-export async function getTypesOfPingsAnsweredAsync(): Promise<TypesOfPingsAnswered> {
+export async function getTypesOfPingsAnsweredAsync(): Promise<
+  TypesOfPingsAnswered
+> {
   try {
     const value = await AsyncStorage.getItem(TYPES_OF_PINGS_ANSWERED_KEY);
     if (value == null) {
@@ -180,7 +183,7 @@ export async function addEndTimeToPingAsync(
   const currentPingInfos = await getPingsAsync();
 
   const indexOfPingId = currentPingInfos.findIndex(
-    pingInfo => pingInfo.id === pingId,
+    (pingInfo) => pingInfo.id === pingId,
   );
   if (indexOfPingId === -1) {
     throw new Error(`pingId ${pingId} not found in getPingsAsync.`);

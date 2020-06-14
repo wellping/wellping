@@ -1,10 +1,11 @@
+import * as WebBrowser from "expo-web-browser";
 import React from "react";
 import { Button, TextInput, Text, View, ScrollView, Alert } from "react-native";
-import * as WebBrowser from "expo-web-browser";
+
 import HomeScreen from "./HomeScreen";
-import { getUserAsync, User, clearUserAsync } from "./helpers/user";
 import { registerUserAsync } from "./helpers/apiManager";
 import { getStudyInfo } from "./helpers/configFiles";
+import { getUserAsync, User, clearUserAsync } from "./helpers/user";
 
 interface RootScreenProps {}
 
@@ -96,7 +97,7 @@ export default class RootScreen extends React.Component<
             </Text>
           </View>
           <TextInput
-            onChangeText={text => this.setState({ formDataUserId: text })}
+            onChangeText={(text) => this.setState({ formDataUserId: text })}
             autoCorrect={false}
             autoCapitalize="none"
             autoCompleteType="off"
@@ -104,7 +105,7 @@ export default class RootScreen extends React.Component<
             style={textFieldStyle}
           />
           <TextInput
-            onChangeText={text => this.setState({ formDataPassword: text })}
+            onChangeText={(text) => this.setState({ formDataPassword: text })}
             secureTextEntry
             autoCorrect={false}
             autoCapitalize="none"
@@ -153,9 +154,7 @@ export default class RootScreen extends React.Component<
           />
           {errorText ? (
             <Text style={{ margin: 15, fontWeight: "bold" }}>{errorText}</Text>
-          ) : (
-            undefined
-          )}
+          ) : undefined}
         </ScrollView>
       );
     }

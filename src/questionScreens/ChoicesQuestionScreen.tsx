@@ -1,3 +1,4 @@
+import cloneDeep from "lodash/cloneDeep";
 import React from "react";
 import {
   View,
@@ -6,13 +7,13 @@ import {
   FlatList,
   StyleSheet,
 } from "react-native";
-import cloneDeep from 'lodash/cloneDeep';
+
 import {
   QuestionScreen,
   ChoicesWithMultipleAnswersAnswerChoices,
 } from "../../answerTypes";
-import { ChoicesQuestion, YesNoQuestion, Choice } from "../../types";
 import { QuestionType, shuffle } from "../../helpers";
+import { ChoicesQuestion, YesNoQuestion, Choice } from "../../types";
 
 function Item({ id, title, selected, onSelect }) {
   return (
@@ -87,7 +88,7 @@ const ChoicesQuestionScreen: React.ElementType<ChoicesQuestionScreenProps> = ({
     choices = cQ.choices;
   }
 
-  let listRef = React.useRef<FlatList<{ id: string; title: string }>>();
+  const listRef = React.useRef<FlatList<{ id: string; title: string }>>();
 
   const [selected, setSelected]: [
     ChoicesWithMultipleAnswersAnswerChoices,
@@ -116,8 +117,8 @@ const ChoicesQuestionScreen: React.ElementType<ChoicesQuestionScreenProps> = ({
         const randomizeExceptForChoiceIds =
           cQ.randomizeExceptForChoiceIds || [];
 
-        const flatListShuffleableData = tempFlatListData.filter((value) =>
-          !randomizeExceptForChoiceIds.includes(value.id),
+        const flatListShuffleableData = tempFlatListData.filter(
+          (value) => !randomizeExceptForChoiceIds.includes(value.id),
         );
         const flatListFixedDataAtLast = tempFlatListData.filter((value) =>
           randomizeExceptForChoiceIds.includes(value.id),
@@ -142,7 +143,7 @@ const ChoicesQuestionScreen: React.ElementType<ChoicesQuestionScreenProps> = ({
             id={item.id}
             title={item.title}
             selected={selected[item.id]}
-            onSelect={id => {
+            onSelect={(id) => {
               let newSelected: ChoicesWithMultipleAnswersAnswerChoices;
               if (answerType === ChoicesAnswerType.MULTIPLE_SELECTION) {
                 newSelected = cloneDeep(selected);
@@ -164,13 +165,13 @@ const ChoicesQuestionScreen: React.ElementType<ChoicesQuestionScreenProps> = ({
                   break;
 
                 case ChoicesAnswerType.YESNO:
-                  onDataChange(id === YESNO_CHOICES_YES_KEY ? true : false);
+                  onDataChange(id === YESNO_CHOICES_YES_KEY);
                   break;
               }
             }}
           />
         )}
-        keyExtractor={item => item.id}
+        keyExtractor={(item) => item.id}
         extraData={selected}
         ref={listRef}
         style={{

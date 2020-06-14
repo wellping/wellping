@@ -1,11 +1,12 @@
-import { Platform } from "react-native";
 import Constants from "expo-constants";
-import * as Device from "expo-device";
 import * as Crypto from "expo-crypto";
-import { getUserAsync, User, storeUserAsync } from "./user";
-import { getPingsAsync, getPingStateAsync } from "./asyncStorage";
+import * as Device from "expo-device";
+import { Platform } from "react-native";
+
 import { SurveyScreenState } from "../SurveyScreen";
+import { getPingsAsync, getPingStateAsync } from "./asyncStorage";
 import { getStudyInfo } from "./configFiles";
+import { getUserAsync, User, storeUserAsync } from "./user";
 
 export const SERVER_URL = getStudyInfo().serverURL;
 
@@ -47,7 +48,7 @@ export async function getAllDataAsync() {
   const pingInfos = await getPingsAsync();
   const pingStates: { [id: string]: SurveyScreenState } = {};
   await Promise.all(
-    pingInfos.map(async pingInfo => {
+    pingInfos.map(async (pingInfo) => {
       const pingState = await getPingStateAsync(pingInfo.id);
       pingStates[pingInfo.id] = pingState;
     }),
@@ -108,7 +109,7 @@ export async function getRequestURLAsync(
   //console.warn(`request is ${JSON.stringify(request)}`);
 
   const query = Object.keys(request)
-    .map(k => encodeURIComponent(k) + "=" + encodeURIComponent(request[k]))
+    .map((k) => encodeURIComponent(k) + "=" + encodeURIComponent(request[k]))
     .join("&");
   const url = `${SERVER_URL}${endpoint}?${query}`;
   return url;

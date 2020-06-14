@@ -22,7 +22,7 @@ export interface SliderQuestion extends Question {
 export type Choice = {
   key: string;
   value: string;
-}
+};
 
 export interface ChoicesQuestion extends Question {
   choices: Choice[];
@@ -106,7 +106,9 @@ export interface BranchWithRelativeComparisonQuestion extends Question {
   branches: {
     // `branches` IS NOT ACTUALLY PRESENT IN THE DATA - it got deleted in the process
     // The highest value (or the first in case of same value) will be chosen as the next question.
-    [questionId: string /* actually QuestionId */]: TypedGroupQuestion<Question>;
+    [questionId: string /* actually QuestionId */]: TypedGroupQuestion<
+      Question
+    >;
   };
   branchStartId?: {
     [questionId: string /* actually QuestionId */]: QuestionId;

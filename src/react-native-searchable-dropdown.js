@@ -43,7 +43,7 @@ export default class SearchableDropDown extends Component {
           val: ({ item, index }) => this.renderItems(item, index),
         },
       ];
-      oldSupport.forEach(kv => {
+      oldSupport.forEach((kv) => {
         if (!Object.keys(flatListPorps).includes(kv.key)) {
           flatListPorps[kv.key] = kv.val;
         } else {
@@ -69,21 +69,21 @@ export default class SearchableDropDown extends Component {
     }
   };
 
-  searchedItems = searchedText => {
+  searchedItems = (searchedText) => {
     let setSort = this.props.setSort;
     if (!setSort && typeof setSort !== "function") {
       setSort = (item, searchedText) => {
         return item.name.toLowerCase().indexOf(searchedText.toLowerCase()) > -1;
       };
     }
-    var ac = this.props.items.filter(item => {
+    var ac = this.props.items.filter((item) => {
       return setSort(item, searchedText);
     });
-    let item = {
+    const item = {
       id: -1,
       name: searchedText,
     };
-    this.setState({ listItems: ac, item: item });
+    this.setState({ listItems: ac, item });
     const onTextChange =
       this.props.onTextChange ||
       this.props.textInputProps.onTextChange ||
@@ -102,7 +102,7 @@ export default class SearchableDropDown extends Component {
       this.props.selectedItems &&
       this.props.selectedItems.length > 0
     ) {
-      return this.props.selectedItems.find(sitem => sitem.id === item.id) ? (
+      return this.props.selectedItems.find((sitem) => sitem.id === item.id) ? (
         <TouchableOpacity
           style={{ ...this.props.itemStyle, flex: 1, flexDirection: "row" }}
         >
@@ -141,7 +141,7 @@ export default class SearchableDropDown extends Component {
       ) : (
         <TouchableOpacity
           onPress={() => {
-            this.setState({ item: item });
+            this.setState({ item });
             setTimeout(() => {
               this.props.onItemSelect(item);
             }, 0);
@@ -160,7 +160,7 @@ export default class SearchableDropDown extends Component {
         <TouchableOpacity
           style={{ ...this.props.itemStyle }}
           onPress={() => {
-            this.setState({ item: item, focus: false });
+            this.setState({ item, focus: false });
             Keyboard.dismiss();
             setTimeout(() => {
               this.props.onItemSelect(item);
@@ -173,7 +173,7 @@ export default class SearchableDropDown extends Component {
         >
           {this.props.selectedItems &&
           this.props.selectedItems.length > 0 &&
-          this.props.selectedItems.find(x => x.id === item.id) ? (
+          this.props.selectedItems.find((x) => x.id === item.id) ? (
             <Text style={{ ...this.props.itemTextStyle }}>{item.name}</Text>
           ) : (
             <Text style={{ ...this.props.itemTextStyle }}>{item.name}</Text>
@@ -190,10 +190,10 @@ export default class SearchableDropDown extends Component {
   renderTextInput = () => {
     const textInputProps = { ...this.props.textInputProps };
     const oldSupport = [
-      { key: "ref", val: e => (this.input = e) },
+      { key: "ref", val: (e) => (this.input = e) },
       {
         key: "onTextChange",
-        val: text => {
+        val: (text) => {
           this.searchedItems(text);
         },
       },
@@ -233,7 +233,7 @@ export default class SearchableDropDown extends Component {
         val: this.props.placeholder,
       },
     ];
-    oldSupport.forEach(kv => {
+    oldSupport.forEach((kv) => {
       if (!Object.keys(textInputProps).includes(kv.key)) {
         if (kv.key === "onTextChange" || kv.key === "onChangeText") {
           textInputProps["onChangeText"] = kv.val;
@@ -262,7 +262,7 @@ export default class SearchableDropDown extends Component {
     );
   };
   renderSelectedItems() {
-    let items = this.props.selectedItems;
+    const items = this.props.selectedItems;
     if (
       items !== undefined &&
       items.length > 0 &&
