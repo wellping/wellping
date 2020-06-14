@@ -56,11 +56,6 @@ const MultipleTextQuestionScreen: React.ElementType<MultipleTextQuestionScreenPr
     newTextValues[index] = text.trim();
     setTextValues(newTextValues);
 
-    if (!dataValidationFunction(false, newTextValues)) {
-      // Only actually save the data when the data is valid.
-      return;
-    }
-
     const nonEmptyFields = newTextValues.filter(Boolean);
     const data: MultipleTextAnswerData = {
       count: nonEmptyFields.length,
