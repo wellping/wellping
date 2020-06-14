@@ -2,6 +2,7 @@ import { addDays } from "date-fns";
 import React from "react";
 import { Button, Text, View, ScrollView, Dimensions } from "react-native";
 
+import { displayProblemForUser } from "../config/debug";
 import {
   AnswersList,
   QuestionScreen,
@@ -11,14 +12,21 @@ import {
   SliderAnswer,
   ChoicesWithSingleAnswerAnswer,
   ChoicesWithMultipleAnswersAnswer,
-} from "../answerTypes";
-import { displayProblemForUser } from "../config/debug";
+} from "./helpers/answerTypes";
+import { uploadDataAsync } from "./helpers/apiManager";
+import {
+  storePingStateAsync,
+  addEndTimeToPingAsync,
+  PingInfo,
+  enqueueToFuturePingQueue,
+  getFuturePingsQueue,
+} from "./helpers/asyncStorage";
 import {
   QuestionType,
   withVariable,
   replacePreviousAnswerPlaceholdersWithActualContent,
   decapitalizeFirstCharacter,
-} from "../helpers";
+} from "./helpers/helpers";
 import {
   Question,
   TypedGroupQuestion,
@@ -33,15 +41,7 @@ import {
   BranchWithRelativeComparisonQuestion,
   ChoicesQuestion,
   StreamName,
-} from "../types";
-import { uploadDataAsync } from "./helpers/apiManager";
-import {
-  storePingStateAsync,
-  addEndTimeToPingAsync,
-  PingInfo,
-  enqueueToFuturePingQueue,
-  getFuturePingsQueue,
-} from "./helpers/asyncStorage";
+} from "./helpers/types";
 import ChoicesQuestionScreen from "./questionScreens/ChoicesQuestionScreen";
 import HowLongAgoQuestionScreen from "./questionScreens/HowLongAgoQuestion";
 import MultipleTextQuestionScreen from "./questionScreens/MultipleTextQuestionScreen";

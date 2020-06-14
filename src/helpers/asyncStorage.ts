@@ -3,9 +3,9 @@ import { Notifications } from "expo";
 import { AsyncStorage } from "react-native";
 
 import { logError } from "../../config/debug";
-import { StreamName } from "../../types";
 import { SurveyScreenState } from "../SurveyScreen";
 import { getStudyId, isTimeThisWeek, getAllStreamNames } from "./configFiles";
+import { StreamName } from "./types";
 
 export const ASYNC_STORAGE_PREFIX = `@WELLPING:Study_${getStudyId()}/`;
 

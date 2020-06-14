@@ -1,3 +1,5 @@
+import { format, addHours, getDay } from "date-fns";
+import { Notifications } from "expo";
 import React from "react";
 import {
   Button,
@@ -11,17 +13,14 @@ import {
   TouchableWithoutFeedback,
 } from "react-native";
 import { WebView } from "react-native-webview";
-import { format, addHours, getDay } from "date-fns";
-import { Notifications } from "expo";
-import { Streams, QuestionsList, SurveyFile, StreamName, StudyInfo } from "../types";
+
 import SurveyScreen, { SurveyScreenState } from "./SurveyScreen";
 import {
-  setNotificationsAsync,
-  setupNotificationsPermissionAsync,
-  getCurrentNotificationTimeAsync,
-  getIncomingNotificationTimeAsync,
-  _sendTestNotificationAsync,
-} from "./helpers/notifications";
+  uploadDataAsync,
+  SERVER_URL,
+  getAllDataAsync,
+  getRequestURLAsync,
+} from "./helpers/apiManager";
 import {
   getNotificationTimesAsync,
   clearNotificationTimesAsync,
@@ -40,13 +39,25 @@ import {
   getTypesOfPingsAnsweredAsync,
 } from "./helpers/asyncStorage";
 import {
-  uploadDataAsync,
-  SERVER_URL,
-  getAllDataAsync,
-  getRequestURLAsync,
-} from "./helpers/apiManager";
+  getSurveyFile,
+  getStudyInfo,
+  getAllStreamNames,
+} from "./helpers/configFiles";
+import {
+  setNotificationsAsync,
+  setupNotificationsPermissionAsync,
+  getCurrentNotificationTimeAsync,
+  getIncomingNotificationTimeAsync,
+  _sendTestNotificationAsync,
+} from "./helpers/notifications";
+import {
+  Streams,
+  QuestionsList,
+  SurveyFile,
+  StreamName,
+  StudyInfo,
+} from "./helpers/types";
 import { getUserAsync } from "./helpers/user";
-import { getSurveyFile, getStudyInfo, getAllStreamNames } from "./helpers/configFiles";
 
 const survey: SurveyFile = getSurveyFile();
 const studyInfo: StudyInfo = getStudyInfo();
@@ -563,7 +574,7 @@ export default class HomeScreen extends React.Component<
           }
           pingId={currentPing.id}
           previousState={this.state.storedPingStateAsync}
-          onFinish={async finishedPing => {
+          onFinish={async (finishedPing) => {
             this.setState({ currentPing: finishedPing });
             uploadDataAsync();
           }}

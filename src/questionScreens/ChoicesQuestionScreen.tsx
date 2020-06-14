@@ -11,9 +11,9 @@ import {
 import {
   QuestionScreen,
   ChoicesWithMultipleAnswersAnswerChoices,
-} from "../../answerTypes";
-import { QuestionType, shuffle } from "../../helpers";
-import { ChoicesQuestion, YesNoQuestion, Choice } from "../../types";
+} from "../helpers/answerTypes";
+import { QuestionType, shuffle } from "../helpers/helpers";
+import { ChoicesQuestion, YesNoQuestion, Choice } from "../helpers/types";
 
 function Item({ id, title, selected, onSelect }) {
   return (

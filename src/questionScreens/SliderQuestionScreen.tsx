@@ -1,8 +1,8 @@
 import React from "react";
 import { View, Text, Slider } from "react-native";
 
-import { QuestionScreen, SliderAnswer } from "../../answerTypes";
-import { SliderQuestion } from "../../types";
+import { QuestionScreen, SliderAnswer } from "../helpers/answerTypes";
+import { SliderQuestion } from "../helpers/types";
 
 interface SliderQuestionScreenProps extends QuestionScreen {
   question: SliderQuestion;

@@ -16,13 +16,13 @@ import { LocalNotification } from "expo/build/Notifications/Notifications.types"
 import { Platform } from "react-native";
 
 import { _DEBUG_CONFIGS } from "../../config/debug";
-import { StudyInfo } from "../../types";
 import {
   storeNotificationTimesAsync,
   getNotificationTimesAsync,
   getThisWeekPingsAsync,
 } from "./asyncStorage";
 import { isTimeThisWeek } from "./configFiles";
+import { StudyInfo } from "./types";
 
 const ANDROID_CHANNEL_NAME = "ssnlPingChannel";
 

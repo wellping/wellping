@@ -1,6 +1,6 @@
 import { isThisWeek } from "date-fns";
 
-import { SurveyFile, Names, StudyID, StudyInfo, StreamName } from "../../types";
+import { SurveyFile, Names, StudyID, StudyInfo, StreamName } from "./types";
 
 export function getSurveyFile(): SurveyFile {
   const survey: SurveyFile = require("../../config/survey.json");

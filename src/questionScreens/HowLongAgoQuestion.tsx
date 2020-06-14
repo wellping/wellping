@@ -11,9 +11,9 @@ import {
   QuestionScreen,
   ChoicesWithMultipleAnswersAnswerChoices,
   HowLongAgoAnswerData,
-} from "../../answerTypes";
-import { QuestionType } from "../../helpers";
-import { HowLongAgoQuestion } from "../../types";
+} from "../helpers/answerTypes";
+import { QuestionType } from "../helpers/helpers";
+import { HowLongAgoQuestion } from "../helpers/types";
 
 function Item({ id, title, selected, onSelect }) {
   return (

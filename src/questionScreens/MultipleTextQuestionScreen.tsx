@@ -6,10 +6,10 @@ import {
   QuestionScreen,
   MultipleTextAnswerData,
   MultipleTextAnswer,
-} from "../../answerTypes";
-import { withVariable } from "../../helpers";
-import { MultipleTextQuestion, Names } from "../../types";
+} from "../helpers/answerTypes";
 import { getNamesFile } from "../helpers/configFiles";
+import { withVariable } from "../helpers/helpers";
+import { MultipleTextQuestion, Names } from "../helpers/types";
 import SearchableDropdown from "../inc/react-native-searchable-dropdown";
 
 const names: Names = getNamesFile();
