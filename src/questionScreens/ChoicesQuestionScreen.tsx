@@ -6,6 +6,7 @@ import {
   FlatList,
   StyleSheet,
 } from "react-native";
+import cloneDeep from 'lodash/cloneDeep';
 import {
   QuestionScreen,
   ChoicesWithMultipleAnswersAnswerChoices,
@@ -138,7 +139,7 @@ const ChoicesQuestionScreen: React.ElementType<ChoicesQuestionScreenProps> = ({
             onSelect={id => {
               let newSelected: ChoicesWithMultipleAnswersAnswerChoices;
               if (answerType === ChoicesAnswerType.MULTIPLE_SELECTION) {
-                newSelected = JSON.parse(JSON.stringify(selected));
+                newSelected = cloneDeep(selected);
               } else {
                 // Reset everything to `false` if it is a single-selection question.
                 newSelected = initAnswerData(choices);

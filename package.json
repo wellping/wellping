@@ -13,6 +13,7 @@
     "expo-crypto": "~8.1.0",
     "expo-device": "~2.1.0",
     "expo-web-browser": "~8.2.1",
+    "lodash": "^4.17.15",
     "react": "16.9.0",
     "react-native": "https://github.com/expo/react-native/archive/sdk-37.0.1.tar.gz",
     "react-native-webview": "8.1.1"

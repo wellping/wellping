@@ -1,5 +1,6 @@
 import React from "react";
 import { View, Text } from "react-native";
+import cloneDeep from "lodash/cloneDeep";
 import SearchableDropdown from "../react-native-searchable-dropdown";
 import {
   QuestionScreen,
@@ -47,7 +48,7 @@ const MultipleTextQuestionScreen: React.ElementType<
   }, [question]);
 
   function updateName(name: string, index: number) {
-    const newTextValues: string[] = JSON.parse(JSON.stringify(textValues));
+    const newTextValues: string[] = cloneDeep(textValues);
     newTextValues[index] = name.trim();
     setTextValues(newTextValues);
 
