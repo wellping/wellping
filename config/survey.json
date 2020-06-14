@@ -96,6 +96,7 @@
         "eachId": "Rel_[__INDEX__]",
         "type": "multipleText",
         "question": "How would you best describe your relationship to the people you had an interaction with?",
+        "placeholder": "Select a category...",
         "choices": [
           { "key": "friend", "value": "Friend" },
           { "key": "coworker", "value": "Co-worker" },

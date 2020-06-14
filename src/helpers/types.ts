@@ -64,6 +64,7 @@ export interface MultipleTextQuestion extends Question {
   // `id` will store the number of text fields answered.
   type: QuestionType.MultipleText;
   eachId: QuestionId;
+  placeholder?: string;
   choices?: "NAMES" | Choice[];
   max: number;
   maxMinus?: QuestionId; // The max number of text field will be `max` minus the number of text the participant entered in `maxMinus` question.

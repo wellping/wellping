@@ -104,10 +104,7 @@ const MultipleTextQuestionScreen: React.ElementType<MultipleTextQuestionScreenPr
         items={textFieldsDropdownItems}
         resetValue={false}
         textInputProps={{
-          placeholder:
-            question.choices === "NAMES"
-              ? "Enter a name here..."
-              : "Select a category...",
+          placeholder: question.placeholder,
           underlineColorAndroid: "transparent",
           style: {
             padding: 12,
