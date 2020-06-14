@@ -154,6 +154,9 @@ export default class SurveyScreen extends React.Component<
   }
 
   onNextSelect() {
+    // Reset this so that the new QuestionScreen can set it.
+    this.dataValidationFunction = null;
+
     const { survey, pingId } = this.props;
 
     const setStateCallback = () => {
@@ -536,6 +539,7 @@ export default class SurveyScreen extends React.Component<
     });
   }
 
+  dataValidationFunction: () => boolean = null;
   render() {
     /*var contents = this.props.screenProps.scores.map(score => (
       <Text key={score.name}>
@@ -623,6 +627,9 @@ export default class SurveyScreen extends React.Component<
             }}
             allAnswers={this.state.currentQuestionAnswers}
             pipeInExtraMetaData={(input) => this.pipeInExtraMetaData(input)}
+            setDataValidationFunction={(func) => {
+              this.dataValidationFunction = func;
+            }}
           />
         </View>
         <View
@@ -644,6 +651,13 @@ export default class SurveyScreen extends React.Component<
           />
           <Button
             onPress={async () => {
+              if (
+                this.dataValidationFunction &&
+                !this.dataValidationFunction()
+              ) {
+                return;
+              }
+
               if (this.state.currentQuestionAnswers[realQuestionId] == null) {
                 await this.addAnswerToAnswersListAsync(question, {
                   nextWithoutOption: true,

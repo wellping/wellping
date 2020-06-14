@@ -66,6 +66,7 @@ export interface MultipleTextQuestion extends Question {
   eachId: QuestionId;
   placeholder?: string;
   choices?: "NAMES" | Choice[];
+  forceChoice?: boolean;
   max: number;
   maxMinus?: QuestionId; // The max number of text field will be `max` minus the number of text the participant entered in `maxMinus` question.
   repeatedItems: TypedGroupQuestion<Question>; // `repeatedItems` IS NOT ACTUALLY PRESENT IN THE DATA - it got deleted in the process

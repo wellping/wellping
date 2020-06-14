@@ -1,6 +1,6 @@
 import cloneDeep from "lodash/cloneDeep";
 import React from "react";
-import { View, Text } from "react-native";
+import { View, TextInput, Alert } from "react-native";
 
 import {
   QuestionScreen,
@@ -23,6 +23,7 @@ const MultipleTextQuestionScreen: React.ElementType<MultipleTextQuestionScreenPr
   question,
   onDataChange,
   allAnswers,
+  setDataValidationFunction,
 }) => {
   let numberOfTextFields = question.max;
   if (question.maxMinus) {
@@ -83,10 +84,11 @@ const MultipleTextQuestionScreen: React.ElementType<MultipleTextQuestionScreenPr
     }));
   }
 
-  // TODO: ADD AN OPTION TO FORCE USE VALUE FROM DROPDOWN (ALERT IF NOT IN SUGGESTION LIST)
-  // https://github.com/StanfordSocialNeuroscienceLab/WellPing/issues/2
   const textFields: SearchableDropdown[] = [];
+  const textFieldsRef: React.RefObject<TextInput>[] = [];
   for (let index = 0; index < numberOfTextFields; index++) {
+    textFieldsRef.push(React.useRef<TextInput>());
+
     textFields.push(
       <SearchableDropdown
         key={index}
@@ -104,6 +106,7 @@ const MultipleTextQuestionScreen: React.ElementType<MultipleTextQuestionScreenPr
         items={textFieldsDropdownItems}
         resetValue={false}
         textInputProps={{
+          ref: textFieldsRef[index],
           placeholder: question.placeholder,
           underlineColorAndroid: "transparent",
           style: {
@@ -112,8 +115,16 @@ const MultipleTextQuestionScreen: React.ElementType<MultipleTextQuestionScreenPr
             borderColor: "#ccc",
             borderRadius: 5,
           },
-          onTextChange: (text: string) => {
+          onChangeText: (text: string) => {
             updateName(text, index);
+          },
+          onSubmitEditing: () => {
+            if (index !== numberOfTextFields - 1) {
+              textFieldsRef[index + 1].current.focus();
+            }
+          },
+          onEndEditing: (e) => {
+            dataValidationFunction();
           },
         }}
         setSort={(item, searchedText) =>
@@ -126,6 +137,57 @@ const MultipleTextQuestionScreen: React.ElementType<MultipleTextQuestionScreenPr
       />,
     );
   }
+
+  let alertDisplaying = false;
+  const dataValidationFunction = () => {
+    if (!question.forceChoice) {
+      // If there is no `forceChoice`, the data is always valid.
+      return true;
+    }
+
+    if (alertDisplaying) {
+      // It means the data is valid, and an alert is still on screen.
+      return false;
+    }
+
+    const items = textFieldsDropdownItems.map((item) => item.name);
+    const invalidTextValues = textValues.filter((textValue) => {
+      // If the text value is not empty and is not in the items list.
+      return textValue && !items.includes(textValue);
+    });
+    if (invalidTextValues.length > 0) {
+      alertDisplaying = true;
+
+      const invalidTextValuesIndices = invalidTextValues.map((value) =>
+        textValues.indexOf(value),
+      );
+      Alert.alert(
+        "Notice",
+        `You must select an item from the list.\n\n` +
+          `The following items are not in the list: ` +
+          `${invalidTextValues.join(", ")}`,
+        [
+          {
+            text: "OK",
+            onPress: () => {
+              invalidTextValuesIndices.forEach((index) => {
+                textFieldsRef[index].current &&
+                  textFieldsRef[index].current.clear();
+                updateName("", index);
+              });
+              textFieldsRef[invalidTextValuesIndices[0]].current.focus();
+              alertDisplaying = false;
+            },
+            style: "cancel",
+          },
+        ],
+      );
+      return false;
+    } else {
+      return true;
+    }
+  };
+  setDataValidationFunction(dataValidationFunction);
 
   return <View style={{ paddingTop: 10 }}>{textFields}</View>;
 };

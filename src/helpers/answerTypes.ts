@@ -57,4 +57,5 @@ export interface QuestionScreen {
   onDataChange: (data: any) => void;
   allAnswers: AnswersList;
   pipeInExtraMetaData: (input: string) => string;
+  setDataValidationFunction?: (func: () => boolean) => void;
 }
