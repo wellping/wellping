@@ -14,7 +14,6 @@ import {
 } from "react-native";
 import { WebView } from "react-native-webview";
 
-import { displayProblemForUser } from "../config/debug";
 import SurveyScreen, { SurveyScreenState } from "./SurveyScreen";
 import {
   uploadDataAsync,
@@ -44,6 +43,7 @@ import {
   getStudyInfo,
   getAllStreamNames,
 } from "./helpers/configFiles";
+import { displayProblemForUser } from "./helpers/debug";
 import {
   setNotificationsAsync,
   setupNotificationsPermissionAsync,

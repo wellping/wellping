@@ -2,7 +2,6 @@ import { addDays } from "date-fns";
 import React from "react";
 import { Button, Text, View, ScrollView, Dimensions } from "react-native";
 
-import { displayProblemForUser } from "../config/debug";
 import {
   AnswersList,
   QuestionScreen,
@@ -21,6 +20,7 @@ import {
   enqueueToFuturePingQueue,
   getFuturePingsQueue,
 } from "./helpers/asyncStorage";
+import { displayProblemForUser } from "./helpers/debug";
 import {
   QuestionType,
   withVariable,

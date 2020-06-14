@@ -2,9 +2,9 @@ import { isToday, addDays } from "date-fns";
 import { Notifications } from "expo";
 import { AsyncStorage } from "react-native";
 
-import { logError } from "../../config/debug";
 import { SurveyScreenState } from "../SurveyScreen";
 import { getStudyId, isTimeThisWeek, getAllStreamNames } from "./configFiles";
+import { logError } from "./debug";
 import { StreamName } from "./types";
 
 export const ASYNC_STORAGE_PREFIX = `@WELLPING:Study_${getStudyId()}/`;

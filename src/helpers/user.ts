@@ -1,7 +1,8 @@
 import { AsyncStorage } from "react-native";
 
-import { _DEBUG_CONFIGS, logError } from "../../config/debug";
+import { _DEBUG_CONFIGS } from "../../config/debug";
 import { ASYNC_STORAGE_PREFIX } from "./asyncStorage";
+import { logError } from "./debug";
 
 export type User = {
   patientId: string;
