@@ -297,7 +297,7 @@ export default class HomeScreen extends React.Component<
           </Text>
           <Button
             color="green"
-            title="hide debug view (reset on restart)"
+            title="hide debug view"
             onPress={() => {
               this.setState({ displayDebugView: false });
             }}
