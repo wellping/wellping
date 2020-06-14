@@ -14,6 +14,7 @@ import {
 } from "react-native";
 import { WebView } from "react-native-webview";
 
+import { displayProblemForUser } from "../config/debug";
 import SurveyScreen, { SurveyScreenState } from "./SurveyScreen";
 import {
   uploadDataAsync,
@@ -196,9 +197,13 @@ export default class HomeScreen extends React.Component<
     const todayPings = await getTodayPingsAsync();
     let newPingName: StreamName;
 
-    if (todayPings.length > 4) {
-      // SOMETHING'S WRONG
-      console.warn("todayPings.length > 4 - something's wrong");
+    if (todayPings.length > studyInfo.frequency.hoursEveryday.length) {
+      alert(
+        displayProblemForUser(
+          `todayPings.length > ${studyInfo.frequency.hoursEveryday.length}`,
+        ) + "\n\nHowever, you may continue to complete this survey.",
+      );
+
       newPingName = studyInfo.streamInCaseOfError;
     } else {
       newPingName = studyInfo.streamsOrder[todayWeekday][todayPings.length];
