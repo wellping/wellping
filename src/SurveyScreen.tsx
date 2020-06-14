@@ -2,6 +2,7 @@ import { addDays } from "date-fns";
 import React from "react";
 import { Button, Text, View, ScrollView, Dimensions } from "react-native";
 
+import { _DEBUG_CONFIGS } from "../config/debug";
 import {
   AnswersList,
   QuestionScreen,
@@ -673,7 +674,10 @@ export default class SurveyScreen extends React.Component<
             height: 200,
             borderColor: "black",
             borderWidth: 1,
-            display: "none",
+            display:
+              __DEV__ && _DEBUG_CONFIGS().showCurrentStatesInSurveyScreen
+                ? "flex"
+                : "none",
           }}
         >
           <Text>

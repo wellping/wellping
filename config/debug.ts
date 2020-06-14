@@ -8,5 +8,6 @@ export function _DEBUG_CONFIGS() {
   return {
     ignoreLogin: true,
     ignoreNotificationTime: true,
+    showCurrentStatesInSurveyScreen: false,
   };
 }
