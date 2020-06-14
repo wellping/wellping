@@ -45,6 +45,69 @@
         "type": "slider",
         "question": "Questions Test",
         "slider": ["left", "right"],
+        "next": "Stressor"
+      },
+      "Stressor": {
+        "id": "Stressor",
+        "type": "choicesWithSingleAnswer",
+        "question": "Which of the following best categorizes the PRIMARY stress you are experiencing?",
+        "choices": [
+          { "key": "academic", "value": "Academic" },
+          { "key": "social", "value": "Social/relationship" },
+          { "key": "mental", "value": "Mental health" },
+          { "key": "physical", "value": "Physical health" },
+          { "key": "financial", "value": "Financial" },
+          { "key": "noStress", "value": "Not experiencing stress" },
+          { "key": "other", "value": "Other" }
+        ],
+        "randomizeChoicesOrder": true,
+        "randomizeExceptForChoiceIds": ["noStress", "other"],
+        "next": "StressDurationNum"
+      },
+      "StressDurationNum": {
+        "id": "StressDurationNum",
+        "type": "howLongAgo",
+        "question": "How long ago did your {PREV:Stressor} stress first come about?",
+        "next": "StressorCope"
+      },
+      "StressorCope": {
+        "id": "StressorCope",
+        "type": "choicesWithMultipleAnswers",
+        "question": "Which of the following have you done in response your {PREV:Stressor} stress? Please select all that apply.",
+        "choices": [
+          { "key": "think", "value": "I thought extensively about the causes / consequences" },
+          { "key": "noThink", "value": "I tried not to think about it" },
+          { "key": "brightSide", "value": "I thought about the bright side" },
+          { "key": "improve", "value": "I thought about how to improve the situation" },
+          { "key": "other", "value": "Other" }
+        ],
+        "randomizeChoicesOrder": true,
+        "randomizeExceptForChoiceIds": ["other"],
+        "next": "SocInteraction"
+      },
+      "SocInteraction": {
+        "id": "SocInteraction",
+        "type": "yesNo",
+        "question": "In the past hour, did you interact with anyone?",
+        "next": "SocInteraction_Relationships"
+      },
+      "SocInteraction_Relationships": {
+        "id": "SocInteraction_Relationships",
+        "eachId": "Rel_[__INDEX__]",
+        "type": "multipleText",
+        "question": "How would you best describe your relationship to the people you had an interaction with?",
+        "choices": [
+          { "key": "friend", "value": "Friend" },
+          { "key": "coworker", "value": "Co-worker" },
+          { "key": "parent", "value": "Parent" },
+          { "key": "relative", "value": "Sibling / other relative" },
+          { "key": "partner", "value": "Significant other" },
+          { "key": "stranger", "value": "Stranger" },
+          { "key": "other", "value": "Other" }
+        ],
+        "max": 3,
+        "variableName": "TARGET_CATEGORY",
+        "indexName": "INDEX",
         "next": null
       }
     }

@@ -74,9 +74,9 @@ const MultipleTextQuestionScreen: React.ElementType<
   if (question.choices === "NAMES") {
     textFieldsDropdownItems = namesItems;
   } else if (question.choices) {
-    textFieldsDropdownItems = Object.keys(question.choices).map(key => ({
-      id: key,
-      name: question.choices[key],
+    textFieldsDropdownItems = question.choices.map((choice) => ({
+      id: choice.key,
+      name: choice.value,
     }));
   }
 

@@ -15,12 +15,17 @@ export type TypedGroupQuestion<T> = T[];
 
 export interface SliderQuestion extends Question {
   type: QuestionType.Slider;
-  slider: [string, string];
+  slider: [string, string]; // [left, right]
   defaultValueFromQuestionId?: QuestionId;
 }
 
+export type Choice = {
+  key: string;
+  value: string;
+}
+
 export interface ChoicesQuestion extends Question {
-  choices: { [key: string]: string };
+  choices: Choice[];
   specialCasesStartId?: {
     [questionId: string /* actually QuestionId */]: QuestionId;
     _pna?: QuestionId;
@@ -59,7 +64,7 @@ export interface MultipleTextQuestion extends Question {
   // `id` will store the number of text fields answered.
   type: QuestionType.MultipleText;
   eachId: QuestionId;
-  choices?: "NAMES" | { [key: string]: string };
+  choices?: "NAMES" | Choice[];
   max: number;
   maxMinus?: QuestionId; // The max number of text field will be `max` minus the number of text the participant entered in `maxMinus` question.
   repeatedItems: TypedGroupQuestion<Question>; // `repeatedItems` IS NOT ACTUALLY PRESENT IN THE DATA - it got deleted in the process

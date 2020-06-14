@@ -32,18 +32,6 @@ interface HowLongAgoQuestionScreenProps extends QuestionScreen {
   question: HowLongAgoQuestion;
 }
 
-function initAnswerData(choices: {
-  [key: string]: string;
-}): ChoicesWithMultipleAnswersAnswerChoices {
-  const defaultAnswers: ChoicesWithMultipleAnswersAnswerChoices = JSON.parse(
-    JSON.stringify(choices),
-  );
-  Object.keys(defaultAnswers).map(key => {
-    defaultAnswers[key] = false;
-  });
-  return defaultAnswers;
-}
-
 const HowLongAgoQuestionScreen: React.ElementType<
   HowLongAgoQuestionScreenProps
 > = ({ question, onDataChange, pipeInExtraMetaData }) => {

@@ -125,10 +125,20 @@ export default class SurveyScreen extends React.Component<
             const csaQuestion = this.props.survey[
               questionId
             ] as ChoicesWithSingleAnswerQuestion;
+
             const csaAnswer = prevQuestion as ChoicesWithSingleAnswerAnswer;
-            return decapitalizeFirstCharacter(
-              csaQuestion.choices[csaAnswer.data],
+            if (csaAnswer.data == null) {
+              return "[INTERNAL ERROR: csaAnswer.data == null]";
+            }
+
+            const csaAnswerChoice = csaQuestion.choices.find(
+              (choice) => choice.key === csaAnswer.data,
             );
+            if (csaAnswerChoice == null) {
+              return "[INTERNAL ERROR: csaAnswerChoice == null]";
+            }
+
+            return decapitalizeFirstCharacter(csaAnswerChoice.value);
             break;
 
           default:

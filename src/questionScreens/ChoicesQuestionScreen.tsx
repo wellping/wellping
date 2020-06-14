@@ -11,7 +11,7 @@ import {
   QuestionScreen,
   ChoicesWithMultipleAnswersAnswerChoices,
 } from "../../answerTypes";
-import { ChoicesQuestion, YesNoQuestion } from "../../types";
+import { ChoicesQuestion, YesNoQuestion, Choice } from "../../types";
 import { QuestionType, shuffle } from "../../helpers";
 
 function Item({ id, title, selected, onSelect }) {
@@ -32,15 +32,17 @@ interface ChoicesQuestionScreenProps extends QuestionScreen {
   question: ChoicesQuestion | YesNoQuestion;
 }
 
-function initAnswerData(choices: {
-  [key: string]: string;
-}): ChoicesWithMultipleAnswersAnswerChoices {
-  const defaultAnswers: ChoicesWithMultipleAnswersAnswerChoices = JSON.parse(
-    JSON.stringify(choices),
+function initAnswerData(
+  choices: Choice[],
+): ChoicesWithMultipleAnswersAnswerChoices {
+  // https://stackoverflow.com/a/26265095/2603230
+  const defaultAnswers: ChoicesWithMultipleAnswersAnswerChoices = choices.reduce(
+    (map, choice) => {
+      map[choice.key] = false;
+      return map;
+    },
+    {},
   );
-  Object.keys(defaultAnswers).map(key => {
-    defaultAnswers[key] = false;
-  });
   return defaultAnswers;
 }
 
@@ -49,6 +51,13 @@ enum ChoicesAnswerType {
   MULTIPLE_SELECTION, // string
   YESNO, // boolean
 }
+
+const YESNO_CHOICES_YES_KEY = "yes";
+const YESNO_CHOICES_NO_KEY = "no";
+const YESNO_CHOICES: Choice[] = [
+  { key: YESNO_CHOICES_YES_KEY, value: "Yes" },
+  { key: YESNO_CHOICES_NO_KEY, value: "No" },
+];
 
 const ChoicesQuestionScreen: React.ElementType<ChoicesQuestionScreenProps> = ({
   question,
@@ -70,12 +79,9 @@ const ChoicesQuestionScreen: React.ElementType<ChoicesQuestionScreenProps> = ({
       break;
   }
 
-  let choices: { [key: string]: string };
+  let choices: Choice[];
   if (answerType === ChoicesAnswerType.YESNO) {
-    choices = {
-      yes: "Yes",
-      no: "No",
-    };
+    choices = YESNO_CHOICES;
   } else {
     const cQ = question as ChoicesQuestion;
     choices = cQ.choices;
@@ -100,9 +106,9 @@ const ChoicesQuestionScreen: React.ElementType<ChoicesQuestionScreenProps> = ({
     // Reset the choices data when the question changes.
     setSelected(initAnswerData(choices));
 
-    let tempFlatListData = Object.keys(choices).map(key => ({
-      id: key,
-      title: pipeInExtraMetaData(choices[key]),
+    let tempFlatListData = choices.map((choice) => ({
+      id: choice.key,
+      title: pipeInExtraMetaData(choice.value),
     }));
     if (answerType !== ChoicesAnswerType.YESNO) {
       const cQ = question as ChoicesQuestion;
@@ -158,7 +164,7 @@ const ChoicesQuestionScreen: React.ElementType<ChoicesQuestionScreenProps> = ({
                   break;
 
                 case ChoicesAnswerType.YESNO:
-                  onDataChange(id === "yes" ? true : false);
+                  onDataChange(id === YESNO_CHOICES_YES_KEY ? true : false);
                   break;
               }
             }}
