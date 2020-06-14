@@ -10,7 +10,7 @@ import {
 import { withVariable } from "../../helpers";
 import { MultipleTextQuestion, Names } from "../../types";
 import { getNamesFile } from "../helpers/configFiles";
-import SearchableDropdown from "../react-native-searchable-dropdown";
+import SearchableDropdown from "../inc/react-native-searchable-dropdown";
 
 const names: Names = getNamesFile();
 const namesItems = names.map((name, index) => ({ id: `${index}`, name }));
