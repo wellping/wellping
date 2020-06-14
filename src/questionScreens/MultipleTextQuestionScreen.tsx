@@ -95,6 +95,12 @@ const MultipleTextQuestionScreen: React.ElementType<MultipleTextQuestionScreenPr
   const textFields: SearchableDropdown[] = [];
   const textFieldsRef: React.RefObject<TextInput>[] = [];
   for (let index = 0; index < numberOfTextFields; index++) {
+    const focusOnNextIfNotLast = () => {
+      if (index !== numberOfTextFields - 1) {
+        textFieldsRef[index + 1].current.focus();
+      }
+    };
+
     textFieldsRef.push(React.useRef<TextInput>());
 
     textFields.push(
@@ -102,6 +108,7 @@ const MultipleTextQuestionScreen: React.ElementType<MultipleTextQuestionScreenPr
         key={index}
         onItemSelect={(item) => {
           updateTextValue(item.name, index);
+          focusOnNextIfNotLast();
         }}
         containerStyle={{ padding: 5 }}
         itemStyle={{
@@ -127,9 +134,7 @@ const MultipleTextQuestionScreen: React.ElementType<MultipleTextQuestionScreenPr
             updateTextValue(text, index);
           },
           onSubmitEditing: () => {
-            if (index !== numberOfTextFields - 1) {
-              textFieldsRef[index + 1].current.focus();
-            }
+            focusOnNextIfNotLast();
           },
           onEndEditing: () => {
             dataValidationFunction(true);
