@@ -191,10 +191,10 @@ export default class SurveyScreen extends React.Component<
           const currentQuestionAnswer = prevState.currentQuestionAnswers[
             prevState.currentQuestionId
           ] as YesNoAnswer;
-          let selectedBranchId = currentQuestion.branchStartId.no;
+          let selectedBranchId = currentQuestion.branchStartId?.no;
 
           if (currentQuestionAnswer.data) {
-            selectedBranchId = currentQuestion.branchStartId.yes;
+            selectedBranchId = currentQuestion.branchStartId?.yes;
 
             if (
               currentQuestion.addFollowupStream &&
