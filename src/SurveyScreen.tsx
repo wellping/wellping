@@ -259,7 +259,8 @@ export default class SurveyScreen extends React.Component<
 
           if (
             !currentQuestionAnswer.data ||
-            currentQuestionAnswer.data.count === 0
+            currentQuestionAnswer.data.count === 0 ||
+            currentQuestion.repeatedItemStartId == null
           ) {
             if (currentQuestion.fallbackItemStartId) {
               return {
