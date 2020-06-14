@@ -51,10 +51,15 @@ const MultipleTextQuestionScreen: React.ElementType<MultipleTextQuestionScreenPr
     setTextValues(initTextValues);
   }, [question]);
 
-  function updateName(name: string, index: number) {
+  const updateTextValue = (text: string, index: number) => {
     const newTextValues: string[] = cloneDeep(textValues);
-    newTextValues[index] = name.trim();
+    newTextValues[index] = text.trim();
     setTextValues(newTextValues);
+
+    if (!dataValidationFunction(false, newTextValues)) {
+      // Only actually save the data when the data is valid.
+      return;
+    }
 
     const nonEmptyFields = newTextValues.filter(Boolean);
     const data: MultipleTextAnswerData = {
@@ -69,7 +74,7 @@ const MultipleTextQuestionScreen: React.ElementType<MultipleTextQuestionScreenPr
       data.values[eachFieldId] = value;
     });
     onDataChange(data);
-  }
+  };
 
   let textFieldsDropdownItems: {
     id: string;
@@ -83,6 +88,9 @@ const MultipleTextQuestionScreen: React.ElementType<MultipleTextQuestionScreenPr
       name: choice.value,
     }));
   }
+  const textFieldsDropdownNames = textFieldsDropdownItems.map(
+    (item) => item.name,
+  );
 
   const textFields: SearchableDropdown[] = [];
   const textFieldsRef: React.RefObject<TextInput>[] = [];
@@ -93,7 +101,7 @@ const MultipleTextQuestionScreen: React.ElementType<MultipleTextQuestionScreenPr
       <SearchableDropdown
         key={index}
         onItemSelect={(item) => {
-          updateName(item.name, index);
+          updateTextValue(item.name, index);
         }}
         containerStyle={{ padding: 5 }}
         itemStyle={{
@@ -116,15 +124,15 @@ const MultipleTextQuestionScreen: React.ElementType<MultipleTextQuestionScreenPr
             borderRadius: 5,
           },
           onChangeText: (text: string) => {
-            updateName(text, index);
+            updateTextValue(text, index);
           },
           onSubmitEditing: () => {
             if (index !== numberOfTextFields - 1) {
               textFieldsRef[index + 1].current.focus();
             }
           },
-          onEndEditing: (e) => {
-            dataValidationFunction();
+          onEndEditing: () => {
+            dataValidationFunction(true);
           },
         }}
         setSort={(item, searchedText) =>
@@ -139,55 +147,64 @@ const MultipleTextQuestionScreen: React.ElementType<MultipleTextQuestionScreenPr
   }
 
   let alertDisplaying = false;
-  const dataValidationFunction = () => {
+  const dataValidationFunction = (
+    showAlert?: boolean,
+    values: string[] = textValues,
+  ) => {
     if (!question.forceChoice) {
       // If there is no `forceChoice`, the data is always valid.
       return true;
     }
 
     if (alertDisplaying) {
-      // It means the data is valid, and an alert is still on screen.
+      // It means the data is not valid, and an alert is still on screen.
       return false;
     }
 
-    const items = textFieldsDropdownItems.map((item) => item.name);
-    const invalidTextValues = textValues.filter((textValue) => {
+    const invalidValues = values.filter((value) => {
       // If the text value is not empty and is not in the items list.
-      return textValue && !items.includes(textValue);
+      return value && !textFieldsDropdownNames.includes(value);
     });
-    if (invalidTextValues.length > 0) {
+
+    if (invalidValues.length === 0) {
+      // There is no invalid text values.
+      return true;
+    }
+
+    if (showAlert) {
       alertDisplaying = true;
 
-      const invalidTextValuesIndices = invalidTextValues.map((value) =>
-        textValues.indexOf(value),
+      const invalidValuesIndices = invalidValues.map((value) =>
+        values.indexOf(value),
       );
       Alert.alert(
         "Notice",
         `You must select an item from the list.\n\n` +
           `The following items are not in the list: ` +
-          `${invalidTextValues.join(", ")}`,
+          `${invalidValues.join(", ")}`,
         [
           {
             text: "OK",
             onPress: () => {
-              invalidTextValuesIndices.forEach((index) => {
+              invalidValuesIndices.forEach((index) => {
                 textFieldsRef[index].current &&
                   textFieldsRef[index].current.clear();
-                updateName("", index);
+                // Because `clear()` does not call `onChangeText`.
+                updateTextValue("", index);
               });
-              textFieldsRef[invalidTextValuesIndices[0]].current.focus();
+              textFieldsRef[invalidValuesIndices[0]].current.focus();
               alertDisplaying = false;
             },
             style: "cancel",
           },
         ],
       );
-      return false;
-    } else {
-      return true;
     }
+    return false;
   };
-  setDataValidationFunction(dataValidationFunction);
+  setDataValidationFunction(() => {
+    return dataValidationFunction(true);
+  });
 
   return <View style={{ paddingTop: 10 }}>{textFields}</View>;
 };
