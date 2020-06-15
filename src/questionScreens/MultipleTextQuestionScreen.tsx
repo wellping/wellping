@@ -180,7 +180,9 @@ const MultipleTextQuestionScreen: React.ElementType<MultipleTextQuestionScreenPr
       Alert.alert(
         "Notice",
         `You must select an item from the list.\n\n` +
-          `The following items are not in the list: ` +
+          `The following ${
+            invalidValues.length === 1 ? "item is" : "items are"
+          } not in the list: ` +
           `${invalidValues.join(", ")}`,
         [
           {
