@@ -35,16 +35,24 @@
   },
   "meta": {
     "startingQuestionIds": {
-      "streamName": "startingId"
+      "streamName": "Feel_Current"
     }
   },
   "streams": {
     "streamName": {
-      "startingId": {
-        "id": "startingId",
+      "Feel_Current": {
+        "id": "Feel_Current",
         "type": "slider",
-        "question": "Questions Test",
-        "slider": ["left", "right"],
+        "question": "Please use the slider bar to indicate how you are feeling right now.",
+        "slider": ["extremely negative", "extremely positive"],
+        "next": "Feel_Ideal"
+      },
+      "Feel_Ideal": {
+        "id": "Feel_Ideal",
+        "type": "slider",
+        "question": "The current value on the slider bar is your previous response about how you currently feel. Please use the slider bar to indicate how you WOULD LIKE to feel.",
+        "slider": ["extremely negative", "extremely positive"],
+        "defaultValueFromQuestionId": "Feel_Current",
         "next": "Stressor"
       },
       "Stressor": {

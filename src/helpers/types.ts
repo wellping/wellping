@@ -16,6 +16,7 @@ export type TypedGroupQuestion<T> = T[];
 export interface SliderQuestion extends Question {
   type: QuestionType.Slider;
   slider: [string, string]; // [left, right]
+  defaultValue?: number;
   defaultValueFromQuestionId?: QuestionId;
 }
 

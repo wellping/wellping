@@ -627,6 +627,7 @@ export default class SurveyScreen extends React.Component<
               });
             }}
             allAnswers={this.state.currentQuestionAnswers}
+            allQuestions={survey}
             pipeInExtraMetaData={(input) => this.pipeInExtraMetaData(input)}
             setDataValidationFunction={(func) => {
               this.dataValidationFunction = func;

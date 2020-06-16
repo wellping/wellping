@@ -2,7 +2,17 @@ import React from "react";
 import { View, Text, Slider } from "react-native";
 
 import { QuestionScreen, SliderAnswer } from "../helpers/answerTypes";
+import { displayProblemForUser } from "../helpers/debug";
 import { SliderQuestion } from "../helpers/types";
+
+const DEFAULT_SLIDER_VALUE = 50;
+
+const getQuestionDefaultSliderValue = (question: SliderQuestion) => {
+  if (question.defaultValue == null) {
+    return DEFAULT_SLIDER_VALUE;
+  }
+  return question.defaultValue;
+};
 
 interface SliderQuestionScreenProps extends QuestionScreen {
   question: SliderQuestion;
@@ -12,26 +22,42 @@ const SliderQuestionScreen: React.ElementType<SliderQuestionScreenProps> = ({
   question,
   onDataChange,
   allAnswers,
+  allQuestions,
   pipeInExtraMetaData,
 }) => {
-  let DEFAULT_SLIDER_VALUE = 50; // TODO: Let it be customizable in question JSON (https://github.com/StanfordSocialNeuroscienceLab/WellPing/issues/1)
+  let defaultSliderValue = getQuestionDefaultSliderValue(question);
   if (question.defaultValueFromQuestionId) {
     const prevQuestionAnswer = allAnswers[
       pipeInExtraMetaData(question.defaultValueFromQuestionId)
     ] as SliderAnswer;
     if (prevQuestionAnswer && prevQuestionAnswer.data != null) {
-      DEFAULT_SLIDER_VALUE = prevQuestionAnswer.data;
+      defaultSliderValue = prevQuestionAnswer.data;
+    } else {
+      // If the user did not answer the previous question,
+      // use the default slider value from that question instead.
+      const prevQuestion = allQuestions[
+        question.defaultValueFromQuestionId
+      ] as SliderQuestion;
+      if (prevQuestion == null) {
+        alert(
+          displayProblemForUser(
+            `defaultValueFromQuestionId ${question.defaultValueFromQuestionId} prevQuestion == null`,
+          ),
+        );
+      } else {
+        defaultSliderValue = getQuestionDefaultSliderValue(prevQuestion);
+      }
     }
   }
 
   const [sliderValue, setSliderValue]: [
     number,
     (sliderValue: number) => void,
-  ] = React.useState(DEFAULT_SLIDER_VALUE);
+  ] = React.useState(defaultSliderValue);
 
   React.useEffect(() => {
     // Reset the slider value when the question changes.
-    setSliderValue(DEFAULT_SLIDER_VALUE);
+    setSliderValue(defaultSliderValue);
   }, [question]);
 
   return (

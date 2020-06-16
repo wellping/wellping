@@ -1,5 +1,5 @@
 import { QuestionType } from "./helpers";
-import { QuestionId, Question } from "./types";
+import { QuestionId, Question, QuestionsList } from "./types";
 
 export interface Answer {
   id: QuestionId;
@@ -56,6 +56,7 @@ export interface QuestionScreen {
   question: Question;
   onDataChange: (data: any) => void;
   allAnswers: AnswersList;
+  allQuestions: QuestionsList;
   pipeInExtraMetaData: (input: string) => string;
   setDataValidationFunction?: (func: () => boolean) => void;
 }
