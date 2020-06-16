@@ -201,7 +201,7 @@ export default class HomeScreen extends React.Component<
       alert(
         displayProblemForUser(
           `todayPings.length > ${studyInfo.frequency.hoursEveryday.length}`,
-        ) + "\n\nHowever, you may continue to complete this survey.",
+        ),
       );
 
       newPingName = studyInfo.streamInCaseOfError;

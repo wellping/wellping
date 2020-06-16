@@ -4,5 +4,8 @@ export function logError(error: any) {
 
 // Use this function for non-critical error so the user can inform the study staff.
 export function displayProblemForUser(problem: string) {
-  return `[INTERNAL ERROR (PLEASE SCREENSHOT THIS PAGE AND SEND IT TO THE STUDY STAFF): ${problem}]`;
+  return (
+    `[INTERNAL ERROR (Please screenshot this page and send it to the study staff): ${problem}]` +
+    `\n\n[However, you may continue to complete this survey as normal.]`
+  );
 }
