@@ -2,7 +2,7 @@ import React from "react";
 import { View, Text, Slider } from "react-native";
 
 import { QuestionScreen, SliderAnswer } from "../helpers/answerTypes";
-import { displayProblemForUser } from "../helpers/debug";
+import { getNonCriticalProblemTextForUser } from "../helpers/debug";
 import { SliderQuestion } from "../helpers/types";
 
 const DEFAULT_SLIDER_VALUE = 50;
@@ -40,7 +40,7 @@ const SliderQuestionScreen: React.ElementType<SliderQuestionScreenProps> = ({
       ] as SliderQuestion;
       if (prevQuestion == null) {
         alert(
-          displayProblemForUser(
+          getNonCriticalProblemTextForUser(
             `defaultValueFromQuestionId ${question.defaultValueFromQuestionId} prevQuestion == null`,
           ),
         );

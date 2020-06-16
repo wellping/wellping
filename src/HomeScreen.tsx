@@ -43,7 +43,7 @@ import {
   getStudyInfo,
   getAllStreamNames,
 } from "./helpers/configFiles";
-import { displayProblemForUser } from "./helpers/debug";
+import { getNonCriticalProblemTextForUser } from "./helpers/debug";
 import {
   setNotificationsAsync,
   setupNotificationsPermissionAsync,
@@ -199,8 +199,8 @@ export default class HomeScreen extends React.Component<
 
     if (todayPings.length > studyInfo.frequency.hoursEveryday.length) {
       alert(
-        displayProblemForUser(
-          `todayPings.length > ${studyInfo.frequency.hoursEveryday.length}`,
+        getNonCriticalProblemTextForUser(
+          `todayPings.length (${todayPings.length}) > ${studyInfo.frequency.hoursEveryday.length}`,
         ),
       );
 

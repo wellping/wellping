@@ -21,7 +21,7 @@ import {
   enqueueToFuturePingQueue,
   getFuturePingsQueue,
 } from "./helpers/asyncStorage";
-import { displayProblemForUser } from "./helpers/debug";
+import { getNonCriticalProblemTextForUser } from "./helpers/debug";
 import {
   QuestionType,
   withVariable,
@@ -108,6 +108,7 @@ export default class SurveyScreen extends React.Component<
       if (key === "TARGET_CATEGORY") {
         let capValue = value;
         if (capValue !== "PHE") {
+          // TODO: MAKE THIS CUSTOMIZABLE
           capValue = decapitalizeFirstCharacter(capValue);
         }
         newValue = `your ${capValue}`;
@@ -131,14 +132,18 @@ export default class SurveyScreen extends React.Component<
 
             const csaAnswer = prevQuestion as ChoicesWithSingleAnswerAnswer;
             if (csaAnswer.data == null) {
-              return displayProblemForUser("csaAnswer.data == null");
+              return getNonCriticalProblemTextForUser(
+                `csaAnswer.data (from ${csaAnswer.id}) == null`,
+              );
             }
 
             const csaAnswerChoice = csaQuestion.choices.find(
               (choice) => choice.key === csaAnswer.data,
             );
             if (csaAnswerChoice == null) {
-              return displayProblemForUser("csaAnswerChoice == null");
+              return getNonCriticalProblemTextForUser(
+                `csaAnswerChoice (from ${csaQuestion.id}) == null`,
+              );
             }
 
             return decapitalizeFirstCharacter(csaAnswerChoice.value);
