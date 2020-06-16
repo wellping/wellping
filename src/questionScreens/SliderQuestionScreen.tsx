@@ -71,6 +71,8 @@ const SliderQuestionScreen: React.ElementType<SliderQuestionScreenProps> = ({
         maximumTrackTintColor="#2F2424"
         onValueChange={(value) => {
           setSliderValue(value);
+        }}
+        onSlidingComplete={(value) => {
           onDataChange(value);
         }}
       />
