@@ -1,5 +1,6 @@
 import { format, addHours, getDay } from "date-fns";
 import { Notifications } from "expo";
+import * as Linking from "expo-linking";
 import React from "react";
 import {
   Button,
@@ -59,6 +60,8 @@ import {
   StudyInfo,
 } from "./helpers/types";
 import { getUserAsync } from "./helpers/user";
+
+const VERSION_NUMBER = "1.1.0";
 
 const survey: SurveyFile = getSurveyFile();
 const studyInfo: StudyInfo = getStudyInfo();
@@ -264,9 +267,39 @@ export default class HomeScreen extends React.Component<
           }}
         >
           <View style={{ height: Platform.OS === "ios" ? 20 : 40 }}>
-            <Text style={{ textAlign: "center", color: "lightgray" }}>
-              Version 1.1.0
-            </Text>
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "center",
+              }}
+            >
+              <Text style={{ color: "lightgray" }}>
+                Version {VERSION_NUMBER}
+              </Text>
+              {studyInfo.contactEmail && (
+                <TouchableWithoutFeedback
+                  onPress={async () => {
+                    const user = await getUserAsync();
+
+                    const emailSubject = encodeURIComponent(
+                      `Questions about Well Ping study ${studyInfo.id}`,
+                    );
+                    const emailBody = encodeURIComponent(
+                      `Please enter your question here (please attach a screenshot if applicable):\n\n\n\n\n\n` +
+                        `====\n` +
+                        `User ID: ${user.patientId}\n` +
+                        `Version: ${VERSION_NUMBER}`,
+                    );
+                    const mailtoLink = `mailto:${studyInfo.contactEmail}?subject=${emailSubject}&body=${emailBody}`;
+                    Linking.openURL(mailtoLink);
+                  }}
+                >
+                  <Text style={{ color: "lightblue", marginLeft: 20 }}>
+                    Contact Staff
+                  </Text>
+                </TouchableWithoutFeedback>
+              )}
+            </View>
           </View>
         </TouchableWithoutFeedback>
       </>

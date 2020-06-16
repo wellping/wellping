@@ -135,6 +135,7 @@ export type StudyID = string;
 export type StudyInfo = {
   id: StudyID;
   consentFormUrl: string;
+  contactEmail?: string;
   weekStartsOn: 0 | 1 | 2 | 3 | 4 | 5 | 6; // 0 is Sunday
   startDate: Date; // First survey will be sent after this time.
   endDate: Date; // Last survey will be sent before this time.
