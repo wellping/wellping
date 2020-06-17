@@ -36,11 +36,32 @@
   },
   "meta": {
     "startingQuestionIds": {
-      "streamName": "Feel_Current"
+      "streamName": "SocInteraction_Relationships"
     }
   },
   "streams": {
     "streamName": {
+      "SocInteraction_Relationships": {
+        "id": "SocInteraction_Relationships",
+        "eachId": "Rel_[__INDEX__]",
+        "type": "multipleText",
+        "question": "How would you best describe your relationship to the people you had an interaction with?",
+        "placeholder": "Select a category...",
+        "choices": [
+          { "key": "friend", "value": "Friend" },
+          { "key": "coworker", "value": "Co-worker" },
+          { "key": "parent", "value": "Parent" },
+          { "key": "relative", "value": "Sibling / other relative" },
+          { "key": "partner", "value": "Significant other" },
+          { "key": "stranger", "value": "Stranger" },
+          { "key": "other", "value": "Other" }
+        ],
+        "forceChoice": true,
+        "max": 3,
+        "variableName": "TARGET_CATEGORY",
+        "indexName": "INDEX",
+        "next": "Feel_Current"
+      },
       "Feel_Current": {
         "id": "Feel_Current",
         "type": "slider",
@@ -99,27 +120,6 @@
         "type": "yesNo",
         "question": "In the past hour, did you interact with anyone?",
         "next": "SocInteraction_Relationships"
-      },
-      "SocInteraction_Relationships": {
-        "id": "SocInteraction_Relationships",
-        "eachId": "Rel_[__INDEX__]",
-        "type": "multipleText",
-        "question": "How would you best describe your relationship to the people you had an interaction with?",
-        "placeholder": "Select a category...",
-        "choices": [
-          { "key": "friend", "value": "Friend" },
-          { "key": "coworker", "value": "Co-worker" },
-          { "key": "parent", "value": "Parent" },
-          { "key": "relative", "value": "Sibling / other relative" },
-          { "key": "partner", "value": "Significant other" },
-          { "key": "stranger", "value": "Stranger" },
-          { "key": "other", "value": "Other" }
-        ],
-        "forceChoice": true,
-        "max": 3,
-        "variableName": "TARGET_CATEGORY",
-        "indexName": "INDEX",
-        "next": null
       }
     }
   }

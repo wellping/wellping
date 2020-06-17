@@ -1,171 +1,123 @@
-import * as WebBrowser from "expo-web-browser";
-import React from "react";
-import { Button, TextInput, Text, View, ScrollView, Alert } from "react-native";
+import React, { Component } from "react";
+import {
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  TextInput,
+} from "react-native";
+import Autocomplete from "react-native-autocomplete-input";
 
-import HomeScreen from "./HomeScreen";
-import { registerUserAsync } from "./helpers/apiManager";
-import { getStudyInfo } from "./helpers/configFiles";
-import { getUserAsync, User, clearUserAsync } from "./helpers/user";
+import { getNamesFile } from "./helpers/configFiles";
 
-interface RootScreenProps {}
+const ROMAN = ["", "I", "II", "III", "IV", "V", "VI", "VII"];
 
-interface RootScreenState {
-  userInfo: User;
-  isLoading: boolean;
-  formDataUserId?: string;
-  formDataPassword?: string;
-  errorText?: string;
-  unableToParticipate?: boolean;
-}
-
-export default class RootScreen extends React.Component<
-  RootScreenProps,
-  RootScreenState
-> {
+class AutocompleteExample extends Component {
   constructor(props) {
     super(props);
-
     this.state = {
-      userInfo: null,
-      isLoading: true,
+      films: [],
+      query: ["", "", ""],
+      hideResults: [true, true, true],
     };
   }
 
   async componentDidMount() {
-    const user = await getUserAsync();
-    this.setState({ userInfo: user, isLoading: false });
+    const names = await getNamesFile();
+    const films = names.map((name) => {
+      return {
+        title: name,
+      };
+    });
+    this.setState({
+      films,
+    });
+  }
 
-    if (user == null) {
-      Alert.alert(
-        "Confirm",
-        `Are you at least 18 years of age?`,
-        [
-          {
-            text: "Yes",
-          },
-          {
-            text: "No",
-            onPress: () => {
-              this.setState({ unableToParticipate: true });
-            },
-          },
-        ],
-        { cancelable: false },
-      );
-    }
+  findFilm(query) {
+    const { films } = this.state;
+    const regex = new RegExp(`${query.trim()}`, "i");
+    return films.filter((film) => film.title.search(regex) >= 0);
   }
 
   render() {
-    const { isLoading, userInfo, errorText, unableToParticipate } = this.state;
-    if (isLoading) {
-      return (
-        <View>
-          <Text>Loading.</Text>
-        </View>
-      );
-    }
+    const { query, hideResults } = this.state;
+    const comp = (a, b) => a.toLowerCase().trim() === b.toLowerCase().trim();
 
-    if (unableToParticipate) {
-      return (
-        <View style={{ marginTop: 20, marginHorizontal: 20 }}>
-          <Text style={{ fontSize: 20 }}>Thank you for your interests.</Text>
-          <Text style={{ fontSize: 20 }}>
-            Unfortunately, you cannot participate in this study.
-          </Text>
-        </View>
-      );
-    }
-
-    if (userInfo == null) {
-      const textFieldStyle = {
-        padding: 12,
-        borderWidth: 1,
-        borderColor: "#ccc",
-        borderRadius: 5,
-        margin: 15,
-      };
-      return (
-        <ScrollView>
-          <View style={{ padding: 20 }}>
-            <Text
-              style={{ fontSize: 30, marginBottom: 20, textAlign: "center" }}
-            >
-              Welcome to Well Ping!
-            </Text>
-            <Text style={{ fontSize: 20 }}>
-              Please log in using the credentials sent to your email.
-            </Text>
-          </View>
-          <TextInput
-            onChangeText={(text) => this.setState({ formDataUserId: text })}
-            autoCorrect={false}
-            autoCapitalize="none"
-            autoCompleteType="off"
-            placeholder="User ID"
-            style={textFieldStyle}
-          />
-          <TextInput
-            onChangeText={(text) => this.setState({ formDataPassword: text })}
-            secureTextEntry
-            autoCorrect={false}
-            autoCapitalize="none"
-            autoCompleteType="off"
-            placeholder="Password"
-            style={textFieldStyle}
-          />
-          <Button
-            title="Log in"
-            onPress={async () => {
-              this.setState({
-                errorText: "Loading...",
-              });
-
-              const user: User = {
-                patientId: this.state.formDataUserId,
-                password: this.state.formDataPassword,
-              };
-              const error = await registerUserAsync(user);
-              if (!error) {
-                Alert.alert(
-                  "Welcome to Well Ping!",
-                  `Please review the consent form.`,
-                  [
-                    {
-                      text: "Review",
-                      onPress: async () => {
-                        await WebBrowser.openBrowserAsync(
-                          getStudyInfo().consentFormUrl,
-                        );
-                        this.setState({
-                          userInfo: user,
-                          errorText: null,
-                        });
-                      },
-                    },
-                  ],
-                  { cancelable: false },
-                );
-              } else {
-                this.setState({
-                  errorText: error,
-                });
-              }
-            }}
-          />
-          {errorText ? (
-            <Text style={{ margin: 15, fontWeight: "bold" }}>{errorText}</Text>
-          ) : undefined}
-        </ScrollView>
+    const views = [];
+    for (let i = 0; i < 3; i++) {
+      const films = this.findFilm(query[i]);
+      views.push(
+        <Autocomplete
+          autoCapitalize="none"
+          autoCorrect={false}
+          containerStyle={styles.autocompleteContainer}
+          data={
+            films.length === 1 && comp(query[i], films[0].title) ? [] : films
+          }
+          hideResults={hideResults[i]}
+          defaultValue={query[i]}
+          onChangeText={(text) => {
+            query[i] = text;
+            this.setState({ query });
+          }}
+          placeholder="Enter Star Wars film title"
+          renderItem={(haha) => {
+            console.log(haha);
+            const title = haha.item.title;
+            return (
+              <TouchableOpacity
+                key={title}
+                onPress={() => this.setState({ query: title })}
+              >
+                <Text style={styles.itemText}>{title}</Text>
+              </TouchableOpacity>
+            );
+          }}
+          renderTextInput={(props) => (
+            <TextInput
+              {...props}
+              clearButtonMode="while-editing"
+              onFocus={(e) => {
+                props.onFocus && props.onFocus(e);
+                hideResults[i] = false;
+                this.setState({ hideResults });
+              }}
+              onBlur={(e) => {
+                props.onBlur && props.onBlur(e);
+                hideResults[i] = true;
+                this.setState({ hideResults });
+              }}
+            />
+          )}
+          // https://github.com/mrlaessig/react-native-autocomplete-input/issues/97#issuecomment-415048170
+          listStyle={{ position: "relative", maxHeight: 100 }}
+        />,
       );
     }
 
     return (
-      <HomeScreen
-        logout={async () => {
-          await clearUserAsync();
-          this.setState({ userInfo: null });
-        }}
-      />
+      <View style={styles.container}>
+        <Text>haha</Text>
+        {views}
+      </View>
     );
   }
 }
+
+const styles = StyleSheet.create({
+  container: {
+    backgroundColor: "red",
+    marginTop: 25,
+  },
+  autocompleteContainer: {
+    zIndex: 999,
+    marginBottom: 25,
+  },
+  itemText: {
+    fontSize: 15,
+    margin: 2,
+  },
+});
+
+export default AutocompleteExample;

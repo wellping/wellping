@@ -16,6 +16,7 @@
     "lodash": "^4.17.15",
     "react": "16.9.0",
     "react-native": "https://github.com/expo/react-native/archive/sdk-37.0.1.tar.gz",
+    "react-native-autocomplete-input": "^4.2.0",
     "react-native-webview": "8.1.1"
   },
   "devDependencies": {
