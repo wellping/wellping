@@ -21,7 +21,7 @@ import {
   getNotificationTimesAsync,
   getThisWeekPingsAsync,
 } from "./asyncStorage";
-import { isTimeThisWeek } from "./configFiles";
+import { isTimeThisWeekAsync } from "./configFiles";
 import { StudyInfo } from "./types";
 
 const ANDROID_CHANNEL_NAME = "ssnlPingChannel";
@@ -131,7 +131,7 @@ export async function setNotificationsAsync(studyInfo: StudyInfo) {
         let remainingPingCount =
           configNotificationContent.bonus.numberOfCompletionEachWeek;
         let shouldUseDefaultContent = false;
-        if (isTimeThisWeek(notificationTime)) {
+        if (await isTimeThisWeekAsync(notificationTime)) {
           if (
             numberOfPingsStartedThisWeek <
             configNotificationContent.bonus.numberOfCompletionEachWeek

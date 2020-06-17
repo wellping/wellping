@@ -119,6 +119,19 @@
         "max": 3,
         "variableName": "TARGET_CATEGORY",
         "indexName": "INDEX",
+        "next": "haha"
+      },
+      "haha": {
+        "id": "haha",
+        "eachId": "Rel_[__INDEX__]",
+        "type": "multipleText",
+        "question": "QUEST?",
+        "placeholder": "Select a NAME...",
+        "choices": "NAMES",
+        "forceChoice": true,
+        "max": 3,
+        "variableName": "TARGET_CATEGORY",
+        "indexName": "INDEX",
         "next": null
       }
     }

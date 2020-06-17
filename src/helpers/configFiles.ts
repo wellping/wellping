@@ -1,30 +1,34 @@
 import { isThisWeek } from "date-fns";
 
-import { SurveyFile, Names, StudyID, StudyInfo, StreamName } from "./types";
+import { getCriticalProblemTextForUser } from "./debug";
+import { SurveyFile, Names, StudyInfo, StreamName } from "./types";
 
-export function getSurveyFile(): SurveyFile {
+export async function getSurveyFileAsync(): Promise<SurveyFile> {
+  // TODO: if error
+  //alert(getCriticalProblemTextForUser("getSurveyFileAsync"));
+
   const survey: SurveyFile = require("../../config/survey.json");
   return survey;
 }
 
 // TODO: DECOUPLE FUNCTIONS LIKE THIS
-export function getNamesFile(): Names {
+export async function getNamesFileAsync(): Promise<Names> {
   const names: Names = require("../../config/names.json");
   return names;
 }
 
-export function getStudyInfo(): StudyInfo {
-  return getSurveyFile().studyInfo;
+export function getAllStreamNames(survey: SurveyFile): StreamName[] {
+  return Object.keys(survey.meta.startingQuestionIds) as StreamName[];
+}
+export async function getAllStreamNamesAsync(): Promise<StreamName[]> {
+  return getAllStreamNames(await getSurveyFileAsync());
 }
 
-export function getAllStreamNames(): StreamName[] {
-  return Object.keys(getSurveyFile().meta.startingQuestionIds) as StreamName[];
+export function isTimeThisWeek(time: Date, studyInfo: StudyInfo): boolean {
+  return isThisWeek(time, {
+    weekStartsOn: studyInfo.weekStartsOn,
+  });
 }
-
-export function getStudyId(): StudyID {
-  return getStudyInfo().id;
-}
-
-export function isTimeThisWeek(time: Date): boolean {
-  return isThisWeek(time, { weekStartsOn: getStudyInfo().weekStartsOn });
+export async function isTimeThisWeekAsync(time: Date): Promise<boolean> {
+  return isTimeThisWeek(time, (await getSurveyFileAsync()).studyInfo);
 }

@@ -1,7 +1,7 @@
 import { AsyncStorage } from "react-native";
 
 import { _DEBUG_CONFIGS } from "../../config/debug";
-import { ASYNC_STORAGE_PREFIX } from "./asyncStorage";
+import { getASKeyAsync } from "./asyncStorage";
 import { logError } from "./debug";
 
 export type User = {
@@ -9,11 +9,14 @@ export type User = {
   password: string;
 };
 
-const USER_KEY = `${ASYNC_STORAGE_PREFIX}user`;
+const USER_KEY = `user`;
 
 export async function storeUserAsync(user: User) {
   try {
-    await AsyncStorage.setItem(USER_KEY, JSON.stringify(user));
+    await AsyncStorage.setItem(
+      await getASKeyAsync(USER_KEY),
+      JSON.stringify(user),
+    );
   } catch (error) {
     // Error saving data
     logError(error);
@@ -22,7 +25,7 @@ export async function storeUserAsync(user: User) {
 
 export async function clearUserAsync() {
   try {
-    await AsyncStorage.removeItem(USER_KEY);
+    await AsyncStorage.removeItem(await getASKeyAsync(USER_KEY));
   } catch (error) {
     // Error saving data
     logError(error);
@@ -39,7 +42,7 @@ export async function getUserAsync(): Promise<User | null> {
   }
 
   try {
-    const value = await AsyncStorage.getItem(USER_KEY);
+    const value = await AsyncStorage.getItem(await getASKeyAsync(USER_KEY));
     if (value == null) {
       return null;
     }

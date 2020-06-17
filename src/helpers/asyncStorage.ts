@@ -3,17 +3,27 @@ import { Notifications } from "expo";
 import { AsyncStorage } from "react-native";
 
 import { SurveyScreenState } from "../SurveyScreen";
-import { getStudyId, isTimeThisWeek, getAllStreamNames } from "./configFiles";
+import {
+  isTimeThisWeekAsync,
+  getAllStreamNamesAsync,
+  getSurveyFileAsync,
+} from "./configFiles";
 import { logError } from "./debug";
 import { StreamName } from "./types";
 
-export const ASYNC_STORAGE_PREFIX = `@WELLPING:Study_${getStudyId()}/`;
+export async function getASKeyAsync(key: string = ""): Promise<string> {
+  const studyId = (await getSurveyFileAsync()).studyInfo.id;
+  return `@WELLPING:Study_${studyId}/${key}`; //TODO: ADD ENCODED URL HERE
+}
 
-const NOTIFICATION_TIMES_KEY = `${ASYNC_STORAGE_PREFIX}NotificationTime`;
+const NOTIFICATION_TIMES_KEY = `NotificationTime`;
 
 export async function storeNotificationTimesAsync(times: Date[]) {
   try {
-    await AsyncStorage.setItem(NOTIFICATION_TIMES_KEY, JSON.stringify(times));
+    await AsyncStorage.setItem(
+      await getASKeyAsync(NOTIFICATION_TIMES_KEY),
+      JSON.stringify(times),
+    );
   } catch (error) {
     // Error saving data
     logError(error);
@@ -23,7 +33,7 @@ export async function storeNotificationTimesAsync(times: Date[]) {
 export async function clearNotificationTimesAsync() {
   try {
     await Notifications.cancelAllScheduledNotificationsAsync();
-    await AsyncStorage.removeItem(NOTIFICATION_TIMES_KEY);
+    await AsyncStorage.removeItem(await getASKeyAsync(NOTIFICATION_TIMES_KEY));
   } catch (error) {
     // Error saving data
     logError(error);
@@ -32,7 +42,9 @@ export async function clearNotificationTimesAsync() {
 
 export async function getNotificationTimesAsync(): Promise<Date[] | null> {
   try {
-    const value = await AsyncStorage.getItem(NOTIFICATION_TIMES_KEY);
+    const value = await AsyncStorage.getItem(
+      await getASKeyAsync(NOTIFICATION_TIMES_KEY),
+    );
     if (value == null) {
       return null;
     }
@@ -46,14 +58,14 @@ export async function getNotificationTimesAsync(): Promise<Date[] | null> {
 }
 
 /** TYPEPING TABLE (stored number of pings answered for each type) **/
-const TYPES_OF_PINGS_ANSWERED_KEY = `${ASYNC_STORAGE_PREFIX}TypesOfPingsAnswered`;
+const TYPES_OF_PINGS_ANSWERED_KEY = `TypesOfPingsAnswered`;
 type TypesOfPingsAnswered = {
   string: number;
 };
 
 async function initTypesOfPingsAnsweredAsync() {
   const initCount = {};
-  getAllStreamNames().map((key) => {
+  (await getAllStreamNamesAsync()).map((key) => {
     initCount[key] = 0;
   });
 
@@ -61,7 +73,7 @@ async function initTypesOfPingsAnsweredAsync() {
 
   try {
     await AsyncStorage.setItem(
-      TYPES_OF_PINGS_ANSWERED_KEY,
+      await getASKeyAsync(TYPES_OF_PINGS_ANSWERED_KEY),
       JSON.stringify(initCount),
     );
   } catch (error) {
@@ -77,7 +89,7 @@ async function incrementTypesOfPingsAnsweredAsync(
   currentTypesOfPingsAnswered[type] += 1;
   try {
     await AsyncStorage.setItem(
-      TYPES_OF_PINGS_ANSWERED_KEY,
+      await getASKeyAsync(TYPES_OF_PINGS_ANSWERED_KEY),
       JSON.stringify(currentTypesOfPingsAnswered),
     );
   } catch (error) {
@@ -89,7 +101,9 @@ async function incrementTypesOfPingsAnsweredAsync(
 
 async function clearTypesOfPingsAnsweredAsync() {
   try {
-    await AsyncStorage.removeItem(TYPES_OF_PINGS_ANSWERED_KEY);
+    await AsyncStorage.removeItem(
+      await getASKeyAsync(TYPES_OF_PINGS_ANSWERED_KEY),
+    );
   } catch (error) {
     // Error saving data
     logError(error);
@@ -100,7 +114,9 @@ export async function getTypesOfPingsAnsweredAsync(): Promise<
   TypesOfPingsAnswered
 > {
   try {
-    const value = await AsyncStorage.getItem(TYPES_OF_PINGS_ANSWERED_KEY);
+    const value = await AsyncStorage.getItem(
+      await getASKeyAsync(TYPES_OF_PINGS_ANSWERED_KEY),
+    );
     if (value == null) {
       throw new Error(
         "getTypesOfPingsAnsweredAsync is null! You should call initTypesOfPingsAnsweredAsync.",
@@ -114,7 +130,7 @@ export async function getTypesOfPingsAnsweredAsync(): Promise<
 }
 
 /** PING TABLE (stored started ping) **/
-const PINGS_KEY = `${ASYNC_STORAGE_PREFIX}Pings`;
+const PINGS_KEY = `Pings`;
 
 export type PingInfo = {
   id: string;
@@ -138,7 +154,10 @@ export async function initPingAsync() {
   await initTypesOfPingsAnsweredAsync();
 
   try {
-    await AsyncStorage.setItem(PINGS_KEY, JSON.stringify([]));
+    await AsyncStorage.setItem(
+      await getASKeyAsync(PINGS_KEY),
+      JSON.stringify([]),
+    );
   } catch (error) {
     // Error saving data
     logError(error);
@@ -167,7 +186,10 @@ export async function insertPingAsync({
   currentPingInfos.push(newPingInfo);
   //console.warn(`oy ${JSON.stringify(currentPingInfos)}`);
   try {
-    await AsyncStorage.setItem(PINGS_KEY, JSON.stringify(currentPingInfos));
+    await AsyncStorage.setItem(
+      await getASKeyAsync(PINGS_KEY),
+      JSON.stringify(currentPingInfos),
+    );
   } catch (error) {
     // Error saving data
     logError(error);
@@ -192,7 +214,10 @@ export async function addEndTimeToPingAsync(
   currentPingInfos[indexOfPingId].endTime = endTime;
   //console.warn(JSON.stringify(currentPingInfos));
   try {
-    await AsyncStorage.setItem(PINGS_KEY, JSON.stringify(currentPingInfos));
+    await AsyncStorage.setItem(
+      await getASKeyAsync(PINGS_KEY),
+      JSON.stringify(currentPingInfos),
+    );
   } catch (error) {
     // Error saving data
     logError(error);
@@ -205,7 +230,7 @@ export async function clearPingsAsync() {
   await clearTypesOfPingsAnsweredAsync();
 
   try {
-    await AsyncStorage.removeItem(PINGS_KEY);
+    await AsyncStorage.removeItem(await getASKeyAsync(PINGS_KEY));
   } catch (error) {
     // Error saving data
     logError(error);
@@ -223,10 +248,10 @@ export async function getLatestStartedPingAsync(): Promise<PingInfo | null> {
 
 export async function getPingsAsync(): Promise<PingInfo[]> {
   try {
-    let value = await AsyncStorage.getItem(PINGS_KEY);
+    let value = await AsyncStorage.getItem(await getASKeyAsync(PINGS_KEY));
     if (value == null) {
       initPingAsync();
-      value = await AsyncStorage.getItem(PINGS_KEY);
+      value = await AsyncStorage.getItem(await getASKeyAsync(PINGS_KEY));
     }
 
     const pingInfosJSON: PingInfoJSON[] = JSON.parse(value);
@@ -268,7 +293,7 @@ export async function getThisWeekPingsAsync(): Promise<PingInfo[]> {
   const allPings = await getPingsAsync();
   const thisWeekPings: PingInfo[] = [];
   for (const ping of allPings) {
-    if (isTimeThisWeek(ping.notificationTime)) {
+    if (await isTimeThisWeekAsync(ping.notificationTime)) {
       thisWeekPings.push(ping);
     }
     if (ping.notificationTime > new Date()) {
@@ -281,7 +306,7 @@ export async function getThisWeekPingsAsync(): Promise<PingInfo[]> {
 }
 
 /** SURVEYSTATE TABLE (stores ping answers and other states) **/
-const PINGS_STATE_PREFIX = `${ASYNC_STORAGE_PREFIX}PingsState:`;
+const PINGS_STATE_PREFIX = `PingsState:`;
 
 export async function storePingStateAsync(
   pingId: string,
@@ -289,23 +314,22 @@ export async function storePingStateAsync(
 ) {
   try {
     await AsyncStorage.setItem(
-      `${PINGS_STATE_PREFIX}${pingId}`,
+      `${await getASKeyAsync(PINGS_STATE_PREFIX)}${pingId}`,
       JSON.stringify(state),
     );
   } catch (error) {
     // Error saving data
     logError(error);
   }
-  /*console.warn(
-    `${PINGS_STATE_PREFIX}${pingId} stored with ${JSON.stringify(state)}`,
-  );*/
 }
 
 export async function getPingStateAsync(
   pingId: string,
 ): Promise<SurveyScreenState | null> {
   try {
-    const value = await AsyncStorage.getItem(`${PINGS_STATE_PREFIX}${pingId}`);
+    const value = await AsyncStorage.getItem(
+      `${await getASKeyAsync(PINGS_STATE_PREFIX)}${pingId}`,
+    );
     if (value == null) {
       return null;
     }
@@ -322,18 +346,17 @@ export async function getPingStateAsync(
 
 export async function clearPingStateAsync(pingId: string) {
   try {
-    await AsyncStorage.removeItem(`${PINGS_STATE_PREFIX}${pingId}`);
+    await AsyncStorage.removeItem(
+      `${await getASKeyAsync(PINGS_STATE_PREFIX)}${pingId}`,
+    );
   } catch (error) {
     // Error saving data
     logError(error);
   }
-  /*console.warn(
-    `${PINGS_STATE_PREFIX}${pingId} clear`,
-  );*/
 }
 
 /** FUTURE PING QUEUE TABLE (used for storing follow-up streams) **/
-const FUTURE_PING_QUEUE_KEY = `${ASYNC_STORAGE_PREFIX}FuturePingQueue:`;
+const FUTURE_PING_QUEUE_KEY = `FuturePingQueue:`;
 
 export type FuturePing = {
   afterDate: Date;
@@ -347,7 +370,10 @@ type FuturePingJSON = {
 
 export async function initFuturePingQueue() {
   try {
-    await AsyncStorage.setItem(FUTURE_PING_QUEUE_KEY, JSON.stringify([]));
+    await AsyncStorage.setItem(
+      await getASKeyAsync(FUTURE_PING_QUEUE_KEY),
+      JSON.stringify([]),
+    );
   } catch (error) {
     // Error saving data
     logError(error);
@@ -360,7 +386,7 @@ export async function enqueueToFuturePingQueue(futurePing: FuturePing) {
   //console.warn(`oy ${JSON.stringify(futurePings)}`);
   try {
     await AsyncStorage.setItem(
-      FUTURE_PING_QUEUE_KEY,
+      await getASKeyAsync(FUTURE_PING_QUEUE_KEY),
       JSON.stringify(futurePings),
     );
   } catch (error) {
@@ -376,7 +402,7 @@ export async function dequeueFuturePingIfAny(): Promise<FuturePing | null> {
       futurePings.shift();
       try {
         await AsyncStorage.setItem(
-          FUTURE_PING_QUEUE_KEY,
+          await getASKeyAsync(FUTURE_PING_QUEUE_KEY),
           JSON.stringify(futurePings),
         );
       } catch (error) {
@@ -391,7 +417,9 @@ export async function dequeueFuturePingIfAny(): Promise<FuturePing | null> {
 
 export async function getFuturePingsQueue(): Promise<FuturePing[] | null> {
   try {
-    const value = await AsyncStorage.getItem(FUTURE_PING_QUEUE_KEY);
+    const value = await AsyncStorage.getItem(
+      await getASKeyAsync(FUTURE_PING_QUEUE_KEY),
+    );
     if (value == null) {
       return null;
     }

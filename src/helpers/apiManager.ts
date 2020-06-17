@@ -5,10 +5,12 @@ import { Platform } from "react-native";
 
 import { SurveyScreenState } from "../SurveyScreen";
 import { getPingsAsync, getPingStateAsync } from "./asyncStorage";
-import { getStudyInfo } from "./configFiles";
+import { getSurveyFileAsync } from "./configFiles";
 import { getUserAsync, User, storeUserAsync } from "./user";
 
-export const SERVER_URL = getStudyInfo().serverURL;
+export async function getServerUrlAsync(): Promise<string> {
+  return (await getSurveyFileAsync()).studyInfo.serverURL;
+}
 
 // If success, return `null`. Else return error message.
 export async function registerUserAsync(user: User): Promise<string | null> {
@@ -108,10 +110,11 @@ export async function getRequestURLAsync(
 
   //console.warn(`request is ${JSON.stringify(request)}`);
 
+  const serverUrl = await getServerUrlAsync();
   const query = Object.keys(request)
     .map((k) => encodeURIComponent(k) + "=" + encodeURIComponent(request[k]))
     .join("&");
-  const url = `${SERVER_URL}${endpoint}?${query}`;
+  const url = `${serverUrl}${endpoint}?${query}`;
   return url;
 }
 

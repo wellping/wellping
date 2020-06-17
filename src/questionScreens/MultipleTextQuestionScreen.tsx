@@ -7,13 +7,10 @@ import {
   MultipleTextAnswerData,
   MultipleTextAnswer,
 } from "../helpers/answerTypes";
-import { getNamesFile } from "../helpers/configFiles";
+import { getNamesFileAsync } from "../helpers/configFiles";
 import { withVariable } from "../helpers/helpers";
 import { MultipleTextQuestion, Names } from "../helpers/types";
 import SearchableDropdown from "../inc/react-native-searchable-dropdown";
-
-const names: Names = getNamesFile();
-const namesItems = names.map((name, index) => ({ id: `${index}`, name }));
 
 interface MultipleTextQuestionScreenProps extends QuestionScreen {
   question: MultipleTextQuestion;
@@ -47,8 +44,19 @@ const MultipleTextQuestionScreen: React.ElementType<MultipleTextQuestionScreenPr
   ] = React.useState(initTextValues);
 
   React.useEffect(() => {
-    // Reset the slider value when the question changes.
+    // Reset the text values when the question changes.
+    for (let index = 0; index < numberOfTextFields; index++) {
+      textFieldsRef[index].current.clear();
+    }
     setTextValues(initTextValues);
+
+    // Re-fetch stored choices list if necessary
+    // TODO: ALLOW TO FIND LIST FROM DIFF. SOURCE STORED
+    if (typeof question.choices == "string") {
+      getNamesFileAsync().then((list) => {
+        setPrestoredChoicesList(list);
+      });
+    }
   }, [question]);
 
   const updateTextValue = (text: string, index: number) => {
@@ -71,12 +79,21 @@ const MultipleTextQuestionScreen: React.ElementType<MultipleTextQuestionScreenPr
     onDataChange(data);
   };
 
+  const [prestoredChoicesList, setPrestoredChoicesList]: [
+    string[],
+    (textValues: string[]) => void,
+  ] = React.useState([]);
+  const prestoredChoicesListItems = prestoredChoicesList.map((name, index) => ({
+    id: `${index}`,
+    name,
+  }));
+
   let textFieldsDropdownItems: {
     id: string;
     name: string;
   }[] = [];
   if (question.choices === "NAMES") {
-    textFieldsDropdownItems = namesItems;
+    textFieldsDropdownItems = prestoredChoicesListItems;
   } else if (question.choices) {
     textFieldsDropdownItems = question.choices.map((choice) => ({
       id: choice.key,

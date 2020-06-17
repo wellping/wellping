@@ -18,9 +18,9 @@ import { WebView } from "react-native-webview";
 import SurveyScreen, { SurveyScreenState } from "./SurveyScreen";
 import {
   uploadDataAsync,
-  SERVER_URL,
   getAllDataAsync,
   getRequestURLAsync,
+  getServerUrlAsync,
 } from "./helpers/apiManager";
 import {
   getNotificationTimesAsync,
@@ -39,11 +39,7 @@ import {
   clearPingStateAsync,
   getTypesOfPingsAnsweredAsync,
 } from "./helpers/asyncStorage";
-import {
-  getSurveyFile,
-  getStudyInfo,
-  getAllStreamNames,
-} from "./helpers/configFiles";
+import { getAllStreamNames } from "./helpers/configFiles";
 import { getNonCriticalProblemTextForUser } from "./helpers/debug";
 import {
   setNotificationsAsync,
@@ -63,9 +59,6 @@ import { getUserAsync } from "./helpers/user";
 
 const VERSION_NUMBER = "1.1.0";
 
-const survey: SurveyFile = getSurveyFile();
-const studyInfo: StudyInfo = getStudyInfo();
-
 const styles = StyleSheet.create({
   onlyTextStyle: {
     textAlign: "center",
@@ -76,6 +69,7 @@ const styles = StyleSheet.create({
 });
 
 interface HomeScreenProps {
+  survey: SurveyFile;
   logout: () => Promise<void>;
 }
 
@@ -143,7 +137,7 @@ export default class HomeScreen extends React.Component<
       await Notifications.setBadgeNumberAsync(0);
     }
 
-    await setNotificationsAsync(studyInfo);
+    await setNotificationsAsync(this.props.survey.studyInfo);
 
     const doEveryHalfMinutes = async () => {
       const currentNotificationTime = await getCurrentNotificationTimeAsync();
@@ -196,6 +190,8 @@ export default class HomeScreen extends React.Component<
   }
 
   async startSurveyAsync() {
+    const studyInfo = this.props.survey.studyInfo;
+
     const todayWeekday = getDay(new Date());
     const todayPings = await getTodayPingsAsync();
     let newPingName: StreamName;
@@ -244,6 +240,9 @@ export default class HomeScreen extends React.Component<
   }
 
   render() {
+    const { survey } = this.props;
+    const studyInfo = survey.studyInfo;
+
     const {
       allowsNotifications,
       currentNotificationTime,
@@ -414,6 +413,14 @@ export default class HomeScreen extends React.Component<
           />
           <Button
             color="orange"
+            title="getServerUrlAsync()"
+            onPress={async () => {
+              const serverUrl = await getServerUrlAsync();
+              alert(serverUrl);
+            }}
+          />
+          <Button
+            color="orange"
             title="getUserAsync()"
             onPress={async () => {
               const user = await getUserAsync();
@@ -533,7 +540,6 @@ export default class HomeScreen extends React.Component<
             }}
             title="Reset pings/app (restart needed)"
           />
-          <Text>Server address: {SERVER_URL}</Text>
           {children}
         </ScrollView>
       );
@@ -555,7 +561,7 @@ export default class HomeScreen extends React.Component<
 
     if (currentPing == null) {
       const streamButtons = [];
-      for (const streamName of getAllStreamNames()) {
+      for (const streamName of getAllStreamNames(survey)) {
         streamButtons.push(
           <Button
             color="orange"

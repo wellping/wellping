@@ -9,3 +9,7 @@ export function getNonCriticalProblemTextForUser(problem: string) {
     `\n\n[However, you may continue to complete this survey as normal.]`
   );
 }
+
+export function getCriticalProblemTextForUser(problem: string) {
+  return `[CRITICAL ERROR (Please screenshot this page and send it to the study staff as soon as possible): ${problem}]`;
+}

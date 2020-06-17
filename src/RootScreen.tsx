@@ -4,7 +4,8 @@ import { Button, TextInput, Text, View, ScrollView, Alert } from "react-native";
 
 import HomeScreen from "./HomeScreen";
 import { registerUserAsync } from "./helpers/apiManager";
-import { getStudyInfo } from "./helpers/configFiles";
+import { getSurveyFileAsync } from "./helpers/configFiles";
+import { SurveyFile } from "./helpers/types";
 import { getUserAsync, User, clearUserAsync } from "./helpers/user";
 
 interface RootScreenProps {}
@@ -16,6 +17,7 @@ interface RootScreenState {
   formDataPassword?: string;
   errorText?: string;
   unableToParticipate?: boolean;
+  survey?: SurveyFile;
 }
 
 export default class RootScreen extends React.Component<
@@ -33,6 +35,10 @@ export default class RootScreen extends React.Component<
 
   async componentDidMount() {
     const user = await getUserAsync();
+    if (user) {
+      const survey = await getSurveyFileAsync();
+      this.setState({ survey });
+    }
     this.setState({ userInfo: user, isLoading: false });
 
     if (user == null) {
@@ -60,7 +66,7 @@ export default class RootScreen extends React.Component<
     if (isLoading) {
       return (
         <View>
-          <Text>Loading.</Text>
+          <Text>Loading...</Text>
         </View>
       );
     }
@@ -134,10 +140,18 @@ export default class RootScreen extends React.Component<
                       text: "Review",
                       onPress: async () => {
                         await WebBrowser.openBrowserAsync(
-                          getStudyInfo().consentFormUrl,
+                          (await getSurveyFileAsync()).studyInfo.consentFormUrl,
                         );
                         this.setState({
+                          errorText: "Downloading survey...",
+                        });
+
+                        // TODO: await downloadSurvey;
+                        const survey = await getSurveyFileAsync();
+
+                        this.setState({
                           userInfo: user,
+                          survey,
                           errorText: null,
                         });
                       },
@@ -161,6 +175,7 @@ export default class RootScreen extends React.Component<
 
     return (
       <HomeScreen
+        survey={this.state.survey}
         logout={async () => {
           await clearUserAsync();
           this.setState({ userInfo: null });
