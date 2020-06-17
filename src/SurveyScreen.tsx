@@ -523,7 +523,7 @@ export default class SurveyScreen extends React.Component<
       data?: any | null;
       lastUpdateDate?: Date;
     },
-  ) {
+  ): Promise<void> {
     return new Promise((resolve, reject) => {
       const realQuestionId = this.getRealQuestionId(question);
       this.setState(
@@ -675,26 +675,26 @@ export default class SurveyScreen extends React.Component<
             title="Next"
           />
         </View>
-        <ScrollView
-          style={{
-            height: 200,
-            borderColor: "black",
-            borderWidth: 1,
-            display:
-              __DEV__ && _DEBUG_CONFIGS().showCurrentStatesInSurveyScreen
-                ? "flex"
-                : "none",
-          }}
-        >
-          <Text>
-            {JSON.stringify(survey[this.state.currentQuestionId])}
-            {JSON.stringify(this.state.extraMetaData)}
-          </Text>
-          <Text>
-            Current answer: {JSON.stringify(this.state.currentQuestionAnswers)}
-          </Text>
-          <Text>Next stack: {JSON.stringify(this.state.nextStack)}</Text>
-        </ScrollView>
+        {__DEV__ && _DEBUG_CONFIGS().showCurrentStatesInSurveyScreen && (
+          <ScrollView
+            style={{
+              height: 200,
+              borderColor: "black",
+              borderWidth: 1,
+            }}
+          >
+            <Text>
+              {JSON.stringify(this.state.currentQuestionId)}
+              {JSON.stringify(survey[this.state.currentQuestionId])}
+              {JSON.stringify(this.state.extraMetaData)}
+            </Text>
+            <Text>
+              Current answer:{" "}
+              {JSON.stringify(this.state.currentQuestionAnswers)}
+            </Text>
+            <Text>Next stack: {JSON.stringify(this.state.nextStack)}</Text>
+          </ScrollView>
+        )}
       </View>
     );
   }
