@@ -62,11 +62,6 @@ const HowLongAgoQuestionScreen: React.ElementType<HowLongAgoQuestionScreenProps>
     (data: HowLongAgoAnswerData) => void,
   ] = React.useState([-1, ""]);
 
-  React.useEffect(() => {
-    // Reset the choices data when the question changes.
-    setData([-1, ""]);
-  }, [question]);
-
   return (
     <View style={{ flexDirection: "row" }}>
       <FlatList

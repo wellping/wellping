@@ -95,18 +95,18 @@ const ChoicesQuestionScreen: React.ElementType<ChoicesQuestionScreenProps> = ({
     (selected: ChoicesWithMultipleAnswersAnswerChoices) => void,
   ] = React.useState(initAnswerData(choices));
 
+  type FlatListData = {
+    id: string;
+    title: string;
+  }[];
   const [flatListData, setFlatListData]: [
-    {
-      id: string;
-      title: string;
-    }[],
-    (value) => void,
+    FlatListData,
+    (value: FlatListData) => void,
   ] = React.useState([]);
 
   React.useEffect(() => {
-    // Reset the choices data when the question changes.
-    setSelected(initAnswerData(choices));
-
+    // We have to use `useEffect(..., [])` here to ensure this only runs once.
+    // If we don't use `useEffect`, each time the user update the state, the choices will be re-shuffled.
     let tempFlatListData = choices.map((choice) => ({
       id: choice.key,
       title: pipeInExtraMetaData(choice.value),
@@ -130,9 +130,7 @@ const ChoicesQuestionScreen: React.ElementType<ChoicesQuestionScreenProps> = ({
       }
     }
     setFlatListData(tempFlatListData);
-
-    listRef.current.scrollToOffset({ offset: 0, animated: false });
-  }, [question]);
+  }, []);
 
   return (
     <View style={{ paddingTop: 20 }}>

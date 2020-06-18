@@ -98,6 +98,22 @@
         "id": "SocInteraction",
         "type": "yesNo",
         "question": "In the past hour, did you interact with anyone?",
+        "branchStartId": {
+          "yes": "SocInteraction_Names",
+          "no": null
+        },
+        "next": null
+      },
+      "SocInteraction_Names": {
+        "id": "SocInteraction_Names",
+        "eachId": "Name_[__INDEX__]",
+        "type": "multipleText",
+        "question": "Who were you talking to?",
+        "placeholder": "Enter a name...",
+        "choices": "NAMES",
+        "max": 3,
+        "variableName": "TARGET_NAME",
+        "indexName": "INDEX",
         "next": "SocInteraction_Relationships"
       },
       "SocInteraction_Relationships": {

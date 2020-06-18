@@ -44,20 +44,14 @@ const MultipleTextQuestionScreen: React.ElementType<MultipleTextQuestionScreenPr
   ] = React.useState(initTextValues);
 
   React.useEffect(() => {
-    // Reset the text values when the question changes.
-    for (let index = 0; index < numberOfTextFields; index++) {
-      textFieldsRef[index].current.clear();
-    }
-    setTextValues(initTextValues);
-
-    // Re-fetch stored choices list if necessary
+    // Re-fetch stored choices list (once) if necessary
     // TODO: ALLOW TO FIND LIST FROM DIFF. SOURCE STORED
     if (typeof question.choices == "string") {
       getNamesFileAsync().then((list) => {
         setPrestoredChoicesList(list);
       });
     }
-  }, [question]);
+  }, []);
 
   const updateTextValue = (text: string, index: number) => {
     const newTextValues: string[] = cloneDeep(textValues);

@@ -625,6 +625,8 @@ export default class SurveyScreen extends React.Component<
           }}
         >
           <QuestionScreen
+            /* https://stackoverflow.com/a/21750576/2603230 */
+            key={survey[this.state.currentQuestionId].id}
             question={survey[this.state.currentQuestionId]}
             onDataChange={(data) => {
               this.addAnswerToAnswersListAsync(question, {
