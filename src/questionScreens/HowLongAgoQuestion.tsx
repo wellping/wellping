@@ -15,6 +15,35 @@ import {
 import { QuestionType } from "../helpers/helpers";
 import { HowLongAgoQuestion } from "../helpers/types";
 
+const numberChoices: { [key: string]: string } = {
+  "1": "1",
+  "2": "2",
+  "3": "3",
+  "4": "4",
+  "5": "5",
+  "6": "6",
+  "7": "7",
+  "8": "8",
+  "9": "9",
+  "10": "10",
+};
+const unitChoices: { [key: string]: string } = {
+  hours: "hours",
+  days: "days",
+  weeks: "weeks",
+  months: "months",
+};
+
+const dictToFlatListData = (dict: { [key: string]: string }) => {
+  return Object.keys(dict).map((key) => ({
+    id: key,
+    title: dict[key],
+  }));
+};
+
+const flatListNumberChoices = dictToFlatListData(numberChoices);
+const flatListUnitChoices = dictToFlatListData(unitChoices);
+
 function Item({ id, title, selected, onSelect }) {
   return (
     <TouchableOpacity
@@ -38,25 +67,6 @@ const HowLongAgoQuestionScreen: React.ElementType<HowLongAgoQuestionScreenProps>
   onDataChange,
   pipeInExtraMetaData,
 }) => {
-  const numberChoices: { [key: string]: string } = {
-    "1": "1",
-    "2": "2",
-    "3": "3",
-    "4": "4",
-    "5": "5",
-    "6": "6",
-    "7": "7",
-    "8": "8",
-    "9": "9",
-    "10": "10",
-  };
-  const unitChoices: { [key: string]: string } = {
-    hours: "hours",
-    days: "days",
-    weeks: "weeks",
-    months: "months",
-  };
-
   const [data, setData]: [
     HowLongAgoAnswerData,
     (data: HowLongAgoAnswerData) => void,
@@ -65,10 +75,7 @@ const HowLongAgoQuestionScreen: React.ElementType<HowLongAgoQuestionScreenProps>
   return (
     <View style={{ flexDirection: "row" }}>
       <FlatList
-        data={Object.keys(numberChoices).map((key) => ({
-          id: key,
-          title: numberChoices[key],
-        }))}
+        data={flatListNumberChoices}
         renderItem={({ item }) => (
           <Item
             id={item.id}
@@ -86,10 +93,7 @@ const HowLongAgoQuestionScreen: React.ElementType<HowLongAgoQuestionScreenProps>
         style={{ marginRight: 5 }}
       />
       <FlatList
-        data={Object.keys(unitChoices).map((key) => ({
-          id: key,
-          title: unitChoices[key],
-        }))}
+        data={flatListUnitChoices}
         renderItem={({ item }) => (
           <Item
             id={item.id}
