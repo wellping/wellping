@@ -46,11 +46,6 @@ const MultipleTextQuestionScreen: React.ElementType<MultipleTextQuestionScreenPr
     (textValues: string[]) => void,
   ] = React.useState(initTextValues);
 
-  React.useEffect(() => {
-    // Reset the slider value when the question changes.
-    setTextValues(initTextValues);
-  }, [question]);
-
   const updateTextValue = (text: string, index: number) => {
     const newTextValues: string[] = cloneDeep(textValues);
     newTextValues[index] = text.trim();

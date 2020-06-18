@@ -50,28 +50,15 @@ const SliderQuestionScreen: React.ElementType<SliderQuestionScreenProps> = ({
     }
   }
 
-  const [sliderValue, setSliderValue]: [
-    number,
-    (sliderValue: number) => void,
-  ] = React.useState(defaultSliderValue);
-
-  React.useEffect(() => {
-    // Reset the slider value when the question changes.
-    setSliderValue(defaultSliderValue);
-  }, [question]);
-
   return (
     <View style={{ paddingVertical: 30 }}>
       <Slider
         step={1}
-        value={sliderValue}
+        value={defaultSliderValue}
         minimumValue={0}
         maximumValue={100}
         minimumTrackTintColor="#2F2424"
         maximumTrackTintColor="#2F2424"
-        onValueChange={(value) => {
-          setSliderValue(value);
-        }}
         onSlidingComplete={(value) => {
           onDataChange(value);
         }}
