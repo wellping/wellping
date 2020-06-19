@@ -15,7 +15,7 @@ export default class PingEntity extends BaseEntity {
   startTime: Date;
 
   @Column({ nullable: true })
-  endTime?: Date;
+  endTime: Date | null;
 
   @Column()
   tzOffset: number;

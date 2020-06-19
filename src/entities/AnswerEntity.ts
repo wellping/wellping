@@ -23,11 +23,11 @@ export default class AnswerEntity extends BaseEntity {
   @Column()
   nextWithoutOption: boolean;
 
-  @Column({ type: "simple-json" })
+  @Column({ type: "simple-json", nullable: true })
   data: {
-    value?: any;
+    value: any;
     [key: string]: any;
-  };
+  } | null;
 
   @Column()
   lastUpdateDate: Date;

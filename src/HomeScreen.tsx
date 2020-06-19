@@ -16,6 +16,7 @@ import {
 import { WebView } from "react-native-webview";
 
 import SurveyScreen, { SurveyScreenState } from "./SurveyScreen";
+import AnswerEntity from "./entities/AnswerEntity";
 import PingEntity from "./entities/PingEntity";
 import {
   uploadDataAsync,
@@ -43,6 +44,7 @@ import {
 import { getAllStreamNames } from "./helpers/configFiles";
 import { shareDatabaseFileAsync } from "./helpers/database";
 import { getNonCriticalProblemTextForUser } from "./helpers/debug";
+import { QuestionType } from "./helpers/helpers";
 import {
   setNotificationsAsync,
   setupNotificationsPermissionAsync,
@@ -58,8 +60,6 @@ import {
   StudyInfo,
 } from "./helpers/types";
 import { getUserAsync } from "./helpers/user";
-import AnswerEntity from "./entities/AnswerEntity";
-import { QuestionType } from "./helpers/helpers";
 
 const VERSION_NUMBER = "1.1.0";
 
@@ -356,22 +356,22 @@ export default class HomeScreen extends React.Component<
             title="shareDatabaseFileAsync"
             onPress={async () => {
               const ping = new PingEntity();
-              ping.id = "yep";
+              ping.id = "another";
               ping.notificationTime = new Date();
               ping.startTime = new Date();
-              ping.streamName = "Yep";
-              ping.tzOffset = 500;
+              ping.streamName = "one";
+              ping.tzOffset = 700;
               await ping.save();
 
               const answer = new AnswerEntity();
               answer.ping = ping;
-              answer.questionId = "haha";
+              answer.questionId = "qu";
               answer.questionType = QuestionType.YesNo;
               answer.preferNotToAnswer = false;
               answer.nextWithoutOption = false;
-              /*answer.data = {
+              answer.data = {
                 value: "haha",
-              };*/
+              };
               answer.lastUpdateDate = new Date();
               await answer.save();
 
