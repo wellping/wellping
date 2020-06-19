@@ -40,9 +40,10 @@ export default class RootScreen extends React.Component<
     const user = await getUserAsync();
     if (user) {
       const survey = await getSurveyFileAsync();
-      this.setState({ survey });
 
       await connectDatabaseAsync(survey.studyInfo.id);
+
+      this.setState({ survey });
     }
     this.setState({ userInfo: user, isLoading: false });
 
