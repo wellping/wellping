@@ -33,3 +33,7 @@ export async function shareDatabaseFileAsync(databaseName: string) {
     url: getDatabaseFileUrl(databaseName),
   });
 }
+
+export async function deleteDatabaseFileAsync(databaseName: string) {
+  await FileSystem.deleteAsync(getDatabaseFileUrl(databaseName));
+}

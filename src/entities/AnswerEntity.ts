@@ -1,4 +1,4 @@
-import { BaseEntity, Entity, JoinColumn, Column, ManyToOne } from "typeorm";
+import { BaseEntity, Entity, Column, ManyToOne } from "typeorm";
 
 import { QuestionType } from "../helpers/helpers";
 import { QuestionId } from "../helpers/types";
@@ -6,15 +6,15 @@ import PingEntity from "./PingEntity";
 
 @Entity()
 export default class AnswerEntity extends BaseEntity {
-  // TODO: remove this line once typeorm is updated to a newer version
   // https://github.com/typeorm/typeorm/issues/4190
+  // TODO: remove me once typeorm is updated to a newer version
   @ManyToOne("PingEntity", "answers", { primary: true })
   ping: PingEntity;
 
   @Column({ type: "varchar", primary: true })
   questionId: QuestionId;
 
-  @Column({ type: "varchar" })
+  @Column({ type: "simple-enum" })
   questionType: QuestionType;
 
   @Column()
