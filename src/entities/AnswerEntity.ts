@@ -6,6 +6,7 @@ import PingEntity from "./PingEntity";
 
 @Entity()
 export default class AnswerEntity extends BaseEntity {
+  // TODO: https://github.com/typeorm/typeorm/issues/6233 not working right now
   @ManyToOne((type) => PingEntity, (ping) => ping.id, { primary: true })
   @JoinColumn()
   ping: PingEntity;
@@ -14,7 +15,7 @@ export default class AnswerEntity extends BaseEntity {
   questionId: QuestionId;
 
   @Column({ type: "varchar" })
-  type: QuestionType;
+  questionType: QuestionType;
 
   @Column()
   preferNotToAnswer: boolean;
@@ -22,7 +23,7 @@ export default class AnswerEntity extends BaseEntity {
   @Column()
   nextWithoutOption: boolean;
 
-  @Column("simple-json")
+  @Column({ type: "simple-json" })
   data: {
     value?: any;
     [key: string]: any;
