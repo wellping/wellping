@@ -23,6 +23,7 @@ export default class PingEntity extends BaseEntity {
   @Column({ type: "varchar" })
   streamName: StreamName;
 
-  @OneToMany((type) => AnswerEntity, (answer) => answer.ping)
+  // https://github.com/typeorm/typeorm/issues/4190
+  @OneToMany("AnswerEntity", "ping")
   answers: AnswerEntity[];
 }
