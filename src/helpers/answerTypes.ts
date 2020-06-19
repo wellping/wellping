@@ -21,7 +21,7 @@ export interface ChoicesWithSingleAnswerAnswer extends Answer {
 }
 
 export type ChoicesWithMultipleAnswersAnswerChoices = {
-  [ket: string]: boolean;
+  [key: string]: boolean;
 };
 export interface ChoicesWithMultipleAnswersAnswer extends Answer {
   type: QuestionType.ChoicesWithMultipleAnswers;
@@ -52,11 +52,11 @@ export interface AnswersList {
   [id: string]: Answer;
 }
 
-export interface QuestionScreen {
+export interface QuestionScreenProps {
   question: Question;
   onDataChange: (data: any) => void;
   allAnswers: AnswersList;
   allQuestions: QuestionsList;
   pipeInExtraMetaData: (input: string) => string;
-  setDataValidationFunction?: (func: () => boolean) => void;
+  setDataValidationFunction: (func: () => boolean) => void;
 }

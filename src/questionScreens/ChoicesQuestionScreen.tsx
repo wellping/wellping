@@ -9,13 +9,19 @@ import {
 } from "react-native";
 
 import {
-  QuestionScreen,
+  QuestionScreenProps,
   ChoicesWithMultipleAnswersAnswerChoices,
 } from "../helpers/answerTypes";
 import { QuestionType, shuffle } from "../helpers/helpers";
 import { ChoicesQuestion, YesNoQuestion, Choice } from "../helpers/types";
 
-function Item({ id, title, selected, onSelect }) {
+export interface ChoiceItemProps {
+  id: string;
+  title: string;
+  selected: boolean;
+  onSelect: (id: string) => void;
+}
+export function ChoiceItem({ id, title, selected, onSelect }: ChoiceItemProps) {
   return (
     <TouchableOpacity
       onPress={() => onSelect(id)}
@@ -29,7 +35,7 @@ function Item({ id, title, selected, onSelect }) {
   );
 }
 
-interface ChoicesQuestionScreenProps extends QuestionScreen {
+interface ChoicesQuestionScreenProps extends QuestionScreenProps {
   question: ChoicesQuestion | YesNoQuestion;
 }
 
@@ -42,7 +48,7 @@ function initAnswerData(
       map[choice.key] = false;
       return map;
     },
-    {},
+    {} as ChoicesWithMultipleAnswersAnswerChoices,
   );
   return defaultAnswers;
 }
@@ -78,6 +84,9 @@ const ChoicesQuestionScreen: React.ElementType<ChoicesQuestionScreenProps> = ({
     case QuestionType.YesNo:
       answerType = ChoicesAnswerType.YESNO;
       break;
+
+    default:
+      throw new Error("Wrong QuestionType in ChoicesQuestionScreen");
   }
 
   let choices: Choice[];
@@ -88,7 +97,7 @@ const ChoicesQuestionScreen: React.ElementType<ChoicesQuestionScreenProps> = ({
     choices = cQ.choices;
   }
 
-  const listRef = React.useRef<FlatList<{ id: string; title: string }>>();
+  const listRef = React.useRef<FlatList<{ id: string; title: string }>>(null);
 
   const [selected, setSelected] = React.useState<
     ChoicesWithMultipleAnswersAnswerChoices
@@ -133,11 +142,11 @@ const ChoicesQuestionScreen: React.ElementType<ChoicesQuestionScreenProps> = ({
       <FlatList
         data={flatListData}
         renderItem={({ item }) => (
-          <Item
+          <ChoiceItem
             id={item.id}
             title={item.title}
             selected={selected[item.id]}
-            onSelect={(id) => {
+            onSelect={(id: string) => {
               let newSelected: ChoicesWithMultipleAnswersAnswerChoices;
               if (answerType === ChoicesAnswerType.MULTIPLE_SELECTION) {
                 newSelected = cloneDeep(selected);

@@ -57,7 +57,7 @@ export async function getAllDataAsync() {
   );
 
   const data = {
-    patientId: user.patientId,
+    patientId: user!.patientId,
     pingInfos,
     pingStates,
   };
@@ -68,7 +68,7 @@ export async function getAllDataAsync() {
 }
 
 export async function uploadDataAsync() {
-  const user = await getUserAsync();
+  const user = (await getUserAsync())!;
   const data = await getAllDataAsync();
 
   try {
@@ -91,10 +91,15 @@ function base64ToBase64URL(input: string): string {
 export async function getRequestURLAsync(
   endpoint: string,
   request: { [key: string]: any } = {},
-  user?: User,
+  forUser?: User,
 ): Promise<string> {
+  let user: User | null = forUser || null;
   if (!user) {
     user = await getUserAsync();
+
+    if (user == null) {
+      throw new Error("user == null in getRequestURLAsync");
+    }
   }
 
   const passwordHash = await Crypto.digestStringAsync(

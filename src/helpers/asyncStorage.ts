@@ -54,17 +54,18 @@ export async function getNotificationTimesAsync(): Promise<Date[] | null> {
   } catch (error) {
     // Error retrieving data
     logError(error);
+    return null;
   }
 }
 
 /** TYPEPING TABLE (stored number of pings answered for each type) **/
 const TYPES_OF_PINGS_ANSWERED_KEY = `TypesOfPingsAnswered`;
 type TypesOfPingsAnswered = {
-  string: number;
+  [stream: string /* actually StreamName */]: number;
 };
 
 async function initTypesOfPingsAnsweredAsync() {
-  const initCount = {};
+  const initCount: TypesOfPingsAnswered = {};
   (await getAllStreamNamesAsync()).map((key) => {
     initCount[key] = 0;
   });
@@ -86,6 +87,10 @@ async function incrementTypesOfPingsAnsweredAsync(
   type: StreamName,
 ): Promise<number> {
   const currentTypesOfPingsAnswered = await getTypesOfPingsAnsweredAsync();
+  if (currentTypesOfPingsAnswered == null) {
+    throw new Error("currentTypesOfPingsAnswered == null");
+  }
+
   currentTypesOfPingsAnswered[type] += 1;
   try {
     await AsyncStorage.setItem(
@@ -110,9 +115,7 @@ async function clearTypesOfPingsAnsweredAsync() {
   }
 }
 
-export async function getTypesOfPingsAnsweredAsync(): Promise<
-  TypesOfPingsAnswered
-> {
+export async function getTypesOfPingsAnsweredAsync(): Promise<TypesOfPingsAnswered | null> {
   try {
     const value = await AsyncStorage.getItem(
       await getASKeyAsync(TYPES_OF_PINGS_ANSWERED_KEY),
@@ -126,6 +129,7 @@ export async function getTypesOfPingsAnsweredAsync(): Promise<
   } catch (error) {
     // Error retrieving data
     logError(error);
+    return null;
   }
 }
 
@@ -248,10 +252,19 @@ export async function getLatestStartedPingAsync(): Promise<PingInfo | null> {
 
 export async function getPingsAsync(): Promise<PingInfo[]> {
   try {
-    let value = await AsyncStorage.getItem(await getASKeyAsync(PINGS_KEY));
+    const getValueAsync = async () => {
+      return await AsyncStorage.getItem(await getASKeyAsync(PINGS_KEY));
+    };
+    let value = await getValueAsync();
     if (value == null) {
       initPingAsync();
-      value = await AsyncStorage.getItem(await getASKeyAsync(PINGS_KEY));
+      value = await getValueAsync();
+    }
+
+    if (value == null) {
+      throw new Error(
+        `${await getASKeyAsync(PINGS_KEY)} is still null after initPingAsync()`,
+      );
     }
 
     const pingInfosJSON: PingInfoJSON[] = JSON.parse(value);
@@ -261,7 +274,7 @@ export async function getPingsAsync(): Promise<PingInfo[]> {
         ...infoJson,
         notificationTime: new Date(infoJson.notificationTime),
         startTime: new Date(infoJson.startTime),
-        endTime: infoJson.endTime && new Date(infoJson.endTime),
+        endTime: infoJson.endTime ? new Date(infoJson.endTime) : undefined,
         tzOffset: Number(infoJson.tzOffset),
         streamName: infoJson.streamName,
       }),
@@ -271,6 +284,7 @@ export async function getPingsAsync(): Promise<PingInfo[]> {
   } catch (error) {
     // Error retrieving data
     logError(error);
+    throw error;
   }
 }
 
@@ -320,18 +334,18 @@ export async function storePingStateAsync(
   } catch (error) {
     // Error saving data
     logError(error);
+    throw error;
   }
 }
 
 export async function getPingStateAsync(
   pingId: string,
-): Promise<SurveyScreenState | null> {
+): Promise<SurveyScreenState> {
   try {
-    const value = await AsyncStorage.getItem(
-      `${await getASKeyAsync(PINGS_STATE_PREFIX)}${pingId}`,
-    );
+    const keyName = `${await getASKeyAsync(PINGS_STATE_PREFIX)}${pingId}`;
+    const value = await AsyncStorage.getItem(keyName);
     if (value == null) {
-      return null;
+      throw new Error(`getPingStateAsync is null for ${keyName}`);
     }
     const state: SurveyScreenState = JSON.parse(value);
     if (state.lastUploadDate) {
@@ -341,6 +355,7 @@ export async function getPingStateAsync(
   } catch (error) {
     // Error retrieving data
     logError(error);
+    throw error;
   }
 }
 
@@ -368,7 +383,7 @@ type FuturePingJSON = {
   streamName: string;
 };
 
-export async function initFuturePingQueue() {
+export async function initFuturePingQueueAsync() {
   try {
     await AsyncStorage.setItem(
       await getASKeyAsync(FUTURE_PING_QUEUE_KEY),
@@ -382,6 +397,9 @@ export async function initFuturePingQueue() {
 
 export async function enqueueToFuturePingQueue(futurePing: FuturePing) {
   const futurePings = await getFuturePingsQueue();
+  if (futurePings == null) {
+    throw new Error("futurePings == null in enqueueToFuturePingQueue");
+  }
   futurePings.push(futurePing);
   //console.warn(`oy ${JSON.stringify(futurePings)}`);
   try {
@@ -397,6 +415,9 @@ export async function enqueueToFuturePingQueue(futurePing: FuturePing) {
 
 export async function dequeueFuturePingIfAny(): Promise<FuturePing | null> {
   const futurePings = await getFuturePingsQueue();
+  if (futurePings == null) {
+    throw new Error("futurePings == null in dequeueFuturePingIfAny");
+  }
   for (const futurePing of futurePings) {
     if (new Date() > futurePing.afterDate) {
       futurePings.shift();
@@ -408,6 +429,7 @@ export async function dequeueFuturePingIfAny(): Promise<FuturePing | null> {
       } catch (error) {
         // Error saving data
         logError(error);
+        return null;
       }
       return futurePing;
     }
@@ -415,14 +437,27 @@ export async function dequeueFuturePingIfAny(): Promise<FuturePing | null> {
   return null;
 }
 
-export async function getFuturePingsQueue(): Promise<FuturePing[] | null> {
+export async function getFuturePingsQueue(): Promise<FuturePing[]> {
   try {
-    const value = await AsyncStorage.getItem(
-      await getASKeyAsync(FUTURE_PING_QUEUE_KEY),
-    );
+    const getValueAsync = async () => {
+      return await AsyncStorage.getItem(
+        await getASKeyAsync(FUTURE_PING_QUEUE_KEY),
+      );
+    };
+    let value = await getValueAsync();
     if (value == null) {
-      return null;
+      await initFuturePingQueueAsync();
+      value = await getValueAsync();
     }
+
+    if (value == null) {
+      throw new Error(
+        `${await getASKeyAsync(
+          FUTURE_PING_QUEUE_KEY,
+        )} is still null after initFuturePingQueueAsync()`,
+      );
+    }
+
     const futurePingsJSON: FuturePingJSON[] = JSON.parse(value);
     const futurePings: FuturePing[] = futurePingsJSON.map((futurePingJson) => ({
       ...futurePingJson,
@@ -433,5 +468,6 @@ export async function getFuturePingsQueue(): Promise<FuturePing[] | null> {
   } catch (error) {
     // Error retrieving data
     logError(error);
+    throw error;
   }
 }

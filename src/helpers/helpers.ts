@@ -31,7 +31,7 @@ export const replacePreviousAnswerPlaceholdersWithActualContent = (
   let m: RegExpExecArray;
 
   do {
-    m = re.exec(s);
+    m = re.exec(s)!;
     if (m) {
       const prevAnswer = getAnswerFromQuestionId(m[1]);
       if (prevAnswer) {

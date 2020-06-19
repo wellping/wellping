@@ -5,7 +5,7 @@ import { Button, Text, View, ScrollView, Dimensions } from "react-native";
 import { _DEBUG_CONFIGS } from "../config/debug";
 import {
   AnswersList,
-  QuestionScreen,
+  QuestionScreenProps,
   Answer,
   YesNoAnswer,
   MultipleTextAnswer,
@@ -50,7 +50,7 @@ import SliderQuestionScreen from "./questionScreens/SliderQuestionScreen";
 type ExtraMetaData = { [key: string]: any };
 
 type NextData = {
-  questionId: QuestionId;
+  questionId: QuestionId | null;
   extraMetaData?: ExtraMetaData;
 };
 
@@ -58,7 +58,7 @@ interface SurveyScreenProps {
   survey: QuestionsList;
   surveyStartingQuestionId: QuestionId;
   pingId: string;
-  previousState?: SurveyScreenState;
+  previousState: SurveyScreenState | null;
   onFinish: (finishedPing: PingInfo) => Promise<void>;
 }
 
@@ -67,7 +67,7 @@ export interface SurveyScreenState {
   extraMetaData: ExtraMetaData;
   nextStack: NextData[];
   currentQuestionAnswers: AnswersList;
-  lastUploadDate: Date;
+  lastUploadDate: Date | null;
 }
 
 export default class SurveyScreen extends React.Component<
@@ -201,14 +201,14 @@ export default class SurveyScreen extends React.Component<
       }
     };
 
-    switch (survey[this.state.currentQuestionId].type) {
+    switch (survey[this.state.currentQuestionId!].type) {
       case QuestionType.YesNo:
         this.setState((prevState) => {
           const currentQuestion = survey[
-            prevState.currentQuestionId
+            prevState.currentQuestionId!
           ] as YesNoQuestion;
           const currentQuestionAnswer = prevState.currentQuestionAnswers[
-            prevState.currentQuestionId
+            prevState.currentQuestionId!
           ] as YesNoAnswer;
           let selectedBranchId = currentQuestion.branchStartId?.no;
 
@@ -258,10 +258,10 @@ export default class SurveyScreen extends React.Component<
       case QuestionType.MultipleText:
         this.setState((prevState) => {
           const currentQuestion = survey[
-            prevState.currentQuestionId
+            prevState.currentQuestionId!
           ] as MultipleTextQuestion;
           const currentQuestionAnswer = prevState.currentQuestionAnswers[
-            prevState.currentQuestionId
+            prevState.currentQuestionId!
           ] as MultipleTextAnswer;
 
           if (
@@ -306,13 +306,13 @@ export default class SurveyScreen extends React.Component<
           const immediateNext = repeatedStartInfo.shift();
 
           return {
-            currentQuestionId: immediateNext.questionId,
+            currentQuestionId: immediateNext!.questionId,
             nextStack: [
               ...prevState.nextStack,
               { questionId: currentQuestion.next },
               ...repeatedStartInfo.reverse(),
             ].filter(filterNextStack),
-            extraMetaData: immediateNext.extraMetaData,
+            extraMetaData: immediateNext!.extraMetaData || {},
           };
         }, setStateCallback);
         break;
@@ -320,7 +320,7 @@ export default class SurveyScreen extends React.Component<
       case QuestionType.Branch:
         this.setState((prevState) => {
           const currentQuestion = survey[
-            prevState.currentQuestionId
+            prevState.currentQuestionId!
           ] as BranchQuestion;
 
           let selectedBranchId = currentQuestion.branchStartId.false;
@@ -376,7 +376,7 @@ export default class SurveyScreen extends React.Component<
       case QuestionType.BranchWithRelativeComparison:
         this.setState((prevState) => {
           const currentQuestion = survey[
-            prevState.currentQuestionId
+            prevState.currentQuestionId!
           ] as BranchWithRelativeComparisonQuestion;
 
           const values: { nextQuestionId: QuestionId; value: number }[] = [];
@@ -420,28 +420,25 @@ export default class SurveyScreen extends React.Component<
       case QuestionType.ChoicesWithMultipleAnswers:
       case QuestionType.ChoicesWithSingleAnswer: {
         const currentQuestion = survey[
-          this.state.currentQuestionId
+          this.state.currentQuestionId!
         ] as ChoicesQuestion;
         const currentAnswer = this.state.currentQuestionAnswers[
-          this.state.currentQuestionId
+          this.state.currentQuestionId!
         ] as ChoicesWithSingleAnswerAnswer | ChoicesWithMultipleAnswersAnswer;
         if (currentQuestion.specialCasesStartId) {
           let fallbackNext: QuestionId | null = null;
           if (
-            currentQuestion.specialCasesStartId.hasOwnProperty("_pna") &&
+            currentQuestion.specialCasesStartId._pna &&
             (currentAnswer.nextWithoutOption || currentAnswer.preferNotToAnswer)
           ) {
             fallbackNext = currentQuestion.specialCasesStartId["_pna"];
           } else {
             if (currentQuestion.type === QuestionType.ChoicesWithSingleAnswer) {
               const csaAnswer = currentAnswer as ChoicesWithSingleAnswerAnswer;
-              if (
-                currentQuestion.specialCasesStartId.hasOwnProperty(
-                  csaAnswer.data,
-                )
-              ) {
-                fallbackNext =
-                  currentQuestion.specialCasesStartId[csaAnswer.data];
+              if (currentQuestion.specialCasesStartId[csaAnswer.data]) {
+                fallbackNext = currentQuestion.specialCasesStartId[
+                  csaAnswer.data
+                ]!;
               }
             } else {
               if (
@@ -453,12 +450,12 @@ export default class SurveyScreen extends React.Component<
                     if (selected) {
                       if (
                         selected &&
-                        currentQuestion.specialCasesStartId.hasOwnProperty(
-                          eachAnswer,
-                        )
+                        currentQuestion.specialCasesStartId &&
+                        currentQuestion.specialCasesStartId[eachAnswer]
                       ) {
-                        fallbackNext =
-                          currentQuestion.specialCasesStartId[eachAnswer];
+                        fallbackNext = currentQuestion.specialCasesStartId[
+                          eachAnswer
+                        ]!;
                       }
                       // we return `true` here instead of inside so that it will also stop when any other choices are selected.
                       return true;
@@ -483,12 +480,13 @@ export default class SurveyScreen extends React.Component<
       }
       default:
         this.setState((prevState) => {
-          const currentQuestion: Question = survey[prevState.currentQuestionId];
+          const currentQuestion: Question =
+            survey[prevState.currentQuestionId!];
           let next: QuestionId | null = currentQuestion.next;
           let extraState = {};
           if (next === null) {
             if (prevState.nextStack.length > 0) {
-              const nextData = prevState.nextStack.pop();
+              const nextData = prevState.nextStack.pop()!;
               next = nextData.questionId;
               extraState = {
                 extraMetaData:
@@ -545,7 +543,7 @@ export default class SurveyScreen extends React.Component<
     });
   }
 
-  dataValidationFunction: () => boolean = null;
+  dataValidationFunction: (() => boolean) | null = null;
   render() {
     /*var contents = this.props.screenProps.scores.map(score => (
       <Text key={score.name}>
@@ -569,24 +567,25 @@ export default class SurveyScreen extends React.Component<
     const question = survey[currentQuestionId] as Question;
     const realQuestionId = this.getRealQuestionId(question);
 
-    let QuestionScreen: React.ElementType<QuestionScreen>;
+    type QuestionScreenType = React.ElementType<QuestionScreenProps>;
+    let QuestionScreen: QuestionScreenType;
     switch (question.type) {
       case QuestionType.ChoicesWithSingleAnswer:
       case QuestionType.ChoicesWithMultipleAnswers:
       case QuestionType.YesNo:
-        QuestionScreen = ChoicesQuestionScreen;
+        QuestionScreen = ChoicesQuestionScreen as QuestionScreenType;
         break;
 
       case QuestionType.Slider:
-        QuestionScreen = SliderQuestionScreen;
+        QuestionScreen = SliderQuestionScreen as QuestionScreenType;
         break;
 
       case QuestionType.MultipleText:
-        QuestionScreen = MultipleTextQuestionScreen;
+        QuestionScreen = MultipleTextQuestionScreen as QuestionScreenType;
         break;
 
       case QuestionType.HowLongAgo:
-        QuestionScreen = HowLongAgoQuestionScreen;
+        QuestionScreen = HowLongAgoQuestionScreen as QuestionScreenType;
         break;
 
       case QuestionType.Branch:
@@ -595,6 +594,8 @@ export default class SurveyScreen extends React.Component<
     }
 
     const smallScreen = Dimensions.get("window").height < 600;
+
+    const currentQuestion = survey[this.state.currentQuestionId!];
 
     return (
       <View
@@ -621,8 +622,8 @@ export default class SurveyScreen extends React.Component<
         >
           <QuestionScreen
             /* https://stackoverflow.com/a/21750576/2603230 */
-            key={survey[this.state.currentQuestionId].id}
-            question={survey[this.state.currentQuestionId]}
+            key={currentQuestion.id}
+            question={currentQuestion}
             onDataChange={(data) => {
               this.addAnswerToAnswersListAsync(question, {
                 data,
@@ -682,7 +683,7 @@ export default class SurveyScreen extends React.Component<
           >
             <Text>
               {JSON.stringify(this.state.currentQuestionId)}
-              {JSON.stringify(survey[this.state.currentQuestionId])}
+              {JSON.stringify(currentQuestion)}
               {JSON.stringify(this.state.extraMetaData)}
             </Text>
             <Text>

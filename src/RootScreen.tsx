@@ -5,17 +5,18 @@ import { Button, TextInput, Text, View, ScrollView, Alert } from "react-native";
 import HomeScreen from "./HomeScreen";
 import { registerUserAsync } from "./helpers/apiManager";
 import { getSurveyFileAsync } from "./helpers/configFiles";
+import { getCriticalProblemTextForUser } from "./helpers/debug";
 import { SurveyFile } from "./helpers/types";
 import { getUserAsync, User, clearUserAsync } from "./helpers/user";
 
 interface RootScreenProps {}
 
 interface RootScreenState {
-  userInfo: User;
+  userInfo: User | null;
   isLoading: boolean;
   formDataUserId?: string;
   formDataPassword?: string;
-  errorText?: string;
+  errorText: string | null;
   unableToParticipate?: boolean;
   survey?: SurveyFile;
 }
@@ -24,12 +25,13 @@ export default class RootScreen extends React.Component<
   RootScreenProps,
   RootScreenState
 > {
-  constructor(props) {
+  constructor(props: RootScreenProps) {
     super(props);
 
     this.state = {
       userInfo: null,
       isLoading: true,
+      errorText: null,
     };
   }
 
@@ -127,8 +129,8 @@ export default class RootScreen extends React.Component<
               });
 
               const user: User = {
-                patientId: this.state.formDataUserId,
-                password: this.state.formDataPassword,
+                patientId: this.state.formDataUserId || "",
+                password: this.state.formDataPassword || "",
               };
               const error = await registerUserAsync(user);
               if (!error) {
@@ -170,6 +172,14 @@ export default class RootScreen extends React.Component<
             <Text style={{ margin: 15, fontWeight: "bold" }}>{errorText}</Text>
           ) : undefined}
         </ScrollView>
+      );
+    }
+
+    if (this.state.survey == null) {
+      return (
+        <Text>
+          {getCriticalProblemTextForUser("this.state.survey == null")}
+        </Text>
       );
     }
 

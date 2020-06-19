@@ -3,16 +3,17 @@ import React from "react";
 import { View, TextInput, Alert } from "react-native";
 
 import {
-  QuestionScreen,
+  QuestionScreenProps,
   MultipleTextAnswerData,
   MultipleTextAnswer,
 } from "../helpers/answerTypes";
 import { getNamesFileAsync } from "../helpers/configFiles";
 import { withVariable } from "../helpers/helpers";
 import { MultipleTextQuestion, Names } from "../helpers/types";
+// @ts-ignore
 import SearchableDropdown from "../inc/react-native-searchable-dropdown";
 
-interface MultipleTextQuestionScreenProps extends QuestionScreen {
+interface MultipleTextQuestionScreenProps extends QuestionScreenProps {
   question: MultipleTextQuestion;
 }
 
@@ -78,10 +79,11 @@ const MultipleTextQuestionScreen: React.ElementType<MultipleTextQuestionScreenPr
     name,
   }));
 
-  let textFieldsDropdownItems: {
+  type DropdownItem = {
     id: string;
     name: string;
-  }[] = [];
+  };
+  let textFieldsDropdownItems: DropdownItem[] = [];
   if (question.choices === "NAMES") {
     textFieldsDropdownItems = prestoredChoicesListItems;
   } else if (question.choices) {
@@ -99,16 +101,16 @@ const MultipleTextQuestionScreen: React.ElementType<MultipleTextQuestionScreenPr
   for (let index = 0; index < numberOfTextFields; index++) {
     const focusOnNextIfNotLast = () => {
       if (index !== numberOfTextFields - 1) {
-        textFieldsRef[index + 1].current.focus();
+        textFieldsRef[index + 1].current!.focus();
       }
     };
 
-    textFieldsRef.push(React.useRef<TextInput>());
+    textFieldsRef.push(React.useRef<TextInput>(null));
 
     textFields.push(
       <SearchableDropdown
         key={index}
-        onItemSelect={(item) => {
+        onItemSelect={(item: DropdownItem) => {
           updateTextValue(item.name, index);
           focusOnNextIfNotLast();
         }}
@@ -142,7 +144,7 @@ const MultipleTextQuestionScreen: React.ElementType<MultipleTextQuestionScreenPr
             dataValidationFunction(true);
           },
         }}
-        setSort={(item, searchedText) =>
+        setSort={(item: DropdownItem, searchedText: string) =>
           // Match exact
           item.name.toLowerCase().startsWith(searchedText.toLowerCase())
         }
@@ -197,11 +199,11 @@ const MultipleTextQuestionScreen: React.ElementType<MultipleTextQuestionScreenPr
             onPress: () => {
               invalidValuesIndices.forEach((index) => {
                 textFieldsRef[index].current &&
-                  textFieldsRef[index].current.clear();
+                  textFieldsRef[index].current!.clear();
                 // Because `clear()` does not call `onChangeText`.
                 updateTextValue("", index);
               });
-              textFieldsRef[invalidValuesIndices[0]].current.focus();
+              textFieldsRef[invalidValuesIndices[0]].current!.focus();
               alertDisplaying = false;
             },
             style: "cancel",

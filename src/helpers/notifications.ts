@@ -151,7 +151,7 @@ export async function setNotificationsAsync(studyInfo: StudyInfo) {
         } else {
           const nPingKeyword = "#n_ping#";
           let mPingText = `${remainingPingCount} pings`;
-          if (remainingPingCount == 1) {
+          if (remainingPingCount === 1) {
             mPingText = `1 ping`;
           }
 
@@ -204,7 +204,7 @@ export async function getCurrentNotificationTimeAsync(): Promise<Date | null> {
     return fakeNotificationTime;
   }
 
-  const notificationsTimes = await getNotificationTimesAsync();
+  const notificationsTimes = (await getNotificationTimesAsync()) || [];
 
   // DEBUG
   /*notificationsTimes.forEach(element => {
@@ -225,7 +225,7 @@ export async function getCurrentNotificationTimeAsync(): Promise<Date | null> {
 // DEBUG ONLY
 // If `null` is returned, it means there's no next ping
 export async function getIncomingNotificationTimeAsync(): Promise<Date | null> {
-  const notificationsTimes = await getNotificationTimesAsync();
+  const notificationsTimes = (await getNotificationTimesAsync()) || [];
 
   const currentTime = getCurrentTime();
 

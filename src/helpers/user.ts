@@ -51,5 +51,6 @@ export async function getUserAsync(): Promise<User | null> {
   } catch (error) {
     // Error retrieving data
     logError(error);
+    return null;
   }
 }

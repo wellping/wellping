@@ -1,7 +1,7 @@
 import React from "react";
 import { View, Text, Slider } from "react-native";
 
-import { QuestionScreen, SliderAnswer } from "../helpers/answerTypes";
+import { QuestionScreenProps, SliderAnswer } from "../helpers/answerTypes";
 import { getNonCriticalProblemTextForUser } from "../helpers/debug";
 import { SliderQuestion } from "../helpers/types";
 
@@ -14,7 +14,7 @@ const getQuestionDefaultSliderValue = (question: SliderQuestion) => {
   return question.defaultValue;
 };
 
-interface SliderQuestionScreenProps extends QuestionScreen {
+interface SliderQuestionScreenProps extends QuestionScreenProps {
   question: SliderQuestion;
 }
 

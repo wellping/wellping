@@ -8,7 +8,7 @@ export interface Question {
   id: QuestionId;
   type: QuestionType;
   question: string;
-  next?: QuestionId | null;
+  next: QuestionId | null;
 }
 
 export interface SliderQuestion extends Question {
@@ -26,7 +26,7 @@ export type Choice = {
 export interface ChoicesQuestion extends Question {
   choices: Choice[];
   specialCasesStartId?: {
-    [questionId: string /* actually QuestionId */]: QuestionId;
+    [questionId: string /* actually QuestionId */]: QuestionId | undefined;
     _pna?: QuestionId;
   };
   randomizeChoicesOrder?: boolean;

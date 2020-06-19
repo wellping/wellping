@@ -34,7 +34,7 @@ import {
   PingInfo,
   getTodayPingsAsync,
   dequeueFuturePingIfAny,
-  initFuturePingQueue,
+  initFuturePingQueueAsync,
   getFuturePingsQueue,
   clearPingStateAsync,
   getTypesOfPingsAnsweredAsync,
@@ -79,13 +79,13 @@ interface HomeScreenState {
   currentNotificationTime: Date | null;
   currentPing: PingInfo | null;
   isLoading: boolean;
-  storedPingStateAsync?: SurveyScreenState;
+  storedPingStateAsync: SurveyScreenState | null;
 
   // DEBUG
   displayDebugView: boolean;
 }
 
-function SSNLDashboard(props): JSX.Element {
+function SSNLDashboard(): JSX.Element {
   const [url, setUrl] = React.useState<string | null>(null);
 
   React.useEffect(() => {
@@ -110,9 +110,9 @@ export default class HomeScreen extends React.Component<
   HomeScreenProps,
   HomeScreenState
 > {
-  interval;
+  interval!: ReturnType<typeof setInterval>;
 
-  constructor(props) {
+  constructor(props: HomeScreenProps) {
     super(props);
 
     this.state = {
@@ -122,6 +122,7 @@ export default class HomeScreen extends React.Component<
       currentPing: null,
       isLoading: true,
       displayDebugView: false,
+      storedPingStateAsync: null,
     };
   }
 
@@ -158,10 +159,6 @@ export default class HomeScreen extends React.Component<
     Notifications.addListener(async () => {
       await doEveryHalfMinutes();
     });
-
-    if ((await getFuturePingsQueue()) == null) {
-      await initFuturePingQueue();
-    }
 
     const latestStartedPing = await getLatestStartedPingAsync();
     //console.warn(latestStartedPing);
@@ -228,7 +225,7 @@ export default class HomeScreen extends React.Component<
   async _startSurveyTypeAsync(streamName: StreamName) {
     const { currentNotificationTime } = this.state;
     const newPing = await insertPingAsync({
-      notificationTime: currentNotificationTime,
+      notificationTime: currentNotificationTime!,
       startTime: new Date(),
       streamName,
     });
@@ -286,7 +283,7 @@ export default class HomeScreen extends React.Component<
                     const emailBody = encodeURIComponent(
                       `Please enter your question here (please attach a screenshot if applicable):\n\n\n\n\n\n` +
                         `====\n` +
-                        `User ID: ${user.patientId}\n` +
+                        `User ID: ${user!.patientId}\n` +
                         `Version: ${VERSION_NUMBER}`,
                     );
                     const mailtoLink = `mailto:${studyInfo.contactEmail}?subject=${emailSubject}&body=${emailBody}`;
@@ -397,7 +394,7 @@ export default class HomeScreen extends React.Component<
             onPress={async () => {
               const notificationsTimes = await getNotificationTimesAsync();
               let text = "";
-              notificationsTimes.forEach((element) => {
+              notificationsTimes!.forEach((element) => {
                 text += format(element, "yyyy-MM-dd'T'HH:mm:ss.SSSxxx") + `\n`;
               });
               alert(text);
@@ -437,9 +434,9 @@ export default class HomeScreen extends React.Component<
           />
           <Button
             color="red"
-            title="reset/initFuturePingQueue()"
+            title="reset/initFuturePingQueueAsync()"
             onPress={async () => {
-              await initFuturePingQueue();
+              await initFuturePingQueueAsync();
             }}
           />
           <Button

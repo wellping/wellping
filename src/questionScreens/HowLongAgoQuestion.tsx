@@ -1,19 +1,14 @@
 import React from "react";
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  FlatList,
-  StyleSheet,
-} from "react-native";
+import { View, Text, TouchableOpacity, FlatList } from "react-native";
 
 import {
-  QuestionScreen,
+  QuestionScreenProps,
   ChoicesWithMultipleAnswersAnswerChoices,
   HowLongAgoAnswerData,
 } from "../helpers/answerTypes";
 import { QuestionType } from "../helpers/helpers";
 import { HowLongAgoQuestion } from "../helpers/types";
+import { ChoiceItem } from "./ChoicesQuestionScreen";
 
 const numberChoices: { [key: string]: string } = {
   "1": "1",
@@ -44,21 +39,7 @@ const dictToFlatListData = (dict: { [key: string]: string }) => {
 const flatListNumberChoices = dictToFlatListData(numberChoices);
 const flatListUnitChoices = dictToFlatListData(unitChoices);
 
-function Item({ id, title, selected, onSelect }) {
-  return (
-    <TouchableOpacity
-      onPress={() => onSelect(id)}
-      style={[
-        styles.item,
-        { backgroundColor: selected ? "#b3995d" : "#F9F6EF" },
-      ]}
-    >
-      <Text style={styles.title}>{title}</Text>
-    </TouchableOpacity>
-  );
-}
-
-interface HowLongAgoQuestionScreenProps extends QuestionScreen {
+interface HowLongAgoQuestionScreenProps extends QuestionScreenProps {
   question: HowLongAgoQuestion;
 }
 
@@ -74,7 +55,7 @@ const HowLongAgoQuestionScreen: React.ElementType<HowLongAgoQuestionScreenProps>
       <FlatList
         data={flatListNumberChoices}
         renderItem={({ item }) => (
-          <Item
+          <ChoiceItem
             id={item.id}
             title={item.title}
             selected={item.id === `${data[0]}`}
@@ -92,7 +73,7 @@ const HowLongAgoQuestionScreen: React.ElementType<HowLongAgoQuestionScreenProps>
       <FlatList
         data={flatListUnitChoices}
         renderItem={({ item }) => (
-          <Item
+          <ChoiceItem
             id={item.id}
             title={item.title}
             selected={item.id === data[1]}
@@ -110,16 +91,5 @@ const HowLongAgoQuestionScreen: React.ElementType<HowLongAgoQuestionScreenProps>
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  item: {
-    backgroundColor: "#f9c2ff",
-    padding: 10,
-    marginVertical: 8,
-  },
-  title: {
-    fontSize: 20,
-  },
-});
 
 export default HowLongAgoQuestionScreen;
