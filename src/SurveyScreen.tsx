@@ -125,7 +125,7 @@ export default class SurveyScreen extends React.Component<
           return null;
         }
         switch (prevQuestion.type) {
-          case QuestionType.ChoicesWithSingleAnswer:
+          case QuestionType.ChoicesWithSingleAnswer: {
             const csaQuestion = this.props.survey[
               questionId
             ] as ChoicesWithSingleAnswerQuestion;
@@ -147,11 +147,10 @@ export default class SurveyScreen extends React.Component<
             }
 
             return decapitalizeFirstCharacter(csaAnswerChoice.value);
-            break;
+          }
 
           default:
             return null;
-            break;
         }
       },
     );
@@ -328,7 +327,7 @@ export default class SurveyScreen extends React.Component<
           let selectedBranchId = currentQuestion.branchStartId.false;
 
           switch (currentQuestion.condition.questionType) {
-            case QuestionType.MultipleText:
+            case QuestionType.MultipleText: {
               const targetQuestionAnswer = prevState.currentQuestionAnswers[
                 this.pipeInExtraMetaData(currentQuestion.condition.questionId)
               ] as MultipleTextAnswer;
@@ -341,6 +340,7 @@ export default class SurveyScreen extends React.Component<
                 }
               }
               break;
+            }
 
             case QuestionType.ChoicesWithSingleAnswer: {
               const csaQuestionAnswer = prevState.currentQuestionAnswers[
@@ -419,7 +419,7 @@ export default class SurveyScreen extends React.Component<
         break;
 
       case QuestionType.ChoicesWithMultipleAnswers:
-      case QuestionType.ChoicesWithSingleAnswer:
+      case QuestionType.ChoicesWithSingleAnswer: {
         const currentQuestion = survey[
           this.state.currentQuestionId
         ] as ChoicesQuestion;
@@ -480,7 +480,8 @@ export default class SurveyScreen extends React.Component<
             break;
           }
         }
-      // If it is not the case, we go to default. So no break here.
+        // If it is not the case, we go to default. So no break here.
+      }
       default:
         this.setState((prevState) => {
           const currentQuestion: Question = survey[prevState.currentQuestionId];
@@ -560,12 +561,8 @@ export default class SurveyScreen extends React.Component<
     );*/
     const { currentQuestionId, currentQuestionAnswers } = this.state;
     if (currentQuestionId == null) {
-      return (
-        <ScrollView>
-          <Text>Survey ended!</Text>
-          <Text>{JSON.stringify(this.state)}</Text>
-        </ScrollView>
-      );
+      // This is just here until `onFinish` is called.
+      return <></>;
     }
 
     const { survey } = this.props;
@@ -596,7 +593,6 @@ export default class SurveyScreen extends React.Component<
       case QuestionType.Branch:
       case QuestionType.BranchWithRelativeComparison:
         return <></>;
-        break;
     }
 
     const smallScreen = Dimensions.get("window").height < 600;
