@@ -361,7 +361,7 @@ export default class HomeScreen extends React.Component<
               ping.tzOffset = 500;
               await ping.save();
 
-              await shareDatabaseFileAsync("test");
+              await shareDatabaseFileAsync(survey.studyInfo.id);
             }}
           />
           <Button
