@@ -3,6 +3,7 @@ import { Notifications } from "expo";
 import { AsyncStorage } from "react-native";
 
 import { SurveyScreenState } from "../SurveyScreen";
+import PingEntity from "../entities/PingEntity";
 import {
   isTimeThisWeekAsync,
   getAllStreamNamesAsync,
@@ -177,18 +178,28 @@ export async function insertPingAsync({
   startTime: Date;
   streamName: StreamName;
 }): Promise<PingInfo> {
-  const newId = await incrementTypesOfPingsAnsweredAsync(streamName);
+  const newIndex = await incrementTypesOfPingsAnsweredAsync(streamName);
+  const pingId = `${streamName}${newIndex}`;
+  const tzOffset = startTime.getTimezoneOffset();
+
+  const pingEntity = new PingEntity();
+  pingEntity.id = pingId;
+  pingEntity.notificationTime = notificationTime;
+  pingEntity.startTime = startTime;
+  pingEntity.streamName = streamName;
+  pingEntity.tzOffset = tzOffset;
+  await pingEntity.save();
+
 
   const currentPingInfos = await getPingsAsync();
   const newPingInfo: PingInfo = {
-    id: `${streamName}${newId}`,
+    id: pingId,
     notificationTime,
     startTime,
-    tzOffset: startTime.getTimezoneOffset(),
+    tzOffset,
     streamName,
   };
   currentPingInfos.push(newPingInfo);
-  //console.warn(`oy ${JSON.stringify(currentPingInfos)}`);
   try {
     await AsyncStorage.setItem(
       await getASKeyAsync(PINGS_KEY),
