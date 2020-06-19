@@ -16,6 +16,7 @@ import {
 import { WebView } from "react-native-webview";
 
 import SurveyScreen, { SurveyScreenState } from "./SurveyScreen";
+import PingEntity from "./entities/PingEntity";
 import {
   uploadDataAsync,
   getAllDataAsync,
@@ -40,6 +41,7 @@ import {
   getTypesOfPingsAnsweredAsync,
 } from "./helpers/asyncStorage";
 import { getAllStreamNames } from "./helpers/configFiles";
+import { shareDatabaseFileAsync } from "./helpers/database";
 import { getNonCriticalProblemTextForUser } from "./helpers/debug";
 import {
   setNotificationsAsync,
@@ -345,6 +347,21 @@ export default class HomeScreen extends React.Component<
             title="hide debug view"
             onPress={() => {
               this.setState({ displayDebugView: false });
+            }}
+          />
+          <Button
+            color="orange"
+            title="shareDatabaseFileAsync"
+            onPress={async () => {
+              const ping = new PingEntity();
+              ping.id = "yep";
+              ping.notificationTime = new Date();
+              ping.startTime = new Date();
+              ping.streamName = "Yep";
+              ping.tzOffset = 500;
+              await ping.save();
+
+              await shareDatabaseFileAsync("test");
             }}
           />
           <Button

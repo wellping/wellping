@@ -5,6 +5,7 @@ import { Button, TextInput, Text, View, ScrollView, Alert } from "react-native";
 import HomeScreen from "./HomeScreen";
 import { registerUserAsync } from "./helpers/apiManager";
 import { getSurveyFileAsync } from "./helpers/configFiles";
+import { connectDatabaseAsync } from "./helpers/database";
 import { getCriticalProblemTextForUser } from "./helpers/debug";
 import { SurveyFile } from "./helpers/types";
 import { getUserAsync, User, clearUserAsync } from "./helpers/user";
@@ -40,6 +41,8 @@ export default class RootScreen extends React.Component<
     if (user) {
       const survey = await getSurveyFileAsync();
       this.setState({ survey });
+
+      await connectDatabaseAsync("test");
     }
     this.setState({ userInfo: user, isLoading: false });
 
