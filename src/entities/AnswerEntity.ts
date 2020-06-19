@@ -7,8 +7,7 @@ import PingEntity from "./PingEntity";
 @Entity()
 export default class AnswerEntity extends BaseEntity {
   // TODO: https://github.com/typeorm/typeorm/issues/6233 not working right now
-  @ManyToOne((type) => PingEntity, (ping) => ping.id, { primary: true })
-  @JoinColumn()
+  @ManyToOne((type) => PingEntity, (ping) => ping.answers, { primary: true })
   ping: PingEntity;
 
   @Column({ type: "varchar", primary: true })

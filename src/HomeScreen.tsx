@@ -58,6 +58,8 @@ import {
   StudyInfo,
 } from "./helpers/types";
 import { getUserAsync } from "./helpers/user";
+import AnswerEntity from "./entities/AnswerEntity";
+import { QuestionType } from "./helpers/helpers";
 
 const VERSION_NUMBER = "1.1.0";
 
@@ -360,6 +362,18 @@ export default class HomeScreen extends React.Component<
               ping.streamName = "Yep";
               ping.tzOffset = 500;
               await ping.save();
+
+              const answer = new AnswerEntity();
+              answer.ping = ping;
+              answer.questionId = "haha";
+              answer.questionType = QuestionType.YesNo;
+              answer.preferNotToAnswer = false;
+              answer.nextWithoutOption = false;
+              /*answer.data = {
+                value: "haha",
+              };*/
+              answer.lastUpdateDate = new Date();
+              await answer.save();
 
               await shareDatabaseFileAsync(survey.studyInfo.id);
             }}
