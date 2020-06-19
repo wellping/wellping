@@ -30,7 +30,6 @@ import {
 } from "./helpers/helpers";
 import {
   Question,
-  TypedGroupQuestion,
   SliderQuestion,
   ChoicesWithSingleAnswerQuestion,
   ChoicesWithMultipleAnswersQuestion,
