@@ -345,7 +345,13 @@ export async function getPingStateAsync(
     const keyName = `${await getASKeyAsync(PINGS_STATE_PREFIX)}${pingId}`;
     const value = await AsyncStorage.getItem(keyName);
     if (value == null) {
-      throw new Error(`getPingStateAsync is null for ${keyName}`);
+      return {
+        currentQuestionId: `ERROR: getPingStateAsync is null for ${keyName}`,
+        extraMetaData: {},
+        nextStack: [],
+        currentQuestionAnswers: {},
+        lastUploadDate: new Date(0),
+      };
     }
     const state: SurveyScreenState = JSON.parse(value);
     if (state.lastUploadDate) {
