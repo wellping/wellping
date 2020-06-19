@@ -11,8 +11,6 @@ export interface Question {
   next?: QuestionId | null;
 }
 
-export type TypedGroupQuestion<T> = T[];
-
 export interface SliderQuestion extends Question {
   type: QuestionType.Slider;
   slider: [string, string]; // [left, right]
@@ -45,14 +43,9 @@ export interface ChoicesWithMultipleAnswersQuestion extends ChoicesQuestion {
 
 export interface YesNoQuestion extends Question {
   type: QuestionType.YesNo;
-  branch: {
-    // `branch` IS NOT ACTUALLY PRESENT IN THE DATA - it got deleted in the process
-    yes: TypedGroupQuestion<Question>;
-    no: TypedGroupQuestion<Question>;
-  };
   branchStartId?: {
-    yes: QuestionId;
-    no: QuestionId;
+    yes?: QuestionId;
+    no?: QuestionId;
   };
   // Currently only `yes` is supported and also can only followup after 3 days and 7 days with the same stream.
   addFollowupStream?: {
@@ -70,7 +63,6 @@ export interface MultipleTextQuestion extends Question {
   forceChoice?: boolean;
   max: number;
   maxMinus?: QuestionId; // The max number of text field will be `max` minus the number of text the participant entered in `maxMinus` question.
-  repeatedItems: TypedGroupQuestion<Question>; // `repeatedItems` IS NOT ACTUALLY PRESENT IN THE DATA - it got deleted in the process
   repeatedItemStartId?: QuestionId;
   fallbackItemStartId?: QuestionId; // This is used when the user does not enter any name or select prefer not to answer. Note that this has to exists somewhere else. If it is `null`, we will go to `next` directly.
   indexName: string;
@@ -92,28 +84,16 @@ export interface BranchQuestion extends Question {
     compare: "equal";
     target: number | string;
   };
-  branch: {
-    // `branch` IS NOT ACTUALLY PRESENT IN THE DATA - it got deleted in the process
-    true: TypedGroupQuestion<Question>;
-    false: TypedGroupQuestion<Question>;
-  };
-  branchStartId?: {
-    true: QuestionId;
-    false: QuestionId;
+  branchStartId: {
+    true?: QuestionId;
+    false?: QuestionId;
   };
 }
 
 export interface BranchWithRelativeComparisonQuestion extends Question {
   // This is not actually a question (it will not be displayed to the user)
   type: QuestionType.BranchWithRelativeComparison;
-  branches: {
-    // `branches` IS NOT ACTUALLY PRESENT IN THE DATA - it got deleted in the process
-    // The highest value (or the first in case of same value) will be chosen as the next question.
-    [questionId: string /* actually QuestionId */]: TypedGroupQuestion<
-      Question
-    >;
-  };
-  branchStartId?: {
+  branchStartId: {
     [questionId: string /* actually QuestionId */]: QuestionId;
   };
 }
