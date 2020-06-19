@@ -86,7 +86,7 @@ interface HomeScreenState {
 }
 
 function SSNLDashboard(props): JSX.Element {
-  const [url, setUrl] = React.useState(null);
+  const [url, setUrl] = React.useState<string | null>(null);
 
   React.useEffect(() => {
     async function setDashboardUrl() {

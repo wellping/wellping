@@ -90,19 +90,15 @@ const ChoicesQuestionScreen: React.ElementType<ChoicesQuestionScreenProps> = ({
 
   const listRef = React.useRef<FlatList<{ id: string; title: string }>>();
 
-  const [selected, setSelected]: [
-    ChoicesWithMultipleAnswersAnswerChoices,
-    (selected: ChoicesWithMultipleAnswersAnswerChoices) => void,
-  ] = React.useState(initAnswerData(choices));
+  const [selected, setSelected] = React.useState<
+    ChoicesWithMultipleAnswersAnswerChoices
+  >(initAnswerData(choices));
 
   type FlatListData = {
     id: string;
     title: string;
   }[];
-  const [flatListData, setFlatListData]: [
-    FlatListData,
-    (value: FlatListData) => void,
-  ] = React.useState([]);
+  const [flatListData, setFlatListData] = React.useState<FlatListData>([]);
 
   React.useEffect(() => {
     // We have to use `useEffect(..., [])` here to ensure this only runs once.

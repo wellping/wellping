@@ -67,10 +67,7 @@ const HowLongAgoQuestionScreen: React.ElementType<HowLongAgoQuestionScreenProps>
   onDataChange,
   pipeInExtraMetaData,
 }) => {
-  const [data, setData]: [
-    HowLongAgoAnswerData,
-    (data: HowLongAgoAnswerData) => void,
-  ] = React.useState([-1, ""]);
+  const [data, setData] = React.useState<HowLongAgoAnswerData>([-1, ""]);
 
   return (
     <View style={{ flexDirection: "row" }}>

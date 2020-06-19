@@ -38,10 +38,7 @@ const MultipleTextQuestionScreen: React.ElementType<MultipleTextQuestionScreenPr
 
   const initTextValues = Array(numberOfTextFields).fill("");
 
-  const [textValues, setTextValues]: [
-    string[],
-    (textValues: string[]) => void,
-  ] = React.useState(initTextValues);
+  const [textValues, setTextValues] = React.useState<string[]>(initTextValues);
 
   React.useEffect(() => {
     // Re-fetch stored choices list (once) if necessary
@@ -73,10 +70,9 @@ const MultipleTextQuestionScreen: React.ElementType<MultipleTextQuestionScreenPr
     onDataChange(data);
   };
 
-  const [prestoredChoicesList, setPrestoredChoicesList]: [
-    string[],
-    (textValues: string[]) => void,
-  ] = React.useState([]);
+  const [prestoredChoicesList, setPrestoredChoicesList] = React.useState<
+    string[]
+  >([]);
   const prestoredChoicesListItems = prestoredChoicesList.map((name, index) => ({
     id: `${index}`,
     name,
