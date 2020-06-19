@@ -561,12 +561,8 @@ export default class SurveyScreen extends React.Component<
     );*/
     const { currentQuestionId, currentQuestionAnswers } = this.state;
     if (currentQuestionId == null) {
-      return (
-        <ScrollView>
-          <Text>Survey ended!</Text>
-          <Text>{JSON.stringify(this.state)}</Text>
-        </ScrollView>
-      );
+      // This is just here until `onFinish` is called.
+      return <></>;
     }
 
     const { survey } = this.props;
