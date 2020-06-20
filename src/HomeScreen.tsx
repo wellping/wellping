@@ -195,7 +195,7 @@ export default class HomeScreen extends React.Component<
     const todayPings = await getTodayPingsAsync();
     let newPingName: StreamName;
 
-    if (todayPings.length > studyInfo.frequency.hoursEveryday.length) {
+    if (todayPings.length >= studyInfo.frequency.hoursEveryday.length) {
       alert(
         getNonCriticalProblemTextForUser(
           `todayPings.length (${todayPings.length}) > ${studyInfo.frequency.hoursEveryday.length}`,
