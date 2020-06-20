@@ -44,6 +44,21 @@ export abstract class AnswerEntity extends BaseEntity {
 
   @Column()
   lastUpdateDate: Date;
+
+  // https://github.com/microsoft/TypeScript/issues/5863#issuecomment-169173943
+  static async findAnswerInPingAsync<T extends AnswerEntity>(
+    ping: PingEntity,
+    questionId: QuestionId,
+  ): Promise<T | null> {
+    const answer = await this.findOne({
+      ping: { id: ping.id },
+      questionId,
+    });
+    if (answer == null) {
+      return null;
+    }
+    return answer as T;
+  }
 }
 
 @ChildEntity(QuestionType.Slider)
