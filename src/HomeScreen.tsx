@@ -28,7 +28,6 @@ import {
   getNotificationTimesAsync,
   clearNotificationTimesAsync,
   insertPingAsync,
-  clearPingsAsync,
   getLatestPingAsync,
   getPingStateAsync,
   getTodayPingsAsync,
@@ -36,7 +35,7 @@ import {
   initFuturePingQueueAsync,
   getFuturePingsQueue,
   clearPingStateAsync,
-  getTypesOfPingsAnsweredAsync,
+  getNumbersOfPingsForAllStreamNames,
 } from "./helpers/asyncStorage";
 import { getAllStreamNames } from "./helpers/configFiles";
 import {
@@ -431,9 +430,9 @@ export default class HomeScreen extends React.Component<
           />
           <Button
             color="orange"
-            title="getTypesOfPingsAnsweredAsync()"
+            title="getNumbersOfPingsForAllStreamNames()"
             onPress={async () => {
-              const typesOfPingsAnswered = await getTypesOfPingsAnsweredAsync();
+              const typesOfPingsAnswered = await getNumbersOfPingsForAllStreamNames();
               alert(JSON.stringify(typesOfPingsAnswered));
             }}
           />
@@ -557,8 +556,8 @@ export default class HomeScreen extends React.Component<
                     text: "Confirm",
                     style: "destructive",
                     onPress: async () => {
-                      await clearPingsAsync();
                       await deleteDatabaseFileAsync(survey.studyInfo.id);
+                      alert("Done! Please restart the app.");
                     },
                   },
                 ],

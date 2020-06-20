@@ -60,86 +60,36 @@ export async function getNotificationTimesAsync(): Promise<Date[] | null> {
 }
 
 /** TYPEPING TABLE (stored number of pings answered for each type) **/
-const TYPES_OF_PINGS_ANSWERED_KEY = `TypesOfPingsAnswered`;
-type TypesOfPingsAnswered = {
+export async function getNumberOfPingsForStreamName(
+  streamName: StreamName,
+): Promise<number> {
+  const countRaw: {
+    count: number;
+  } = await PingEntity.createQueryBuilder()
+    .select("COUNT(id) as count")
+    .where("streamName = :streamName", { streamName })
+    .getRawOne();
+  return countRaw.count;
+}
+
+type NumbersOfPingsForAllStreamNames = {
   [stream: string /* actually StreamName */]: number;
 };
+export async function getNumbersOfPingsForAllStreamNames(): Promise<
+  NumbersOfPingsForAllStreamNames
+> {
+  const pingsGroupByStreamNameRaw: {
+    streamName: StreamName;
+    count: number;
+  }[] = await PingEntity.createQueryBuilder()
+    .select("streamName, COUNT(id) as count")
+    .groupBy("streamName")
+    .getRawMany();
 
-async function initTypesOfPingsAnsweredAsync() {
-  const initCount: TypesOfPingsAnswered = {};
-  (await getAllStreamNamesAsync()).map((key) => {
-    initCount[key] = 0;
-  });
-
-  //console.warn(initCount);
-
-  try {
-    await AsyncStorage.setItem(
-      await getASKeyAsync(TYPES_OF_PINGS_ANSWERED_KEY),
-      JSON.stringify(initCount),
-    );
-  } catch (error) {
-    // Error saving data
-    logError(error);
-  }
-}
-
-async function incrementTypesOfPingsAnsweredAsync(
-  type: StreamName,
-): Promise<number> {
-  const currentTypesOfPingsAnswered = await getTypesOfPingsAnsweredAsync();
-  if (currentTypesOfPingsAnswered == null) {
-    throw new Error("currentTypesOfPingsAnswered == null");
-  }
-
-  currentTypesOfPingsAnswered[type] += 1;
-  try {
-    await AsyncStorage.setItem(
-      await getASKeyAsync(TYPES_OF_PINGS_ANSWERED_KEY),
-      JSON.stringify(currentTypesOfPingsAnswered),
-    );
-  } catch (error) {
-    // Error saving data
-    logError(error);
-  }
-  return currentTypesOfPingsAnswered[type];
-}
-
-async function clearTypesOfPingsAnsweredAsync() {
-  try {
-    await AsyncStorage.removeItem(
-      await getASKeyAsync(TYPES_OF_PINGS_ANSWERED_KEY),
-    );
-  } catch (error) {
-    // Error saving data
-    logError(error);
-  }
-}
-
-export async function getTypesOfPingsAnsweredAsync(): Promise<TypesOfPingsAnswered | null> {
-  try {
-    let value = await AsyncStorage.getItem(
-      await getASKeyAsync(TYPES_OF_PINGS_ANSWERED_KEY),
-    );
-    if (value == null) {
-      await initTypesOfPingsAnsweredAsync();
-      value = await AsyncStorage.getItem(
-        await getASKeyAsync(TYPES_OF_PINGS_ANSWERED_KEY),
-      );
-    }
-
-    if (value == null) {
-      throw new Error(
-        "TYPES_OF_PINGS_ANSWERED_KEY still null after initTypesOfPingsAnsweredAsync",
-      );
-    }
-
-    return JSON.parse(value);
-  } catch (error) {
-    // Error retrieving data
-    logError(error);
-    return null;
-  }
+  return pingsGroupByStreamNameRaw.reduce((map, row) => {
+    map[row.streamName] = row.count;
+    return map;
+  }, {} as NumbersOfPingsForAllStreamNames);
 }
 
 /** PING TABLE (stored started ping) **/
@@ -152,7 +102,7 @@ export async function insertPingAsync({
   startTime: Date;
   streamName: StreamName;
 }): Promise<PingEntity> {
-  const newIndex = await incrementTypesOfPingsAnsweredAsync(streamName);
+  const newIndex = (await getNumberOfPingsForStreamName(streamName)) + 1;
   const pingId = `${streamName}${newIndex}`;
   const tzOffset = startTime.getTimezoneOffset();
 
@@ -182,10 +132,6 @@ export async function addEndTimeToPingAsync(
   await ping.save();
 
   return ping;
-}
-
-export async function clearPingsAsync() {
-  await clearTypesOfPingsAnsweredAsync();
 }
 
 export async function getLatestPingAsync(): Promise<PingEntity | null> {

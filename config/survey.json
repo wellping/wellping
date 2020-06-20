@@ -11,16 +11,16 @@
       "randomMinuteAddition": { "min": 0, "max": 119 }
     },
     "streamsOrder": {
-      "0": ["streamName", "streamName", "streamName", "streamName"],
-      "1": ["streamName", "streamName", "streamName", "streamName"],
-      "2": ["streamName", "streamName", "streamName", "streamName"],
-      "3": ["streamName", "streamName", "streamName", "streamName"],
-      "4": ["streamName", "streamName", "streamName", "streamName"],
-      "5": ["streamName", "streamName", "streamName", "streamName"],
-      "6": ["streamName", "streamName", "streamName", "streamName"]
+      "0": ["myStream", "myStream", "myStream", "myStream"],
+      "1": ["myStream", "myStream", "myStream", "myStream"],
+      "2": ["myStream", "myStream", "myStream", "myStream"],
+      "3": ["myStream", "myStream", "myStream", "myStream"],
+      "4": ["myStream", "myStream", "myStream", "myStream"],
+      "5": ["myStream", "myStream", "myStream", "myStream"],
+      "6": ["myStream", "myStream", "myStream", "myStream"]
     },
-    "streamInCaseOfError": "streamName",
-    "streamsNotReplacedByFollowupStream": ["streamName"],
+    "streamInCaseOfError": "errorStream",
+    "streamsNotReplacedByFollowupStream": ["myStream"],
     "notificationContent": {
       "default": {
         "title": "You have a new survey!",
@@ -36,11 +36,12 @@
   },
   "meta": {
     "startingQuestionIds": {
-      "streamName": "Feel_Current"
+      "myStream": "Feel_Current",
+      "errorStream": "firstQuestion"
     }
   },
   "streams": {
-    "streamName": {
+    "myStream": {
       "Feel_Current": {
         "id": "Feel_Current",
         "type": "slider",
@@ -135,6 +136,15 @@
         "max": 3,
         "variableName": "TARGET_CATEGORY",
         "indexName": "INDEX",
+        "next": null
+      }
+    },
+    "errorStream": {
+      "firstQuestion": {
+        "id": "firstQuestion",
+        "type": "slider",
+        "question": "Why are we here?",
+        "slider": ["extremely negative", "extremely positive"],
         "next": null
       }
     }
