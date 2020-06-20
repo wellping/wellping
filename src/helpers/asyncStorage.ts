@@ -3,6 +3,7 @@ import { Notifications } from "expo";
 import { AsyncStorage } from "react-native";
 
 import { SurveyScreenState } from "../SurveyScreen";
+import { AnswerEntity } from "../entities/AnswerEntity";
 import { PingEntity } from "../entities/PingEntity";
 import {
   isTimeThisWeekAsync,
@@ -147,7 +148,7 @@ export async function getLatestPingAsync(): Promise<PingEntity | null> {
 
 export async function getPingsAsync(): Promise<PingEntity[]> {
   const pings = await PingEntity.createQueryBuilder()
-    .orderBy("startTime", "DESC")
+    .orderBy("startTime", "ASC")
     .getMany();
   return pings;
 }
@@ -340,4 +341,11 @@ export async function getFuturePingsQueue(): Promise<FuturePing[]> {
     logError(error);
     throw error;
   }
+}
+
+export async function getAnswersAsync(): Promise<AnswerEntity[]> {
+  const answers = await AnswerEntity.createQueryBuilder()
+    .orderBy("lastUpdateDate", "ASC")
+    .getMany();
+  return answers;
 }
