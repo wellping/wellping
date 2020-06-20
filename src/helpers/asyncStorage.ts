@@ -201,7 +201,7 @@ export async function getPingsAsync(): Promise<PingEntity[]> {
 export async function getTodayPingsAsync(): Promise<PingEntity[]> {
   const allPings = await getPingsAsync();
   const todayPings: PingEntity[] = [];
-  // TODO: USE SQL HERE?
+  // TODO: USE SQL HERE? (MAKE SURE TIMEZONE PROBLEM)
   for (const ping of allPings) {
     if (isToday(ping.notificationTime)) {
       todayPings.push(ping);
@@ -216,7 +216,7 @@ export async function getTodayPingsAsync(): Promise<PingEntity[]> {
 export async function getThisWeekPingsAsync(): Promise<PingEntity[]> {
   const allPings = await getPingsAsync();
   const thisWeekPings: PingEntity[] = [];
-  // TODO: USE SQL HERE?
+  // TODO: USE SQL HERE? (MAKE SURE TIMEZONE PROBLEM)
   for (const ping of allPings) {
     if (await isTimeThisWeekAsync(ping.notificationTime)) {
       thisWeekPings.push(ping);
