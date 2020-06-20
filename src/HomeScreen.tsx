@@ -16,8 +16,8 @@ import {
 import { WebView } from "react-native-webview";
 
 import SurveyScreen, { SurveyScreenState } from "./SurveyScreen";
-import AnswerEntity from "./entities/AnswerEntity";
-import PingEntity from "./entities/PingEntity";
+import { AnswerEntity } from "./entities/AnswerEntity";
+import { PingEntity } from "./entities/PingEntity";
 import {
   uploadDataAsync,
   getAllDataAsync,

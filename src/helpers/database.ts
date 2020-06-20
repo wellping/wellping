@@ -2,7 +2,8 @@ import * as FileSystem from "expo-file-system";
 import { Share } from "react-native";
 import { createConnection, Connection } from "typeorm";
 
-import AnswerEntity, {
+import {
+  AnswerEntity,
   SliderAnswerEntity,
   ChoicesWithSingleAnswerAnswerEntity,
   ChoicesWithMultipleAnswersAnswerEntity,
@@ -10,7 +11,7 @@ import AnswerEntity, {
   MultipleTextAnswerEntity,
   HowLongAgoAnswerEntity,
 } from "../entities/AnswerEntity";
-import PingEntity from "../entities/PingEntity";
+import { PingEntity } from "../entities/PingEntity";
 
 const getDatabaseFilename = (databaseName: string) => `${databaseName}.db`;
 

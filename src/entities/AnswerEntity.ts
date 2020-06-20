@@ -18,13 +18,13 @@ import {
 } from "../helpers/answerTypes";
 import { QuestionType } from "../helpers/helpers";
 import { QuestionId } from "../helpers/types";
-import PingEntity from "./PingEntity";
+import { PingEntity } from "./PingEntity";
 
 @Entity("answer")
 @TableInheritance({
   column: { type: "simple-enum", name: "questionType", enum: QuestionType },
 })
-export default class AnswerEntity extends BaseEntity {
+export abstract class AnswerEntity extends BaseEntity {
   // https://github.com/typeorm/typeorm/issues/4190
   // TODO: remove me once typeorm is updated to a newer version
   @ManyToOne("PingEntity", "answers", { primary: true })

@@ -3,8 +3,8 @@ import React from "react";
 import { Button, Text, View, ScrollView, Dimensions } from "react-native";
 
 import { _DEBUG_CONFIGS } from "../config/debug";
-import AnswerEntity, { getAnswerEntity } from "./entities/AnswerEntity";
-import PingEntity from "./entities/PingEntity";
+import { AnswerEntity, getAnswerEntity } from "./entities/AnswerEntity";
+import { PingEntity } from "./entities/PingEntity";
 import {
   AnswersList,
   QuestionScreenProps,

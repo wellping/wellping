@@ -1,10 +1,10 @@
 import { BaseEntity, Entity, PrimaryColumn, Column, OneToMany } from "typeorm";
 
 import { StreamName } from "../helpers/types";
-import AnswerEntity from "./AnswerEntity";
+import { AnswerEntity } from "./AnswerEntity";
 
 @Entity("ping")
-export default class PingEntity extends BaseEntity {
+export class PingEntity extends BaseEntity {
   @PrimaryColumn()
   id: string;
 

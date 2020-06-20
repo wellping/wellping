@@ -3,7 +3,7 @@ import { Notifications } from "expo";
 import { AsyncStorage } from "react-native";
 
 import { SurveyScreenState } from "../SurveyScreen";
-import PingEntity from "../entities/PingEntity";
+import { PingEntity } from "../entities/PingEntity";
 import {
   isTimeThisWeekAsync,
   getAllStreamNamesAsync,
