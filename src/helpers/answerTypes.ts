@@ -1,5 +1,27 @@
+import { type } from "os";
+
 import { QuestionType } from "./helpers";
 import { QuestionId, Question, QuestionsList } from "./types";
+
+export type SliderAnswerData = number;
+
+export type ChoicesWithSingleAnswerAnswerData = string;
+
+export type ChoicesWithMultipleAnswersAnswerData = ChoicesWithMultipleAnswersAnswerChoices;
+
+export type YesNoAnswerData = boolean;
+
+export type MultipleTextAnswerData = { [key: string]: string }; // `key` will be piped with `eachId`
+
+export type HowLongAgoAnswerData = HowLongAgoAnswerDataType;
+
+export type AnswerData =
+  | SliderAnswerData
+  | ChoicesWithSingleAnswerAnswerData
+  | ChoicesWithMultipleAnswersAnswerData
+  | YesNoAnswerData
+  | MultipleTextAnswerData
+  | HowLongAgoAnswerData;
 
 export interface Answer {
   id: QuestionId;
@@ -33,19 +55,18 @@ export interface YesNoAnswer extends Answer {
   data: boolean;
 }
 
-export interface MultipleTextAnswerData {
-  count: number;
-  values: { [key: string]: string }; // `key` will be piped with `eachId`
-}
 export interface MultipleTextAnswer extends Answer {
   type: QuestionType.MultipleText;
-  data: MultipleTextAnswerData;
+  data: {
+    count: number;
+    values: { [key: string]: string }; // `key` will be piped with `eachId`
+  };
 }
 
-export type HowLongAgoAnswerData = [number, string];
+export type HowLongAgoAnswerDataType = [number | null, string | null];
 export interface HowLongAgoAnswer extends Answer {
   type: QuestionType.HowLongAgo;
-  data: HowLongAgoAnswerData;
+  data: HowLongAgoAnswerDataType;
 }
 
 export interface AnswersList {
@@ -54,7 +75,7 @@ export interface AnswersList {
 
 export interface QuestionScreenProps {
   question: Question;
-  onDataChange: (data: any) => void;
+  onDataChange: (data: AnswerData) => void;
   allAnswers: AnswersList;
   allQuestions: QuestionsList;
   pipeInExtraMetaData: (input: string) => string;

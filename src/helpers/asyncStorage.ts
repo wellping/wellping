@@ -118,14 +118,22 @@ async function clearTypesOfPingsAnsweredAsync() {
 
 export async function getTypesOfPingsAnsweredAsync(): Promise<TypesOfPingsAnswered | null> {
   try {
-    const value = await AsyncStorage.getItem(
+    let value = await AsyncStorage.getItem(
       await getASKeyAsync(TYPES_OF_PINGS_ANSWERED_KEY),
     );
     if (value == null) {
-      throw new Error(
-        "getTypesOfPingsAnsweredAsync is null! You should call initTypesOfPingsAnsweredAsync.",
+      await initTypesOfPingsAnsweredAsync();
+      value = await AsyncStorage.getItem(
+        await getASKeyAsync(TYPES_OF_PINGS_ANSWERED_KEY),
       );
     }
+
+    if (value == null) {
+      throw new Error(
+        "TYPES_OF_PINGS_ANSWERED_KEY still null after initTypesOfPingsAnsweredAsync",
+      );
+    }
+
     return JSON.parse(value);
   } catch (error) {
     // Error retrieving data

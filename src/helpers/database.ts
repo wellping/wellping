@@ -2,7 +2,14 @@ import * as FileSystem from "expo-file-system";
 import { Share } from "react-native";
 import { createConnection, Connection } from "typeorm";
 
-import AnswerEntity from "../entities/AnswerEntity";
+import AnswerEntity, {
+  SliderAnswerEntity,
+  ChoicesWithSingleAnswerAnswerEntity,
+  ChoicesWithMultipleAnswersAnswerEntity,
+  YesNoAnswerEntity,
+  MultipleTextAnswerEntity,
+  HowLongAgoAnswerEntity,
+} from "../entities/AnswerEntity";
 import PingEntity from "../entities/PingEntity";
 
 const getDatabaseFilename = (databaseName: string) => `${databaseName}.db`;
@@ -14,7 +21,16 @@ export async function connectDatabaseAsync(
     type: "expo",
     driver: require("expo-sqlite"),
     database: getDatabaseFilename(databaseName),
-    entities: [AnswerEntity, PingEntity],
+    entities: [
+      AnswerEntity,
+      SliderAnswerEntity,
+      ChoicesWithSingleAnswerAnswerEntity,
+      ChoicesWithMultipleAnswersAnswerEntity,
+      YesNoAnswerEntity,
+      MultipleTextAnswerEntity,
+      HowLongAgoAnswerEntity,
+      PingEntity,
+    ],
     synchronize: true,
     logging: true,
   });

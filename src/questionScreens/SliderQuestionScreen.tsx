@@ -1,7 +1,11 @@
 import React from "react";
 import { View, Text, Slider } from "react-native";
 
-import { QuestionScreenProps, SliderAnswer } from "../helpers/answerTypes";
+import {
+  QuestionScreenProps,
+  SliderAnswer,
+  SliderAnswerData,
+} from "../helpers/answerTypes";
 import { getNonCriticalProblemTextForUser } from "../helpers/debug";
 import { SliderQuestion } from "../helpers/types";
 
@@ -60,7 +64,7 @@ const SliderQuestionScreen: React.ElementType<SliderQuestionScreenProps> = ({
         minimumTrackTintColor="#2F2424"
         maximumTrackTintColor="#2F2424"
         onSlidingComplete={(value) => {
-          onDataChange(value);
+          onDataChange(value as SliderAnswerData);
         }}
       />
       <View style={{ flexDirection: "row", justifyContent: "space-between" }}>

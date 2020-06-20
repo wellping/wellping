@@ -3,7 +3,7 @@ import React from "react";
 import { Button, Text, View, ScrollView, Dimensions } from "react-native";
 
 import { _DEBUG_CONFIGS } from "../config/debug";
-import AnswerEntity from "./entities/AnswerEntity";
+import AnswerEntity, { getAnswerEntity } from "./entities/AnswerEntity";
 import PingEntity from "./entities/PingEntity";
 import {
   AnswersList,
@@ -14,6 +14,7 @@ import {
   SliderAnswer,
   ChoicesWithSingleAnswerAnswer,
   ChoicesWithMultipleAnswersAnswer,
+  AnswerData,
 } from "./helpers/answerTypes";
 import { uploadDataAsync } from "./helpers/apiManager";
 import {
@@ -519,21 +520,18 @@ export default class SurveyScreen extends React.Component<
     }: {
       preferNotToAnswer?: boolean;
       nextWithoutOption?: boolean;
-      data?: any | null;
+      data?: AnswerData | null;
       lastUpdateDate?: Date;
     },
   ): Promise<void> {
     const realQuestionId = this.getRealQuestionId(question);
 
-    const answer = new AnswerEntity();
+    const answer = getAnswerEntity(question.type);
     answer.ping = this.props.ping;
     answer.questionId = realQuestionId;
-    answer.questionType = question.type;
     answer.preferNotToAnswer = preferNotToAnswer;
     answer.nextWithoutOption = nextWithoutOption;
-    answer.data = {
-      value: "haha", // TODO: ACTUALY DATA
-    };
+    answer.data = data;
     answer.lastUpdateDate = lastUpdateDate;
     await answer.save();
 

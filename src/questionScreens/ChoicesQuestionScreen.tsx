@@ -11,6 +11,9 @@ import {
 import {
   QuestionScreenProps,
   ChoicesWithMultipleAnswersAnswerChoices,
+  YesNoAnswerData,
+  ChoicesWithSingleAnswerAnswerData,
+  ChoicesWithMultipleAnswersAnswerData,
 } from "../helpers/answerTypes";
 import { QuestionType, shuffle } from "../helpers/helpers";
 import { ChoicesQuestion, YesNoQuestion, Choice } from "../helpers/types";
@@ -159,16 +162,20 @@ const ChoicesQuestionScreen: React.ElementType<ChoicesQuestionScreenProps> = ({
 
               switch (answerType) {
                 case ChoicesAnswerType.MULTIPLE_SELECTION:
-                  onDataChange(newSelected);
+                  onDataChange(
+                    newSelected as ChoicesWithMultipleAnswersAnswerData,
+                  );
                   break;
 
                 case ChoicesAnswerType.SINGLE_SELECTION:
                   // Single-selection question only need the selected key as the data.
-                  onDataChange(id);
+                  onDataChange(id as ChoicesWithSingleAnswerAnswerData);
                   break;
 
                 case ChoicesAnswerType.YESNO:
-                  onDataChange(id === YESNO_CHOICES_YES_KEY);
+                  onDataChange(
+                    (id === YESNO_CHOICES_YES_KEY) as YesNoAnswerData,
+                  );
                   break;
               }
             }}
