@@ -3,6 +3,8 @@ import React from "react";
 import { Button, Text, View, ScrollView, Dimensions } from "react-native";
 
 import { _DEBUG_CONFIGS } from "../config/debug";
+import AnswerEntity from "./entities/AnswerEntity";
+import PingEntity from "./entities/PingEntity";
 import {
   AnswersList,
   QuestionScreenProps,
@@ -17,7 +19,6 @@ import { uploadDataAsync } from "./helpers/apiManager";
 import {
   storePingStateAsync,
   addEndTimeToPingAsync,
-  PingInfo,
   enqueueToFuturePingQueue,
   getFuturePingsQueue,
 } from "./helpers/asyncStorage";
@@ -57,9 +58,9 @@ type NextData = {
 interface SurveyScreenProps {
   survey: QuestionsList;
   surveyStartingQuestionId: QuestionId;
-  pingId: string;
+  ping: PingEntity;
   previousState: SurveyScreenState | null;
-  onFinish: (finishedPing: PingInfo) => Promise<void>;
+  onFinish: (finishedPing: PingEntity) => Promise<void>;
 }
 
 export interface SurveyScreenState {
@@ -93,7 +94,7 @@ export default class SurveyScreen extends React.Component<
   }
 
   componentDidMount() {
-    storePingStateAsync(this.props.pingId, this.state);
+    storePingStateAsync(this.props.ping.id, this.state);
   }
 
   pipeInExtraMetaData(input: string): string {
@@ -161,10 +162,10 @@ export default class SurveyScreen extends React.Component<
     // Reset this so that the new QuestionScreen can set it.
     this.dataValidationFunction = null;
 
-    const { survey, pingId } = this.props;
+    const { survey, ping } = this.props;
 
     const setStateCallback = () => {
-      storePingStateAsync(pingId, this.state).then(() => {
+      storePingStateAsync(ping.id, this.state).then(() => {
         const { lastUploadDate } = this.state;
         const currentTime = new Date();
         if (
@@ -187,8 +188,8 @@ export default class SurveyScreen extends React.Component<
       }
 
       if (this.state.currentQuestionId == null) {
-        addEndTimeToPingAsync(pingId, new Date()).then((ping) => {
-          this.props.onFinish(ping);
+        addEndTimeToPingAsync(ping.id, new Date()).then((newPing) => {
+          this.props.onFinish(newPing);
         });
       }
     };
@@ -522,8 +523,21 @@ export default class SurveyScreen extends React.Component<
       lastUpdateDate?: Date;
     },
   ): Promise<void> {
+    const realQuestionId = this.getRealQuestionId(question);
+
+    const answer = new AnswerEntity();
+    answer.ping = this.props.ping;
+    answer.questionId = realQuestionId;
+    answer.questionType = question.type;
+    answer.preferNotToAnswer = preferNotToAnswer;
+    answer.nextWithoutOption = nextWithoutOption;
+    answer.data = {
+      value: "haha", // TODO: ACTUALY DATA
+    };
+    answer.lastUpdateDate = lastUpdateDate;
+    await answer.save();
+
     return new Promise((resolve, reject) => {
-      const realQuestionId = this.getRealQuestionId(question);
       this.setState(
         (prevState) => ({
           currentQuestionAnswers: {

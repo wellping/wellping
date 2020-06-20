@@ -27,13 +27,10 @@ import {
 import {
   getNotificationTimesAsync,
   clearNotificationTimesAsync,
-  getPingsAsync,
-  initPingAsync,
   insertPingAsync,
   clearPingsAsync,
-  getLatestStartedPingAsync,
+  getLatestPingAsync,
   getPingStateAsync,
-  PingInfo,
   getTodayPingsAsync,
   dequeueFuturePingIfAny,
   initFuturePingQueueAsync,
@@ -42,7 +39,10 @@ import {
   getTypesOfPingsAnsweredAsync,
 } from "./helpers/asyncStorage";
 import { getAllStreamNames } from "./helpers/configFiles";
-import { shareDatabaseFileAsync } from "./helpers/database";
+import {
+  shareDatabaseFileAsync,
+  deleteDatabaseFileAsync,
+} from "./helpers/database";
 import { getNonCriticalProblemTextForUser } from "./helpers/debug";
 import { QuestionType } from "./helpers/helpers";
 import {
@@ -81,7 +81,7 @@ interface HomeScreenState {
   time: Date;
   allowsNotifications: boolean;
   currentNotificationTime: Date | null;
-  currentPing: PingInfo | null;
+  currentPing: PingEntity | null;
   isLoading: boolean;
   storedPingStateAsync: SurveyScreenState | null;
 
@@ -164,22 +164,20 @@ export default class HomeScreen extends React.Component<
       await doEveryHalfMinutes();
     });
 
-    const latestStartedPing = await getLatestStartedPingAsync();
+    const latestPing = await getLatestPingAsync();
     //console.warn(latestStartedPing);
     const currentNotificationTime = await getCurrentNotificationTimeAsync();
     if (
-      latestStartedPing &&
+      latestPing &&
       currentNotificationTime &&
-      latestStartedPing.notificationTime.getTime() ===
+      latestPing.notificationTime.getTime() ===
         currentNotificationTime.getTime()
     ) {
-      const storedPingStateAsync = await getPingStateAsync(
-        latestStartedPing.id,
-      );
+      const storedPingStateAsync = await getPingStateAsync(latestPing.id);
       //console.warn(storedPingStateAsync);
       this.setState({
         storedPingStateAsync,
-        currentPing: latestStartedPing,
+        currentPing: latestPing,
       });
     }
 
@@ -355,7 +353,7 @@ export default class HomeScreen extends React.Component<
             color="orange"
             title="shareDatabaseFileAsync"
             onPress={async () => {
-              const ping = new PingEntity();
+              /*const ping = new PingEntity();
               ping.id = "another";
               ping.notificationTime = new Date();
               ping.startTime = new Date();
@@ -373,7 +371,7 @@ export default class HomeScreen extends React.Component<
                 value: "haha",
               };
               answer.lastUpdateDate = new Date();
-              await answer.save();
+              await answer.save();*/
 
               await shareDatabaseFileAsync(survey.studyInfo.id);
             }}
@@ -392,9 +390,9 @@ export default class HomeScreen extends React.Component<
           />
           <Button
             color="orange"
-            title="getLatestStartedPingAsync()"
+            title="getLatestPingAsync()"
             onPress={async () => {
-              const latestStartedPing = await getLatestStartedPingAsync();
+              const latestStartedPing = await getLatestPingAsync();
               alert(JSON.stringify(latestStartedPing));
             }}
           />
@@ -410,7 +408,7 @@ export default class HomeScreen extends React.Component<
             color="red"
             title="clear current ping state"
             onPress={async () => {
-              const latestStartedPing = await getLatestStartedPingAsync();
+              const latestStartedPing = await getLatestPingAsync();
               if (latestStartedPing) {
                 await clearPingStateAsync(latestStartedPing.id);
                 alert("Cleared. Please restart app");
@@ -560,7 +558,7 @@ export default class HomeScreen extends React.Component<
                     style: "destructive",
                     onPress: async () => {
                       await clearPingsAsync();
-                      await initPingAsync();
+                      await deleteDatabaseFileAsync(survey.studyInfo.id);
                     },
                   },
                 ],
@@ -644,7 +642,7 @@ export default class HomeScreen extends React.Component<
           surveyStartingQuestionId={
             survey.meta.startingQuestionIds[currentPing.streamName]
           }
-          pingId={currentPing.id}
+          ping={currentPing}
           previousState={this.state.storedPingStateAsync}
           onFinish={async (finishedPing) => {
             this.setState({ currentPing: finishedPing });

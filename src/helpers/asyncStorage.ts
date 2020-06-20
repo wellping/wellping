@@ -135,40 +135,6 @@ export async function getTypesOfPingsAnsweredAsync(): Promise<TypesOfPingsAnswer
 }
 
 /** PING TABLE (stored started ping) **/
-const PINGS_KEY = `Pings`;
-
-export type PingInfo = {
-  id: string;
-  notificationTime: Date;
-  startTime: Date;
-  endTime?: Date;
-  tzOffset: number;
-  streamName: StreamName;
-};
-
-type PingInfoJSON = {
-  id: string;
-  notificationTime: string;
-  startTime: string;
-  endTime?: string;
-  tzOffset: string;
-  streamName: string;
-};
-
-export async function initPingAsync() {
-  await initTypesOfPingsAnsweredAsync();
-
-  try {
-    await AsyncStorage.setItem(
-      await getASKeyAsync(PINGS_KEY),
-      JSON.stringify([]),
-    );
-  } catch (error) {
-    // Error saving data
-    logError(error);
-  }
-}
-
 export async function insertPingAsync({
   notificationTime,
   startTime,
@@ -177,7 +143,7 @@ export async function insertPingAsync({
   notificationTime: Date;
   startTime: Date;
   streamName: StreamName;
-}): Promise<PingInfo> {
+}): Promise<PingEntity> {
   const newIndex = await incrementTypesOfPingsAnsweredAsync(streamName);
   const pingId = `${streamName}${newIndex}`;
   const tzOffset = startTime.getTimezoneOffset();
@@ -190,139 +156,72 @@ export async function insertPingAsync({
   pingEntity.tzOffset = tzOffset;
   await pingEntity.save();
 
-
-  const currentPingInfos = await getPingsAsync();
-  const newPingInfo: PingInfo = {
-    id: pingId,
-    notificationTime,
-    startTime,
-    tzOffset,
-    streamName,
-  };
-  currentPingInfos.push(newPingInfo);
-  try {
-    await AsyncStorage.setItem(
-      await getASKeyAsync(PINGS_KEY),
-      JSON.stringify(currentPingInfos),
-    );
-  } catch (error) {
-    // Error saving data
-    logError(error);
-  }
-
-  return newPingInfo;
+  return pingEntity;
 }
 
 export async function addEndTimeToPingAsync(
   pingId: string,
   endTime: Date,
-): Promise<PingInfo> {
-  const currentPingInfos = await getPingsAsync();
-
-  const indexOfPingId = currentPingInfos.findIndex(
-    (pingInfo) => pingInfo.id === pingId,
-  );
-  if (indexOfPingId === -1) {
+): Promise<PingEntity> {
+  const ping = await PingEntity.createQueryBuilder()
+    .where("id = :pingId", { pingId })
+    .getOne();
+  if (ping == null) {
     throw new Error(`pingId ${pingId} not found in getPingsAsync.`);
   }
 
-  currentPingInfos[indexOfPingId].endTime = endTime;
-  //console.warn(JSON.stringify(currentPingInfos));
-  try {
-    await AsyncStorage.setItem(
-      await getASKeyAsync(PINGS_KEY),
-      JSON.stringify(currentPingInfos),
-    );
-  } catch (error) {
-    // Error saving data
-    logError(error);
-  }
+  ping.endTime = endTime;
+  await ping.save();
 
-  return currentPingInfos[indexOfPingId];
+  return ping;
 }
 
 export async function clearPingsAsync() {
   await clearTypesOfPingsAnsweredAsync();
-
-  try {
-    await AsyncStorage.removeItem(await getASKeyAsync(PINGS_KEY));
-  } catch (error) {
-    // Error saving data
-    logError(error);
-  }
 }
 
-export async function getLatestStartedPingAsync(): Promise<PingInfo | null> {
-  const currentPingInfos = await getPingsAsync();
-  //console.warn(currentPingInfos);
-  if (currentPingInfos.length === 0) {
+export async function getLatestPingAsync(): Promise<PingEntity | null> {
+  const latestPing = await PingEntity.createQueryBuilder()
+    .orderBy("startTime", "DESC")
+    .take(1)
+    .getOne();
+  if (!latestPing) {
     return null;
   }
-  return currentPingInfos[currentPingInfos.length - 1];
+  return latestPing;
 }
 
-export async function getPingsAsync(): Promise<PingInfo[]> {
-  try {
-    const getValueAsync = async () => {
-      return await AsyncStorage.getItem(await getASKeyAsync(PINGS_KEY));
-    };
-    let value = await getValueAsync();
-    if (value == null) {
-      initPingAsync();
-      value = await getValueAsync();
-    }
-
-    if (value == null) {
-      throw new Error(
-        `${await getASKeyAsync(PINGS_KEY)} is still null after initPingAsync()`,
-      );
-    }
-
-    const pingInfosJSON: PingInfoJSON[] = JSON.parse(value);
-
-    const pingInfos = pingInfosJSON.map(
-      (infoJson): PingInfo => ({
-        ...infoJson,
-        notificationTime: new Date(infoJson.notificationTime),
-        startTime: new Date(infoJson.startTime),
-        endTime: infoJson.endTime ? new Date(infoJson.endTime) : undefined,
-        tzOffset: Number(infoJson.tzOffset),
-        streamName: infoJson.streamName,
-      }),
-    );
-
-    return pingInfos;
-  } catch (error) {
-    // Error retrieving data
-    logError(error);
-    throw error;
-  }
+export async function getPingsAsync(): Promise<PingEntity[]> {
+  const pings = await PingEntity.createQueryBuilder()
+    .orderBy("startTime", "DESC")
+    .getMany();
+  return pings;
 }
 
-export async function getTodayPingsAsync(): Promise<PingInfo[]> {
+export async function getTodayPingsAsync(): Promise<PingEntity[]> {
   const allPings = await getPingsAsync();
-  const todayPings: PingInfo[] = [];
+  const todayPings: PingEntity[] = [];
+  // TODO: USE SQL HERE?
   for (const ping of allPings) {
     if (isToday(ping.notificationTime)) {
       todayPings.push(ping);
     }
     if (ping.notificationTime > addDays(new Date(), 1)) {
-      // TODO: WE PROBABLY DON'T NEED THIS CHECK BECAUSE PING WILL NEVER BE FUTURE
       break;
     }
   }
   return todayPings;
 }
 
-export async function getThisWeekPingsAsync(): Promise<PingInfo[]> {
+export async function getThisWeekPingsAsync(): Promise<PingEntity[]> {
   const allPings = await getPingsAsync();
-  const thisWeekPings: PingInfo[] = [];
+  const thisWeekPings: PingEntity[] = [];
+  // TODO: USE SQL HERE?
   for (const ping of allPings) {
     if (await isTimeThisWeekAsync(ping.notificationTime)) {
       thisWeekPings.push(ping);
     }
     if (ping.notificationTime > new Date()) {
-      // TODO: WE PROBABLY DON'T NEED THIS CHECK BECAUSE PING WILL NEVER BE FUTURE
       // Stop when the notification time is in the future.
       break;
     }
