@@ -5,6 +5,7 @@ import {
   QuestionScreenProps,
   ChoicesWithMultipleAnswersAnswerChoices,
   HowLongAgoAnswerData,
+  HowLongAgoAnswerDataType,
 } from "../helpers/answerTypes";
 import { QuestionType } from "../helpers/helpers";
 import { HowLongAgoQuestion } from "../helpers/types";
@@ -48,7 +49,10 @@ const HowLongAgoQuestionScreen: React.ElementType<HowLongAgoQuestionScreenProps>
   onDataChange,
   pipeInExtraMetaData,
 }) => {
-  const [data, setData] = React.useState<HowLongAgoAnswerData>([-1, ""]);
+  const [data, setData] = React.useState<HowLongAgoAnswerDataType>([
+    null,
+    null,
+  ]);
 
   return (
     <View style={{ flexDirection: "row" }}>
@@ -60,9 +64,9 @@ const HowLongAgoQuestionScreen: React.ElementType<HowLongAgoQuestionScreenProps>
             title={item.title}
             selected={item.id === `${data[0]}`}
             onSelect={(id) => {
-              const newData: HowLongAgoAnswerData = [Number(id), data[1]];
+              const newData: HowLongAgoAnswerDataType = [Number(id), data[1]];
               setData(newData);
-              onDataChange(newData);
+              onDataChange({ value: newData } as HowLongAgoAnswerData);
             }}
           />
         )}
@@ -78,9 +82,9 @@ const HowLongAgoQuestionScreen: React.ElementType<HowLongAgoQuestionScreenProps>
             title={item.title}
             selected={item.id === data[1]}
             onSelect={(id) => {
-              const newData: HowLongAgoAnswerData = [data[0], id];
+              const newData: HowLongAgoAnswerDataType = [data[0], id];
               setData(newData);
-              onDataChange(newData);
+              onDataChange({ value: newData } as HowLongAgoAnswerData);
             }}
           />
         )}

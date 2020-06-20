@@ -4,20 +4,25 @@ import { Button, Text, View, ScrollView, Dimensions } from "react-native";
 
 import { _DEBUG_CONFIGS } from "../config/debug";
 import {
+  AnswerEntity,
+  getAnswerEntity,
+  ChoicesWithSingleAnswerAnswerEntity,
+  YesNoAnswerEntity,
+  MultipleTextAnswerEntity,
+  SliderAnswerEntity,
+  ChoicesWithMultipleAnswersAnswerEntity,
+} from "./entities/AnswerEntity";
+import { PingEntity } from "./entities/PingEntity";
+import {
   AnswersList,
   QuestionScreenProps,
-  Answer,
-  YesNoAnswer,
-  MultipleTextAnswer,
-  SliderAnswer,
-  ChoicesWithSingleAnswerAnswer,
-  ChoicesWithMultipleAnswersAnswer,
+  AnswerData,
+  ChoicesWithSingleAnswerAnswerData,
 } from "./helpers/answerTypes";
 import { uploadDataAsync } from "./helpers/apiManager";
 import {
   storePingStateAsync,
   addEndTimeToPingAsync,
-  PingInfo,
   enqueueToFuturePingQueue,
   getFuturePingsQueue,
 } from "./helpers/asyncStorage";
@@ -57,9 +62,9 @@ type NextData = {
 interface SurveyScreenProps {
   survey: QuestionsList;
   surveyStartingQuestionId: QuestionId;
-  pingId: string;
+  ping: PingEntity;
   previousState: SurveyScreenState | null;
-  onFinish: (finishedPing: PingInfo) => Promise<void>;
+  onFinish: (finishedPing: PingEntity) => Promise<void>;
 }
 
 export interface SurveyScreenState {
@@ -93,7 +98,7 @@ export default class SurveyScreen extends React.Component<
   }
 
   componentDidMount() {
-    storePingStateAsync(this.props.pingId, this.state);
+    storePingStateAsync(this.props.ping.id, this.state);
   }
 
   pipeInExtraMetaData(input: string): string {
@@ -119,7 +124,8 @@ export default class SurveyScreen extends React.Component<
     output = replacePreviousAnswerPlaceholdersWithActualContent(
       output,
       (questionId) => {
-        const prevQuestion = this.state.currentQuestionAnswers[questionId];
+        const prevQuestion = this.props.survey[questionId];
+        const prevAnswer = this.state.currentQuestionAnswers[questionId];
         if (!prevQuestion) {
           return null;
         }
@@ -129,15 +135,15 @@ export default class SurveyScreen extends React.Component<
               questionId
             ] as ChoicesWithSingleAnswerQuestion;
 
-            const csaAnswer = prevQuestion as ChoicesWithSingleAnswerAnswer;
-            if (csaAnswer.data == null) {
+            const csaAnswer = prevAnswer as ChoicesWithSingleAnswerAnswerEntity;
+            if (csaAnswer == null) {
               return getNonCriticalProblemTextForUser(
-                `csaAnswer.data (from ${csaAnswer.id}) == null`,
+                `csaAnswer.data (from ${prevQuestion.id}) == null`,
               );
             }
 
             const csaAnswerChoice = csaQuestion.choices.find(
-              (choice) => choice.key === csaAnswer.data,
+              (choice) => choice.key === csaAnswer.data?.value,
             );
             if (csaAnswerChoice == null) {
               return getNonCriticalProblemTextForUser(
@@ -161,10 +167,10 @@ export default class SurveyScreen extends React.Component<
     // Reset this so that the new QuestionScreen can set it.
     this.dataValidationFunction = null;
 
-    const { survey, pingId } = this.props;
+    const { survey, ping } = this.props;
 
     const setStateCallback = () => {
-      storePingStateAsync(pingId, this.state).then(() => {
+      storePingStateAsync(ping.id, this.state).then(() => {
         const { lastUploadDate } = this.state;
         const currentTime = new Date();
         if (
@@ -187,8 +193,8 @@ export default class SurveyScreen extends React.Component<
       }
 
       if (this.state.currentQuestionId == null) {
-        addEndTimeToPingAsync(pingId, new Date()).then((ping) => {
-          this.props.onFinish(ping);
+        addEndTimeToPingAsync(ping.id, new Date()).then((newPing) => {
+          this.props.onFinish(newPing);
         });
       }
     };
@@ -209,7 +215,7 @@ export default class SurveyScreen extends React.Component<
           ] as YesNoQuestion;
           const currentQuestionAnswer = prevState.currentQuestionAnswers[
             prevState.currentQuestionId!
-          ] as YesNoAnswer;
+          ] as YesNoAnswerEntity;
           let selectedBranchId = currentQuestion.branchStartId?.no;
 
           if (currentQuestionAnswer.data) {
@@ -262,11 +268,15 @@ export default class SurveyScreen extends React.Component<
           ] as MultipleTextQuestion;
           const currentQuestionAnswer = prevState.currentQuestionAnswers[
             prevState.currentQuestionId!
-          ] as MultipleTextAnswer;
+          ] as MultipleTextAnswerEntity;
+
+          const valuesLength = Object.keys(
+            currentQuestionAnswer.data?.value || {},
+          ).length;
 
           if (
             !currentQuestionAnswer.data ||
-            currentQuestionAnswer.data.count === 0 ||
+            valuesLength === 0 ||
             currentQuestion.repeatedItemStartId == null
           ) {
             if (currentQuestion.fallbackItemStartId) {
@@ -288,7 +298,7 @@ export default class SurveyScreen extends React.Component<
           }
 
           const repeatedStartInfo: NextData[] = [];
-          for (let i = 1; i <= currentQuestionAnswer.data.count; i++) {
+          for (let i = 1; i <= valuesLength; i++) {
             const eachFieldId = currentQuestion.eachId.replace(
               withVariable(currentQuestion.indexName),
               `${i}`,
@@ -297,7 +307,7 @@ export default class SurveyScreen extends React.Component<
               questionId: currentQuestion.repeatedItemStartId,
               extraMetaData: {
                 [currentQuestion.variableName]:
-                  currentQuestionAnswer.data.values[eachFieldId],
+                  currentQuestionAnswer.data.value[eachFieldId],
                 [currentQuestion.indexName]: i,
               },
             });
@@ -329,10 +339,10 @@ export default class SurveyScreen extends React.Component<
             case QuestionType.MultipleText: {
               const targetQuestionAnswer = prevState.currentQuestionAnswers[
                 this.pipeInExtraMetaData(currentQuestion.condition.questionId)
-              ] as MultipleTextAnswer;
+              ] as MultipleTextAnswerEntity;
               if (targetQuestionAnswer && targetQuestionAnswer.data) {
                 if (
-                  targetQuestionAnswer.data.count ===
+                  Object.keys(targetQuestionAnswer.data.value).length ===
                   currentQuestion.condition.target
                 ) {
                   selectedBranchId = currentQuestion.branchStartId.true;
@@ -344,10 +354,11 @@ export default class SurveyScreen extends React.Component<
             case QuestionType.ChoicesWithSingleAnswer: {
               const csaQuestionAnswer = prevState.currentQuestionAnswers[
                 this.pipeInExtraMetaData(currentQuestion.condition.questionId)
-              ] as ChoicesWithSingleAnswerAnswer;
+              ] as ChoicesWithSingleAnswerAnswerEntity;
               if (csaQuestionAnswer && csaQuestionAnswer.data) {
                 if (
-                  csaQuestionAnswer.data === currentQuestion.condition.target
+                  csaQuestionAnswer.data?.value ===
+                  currentQuestion.condition.target
                 ) {
                   selectedBranchId = currentQuestion.branchStartId.true;
                 }
@@ -385,9 +396,10 @@ export default class SurveyScreen extends React.Component<
           )) {
             values.push({
               nextQuestionId: currentQuestion.branchStartId[prevQuestionId],
-              value: (prevState.currentQuestionAnswers[
-                prevQuestionId
-              ] as SliderAnswer).data,
+              value:
+                (prevState.currentQuestionAnswers[
+                  prevQuestionId
+                ] as SliderAnswerEntity).data?.value || -1,
             });
           }
 
@@ -424,7 +436,9 @@ export default class SurveyScreen extends React.Component<
         ] as ChoicesQuestion;
         const currentAnswer = this.state.currentQuestionAnswers[
           this.state.currentQuestionId!
-        ] as ChoicesWithSingleAnswerAnswer | ChoicesWithMultipleAnswersAnswer;
+        ] as
+          | ChoicesWithSingleAnswerAnswerEntity
+          | ChoicesWithMultipleAnswersAnswerEntity;
         if (currentQuestion.specialCasesStartId) {
           let fallbackNext: QuestionId | null = null;
           if (
@@ -434,18 +448,21 @@ export default class SurveyScreen extends React.Component<
             fallbackNext = currentQuestion.specialCasesStartId["_pna"];
           } else {
             if (currentQuestion.type === QuestionType.ChoicesWithSingleAnswer) {
-              const csaAnswer = currentAnswer as ChoicesWithSingleAnswerAnswer;
-              if (currentQuestion.specialCasesStartId[csaAnswer.data]) {
+              const csaAnswer = currentAnswer as ChoicesWithSingleAnswerAnswerEntity;
+              if (
+                csaAnswer.data &&
+                currentQuestion.specialCasesStartId[csaAnswer.data.value]
+              ) {
                 fallbackNext = currentQuestion.specialCasesStartId[
-                  csaAnswer.data
+                  csaAnswer.data.value
                 ]!;
               }
             } else {
               if (
                 currentQuestion.type === QuestionType.ChoicesWithMultipleAnswers
               ) {
-                const cmaAnswer = currentAnswer as ChoicesWithMultipleAnswersAnswer;
-                Object.entries(cmaAnswer.data).some(
+                const cmaAnswer = currentAnswer as ChoicesWithMultipleAnswersAnswerEntity;
+                Object.entries(cmaAnswer.data?.value || {}).some(
                   ([eachAnswer, selected]) => {
                     if (selected) {
                       if (
@@ -518,24 +535,31 @@ export default class SurveyScreen extends React.Component<
     }: {
       preferNotToAnswer?: boolean;
       nextWithoutOption?: boolean;
-      data?: any | null;
+      data?: AnswerData | null;
       lastUpdateDate?: Date;
     },
   ): Promise<void> {
-    return new Promise((resolve, reject) => {
-      const realQuestionId = this.getRealQuestionId(question);
+    const realQuestionId = this.getRealQuestionId(question);
+
+    const answer = getAnswerEntity(question.type);
+    answer.ping = this.props.ping;
+    answer.questionId = realQuestionId;
+    answer.preferNotToAnswer = preferNotToAnswer;
+    answer.nextWithoutOption = nextWithoutOption;
+    answer.data = data;
+    answer.lastUpdateDate = lastUpdateDate;
+    await answer.save();
+
+    // So that the `ping` object will not be stored in state.
+    // Also so that we can make sure state and database are consistent.
+    await answer.reload();
+
+    await new Promise((resolve, reject) => {
       this.setState(
         (prevState) => ({
           currentQuestionAnswers: {
             ...prevState.currentQuestionAnswers,
-            [realQuestionId]: {
-              id: realQuestionId,
-              type: question.type,
-              nextWithoutOption,
-              preferNotToAnswer,
-              data,
-              lastUpdateDate,
-            },
+            [realQuestionId]: answer,
           },
         }),
         () => resolve(),
@@ -629,7 +653,7 @@ export default class SurveyScreen extends React.Component<
                 data,
               });
             }}
-            allAnswers={this.state.currentQuestionAnswers}
+            allAnswers={currentQuestionAnswers}
             allQuestions={survey}
             pipeInExtraMetaData={(input) => this.pipeInExtraMetaData(input)}
             setDataValidationFunction={(func) => {

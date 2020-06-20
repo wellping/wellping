@@ -3,6 +3,8 @@ import { Notifications } from "expo";
 import { AsyncStorage } from "react-native";
 
 import { SurveyScreenState } from "../SurveyScreen";
+import { AnswerEntity } from "../entities/AnswerEntity";
+import { PingEntity } from "../entities/PingEntity";
 import {
   isTimeThisWeekAsync,
   getAllStreamNamesAsync,
@@ -59,115 +61,39 @@ export async function getNotificationTimesAsync(): Promise<Date[] | null> {
 }
 
 /** TYPEPING TABLE (stored number of pings answered for each type) **/
-const TYPES_OF_PINGS_ANSWERED_KEY = `TypesOfPingsAnswered`;
-type TypesOfPingsAnswered = {
+export async function getNumberOfPingsForStreamName(
+  streamName: StreamName,
+): Promise<number> {
+  const countRaw: {
+    count: number;
+  } = await PingEntity.createQueryBuilder()
+    .select("COUNT(id) as count")
+    .where("streamName = :streamName", { streamName })
+    .getRawOne();
+  return countRaw.count;
+}
+
+type NumbersOfPingsForAllStreamNames = {
   [stream: string /* actually StreamName */]: number;
 };
+export async function getNumbersOfPingsForAllStreamNames(): Promise<
+  NumbersOfPingsForAllStreamNames
+> {
+  const pingsGroupByStreamNameRaw: {
+    streamName: StreamName;
+    count: number;
+  }[] = await PingEntity.createQueryBuilder()
+    .select("streamName, COUNT(id) as count")
+    .groupBy("streamName")
+    .getRawMany();
 
-async function initTypesOfPingsAnsweredAsync() {
-  const initCount: TypesOfPingsAnswered = {};
-  (await getAllStreamNamesAsync()).map((key) => {
-    initCount[key] = 0;
-  });
-
-  //console.warn(initCount);
-
-  try {
-    await AsyncStorage.setItem(
-      await getASKeyAsync(TYPES_OF_PINGS_ANSWERED_KEY),
-      JSON.stringify(initCount),
-    );
-  } catch (error) {
-    // Error saving data
-    logError(error);
-  }
-}
-
-async function incrementTypesOfPingsAnsweredAsync(
-  type: StreamName,
-): Promise<number> {
-  const currentTypesOfPingsAnswered = await getTypesOfPingsAnsweredAsync();
-  if (currentTypesOfPingsAnswered == null) {
-    throw new Error("currentTypesOfPingsAnswered == null");
-  }
-
-  currentTypesOfPingsAnswered[type] += 1;
-  try {
-    await AsyncStorage.setItem(
-      await getASKeyAsync(TYPES_OF_PINGS_ANSWERED_KEY),
-      JSON.stringify(currentTypesOfPingsAnswered),
-    );
-  } catch (error) {
-    // Error saving data
-    logError(error);
-  }
-  return currentTypesOfPingsAnswered[type];
-}
-
-async function clearTypesOfPingsAnsweredAsync() {
-  try {
-    await AsyncStorage.removeItem(
-      await getASKeyAsync(TYPES_OF_PINGS_ANSWERED_KEY),
-    );
-  } catch (error) {
-    // Error saving data
-    logError(error);
-  }
-}
-
-export async function getTypesOfPingsAnsweredAsync(): Promise<TypesOfPingsAnswered | null> {
-  try {
-    const value = await AsyncStorage.getItem(
-      await getASKeyAsync(TYPES_OF_PINGS_ANSWERED_KEY),
-    );
-    if (value == null) {
-      throw new Error(
-        "getTypesOfPingsAnsweredAsync is null! You should call initTypesOfPingsAnsweredAsync.",
-      );
-    }
-    return JSON.parse(value);
-  } catch (error) {
-    // Error retrieving data
-    logError(error);
-    return null;
-  }
+  return pingsGroupByStreamNameRaw.reduce((map, row) => {
+    map[row.streamName] = row.count;
+    return map;
+  }, {} as NumbersOfPingsForAllStreamNames);
 }
 
 /** PING TABLE (stored started ping) **/
-const PINGS_KEY = `Pings`;
-
-export type PingInfo = {
-  id: string;
-  notificationTime: Date;
-  startTime: Date;
-  endTime?: Date;
-  tzOffset: number;
-  streamName: StreamName;
-};
-
-type PingInfoJSON = {
-  id: string;
-  notificationTime: string;
-  startTime: string;
-  endTime?: string;
-  tzOffset: string;
-  streamName: string;
-};
-
-export async function initPingAsync() {
-  await initTypesOfPingsAnsweredAsync();
-
-  try {
-    await AsyncStorage.setItem(
-      await getASKeyAsync(PINGS_KEY),
-      JSON.stringify([]),
-    );
-  } catch (error) {
-    // Error saving data
-    logError(error);
-  }
-}
-
 export async function insertPingAsync({
   notificationTime,
   startTime,
@@ -176,142 +102,87 @@ export async function insertPingAsync({
   notificationTime: Date;
   startTime: Date;
   streamName: StreamName;
-}): Promise<PingInfo> {
-  const newId = await incrementTypesOfPingsAnsweredAsync(streamName);
+}): Promise<PingEntity> {
+  const newIndex = (await getNumberOfPingsForStreamName(streamName)) + 1;
+  const pingId = `${streamName}${newIndex}`;
+  const tzOffset = startTime.getTimezoneOffset();
 
-  const currentPingInfos = await getPingsAsync();
-  const newPingInfo: PingInfo = {
-    id: `${streamName}${newId}`,
-    notificationTime,
-    startTime,
-    tzOffset: startTime.getTimezoneOffset(),
-    streamName,
-  };
-  currentPingInfos.push(newPingInfo);
-  //console.warn(`oy ${JSON.stringify(currentPingInfos)}`);
-  try {
-    await AsyncStorage.setItem(
-      await getASKeyAsync(PINGS_KEY),
-      JSON.stringify(currentPingInfos),
-    );
-  } catch (error) {
-    // Error saving data
-    logError(error);
-  }
+  const pingEntity = new PingEntity();
+  pingEntity.id = pingId;
+  pingEntity.notificationTime = notificationTime;
+  pingEntity.startTime = startTime;
+  pingEntity.streamName = streamName;
+  pingEntity.tzOffset = tzOffset;
+  await pingEntity.save();
 
-  return newPingInfo;
+  // Make sure state and database are consistent.
+  await pingEntity.reload();
+
+  return pingEntity;
 }
 
 export async function addEndTimeToPingAsync(
   pingId: string,
   endTime: Date,
-): Promise<PingInfo> {
-  const currentPingInfos = await getPingsAsync();
-
-  const indexOfPingId = currentPingInfos.findIndex(
-    (pingInfo) => pingInfo.id === pingId,
-  );
-  if (indexOfPingId === -1) {
+): Promise<PingEntity> {
+  const ping = await PingEntity.createQueryBuilder()
+    .where("id = :pingId", { pingId })
+    .getOne();
+  if (ping == null) {
     throw new Error(`pingId ${pingId} not found in getPingsAsync.`);
   }
 
-  currentPingInfos[indexOfPingId].endTime = endTime;
-  //console.warn(JSON.stringify(currentPingInfos));
-  try {
-    await AsyncStorage.setItem(
-      await getASKeyAsync(PINGS_KEY),
-      JSON.stringify(currentPingInfos),
-    );
-  } catch (error) {
-    // Error saving data
-    logError(error);
-  }
+  ping.endTime = endTime;
+  await ping.save();
 
-  return currentPingInfos[indexOfPingId];
+  // Make sure state and database are consistent.
+  ping.reload();
+
+  return ping;
 }
 
-export async function clearPingsAsync() {
-  await clearTypesOfPingsAnsweredAsync();
-
-  try {
-    await AsyncStorage.removeItem(await getASKeyAsync(PINGS_KEY));
-  } catch (error) {
-    // Error saving data
-    logError(error);
-  }
-}
-
-export async function getLatestStartedPingAsync(): Promise<PingInfo | null> {
-  const currentPingInfos = await getPingsAsync();
-  //console.warn(currentPingInfos);
-  if (currentPingInfos.length === 0) {
+export async function getLatestPingAsync(): Promise<PingEntity | null> {
+  const latestPing = await PingEntity.createQueryBuilder()
+    .orderBy("startTime", "DESC")
+    .take(1)
+    .getOne();
+  if (!latestPing) {
     return null;
   }
-  return currentPingInfos[currentPingInfos.length - 1];
+  return latestPing;
 }
 
-export async function getPingsAsync(): Promise<PingInfo[]> {
-  try {
-    const getValueAsync = async () => {
-      return await AsyncStorage.getItem(await getASKeyAsync(PINGS_KEY));
-    };
-    let value = await getValueAsync();
-    if (value == null) {
-      initPingAsync();
-      value = await getValueAsync();
-    }
-
-    if (value == null) {
-      throw new Error(
-        `${await getASKeyAsync(PINGS_KEY)} is still null after initPingAsync()`,
-      );
-    }
-
-    const pingInfosJSON: PingInfoJSON[] = JSON.parse(value);
-
-    const pingInfos = pingInfosJSON.map(
-      (infoJson): PingInfo => ({
-        ...infoJson,
-        notificationTime: new Date(infoJson.notificationTime),
-        startTime: new Date(infoJson.startTime),
-        endTime: infoJson.endTime ? new Date(infoJson.endTime) : undefined,
-        tzOffset: Number(infoJson.tzOffset),
-        streamName: infoJson.streamName,
-      }),
-    );
-
-    return pingInfos;
-  } catch (error) {
-    // Error retrieving data
-    logError(error);
-    throw error;
-  }
+export async function getPingsAsync(): Promise<PingEntity[]> {
+  const pings = await PingEntity.createQueryBuilder()
+    .orderBy("startTime", "ASC")
+    .getMany();
+  return pings;
 }
 
-export async function getTodayPingsAsync(): Promise<PingInfo[]> {
+export async function getTodayPingsAsync(): Promise<PingEntity[]> {
   const allPings = await getPingsAsync();
-  const todayPings: PingInfo[] = [];
+  const todayPings: PingEntity[] = [];
+  // TODO: USE SQL HERE? (MAKE SURE TIMEZONE PROBLEM)
   for (const ping of allPings) {
     if (isToday(ping.notificationTime)) {
       todayPings.push(ping);
     }
     if (ping.notificationTime > addDays(new Date(), 1)) {
-      // TODO: WE PROBABLY DON'T NEED THIS CHECK BECAUSE PING WILL NEVER BE FUTURE
       break;
     }
   }
   return todayPings;
 }
 
-export async function getThisWeekPingsAsync(): Promise<PingInfo[]> {
+export async function getThisWeekPingsAsync(): Promise<PingEntity[]> {
   const allPings = await getPingsAsync();
-  const thisWeekPings: PingInfo[] = [];
+  const thisWeekPings: PingEntity[] = [];
+  // TODO: USE SQL HERE? (MAKE SURE TIMEZONE PROBLEM)
   for (const ping of allPings) {
     if (await isTimeThisWeekAsync(ping.notificationTime)) {
       thisWeekPings.push(ping);
     }
     if (ping.notificationTime > new Date()) {
-      // TODO: WE PROBABLY DON'T NEED THIS CHECK BECAUSE PING WILL NEVER BE FUTURE
       // Stop when the notification time is in the future.
       break;
     }
@@ -476,4 +347,11 @@ export async function getFuturePingsQueue(): Promise<FuturePing[]> {
     logError(error);
     throw error;
   }
+}
+
+export async function getAnswersAsync(): Promise<AnswerEntity[]> {
+  const answers = await AnswerEntity.createQueryBuilder()
+    .orderBy("lastUpdateDate", "ASC")
+    .getMany();
+  return answers;
 }

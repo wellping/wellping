@@ -7,8 +7,8 @@ export enum QuestionType {
   YesNo = "yesNo",
   MultipleText = "multipleText",
   HowLongAgo = "howLongAgo",
-  Branch = "branch",
-  BranchWithRelativeComparison = "branchWithRelativeComparison",
+  Branch = "branch", // Not in answer data
+  BranchWithRelativeComparison = "branchWithRelativeComparison", // Not in answer data
 }
 
 export const decapitalizeFirstCharacter = (s: string): string => {

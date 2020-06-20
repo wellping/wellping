@@ -3,14 +3,21 @@ import * as Crypto from "expo-crypto";
 import * as Device from "expo-device";
 import { Platform } from "react-native";
 
-import { SurveyScreenState } from "../SurveyScreen";
-import { getPingsAsync, getPingStateAsync } from "./asyncStorage";
+import { AnswerEntity } from "../entities/AnswerEntity";
+import { PingEntity } from "../entities/PingEntity";
+import { getPingsAsync, getAnswersAsync } from "./asyncStorage";
 import { getSurveyFileAsync } from "./configFiles";
 import { getUserAsync, User, storeUserAsync } from "./user";
 
 export async function getServerUrlAsync(): Promise<string> {
   return (await getSurveyFileAsync()).studyInfo.serverURL;
 }
+
+type UploadData = {
+  patientId: string;
+  pings: PingEntity[];
+  answers: AnswerEntity[];
+};
 
 // If success, return `null`. Else return error message.
 export async function registerUserAsync(user: User): Promise<string | null> {
@@ -44,26 +51,16 @@ export async function registerUserAsync(user: User): Promise<string | null> {
   return null;
 }
 
-export async function getAllDataAsync() {
+export async function getAllDataAsync(): Promise<UploadData> {
   const user = await getUserAsync();
-
-  const pingInfos = await getPingsAsync();
-  const pingStates: { [id: string]: SurveyScreenState } = {};
-  await Promise.all(
-    pingInfos.map(async (pingInfo) => {
-      const pingState = await getPingStateAsync(pingInfo.id);
-      pingStates[pingInfo.id] = pingState;
-    }),
-  );
+  const pings = await getPingsAsync();
+  const answers = await getAnswersAsync();
 
   const data = {
     patientId: user!.patientId,
-    pingInfos,
-    pingStates,
+    pings,
+    answers,
   };
-
-  //console.warn(JSON.stringify(data));
-
   return data;
 }
 

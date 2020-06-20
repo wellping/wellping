@@ -2,10 +2,10 @@ import cloneDeep from "lodash/cloneDeep";
 import React from "react";
 import { View, TextInput, Alert } from "react-native";
 
+import { MultipleTextAnswerEntity } from "../entities/AnswerEntity";
 import {
   QuestionScreenProps,
   MultipleTextAnswerData,
-  MultipleTextAnswer,
 } from "../helpers/answerTypes";
 import { getNamesFileAsync } from "../helpers/configFiles";
 import { withVariable } from "../helpers/helpers";
@@ -27,13 +27,12 @@ const MultipleTextQuestionScreen: React.ElementType<MultipleTextQuestionScreenPr
   if (question.maxMinus) {
     const prevQuestionAnswer = allAnswers[
       question.maxMinus
-    ] as MultipleTextAnswer;
-    if (
-      prevQuestionAnswer &&
-      prevQuestionAnswer.data &&
-      prevQuestionAnswer.data.count
-    ) {
-      numberOfTextFields -= prevQuestionAnswer.data.count;
+    ] as MultipleTextAnswerEntity;
+    if (prevQuestionAnswer && prevQuestionAnswer.data) {
+      const length = Object.keys(prevQuestionAnswer.data.value).length;
+      if (length > 0) {
+        numberOfTextFields -= length;
+      }
     }
   }
 
@@ -57,16 +56,13 @@ const MultipleTextQuestionScreen: React.ElementType<MultipleTextQuestionScreenPr
     setTextValues(newTextValues);
 
     const nonEmptyFields = newTextValues.filter(Boolean);
-    const data: MultipleTextAnswerData = {
-      count: nonEmptyFields.length,
-      values: {},
-    };
+    const data: MultipleTextAnswerData = { value: {} };
     nonEmptyFields.forEach((value, realIndex) => {
       const eachFieldId = question.eachId.replace(
         withVariable(question.indexName),
         `${realIndex + 1}`, // we want 1-indexed
       );
-      data.values[eachFieldId] = value;
+      data.value[eachFieldId] = value;
     });
     onDataChange(data);
   };
