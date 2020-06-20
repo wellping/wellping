@@ -550,7 +550,11 @@ export default class SurveyScreen extends React.Component<
     answer.lastUpdateDate = lastUpdateDate;
     await answer.save();
 
-    return new Promise((resolve, reject) => {
+    // So that the `ping` object will not be stored in state.
+    // Also so that we can make sure state and database are consistent.
+    await answer.reload();
+
+    await new Promise((resolve, reject) => {
       this.setState(
         (prevState) => ({
           currentQuestionAnswers: {

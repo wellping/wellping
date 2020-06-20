@@ -115,6 +115,9 @@ export async function insertPingAsync({
   pingEntity.tzOffset = tzOffset;
   await pingEntity.save();
 
+  // Make sure state and database are consistent.
+  await pingEntity.reload();
+
   return pingEntity;
 }
 
@@ -131,6 +134,9 @@ export async function addEndTimeToPingAsync(
 
   ping.endTime = endTime;
   await ping.save();
+
+  // Make sure state and database are consistent.
+  ping.reload();
 
   return ping;
 }
