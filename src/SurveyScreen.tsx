@@ -3,18 +3,21 @@ import React from "react";
 import { Button, Text, View, ScrollView, Dimensions } from "react-native";
 
 import { _DEBUG_CONFIGS } from "../config/debug";
-import { AnswerEntity, getAnswerEntity } from "./entities/AnswerEntity";
+import {
+  AnswerEntity,
+  getAnswerEntity,
+  ChoicesWithSingleAnswerAnswerEntity,
+  YesNoAnswerEntity,
+  MultipleTextAnswerEntity,
+  SliderAnswerEntity,
+  ChoicesWithMultipleAnswersAnswerEntity,
+} from "./entities/AnswerEntity";
 import { PingEntity } from "./entities/PingEntity";
 import {
   AnswersList,
   QuestionScreenProps,
-  Answer,
-  YesNoAnswer,
-  MultipleTextAnswer,
-  SliderAnswer,
-  ChoicesWithSingleAnswerAnswer,
-  ChoicesWithMultipleAnswersAnswer,
   AnswerData,
+  ChoicesWithSingleAnswerAnswerData,
 } from "./helpers/answerTypes";
 import { uploadDataAsync } from "./helpers/apiManager";
 import {
@@ -121,7 +124,8 @@ export default class SurveyScreen extends React.Component<
     output = replacePreviousAnswerPlaceholdersWithActualContent(
       output,
       (questionId) => {
-        const prevQuestion = this.state.currentQuestionAnswers[questionId];
+        const prevQuestion = this.props.survey[questionId];
+        const prevAnswer = this.state.currentQuestionAnswers[questionId];
         if (!prevQuestion) {
           return null;
         }
@@ -131,15 +135,15 @@ export default class SurveyScreen extends React.Component<
               questionId
             ] as ChoicesWithSingleAnswerQuestion;
 
-            const csaAnswer = prevQuestion as ChoicesWithSingleAnswerAnswer;
-            if (csaAnswer.data == null) {
+            const csaAnswer = prevAnswer as ChoicesWithSingleAnswerAnswerEntity;
+            if (csaAnswer == null) {
               return getNonCriticalProblemTextForUser(
-                `csaAnswer.data (from ${csaAnswer.id}) == null`,
+                `csaAnswer.data (from ${prevQuestion.id}) == null`,
               );
             }
 
             const csaAnswerChoice = csaQuestion.choices.find(
-              (choice) => choice.key === csaAnswer.data,
+              (choice) => choice.key === csaAnswer.data?.value,
             );
             if (csaAnswerChoice == null) {
               return getNonCriticalProblemTextForUser(
@@ -211,7 +215,7 @@ export default class SurveyScreen extends React.Component<
           ] as YesNoQuestion;
           const currentQuestionAnswer = prevState.currentQuestionAnswers[
             prevState.currentQuestionId!
-          ] as YesNoAnswer;
+          ] as YesNoAnswerEntity;
           let selectedBranchId = currentQuestion.branchStartId?.no;
 
           if (currentQuestionAnswer.data) {
@@ -264,11 +268,15 @@ export default class SurveyScreen extends React.Component<
           ] as MultipleTextQuestion;
           const currentQuestionAnswer = prevState.currentQuestionAnswers[
             prevState.currentQuestionId!
-          ] as MultipleTextAnswer;
+          ] as MultipleTextAnswerEntity;
+
+          const valuesLength = Object.keys(
+            currentQuestionAnswer.data?.value || {},
+          ).length;
 
           if (
             !currentQuestionAnswer.data ||
-            currentQuestionAnswer.data.count === 0 ||
+            valuesLength === 0 ||
             currentQuestion.repeatedItemStartId == null
           ) {
             if (currentQuestion.fallbackItemStartId) {
@@ -290,7 +298,7 @@ export default class SurveyScreen extends React.Component<
           }
 
           const repeatedStartInfo: NextData[] = [];
-          for (let i = 1; i <= currentQuestionAnswer.data.count; i++) {
+          for (let i = 1; i <= valuesLength; i++) {
             const eachFieldId = currentQuestion.eachId.replace(
               withVariable(currentQuestion.indexName),
               `${i}`,
@@ -299,7 +307,7 @@ export default class SurveyScreen extends React.Component<
               questionId: currentQuestion.repeatedItemStartId,
               extraMetaData: {
                 [currentQuestion.variableName]:
-                  currentQuestionAnswer.data.values[eachFieldId],
+                  currentQuestionAnswer.data.value[eachFieldId],
                 [currentQuestion.indexName]: i,
               },
             });
@@ -331,10 +339,10 @@ export default class SurveyScreen extends React.Component<
             case QuestionType.MultipleText: {
               const targetQuestionAnswer = prevState.currentQuestionAnswers[
                 this.pipeInExtraMetaData(currentQuestion.condition.questionId)
-              ] as MultipleTextAnswer;
+              ] as MultipleTextAnswerEntity;
               if (targetQuestionAnswer && targetQuestionAnswer.data) {
                 if (
-                  targetQuestionAnswer.data.count ===
+                  Object.keys(targetQuestionAnswer.data.value).length ===
                   currentQuestion.condition.target
                 ) {
                   selectedBranchId = currentQuestion.branchStartId.true;
@@ -346,10 +354,11 @@ export default class SurveyScreen extends React.Component<
             case QuestionType.ChoicesWithSingleAnswer: {
               const csaQuestionAnswer = prevState.currentQuestionAnswers[
                 this.pipeInExtraMetaData(currentQuestion.condition.questionId)
-              ] as ChoicesWithSingleAnswerAnswer;
+              ] as ChoicesWithSingleAnswerAnswerEntity;
               if (csaQuestionAnswer && csaQuestionAnswer.data) {
                 if (
-                  csaQuestionAnswer.data === currentQuestion.condition.target
+                  csaQuestionAnswer.data?.value ===
+                  currentQuestion.condition.target
                 ) {
                   selectedBranchId = currentQuestion.branchStartId.true;
                 }
@@ -387,9 +396,10 @@ export default class SurveyScreen extends React.Component<
           )) {
             values.push({
               nextQuestionId: currentQuestion.branchStartId[prevQuestionId],
-              value: (prevState.currentQuestionAnswers[
-                prevQuestionId
-              ] as SliderAnswer).data,
+              value:
+                (prevState.currentQuestionAnswers[
+                  prevQuestionId
+                ] as SliderAnswerEntity).data?.value || -1,
             });
           }
 
@@ -426,7 +436,9 @@ export default class SurveyScreen extends React.Component<
         ] as ChoicesQuestion;
         const currentAnswer = this.state.currentQuestionAnswers[
           this.state.currentQuestionId!
-        ] as ChoicesWithSingleAnswerAnswer | ChoicesWithMultipleAnswersAnswer;
+        ] as
+          | ChoicesWithSingleAnswerAnswerEntity
+          | ChoicesWithMultipleAnswersAnswerEntity;
         if (currentQuestion.specialCasesStartId) {
           let fallbackNext: QuestionId | null = null;
           if (
@@ -436,18 +448,21 @@ export default class SurveyScreen extends React.Component<
             fallbackNext = currentQuestion.specialCasesStartId["_pna"];
           } else {
             if (currentQuestion.type === QuestionType.ChoicesWithSingleAnswer) {
-              const csaAnswer = currentAnswer as ChoicesWithSingleAnswerAnswer;
-              if (currentQuestion.specialCasesStartId[csaAnswer.data]) {
+              const csaAnswer = currentAnswer as ChoicesWithSingleAnswerAnswerEntity;
+              if (
+                csaAnswer.data &&
+                currentQuestion.specialCasesStartId[csaAnswer.data.value]
+              ) {
                 fallbackNext = currentQuestion.specialCasesStartId[
-                  csaAnswer.data
+                  csaAnswer.data.value
                 ]!;
               }
             } else {
               if (
                 currentQuestion.type === QuestionType.ChoicesWithMultipleAnswers
               ) {
-                const cmaAnswer = currentAnswer as ChoicesWithMultipleAnswersAnswer;
-                Object.entries(cmaAnswer.data).some(
+                const cmaAnswer = currentAnswer as ChoicesWithMultipleAnswersAnswerEntity;
+                Object.entries(cmaAnswer.data?.value || {}).some(
                   ([eachAnswer, selected]) => {
                     if (selected) {
                       if (
@@ -540,14 +555,7 @@ export default class SurveyScreen extends React.Component<
         (prevState) => ({
           currentQuestionAnswers: {
             ...prevState.currentQuestionAnswers,
-            [realQuestionId]: {
-              id: realQuestionId,
-              type: question.type,
-              nextWithoutOption,
-              preferNotToAnswer,
-              data,
-              lastUpdateDate,
-            },
+            [realQuestionId]: answer,
           },
         }),
         () => resolve(),
@@ -641,7 +649,7 @@ export default class SurveyScreen extends React.Component<
                 data,
               });
             }}
-            allAnswers={this.state.currentQuestionAnswers}
+            allAnswers={currentQuestionAnswers}
             allQuestions={survey}
             pipeInExtraMetaData={(input) => this.pipeInExtraMetaData(input)}
             setDataValidationFunction={(func) => {

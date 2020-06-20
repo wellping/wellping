@@ -1,11 +1,8 @@
 import React from "react";
 import { View, Text, Slider } from "react-native";
 
-import {
-  QuestionScreenProps,
-  SliderAnswer,
-  SliderAnswerData,
-} from "../helpers/answerTypes";
+import { SliderAnswerEntity } from "../entities/AnswerEntity";
+import { QuestionScreenProps, SliderAnswerData } from "../helpers/answerTypes";
 import { getNonCriticalProblemTextForUser } from "../helpers/debug";
 import { SliderQuestion } from "../helpers/types";
 
@@ -33,9 +30,9 @@ const SliderQuestionScreen: React.ElementType<SliderQuestionScreenProps> = ({
   if (question.defaultValueFromQuestionId) {
     const prevQuestionAnswer = allAnswers[
       pipeInExtraMetaData(question.defaultValueFromQuestionId)
-    ] as SliderAnswer;
+    ] as SliderAnswerEntity;
     if (prevQuestionAnswer && prevQuestionAnswer.data != null) {
-      defaultSliderValue = prevQuestionAnswer.data;
+      defaultSliderValue = prevQuestionAnswer.data.value;
     } else {
       // If the user did not answer the previous question,
       // use the default slider value from that question instead.

@@ -1,7 +1,5 @@
-import { type } from "os";
-
-import { QuestionType } from "./helpers";
-import { QuestionId, Question, QuestionsList } from "./types";
+import { AnswerEntity } from "../entities/AnswerEntity";
+import { Question, QuestionsList } from "./types";
 
 // We use `{ value: ... }` because it seems that `"simple-json"`
 // does not support simply mixing normal values.
@@ -15,6 +13,9 @@ export type ChoicesWithSingleAnswerAnswerData = {
   value: string;
 };
 
+export type ChoicesWithMultipleAnswersAnswerChoices = {
+  [key: string]: boolean;
+};
 export type ChoicesWithMultipleAnswersAnswerData = {
   value: ChoicesWithMultipleAnswersAnswerChoices;
 };
@@ -27,6 +28,7 @@ export type MultipleTextAnswerData = {
   value: { [key: string]: string }; // `key` will be piped with `eachId`
 };
 
+export type HowLongAgoAnswerDataType = [number | null, string | null];
 export type HowLongAgoAnswerData = {
   value: HowLongAgoAnswerDataType;
 };
@@ -39,54 +41,8 @@ export type AnswerData =
   | MultipleTextAnswerData
   | HowLongAgoAnswerData;
 
-export interface Answer {
-  id: QuestionId;
-  type: QuestionType;
-  preferNotToAnswer: boolean;
-  nextWithoutOption: boolean;
-  data: any | null;
-  lastUpdateDate: Date;
-}
-
-export interface SliderAnswer extends Answer {
-  type: QuestionType.Slider;
-  data: number;
-}
-
-export interface ChoicesWithSingleAnswerAnswer extends Answer {
-  type: QuestionType.ChoicesWithSingleAnswer;
-  data: string;
-}
-
-export type ChoicesWithMultipleAnswersAnswerChoices = {
-  [key: string]: boolean;
-};
-export interface ChoicesWithMultipleAnswersAnswer extends Answer {
-  type: QuestionType.ChoicesWithMultipleAnswers;
-  data: ChoicesWithMultipleAnswersAnswerChoices;
-}
-
-export interface YesNoAnswer extends Answer {
-  type: QuestionType.YesNo;
-  data: boolean;
-}
-
-export interface MultipleTextAnswer extends Answer {
-  type: QuestionType.MultipleText;
-  data: {
-    count: number;
-    values: { [key: string]: string }; // `key` will be piped with `eachId`
-  };
-}
-
-export type HowLongAgoAnswerDataType = [number | null, string | null];
-export interface HowLongAgoAnswer extends Answer {
-  type: QuestionType.HowLongAgo;
-  data: HowLongAgoAnswerDataType;
-}
-
 export interface AnswersList {
-  [id: string]: Answer;
+  [id: string]: AnswerEntity;
 }
 
 export interface QuestionScreenProps {
