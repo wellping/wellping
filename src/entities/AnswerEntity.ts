@@ -4,6 +4,7 @@ import {
   ChildEntity,
   Column,
   ManyToOne,
+  RelationId,
   TableInheritance,
 } from "typeorm";
 
@@ -29,6 +30,9 @@ export abstract class AnswerEntity extends BaseEntity {
   // TODO: remove me once typeorm is updated to a newer version
   @ManyToOne("PingEntity", "answers", { primary: true })
   ping: PingEntity;
+
+  @RelationId((answer: AnswerEntity) => answer.ping)
+  pingId: number;
 
   @Column({ type: "varchar", primary: true })
   questionId: QuestionId;
