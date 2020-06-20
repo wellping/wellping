@@ -57,13 +57,13 @@ const MultipleTextQuestionScreen: React.ElementType<MultipleTextQuestionScreenPr
     setTextValues(newTextValues);
 
     const nonEmptyFields = newTextValues.filter(Boolean);
-    const data: MultipleTextAnswerData = {};
+    const data: MultipleTextAnswerData = { value: {} };
     nonEmptyFields.forEach((value, realIndex) => {
       const eachFieldId = question.eachId.replace(
         withVariable(question.indexName),
         `${realIndex + 1}`, // we want 1-indexed
       );
-      data[eachFieldId] = value;
+      data.value[eachFieldId] = value;
     });
     onDataChange(data);
   };

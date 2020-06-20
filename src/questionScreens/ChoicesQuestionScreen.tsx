@@ -162,20 +162,22 @@ const ChoicesQuestionScreen: React.ElementType<ChoicesQuestionScreenProps> = ({
 
               switch (answerType) {
                 case ChoicesAnswerType.MULTIPLE_SELECTION:
-                  onDataChange(
-                    newSelected as ChoicesWithMultipleAnswersAnswerData,
-                  );
+                  onDataChange({
+                    value: newSelected,
+                  } as ChoicesWithMultipleAnswersAnswerData);
                   break;
 
                 case ChoicesAnswerType.SINGLE_SELECTION:
                   // Single-selection question only need the selected key as the data.
-                  onDataChange(id as ChoicesWithSingleAnswerAnswerData);
+                  onDataChange({
+                    value: id,
+                  } as ChoicesWithSingleAnswerAnswerData);
                   break;
 
                 case ChoicesAnswerType.YESNO:
-                  onDataChange(
-                    (id === YESNO_CHOICES_YES_KEY) as YesNoAnswerData,
-                  );
+                  onDataChange({
+                    value: id === YESNO_CHOICES_YES_KEY,
+                  } as YesNoAnswerData);
                   break;
               }
             }}

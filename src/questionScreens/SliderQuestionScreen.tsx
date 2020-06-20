@@ -64,7 +64,7 @@ const SliderQuestionScreen: React.ElementType<SliderQuestionScreenProps> = ({
         minimumTrackTintColor="#2F2424"
         maximumTrackTintColor="#2F2424"
         onSlidingComplete={(value) => {
-          onDataChange(value as SliderAnswerData);
+          onDataChange({ value } as SliderAnswerData);
         }}
       />
       <View style={{ flexDirection: "row", justifyContent: "space-between" }}>

@@ -3,17 +3,33 @@ import { type } from "os";
 import { QuestionType } from "./helpers";
 import { QuestionId, Question, QuestionsList } from "./types";
 
-export type SliderAnswerData = number;
+// We use `{ value: ... }` because it seems that `"simple-json"`
+// does not support simply mixing normal values.
+// This also increases the consistency of the data.
 
-export type ChoicesWithSingleAnswerAnswerData = string;
+export type SliderAnswerData = {
+  value: number;
+};
 
-export type ChoicesWithMultipleAnswersAnswerData = ChoicesWithMultipleAnswersAnswerChoices;
+export type ChoicesWithSingleAnswerAnswerData = {
+  value: string;
+};
 
-export type YesNoAnswerData = boolean;
+export type ChoicesWithMultipleAnswersAnswerData = {
+  value: ChoicesWithMultipleAnswersAnswerChoices;
+};
 
-export type MultipleTextAnswerData = { [key: string]: string }; // `key` will be piped with `eachId`
+export type YesNoAnswerData = {
+  value: boolean;
+};
 
-export type HowLongAgoAnswerData = HowLongAgoAnswerDataType;
+export type MultipleTextAnswerData = {
+  value: { [key: string]: string }; // `key` will be piped with `eachId`
+};
+
+export type HowLongAgoAnswerData = {
+  value: HowLongAgoAnswerDataType;
+};
 
 export type AnswerData =
   | SliderAnswerData
