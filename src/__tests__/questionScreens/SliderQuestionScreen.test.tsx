@@ -28,21 +28,33 @@ const SLIDER_QUESTIONS: {
     slider: ["left", "right"],
     next: "WithDefaultFromElsewhere",
   },
-  WithDefaultFromElsewhere: {
-    id: "WithDefaultFromElsewhere",
+  WithDefaultFromQWithoutDefault: {
+    id: "WithDefaultFromQWithoutDefault",
     type: QuestionType.Slider,
     question:
-      "This question has a default value that is from another question.",
-    defaultValueFromQuestionId: "WithConstantDefault",
+      "This question has a default value that is from another question (that does not have `defaultValue`).",
+    defaultValueFromQuestionId: "WithoutDefault",
     defaultValue: 100, // This should be ignored for this question.
+    slider: ["left", "right"],
+    next: "WithDefaultFromQWithDefault",
+  },
+  WithDefaultFromQWithDefault: {
+    id: "WithDefaultFromQWithDefault",
+    type: QuestionType.Slider,
+    question:
+      "This question has a default value that is from another question (that has `defaultValue`).",
+    defaultValueFromQuestionId: "WithDefaultFromQWithoutDefault",
+    defaultValue: 0, // This should be ignored for this question.
     slider: ["left", "right"],
     next: null,
   },
 };
 const WITHOUT_DEFAULT = SLIDER_QUESTIONS["WithoutDefault"];
 const WITH_CONSTANT_DEFAULT = SLIDER_QUESTIONS["WithConstantDefault"];
-const WITH_DEFAULT_FROM_ELSEWHERE =
-  SLIDER_QUESTIONS["WithDefaultFromElsewhere"];
+const WITH_DEFAULT_FROM_Q_WITHOUT_DEFAULT =
+  SLIDER_QUESTIONS["WithDefaultFromQWithoutDefault"];
+const WITH_DEFAULT_FROM_Q_WITH_DEFAULT =
+  SLIDER_QUESTIONS["WithDefaultFromQWithDefault"];
 
 const SLIDER_A11Y_LABEL = "slider input";
 const getSlider = (getAllByA11yLabel: A11yAPI["getAllByA11yLabel"]) => {
@@ -117,21 +129,26 @@ test("with constant default value", () => {
   expect(toJSON()).toMatchSnapshot();
 });
 
-test.each([{ value: 33 }, null] as (SliderAnswerData | null)[])(
-  "with default value from elsewhere: %o",
-  (prevAnswerData) => {
+test.each([
+  ["without default value", { value: 31 }, WITH_DEFAULT_FROM_Q_WITHOUT_DEFAULT],
+  ["without default value", null, WITH_DEFAULT_FROM_Q_WITHOUT_DEFAULT],
+  ["with default value", { value: 61 }, WITH_DEFAULT_FROM_Q_WITH_DEFAULT],
+  ["with default value", null, WITH_DEFAULT_FROM_Q_WITH_DEFAULT],
+] as [string, SliderAnswerData | null, SliderQuestion][])(
+  "with default value from a question %s with data `%o`",
+  (_, prevAnswerData, question) => {
     const mockOnDataChangeFn = jest.fn();
     const mockPipeInExtraMetaData = jest.fn(simplePipeInExtraMetaData);
     const mockSetDataValidationFunction = jest.fn();
 
     const { getAllByA11yLabel, toJSON } = render(
       <SliderQuestionScreen
-        key={WITH_DEFAULT_FROM_ELSEWHERE.id}
-        question={WITH_DEFAULT_FROM_ELSEWHERE}
+        key={question.id}
+        question={question}
         onDataChange={mockOnDataChangeFn}
         allAnswers={{
           // @ts-ignore (we don't need to craft an entire AnswerEntity)
-          WithConstantDefault: {
+          [question.defaultValueFromQuestionId]: {
             data: prevAnswerData,
           },
         }}
@@ -149,18 +166,14 @@ test.each([{ value: 33 }, null] as (SliderAnswerData | null)[])(
 
     const sliderInput = getSlider(getAllByA11yLabel);
     // `defaultValue` should be ignored here.
-    expect(sliderInput.props.value).not.toBe(
-      WITH_DEFAULT_FROM_ELSEWHERE.defaultValue,
-    );
+    expect(sliderInput.props.value).not.toBe(question.defaultValue);
 
     expect(sliderInput.props.value).toBe(
       prevAnswerData
         ? prevAnswerData.value // If previous data is `null`, the question should use the default
         : // slider value of previous question.
           getQuestionDefaultSliderValue(
-            SLIDER_QUESTIONS[
-              WITH_DEFAULT_FROM_ELSEWHERE.defaultValueFromQuestionId!
-            ],
+            SLIDER_QUESTIONS[question.defaultValueFromQuestionId!],
           ),
     );
 

@@ -59,7 +59,7 @@ exports[`with constant default value 1`] = `
 </View>
 `;
 
-exports[`with default value from elsewhere: { value: 33 } 1`] = `
+exports[`with default value from a question with default value with data \`{ value: 61 }\` 1`] = `
 <View
   style={
     Object {
@@ -86,7 +86,7 @@ exports[`with default value from elsewhere: { value: 33 } 1`] = `
         "height": 40,
       }
     }
-    value={33}
+    value={61}
   />
   <View
     style={
@@ -118,7 +118,7 @@ exports[`with default value from elsewhere: { value: 33 } 1`] = `
 </View>
 `;
 
-exports[`with default value from elsewhere: null 1`] = `
+exports[`with default value from a question with default value with data \`null\` 1`] = `
 <View
   style={
     Object {
@@ -145,7 +145,125 @@ exports[`with default value from elsewhere: null 1`] = `
         "height": 40,
       }
     }
-    value={25}
+    value={100}
+  />
+  <View
+    style={
+      Object {
+        "flexDirection": "row",
+        "justifyContent": "space-between",
+      }
+    }
+  >
+    <Text
+      style={
+        Object {
+          "maxWidth": "40%",
+        }
+      }
+    >
+      left
+    </Text>
+    <Text
+      style={
+        Object {
+          "maxWidth": "40%",
+        }
+      }
+    >
+      right
+    </Text>
+  </View>
+</View>
+`;
+
+exports[`with default value from a question without default value with data \`{ value: 31 }\` 1`] = `
+<View
+  style={
+    Object {
+      "paddingVertical": 30,
+    }
+  }
+>
+  <RCTSlider
+    accessibilityLabel="slider input"
+    disabled={false}
+    enabled={true}
+    maximumTrackTintColor="#2F2424"
+    maximumValue={100}
+    minimumTrackTintColor="#2F2424"
+    minimumValue={0}
+    onChange={null}
+    onResponderTerminationRequest={[Function]}
+    onSlidingComplete={[Function]}
+    onStartShouldSetResponder={[Function]}
+    onValueChange={null}
+    step={1}
+    style={
+      Object {
+        "height": 40,
+      }
+    }
+    value={31}
+  />
+  <View
+    style={
+      Object {
+        "flexDirection": "row",
+        "justifyContent": "space-between",
+      }
+    }
+  >
+    <Text
+      style={
+        Object {
+          "maxWidth": "40%",
+        }
+      }
+    >
+      left
+    </Text>
+    <Text
+      style={
+        Object {
+          "maxWidth": "40%",
+        }
+      }
+    >
+      right
+    </Text>
+  </View>
+</View>
+`;
+
+exports[`with default value from a question without default value with data \`null\` 1`] = `
+<View
+  style={
+    Object {
+      "paddingVertical": 30,
+    }
+  }
+>
+  <RCTSlider
+    accessibilityLabel="slider input"
+    disabled={false}
+    enabled={true}
+    maximumTrackTintColor="#2F2424"
+    maximumValue={100}
+    minimumTrackTintColor="#2F2424"
+    minimumValue={0}
+    onChange={null}
+    onResponderTerminationRequest={[Function]}
+    onSlidingComplete={[Function]}
+    onStartShouldSetResponder={[Function]}
+    onValueChange={null}
+    step={1}
+    style={
+      Object {
+        "height": 40,
+      }
+    }
+    value={50}
   />
   <View
     style={
