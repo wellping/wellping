@@ -6,7 +6,7 @@ import { QuestionScreenProps, SliderAnswerData } from "../helpers/answerTypes";
 import { getNonCriticalProblemTextForUser } from "../helpers/debug";
 import { SliderQuestion } from "../helpers/types";
 
-const DEFAULT_SLIDER_VALUE = 50;
+export const DEFAULT_SLIDER_VALUE = 50;
 
 const getQuestionDefaultSliderValue = (question: SliderQuestion) => {
   if (question.defaultValue == null) {

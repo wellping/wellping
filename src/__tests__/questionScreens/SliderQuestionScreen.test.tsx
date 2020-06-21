@@ -1,43 +1,53 @@
 import React from "react";
 import { render, fireEvent } from "react-native-testing-library";
+import { ReactTestInstance } from "react-test-renderer";
 
 import { SliderAnswerData } from "../../helpers/answerTypes";
 import { QuestionType } from "../../helpers/helpers";
 import { SliderQuestion } from "../../helpers/types";
-import SliderQuestionScreen from "../../questionScreens/SliderQuestionScreen";
+import SliderQuestionScreen, {
+  DEFAULT_SLIDER_VALUE,
+} from "../../questionScreens/SliderQuestionScreen";
+
+const SLIDER_A11Y_LABEL = "slider input";
 
 const SLIDER_QUESTIONS: {
   [questionId: string]: SliderQuestion;
 } = {
-  Feel_Current: {
-    id: "Feel_Current",
+  WithoutDefault: {
+    id: "WithoutDefault",
     type: QuestionType.Slider,
-    question:
-      "Please use the slider bar to indicate how you are feeling right now.",
-    slider: ["extremely negative", "extremely positive"],
-    next: "Feel_Ideal",
+    question: "This question does not have any default value settings.",
+    slider: ["leftmost", "rightmost"],
+    next: "WithDefault",
   },
-  Feel_Ideal: {
-    id: "Feel_Ideal",
+  WithDefault: {
+    id: "WithDefault",
     type: QuestionType.Slider,
-    question:
-      "The current value on the slider bar is your previous response about how you currently feel. Please use the slider bar to indicate how you WOULD LIKE to feel.",
-    slider: ["extremely negative", "extremely positive"],
-    next: "Stressor",
+    question: "This question has a default value.",
+    defaultValue: 25,
+    slider: ["left", "right"],
+    next: null,
   },
 };
 
-const FEEL_CURRENT = SLIDER_QUESTIONS["Feel_Current"];
+const WITHOUT_DEFAULT = SLIDER_QUESTIONS["WithoutDefault"];
 
-test("drag once", () => {
+const moveSlider = (sliderInput: ReactTestInstance, value: number) => {
+  fireEvent(sliderInput, "onSlidingComplete", {
+    nativeEvent: { value },
+  });
+};
+
+test("without default value", () => {
   const mockOnDataChangeFn = jest.fn();
   const mockPipeInExtraMetaData = jest.fn();
   const mockSetDataValidationFunction = jest.fn();
 
-  const { getAllByA11yLabel, getByText } = render(
+  const { getAllByA11yLabel, toJSON } = render(
     <SliderQuestionScreen
-      key={FEEL_CURRENT.id}
-      question={FEEL_CURRENT}
+      key={WITHOUT_DEFAULT.id}
+      question={WITHOUT_DEFAULT}
       onDataChange={mockOnDataChangeFn}
       allAnswers={{}}
       allQuestions={SLIDER_QUESTIONS}
@@ -46,14 +56,22 @@ test("drag once", () => {
     />,
   );
 
-  const sliderInputs = getAllByA11yLabel("slider input");
+  // Because there isn't a need to pipe in any data.
+  expect(mockPipeInExtraMetaData).not.toHaveBeenCalled();
+
+  // Because there isn't any requirement to validate the data.
+  expect(mockSetDataValidationFunction).not.toHaveBeenCalled();
+
+  const sliderInputs = getAllByA11yLabel(SLIDER_A11Y_LABEL);
   expect(sliderInputs).toHaveLength(1);
   const sliderInput = sliderInputs[0];
 
+  expect(toJSON()).toMatchSnapshot();
+
+  expect(sliderInput.props.value).toBe(DEFAULT_SLIDER_VALUE);
+
   const NEW_VALUE = 75;
-  fireEvent(sliderInput, "onSlidingComplete", {
-    nativeEvent: { value: NEW_VALUE },
-  });
+  moveSlider(sliderInput, NEW_VALUE);
   expect(mockOnDataChangeFn).toHaveBeenCalledWith({
     value: NEW_VALUE,
   } as SliderAnswerData);
