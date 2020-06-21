@@ -30,17 +30,6 @@ const SLIDER_QUESTIONS: {
 const FEEL_CURRENT = SLIDER_QUESTIONS["Feel_Current"];
 
 test("drag once", () => {
-  const originalError = console.error;
-  jest.spyOn(console, "error").mockImplementation((error: string) => {
-    if (
-      error.includes("Warning: Slider has been extracted from react-native")
-    ) {
-      // Slience error about Slider.
-      return;
-    }
-    originalError(error);
-  });
-
   const mockOnDataChangeFn = jest.fn();
   const mockPipeInExtraMetaData = jest.fn();
   const mockSetDataValidationFunction = jest.fn();
