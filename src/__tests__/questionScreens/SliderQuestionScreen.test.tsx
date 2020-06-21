@@ -117,65 +117,56 @@ test("with constant default value", () => {
   expect(toJSON()).toMatchSnapshot();
 });
 
-const testDefaultValueFromElsewhere = (
-  prevAnswerData: SliderAnswerData | null,
-) => {
-  const mockOnDataChangeFn = jest.fn();
-  const mockPipeInExtraMetaData = jest.fn(simplePipeInExtraMetaData);
-  const mockSetDataValidationFunction = jest.fn();
+test.each([{ value: 33 }, null] as (SliderAnswerData | null)[])(
+  "with default value from elsewhere: %o",
+  (prevAnswerData) => {
+    const mockOnDataChangeFn = jest.fn();
+    const mockPipeInExtraMetaData = jest.fn(simplePipeInExtraMetaData);
+    const mockSetDataValidationFunction = jest.fn();
 
-  const { getAllByA11yLabel, toJSON } = render(
-    <SliderQuestionScreen
-      key={WITH_DEFAULT_FROM_ELSEWHERE.id}
-      question={WITH_DEFAULT_FROM_ELSEWHERE}
-      onDataChange={mockOnDataChangeFn}
-      allAnswers={{
-        // @ts-ignore (we don't need to craft an entire AnswerEntity)
-        WithConstantDefault: {
-          data: prevAnswerData,
-        },
-      }}
-      allQuestions={SLIDER_QUESTIONS}
-      pipeInExtraMetaData={mockPipeInExtraMetaData}
-      setDataValidationFunction={mockSetDataValidationFunction}
-    />,
-  );
+    const { getAllByA11yLabel, toJSON } = render(
+      <SliderQuestionScreen
+        key={WITH_DEFAULT_FROM_ELSEWHERE.id}
+        question={WITH_DEFAULT_FROM_ELSEWHERE}
+        onDataChange={mockOnDataChangeFn}
+        allAnswers={{
+          // @ts-ignore (we don't need to craft an entire AnswerEntity)
+          WithConstantDefault: {
+            data: prevAnswerData,
+          },
+        }}
+        allQuestions={SLIDER_QUESTIONS}
+        pipeInExtraMetaData={mockPipeInExtraMetaData}
+        setDataValidationFunction={mockSetDataValidationFunction}
+      />,
+    );
 
-  // To pipe in `defaultValueFromQuestionId`.
-  expect(mockPipeInExtraMetaData).toHaveBeenCalledTimes(1);
+    // To pipe in `defaultValueFromQuestionId`.
+    expect(mockPipeInExtraMetaData).toHaveBeenCalledTimes(1);
 
-  // Because there isn't any requirement to validate the data.
-  expect(mockSetDataValidationFunction).not.toHaveBeenCalled();
+    // Because there isn't any requirement to validate the data.
+    expect(mockSetDataValidationFunction).not.toHaveBeenCalled();
 
-  const sliderInput = getSlider(getAllByA11yLabel);
-  // `defaultValue` should be ignored here.
-  expect(sliderInput.props.value).not.toBe(
-    WITH_DEFAULT_FROM_ELSEWHERE.defaultValue,
-  );
+    const sliderInput = getSlider(getAllByA11yLabel);
+    // `defaultValue` should be ignored here.
+    expect(sliderInput.props.value).not.toBe(
+      WITH_DEFAULT_FROM_ELSEWHERE.defaultValue,
+    );
 
-  expect(toJSON()).toMatchSnapshot();
+    expect(sliderInput.props.value).toBe(
+      prevAnswerData
+        ? prevAnswerData.value // If previous data is `null`, the question should use the default
+        : // slider value of previous question.
+          getQuestionDefaultSliderValue(
+            SLIDER_QUESTIONS[
+              WITH_DEFAULT_FROM_ELSEWHERE.defaultValueFromQuestionId!
+            ],
+          ),
+    );
 
-  return sliderInput;
-};
-
-test("with default value from elsewhere - with previous data", () => {
-  const PREV_ANSWER_DATA = 33;
-  const sliderInput = testDefaultValueFromElsewhere({
-    value: PREV_ANSWER_DATA,
-  });
-  expect(sliderInput.props.value).toBe(PREV_ANSWER_DATA);
-});
-
-test("with default value from elsewhere - without previous data", () => {
-  const sliderInput = testDefaultValueFromElsewhere(null);
-  expect(sliderInput.props.value).toBe(
-    // If previous data is `null`, the question should use the default
-    // slider value of previous question.
-    getQuestionDefaultSliderValue(
-      SLIDER_QUESTIONS[WITH_DEFAULT_FROM_ELSEWHERE.defaultValueFromQuestionId!],
-    ),
-  );
-});
+    expect(toJSON()).toMatchSnapshot();
+  },
+);
 
 test("update values", () => {
   const mockOnDataChangeFn = jest.fn();

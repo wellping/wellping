@@ -59,7 +59,7 @@ exports[`with constant default value 1`] = `
 </View>
 `;
 
-exports[`with default value from elsewhere - with previous data 1`] = `
+exports[`with default value from elsewhere: { value: 33 } 1`] = `
 <View
   style={
     Object {
@@ -118,7 +118,7 @@ exports[`with default value from elsewhere - with previous data 1`] = `
 </View>
 `;
 
-exports[`with default value from elsewhere - without previous data 1`] = `
+exports[`with default value from elsewhere: null 1`] = `
 <View
   style={
     Object {
