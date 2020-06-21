@@ -201,6 +201,17 @@ const CHOICES = [
 ];
 test.each([
   [generateTypingInput(2), 2, true, "Enter a relation..."],
+  [
+    [
+      ...generateTypingInput(1),
+      "Sibling / other relative",
+      ...generateTypingInput(2),
+      "Parent",
+    ],
+    5,
+    true,
+    "Enter a relation...",
+  ],
   [generateTypingInput(4), 4, false, undefined],
   [["Friend", "RANDOM INPUT", "Other"], 5, true, "Enter a relation..."],
   [

@@ -8,6 +8,8 @@ exports[`input \`["I am typing 1", "I am typing 2", "I am typing 3", "I am typin
 
 exports[`input \`["I am typing 1", "I am typing 2"]\` with max 2 and forceChoice true with a choices object 1`] = `"{\\"value\\":{}}"`;
 
+exports[`input \`["I am typing 1", "Sibling / other relative", "I am typing 1", "I am typing 2", "Parent"]\` with max 5 and forceChoice true with a choices object 1`] = `"{\\"value\\":{\\"Input_1\\":\\"Sibling / other relative\\",\\"Input_2\\":\\"Parent\\"}}"`;
+
 exports[`input \`["I am typing 1"]\` with max 3 without choices 1`] = `"{\\"value\\":{\\"Typing_1\\":\\"I am typing 1\\"}}"`;
 
 exports[`input \`["John Doe", "王小明"]\` with max 5 without choices 1`] = `"{\\"value\\":{\\"Name_1\\":\\"John Doe\\",\\"Name_2\\":\\"王小明\\"}}"`;
