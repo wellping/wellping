@@ -59,6 +59,124 @@ exports[`with constant default value 1`] = `
 </View>
 `;
 
+exports[`with default value from elsewhere - with previous data 1`] = `
+<View
+  style={
+    Object {
+      "paddingVertical": 30,
+    }
+  }
+>
+  <RCTSlider
+    accessibilityLabel="slider input"
+    disabled={false}
+    enabled={true}
+    maximumTrackTintColor="#2F2424"
+    maximumValue={100}
+    minimumTrackTintColor="#2F2424"
+    minimumValue={0}
+    onChange={null}
+    onResponderTerminationRequest={[Function]}
+    onSlidingComplete={[Function]}
+    onStartShouldSetResponder={[Function]}
+    onValueChange={null}
+    step={1}
+    style={
+      Object {
+        "height": 40,
+      }
+    }
+    value={33}
+  />
+  <View
+    style={
+      Object {
+        "flexDirection": "row",
+        "justifyContent": "space-between",
+      }
+    }
+  >
+    <Text
+      style={
+        Object {
+          "maxWidth": "40%",
+        }
+      }
+    >
+      left
+    </Text>
+    <Text
+      style={
+        Object {
+          "maxWidth": "40%",
+        }
+      }
+    >
+      right
+    </Text>
+  </View>
+</View>
+`;
+
+exports[`with default value from elsewhere - without previous data 1`] = `
+<View
+  style={
+    Object {
+      "paddingVertical": 30,
+    }
+  }
+>
+  <RCTSlider
+    accessibilityLabel="slider input"
+    disabled={false}
+    enabled={true}
+    maximumTrackTintColor="#2F2424"
+    maximumValue={100}
+    minimumTrackTintColor="#2F2424"
+    minimumValue={0}
+    onChange={null}
+    onResponderTerminationRequest={[Function]}
+    onSlidingComplete={[Function]}
+    onStartShouldSetResponder={[Function]}
+    onValueChange={null}
+    step={1}
+    style={
+      Object {
+        "height": 40,
+      }
+    }
+    value={25}
+  />
+  <View
+    style={
+      Object {
+        "flexDirection": "row",
+        "justifyContent": "space-between",
+      }
+    }
+  >
+    <Text
+      style={
+        Object {
+          "maxWidth": "40%",
+        }
+      }
+    >
+      left
+    </Text>
+    <Text
+      style={
+        Object {
+          "maxWidth": "40%",
+        }
+      }
+    >
+      right
+    </Text>
+  </View>
+</View>
+`;
+
 exports[`without default value 1`] = `
 <View
   style={

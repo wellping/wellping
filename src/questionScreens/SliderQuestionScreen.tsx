@@ -8,7 +8,7 @@ import { SliderQuestion } from "../helpers/types";
 
 export const DEFAULT_SLIDER_VALUE = 50;
 
-const getQuestionDefaultSliderValue = (question: SliderQuestion) => {
+export const getQuestionDefaultSliderValue = (question: SliderQuestion) => {
   if (question.defaultValue == null) {
     return DEFAULT_SLIDER_VALUE;
   }
