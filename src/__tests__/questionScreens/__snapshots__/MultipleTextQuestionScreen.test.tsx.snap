@@ -1,5 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`input \`["Co-worker", "", "Co-worker", ":)", "Co-worker"]\` with max 5 and forceChoice true with a choices object 1`] = `"{\\"value\\":{\\"Input_1\\":\\"Co-worker\\",\\"Input_2\\":\\"Co-worker\\",\\"Input_3\\":\\"Co-worker\\"}}"`;
+
 exports[`input \`["Friend", "RANDOM INPUT", "Other"]\` with max 5 and forceChoice true with a choices object 1`] = `"{\\"value\\":{\\"Input_1\\":\\"Friend\\",\\"Input_2\\":\\"Other\\"}}"`;
 
 exports[`input \`["I am typing 1", "I am typing 2", "I am typing 3", "I am typing 4"]\` with max 4 and forceChoice false with a choices object 1`] = `"{\\"value\\":{\\"Input_1\\":\\"I am typing 1\\",\\"Input_2\\":\\"I am typing 2\\",\\"Input_3\\":\\"I am typing 3\\",\\"Input_4\\":\\"I am typing 4\\"}}"`;

@@ -220,6 +220,7 @@ test.each([
     false,
     undefined,
   ],
+  [["Co-worker", "", "Co-worker", ":)", "Co-worker"], 5, true, "Relation..."],
 ])(
   "input `%p` with max %d and forceChoice %p with a choices object",
   async (inputValues, max, forceChoice, placeholder) => {
