@@ -9,6 +9,7 @@ import SliderQuestionScreen, {
   DEFAULT_SLIDER_VALUE,
   getQuestionDefaultSliderValue,
 } from "../../questionScreens/SliderQuestionScreen";
+import { simplePipeInExtraMetaData } from "../helper";
 
 const SLIDER_QUESTIONS: {
   [questionId: string]: SliderQuestion;
@@ -68,8 +69,6 @@ const moveSlider = (sliderInput: ReactTestInstance, value: number) => {
     nativeEvent: { value },
   });
 };
-
-const simplePipeInExtraMetaData = (id: string) => id;
 
 test("without default value", () => {
   const mockOnDataChangeFn = jest.fn();

@@ -139,6 +139,8 @@ const MultipleTextQuestionScreen: React.ElementType<MultipleTextQuestionScreenPr
           onEndEditing: () => {
             dataValidationFunction(true);
           },
+          accessibilityLabel: `text input ${index}`,
+          accessibilityHint: "Enter your answer here",
         }}
         setSort={(item: DropdownItem, searchedText: string) =>
           // Match exact

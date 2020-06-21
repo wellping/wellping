@@ -1,0 +1,5 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`random input with max 2 and forceChoice true 1`] = `"{\\"value\\":{}}"`;
+
+exports[`random input with max 4 and forceChoice false 1`] = `"{\\"value\\":{\\"Input_1\\":\\"I am typing 1\\",\\"Input_2\\":\\"I am typing 2\\",\\"Input_3\\":\\"I am typing 3\\",\\"Input_4\\":\\"I am typing 4\\"}}"`;
