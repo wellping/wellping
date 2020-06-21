@@ -63,6 +63,7 @@ const SliderQuestionScreen: React.ElementType<SliderQuestionScreenProps> = ({
         onSlidingComplete={(value) => {
           onDataChange({ value } as SliderAnswerData);
         }}
+        accessibilityLabel="slider input"
       />
       <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
         <Text style={{ maxWidth: "40%" }}>{question.slider[0]}</Text>

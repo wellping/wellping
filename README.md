@@ -11,4 +11,7 @@ yarn
 
 # Start
 yarn start
+
+# Test
+yarn test
 ```
