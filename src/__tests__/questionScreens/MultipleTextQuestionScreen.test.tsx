@@ -31,6 +31,7 @@ const getTextInput = (
 const basicTestForQuestionAsync = async (
   question: MultipleTextQuestion,
   allAnswers: AnswersList,
+  inputValues: string[],
 ) => {
   const mockOnDataChangeFn = jest.fn();
   const mockPipeInExtraMetaData = jest.fn(simplePipeInExtraMetaData);
@@ -71,28 +72,25 @@ const basicTestForQuestionAsync = async (
   }
   expect(textInputs).toHaveLength(textInputsLength);
 
-  const valueChanges: string[] = Array.from(
-    Array(textInputsLength),
-    (_, i) => `I am typing ${i + 1}`,
-  );
-
   const expectedAnswerData: MultipleTextAnswerData = { value: {} };
   let callCount = 0;
-  for (let i = 0; i < textInputsLength; i++) {
+  for (let i = 0; i < inputValues.length; i++) {
     const textInput = getTextInput(i, getAllByA11yLabel);
 
     expect(textInput.props.placeholder).toBe(question.placeholder);
 
-    fireEvent.changeText(textInput, valueChanges[i]);
-    await waitFor(() => getByDisplayValue(valueChanges[i]));
+    fireEvent.changeText(textInput, inputValues[i]);
+    await waitFor(() => {
+      const newTextInput = getTextInput(i, getAllByA11yLabel);
+      return inputValues[i] === newTextInput.props.value;
+    });
 
-    expectedAnswerData.value[
-      question.eachId.replace(
-        withVariable(question.indexName),
-        // Because we always start at 1 no matter which text field it is.
-        `${Object.keys(expectedAnswerData.value).length + 1}`,
-      )
-    ] = valueChanges[i];
+    const currentKey = question.eachId.replace(
+      withVariable(question.indexName),
+      // Because we always start at 1 no matter which text field it is.
+      `${Object.keys(expectedAnswerData.value).length + 1}`,
+    );
+    expectedAnswerData.value[currentKey] = inputValues[i];
 
     callCount += 1;
     expect(mockOnDataChangeFn).toHaveBeenNthCalledWith(
@@ -101,37 +99,48 @@ const basicTestForQuestionAsync = async (
     );
     expect(mockOnDataChangeFn).toHaveBeenCalledTimes(callCount);
 
-    if (question.forceChoice) {
-      let buttonPressed = false;
+    if (question.choices && question.forceChoice) {
+      let isInputInChoice = false;
+      if (typeof question.choices === "string") {
+        // TODO: DO THIS
+      } else {
+        isInputInChoice =
+          question.choices?.some((e) => e.value === inputValues[i]) || false;
+      }
 
-      const alertSpy = jest
-        .spyOn(Alert, "alert")
-        .mockImplementation((title, message, buttons) => {
-          expect(message).toContain("You must select an item from the list");
+      if (!isInputInChoice) {
+        let buttonPressed = false;
 
-          // Press "OK"
-          buttons![0].onPress!();
+        const alertSpy = jest
+          .spyOn(Alert, "alert")
+          .mockImplementation((title, message, buttons) => {
+            expect(message).toContain("You must select an item from the list");
 
-          buttonPressed = true;
-        });
-      fireEvent(textInput, "onEndEditing", {});
-      expect(alertSpy).toHaveBeenCalledTimes(1);
+            // Press "OK"
+            buttons![0].onPress!();
 
-      await waitFor(() => buttonPressed);
+            buttonPressed = true;
+          });
+        fireEvent(textInput, "onEndEditing", {});
+        expect(alertSpy).toHaveBeenCalledTimes(1);
 
-      expectedAnswerData.value = {};
-      callCount += 1;
-      expect(mockOnDataChangeFn).toHaveBeenNthCalledWith(
-        callCount,
-        expectedAnswerData,
-      );
+        await waitFor(() => buttonPressed);
 
-      alertSpy.mockClear();
+        delete expectedAnswerData.value[currentKey];
+        callCount += 1;
+        expect(mockOnDataChangeFn).toHaveBeenNthCalledWith(
+          callCount,
+          expectedAnswerData,
+        );
+
+        alertSpy.mockClear();
+      }
     }
 
     // TODO: it doesn't seems to be testing whether the text field (UI) is cleared.
   }
 
+  // Store the expected data object.
   expect(JSON.stringify(expectedAnswerData)).toMatchSnapshot();
 
   return renderResults;
@@ -146,19 +155,30 @@ const CHOICES = [
   { key: "stranger", value: "Stranger" },
   { key: "other", value: "Other" },
 ];
+const generateTypingInput = (length: number) => {
+  return Array.from(Array(length), (_, i) => `I am typing ${i + 1}`);
+};
+
 test.each([
-  [2, true, "Enter a relation...", CHOICES],
-  [4, false, undefined, CHOICES],
+  [generateTypingInput(2), 2, true, "Enter a relation..."],
+  [generateTypingInput(4), 4, false, undefined],
+  [["Friend", "RANDOM INPUT", "Other"], 5, true, "Enter a relation..."],
+  [
+    ["Stranger", "Stranger", "Stranger", "Stranger", "RANDOM"],
+    5,
+    false,
+    undefined,
+  ],
 ])(
-  "random input with max %d and forceChoice %p",
-  async (max, forceChoice, placeholder, choices) => {
+  "input `%p` with max %d and forceChoice %p with a choices object",
+  async (inputValues, max, forceChoice, placeholder) => {
     const question = {
       id: "WithChoicesDict",
       eachId: "Input_[__INDEX__]",
       type: QuestionType.MultipleText,
       question: "A question",
       placeholder,
-      choices,
+      choices: CHOICES,
       forceChoice,
       max,
       variableName: "TARGET_CATEGORY",
@@ -166,6 +186,8 @@ test.each([
       next: null,
     } as MultipleTextQuestion;
 
-    await basicTestForQuestionAsync(question, {});
+    await basicTestForQuestionAsync(question, {}, inputValues);
   },
 );
+
+// TODO: TEST CHOICES WITH EXTERNAL JSON
