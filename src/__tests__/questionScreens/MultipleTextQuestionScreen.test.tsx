@@ -48,11 +48,7 @@ const basicTestForQuestionAsync = async (
       setDataValidationFunction={mockSetDataValidationFunction}
     />,
   );
-  const {
-    getAllByA11yLabel,
-    getAllByA11yHint,
-    getByDisplayValue,
-  } = renderResults;
+  const { getAllByA11yLabel, getAllByA11yHint } = renderResults;
 
   // Because there isn't a need to pipe in any data.
   expect(mockPipeInExtraMetaData).not.toHaveBeenCalled();
@@ -74,15 +70,16 @@ const basicTestForQuestionAsync = async (
 
   const expectedAnswerData: MultipleTextAnswerData = { value: {} };
   let callCount = 0;
-  for (let i = 0; i < inputValues.length; i++) {
+  for (let i = 0; i < textInputsLength; i++) {
     const textInput = getTextInput(i, getAllByA11yLabel);
+    const inputValue = inputValues[i] || "";
 
     expect(textInput.props.placeholder).toBe(question.placeholder);
 
-    fireEvent.changeText(textInput, inputValues[i]);
+    fireEvent.changeText(textInput, inputValue);
     await waitFor(() => {
       const newTextInput = getTextInput(i, getAllByA11yLabel);
-      return inputValues[i] === newTextInput.props.value;
+      return inputValue === newTextInput.props.value;
     });
 
     const currentKey = question.eachId.replace(
@@ -90,7 +87,9 @@ const basicTestForQuestionAsync = async (
       // Because we always start at 1 no matter which text field it is.
       `${Object.keys(expectedAnswerData.value).length + 1}`,
     );
-    expectedAnswerData.value[currentKey] = inputValues[i];
+    if (inputValue.length > 0) {
+      expectedAnswerData.value[currentKey] = inputValue;
+    }
 
     callCount += 1;
     expect(mockOnDataChangeFn).toHaveBeenNthCalledWith(
@@ -99,13 +98,13 @@ const basicTestForQuestionAsync = async (
     );
     expect(mockOnDataChangeFn).toHaveBeenCalledTimes(callCount);
 
-    if (question.choices && question.forceChoice) {
+    if (question.choices && question.forceChoice && inputValue.length > 0) {
       let isInputInChoice = false;
       if (typeof question.choices === "string") {
         // TODO: DO THIS
       } else {
         isInputInChoice =
-          question.choices?.some((e) => e.value === inputValues[i]) || false;
+          question.choices?.some((e) => e.value === inputValue) || false;
       }
 
       if (!isInputInChoice) {
@@ -191,3 +190,5 @@ test.each([
 );
 
 // TODO: TEST CHOICES WITH EXTERNAL JSON
+
+// TODO: TEST
