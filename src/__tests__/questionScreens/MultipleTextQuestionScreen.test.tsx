@@ -145,6 +145,51 @@ const basicTestForQuestionAsync = async (
   return renderResults;
 };
 
+const generateTypingInput = (length: number) => {
+  return Array.from(Array(length), (_, i) => `I am typing ${i + 1}`);
+};
+test.each([
+  [
+    generateTypingInput(1),
+    3,
+    "Enter something...",
+    "Typing_[__INDEX__]",
+    "INDEX",
+  ],
+  [generateTypingInput(4), 4, "", "[__ITEM__]", "ITEM"],
+  [
+    ["John Doe", "王小明"],
+    5,
+    "Enter a name...",
+    "Name_[__NAMEINDEX__]",
+    "NAMEINDEX",
+  ],
+  [
+    ["Mr. Fox", "Felicity Fox", "Ash Fox", "Kristofferson Silverfox"],
+    4,
+    undefined,
+    "Fox[__FOX_INDEX__]",
+    "FOX_INDEX",
+  ],
+])(
+  "input `%p` with max %d without choices",
+  async (inputValues, max, placeholder, eachId, indexName) => {
+    const question = {
+      id: "WithoutChoicesDict",
+      eachId,
+      type: QuestionType.MultipleText,
+      question: "A question",
+      placeholder,
+      max,
+      variableName: "TARGET_CATEGORY",
+      indexName,
+      next: null,
+    } as MultipleTextQuestion;
+
+    await basicTestForQuestionAsync(question, {}, inputValues);
+  },
+);
+
 const CHOICES = [
   { key: "friend", value: "Friend" },
   { key: "coworker", value: "Co-worker" },
@@ -154,10 +199,6 @@ const CHOICES = [
   { key: "stranger", value: "Stranger" },
   { key: "other", value: "Other" },
 ];
-const generateTypingInput = (length: number) => {
-  return Array.from(Array(length), (_, i) => `I am typing ${i + 1}`);
-};
-
 test.each([
   [generateTypingInput(2), 2, true, "Enter a relation..."],
   [generateTypingInput(4), 4, false, undefined],
