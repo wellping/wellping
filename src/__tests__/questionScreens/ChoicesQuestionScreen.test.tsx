@@ -180,21 +180,27 @@ const inputTestForChoicesWithSingleAnswerQuestionAsync = async (
 ) => {
   const { getAllByA11yLabel } = renderResults;
 
+  let expectedResults: string | null = null;
+
   let calledTimes = 0;
   for (let i = 0; i < inputValueSequence.length; i++) {
     const inputValue = inputValueSequence[i];
     const selection = getSelection(inputValue, getAllByA11yLabel);
     fireEvent.press(selection);
 
-    const storedValue = question.choices.find(
+    expectedResults = question.choices.find(
       (choice) => choice.value === inputValue,
-    )?.key;
+    )?.key!;
 
     calledTimes += 1;
     expect(mockOnDataChangeFn).toHaveBeenNthCalledWith(calledTimes, {
-      value: storedValue,
+      value: expectedResults,
     } as ChoicesWithSingleAnswerAnswerData);
     expect(mockOnDataChangeFn).toHaveBeenCalledTimes(calledTimes);
+  }
+
+  if (expectedResults != null) {
+    expect(expectedResults).toMatchSnapshot();
   }
 
   return renderResults;
@@ -229,6 +235,8 @@ const inputTestForChoicesWithMultipleAnswersQuestionAsync = async (
     } as ChoicesWithMultipleAnswersAnswerData);
     expect(mockOnDataChangeFn).toHaveBeenCalledTimes(calledTimes);
   }
+
+  expect(expectedResults).toMatchSnapshot();
 
   return renderResults;
 };
@@ -276,6 +284,7 @@ const CHOICES_TEST_TABLE = [
     true,
     undefined,
   ],
+  [[], false, undefined],
 ] as [string[], boolean, string[] | undefined][];
 test.each(CHOICES_TEST_TABLE)(
   "ChoicesWithSingleAnswer question with input sequence %p (randomize order %p except for %p)",
