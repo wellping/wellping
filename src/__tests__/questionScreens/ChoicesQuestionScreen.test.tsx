@@ -139,10 +139,22 @@ const basicTestForChoicesWithSingleAnswerOrMultipleAnswersQuestionAsync = async 
   if (question.randomizeChoicesOrder) {
     expect(displayedList).not.toStrictEqual(FLATTENED_CHOICES_VALUES);
     if (question.randomizeExceptForChoiceIds) {
-      for (let i = question.randomizeExceptForChoiceIds.length; i > 0; i--) {
+      // Sort the `randomizeExceptForChoiceIds` by the order of `choices`.
+      const sortedRandomizeExceptForChoiceIds = [];
+      for (const choice of question.choices) {
+        if (question.randomizeExceptForChoiceIds.includes(choice.key)) {
+          sortedRandomizeExceptForChoiceIds.push(choice.key);
+        }
+      }
+      // Just a sanity check to make sure the items are the same.
+      expect(sortedRandomizeExceptForChoiceIds).toHaveLength(
+        question.randomizeExceptForChoiceIds.length,
+      );
+
+      for (let i = sortedRandomizeExceptForChoiceIds.length; i > 0; i--) {
         const key =
-          question.randomizeExceptForChoiceIds[
-            question.randomizeExceptForChoiceIds.length - i
+          sortedRandomizeExceptForChoiceIds[
+            sortedRandomizeExceptForChoiceIds.length - i
           ];
         const value = question.choices.find((choice) => choice.key === key)
           ?.value;
@@ -239,6 +251,30 @@ const CHOICES_TEST_TABLE = [
     ["Coyote", "Lynx", "Wolf", "Fox", "Coyote", "I don't know"],
     true,
     ["wolf", "fox", "other", "idk"],
+  ],
+  [
+    ["Coyote", "Coyote", "Wolf", "Wolf", "Coyote"],
+    true,
+    ["idk", "other"], // The order should follow `choices`, not here.
+  ],
+  [
+    [
+      "Coyote",
+      "Wolf",
+      "Fox",
+      "Lynx",
+      "Panda",
+      "Other",
+      "Coyote",
+      "Wolf",
+      "Fox",
+      "Lynx",
+      "Panda",
+      "Other",
+      "I don't know",
+    ],
+    true,
+    undefined,
   ],
 ] as [string[], boolean, string[] | undefined][];
 test.each(CHOICES_TEST_TABLE)(
