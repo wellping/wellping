@@ -13,6 +13,7 @@ import { ReactTestInstance } from "react-test-renderer";
 import {
   YesNoAnswerData,
   ChoicesWithSingleAnswerAnswerData,
+  ChoicesWithMultipleAnswersAnswerData,
 } from "../../helpers/answerTypes";
 import { QuestionType } from "../../helpers/helpers";
 import {
@@ -120,7 +121,7 @@ const basicTestForChoicesWithSingleAnswerOrMultipleAnswersQuestionAsync = async 
       setDataValidationFunction={mockSetDataValidationFunction}
     />,
   );
-  const { getAllByA11yLabel } = renderResults;
+  const { findAllByA11yLabel } = renderResults;
 
   expect(mockPipeInExtraMetaData).toHaveBeenCalledTimes(
     question.choices.length,
@@ -129,7 +130,7 @@ const basicTestForChoicesWithSingleAnswerOrMultipleAnswersQuestionAsync = async 
   // There shouldn't need to be any validation
   expect(mockSetDataValidationFunction).not.toHaveBeenCalled();
 
-  const selections = getAllByA11yLabel(/select (.*?)/);
+  const selections = await findAllByA11yLabel(/select (.*?)/);
   expect(selections).toHaveLength(question.choices.length);
 
   const displayedList: string[] = selections.map((selection) =>
@@ -187,6 +188,39 @@ const inputTestForChoicesWithSingleAnswerQuestionAsync = async (
   return renderResults;
 };
 
+const inputTestForChoicesWithMultipleAnswersQuestionAsync = async (
+  renderResults: RenderAPI,
+  mockOnDataChangeFn: jest.Mock<any, any>,
+  question: ChoicesWithMultipleAnswersQuestion,
+  inputValueSequence: string[],
+) => {
+  const { getAllByA11yLabel } = renderResults;
+
+  const expectedResults = question.choices.reduce((map, choice) => {
+    map[choice.key] = false;
+    return map;
+  }, {} as { [key: string]: boolean });
+
+  let calledTimes = 0;
+  for (let i = 0; i < inputValueSequence.length; i++) {
+    const inputValue = inputValueSequence[i];
+    const selection = getSelection(inputValue, getAllByA11yLabel);
+    fireEvent.press(selection);
+
+    const key = question.choices.find((choice) => choice.value === inputValue)
+      ?.key!;
+    expectedResults[key] = !expectedResults[key];
+
+    calledTimes += 1;
+    expect(mockOnDataChangeFn).toHaveBeenNthCalledWith(calledTimes, {
+      value: expectedResults,
+    } as ChoicesWithMultipleAnswersAnswerData);
+    expect(mockOnDataChangeFn).toHaveBeenCalledTimes(calledTimes);
+  }
+
+  return renderResults;
+};
+
 const CHOICES = [
   { key: "wolf", value: "Wolf" },
   { key: "fox", value: "Fox" },
@@ -232,6 +266,39 @@ test.each(CHOICES_TEST_TABLE)(
     );
 
     await inputTestForChoicesWithSingleAnswerQuestionAsync(
+      renderResults,
+      mockOnDataChangeFn,
+      question,
+      inputValueSequence,
+    );
+  },
+);
+
+test.each(CHOICES_TEST_TABLE)(
+  "ChoicesWithMultipleAnswers question with input sequence %p (randomize order %p except for %p)",
+  async (
+    inputValueSequence,
+    randomizeChoicesOrder,
+    randomizeExceptForChoiceIds,
+  ) => {
+    const question = {
+      id: "AnimalTest",
+      type: QuestionType.ChoicesWithMultipleAnswers,
+      question: "What animals do you love?",
+      randomizeChoicesOrder,
+      randomizeExceptForChoiceIds,
+      choices: CHOICES,
+      next: null,
+    } as ChoicesWithMultipleAnswersQuestion;
+
+    const {
+      renderResults,
+      mockOnDataChangeFn,
+    } = await basicTestForChoicesWithSingleAnswerOrMultipleAnswersQuestionAsync(
+      question,
+    );
+
+    await inputTestForChoicesWithMultipleAnswersQuestionAsync(
       renderResults,
       mockOnDataChangeFn,
       question,

@@ -1,5 +1,13 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`ChoicesWithMultipleAnswers question with input sequence ["Coyote", "Lynx", "Wolf", "Fox", "Coyote", "I don't know"] (randomize order true except for ["wolf", "fox", "other", "idk"]) 1`] = `"[\\"Lynx\\",\\"Panda\\",\\"Coyote\\",\\"Wolf\\",\\"Fox\\",\\"Other\\",\\"I don't know\\"]"`;
+
+exports[`ChoicesWithMultipleAnswers question with input sequence ["Fox"] (randomize order true except for ["other", "idk"]) 1`] = `"[\\"Lynx\\",\\"Coyote\\",\\"Wolf\\",\\"Panda\\",\\"Fox\\",\\"Other\\",\\"I don't know\\"]"`;
+
+exports[`ChoicesWithMultipleAnswers question with input sequence ["Lynx", "Panda", "Other"] (randomize order true except for ["other"]) 1`] = `"[\\"Lynx\\",\\"Coyote\\",\\"Wolf\\",\\"Panda\\",\\"I don't know\\",\\"Fox\\",\\"Other\\"]"`;
+
+exports[`ChoicesWithMultipleAnswers question with input sequence ["Wolf", "Coyote"] (randomize order false except for undefined) 1`] = `"[\\"Wolf\\",\\"Fox\\",\\"Coyote\\",\\"Lynx\\",\\"Panda\\",\\"Other\\",\\"I don't know\\"]"`;
+
 exports[`ChoicesWithSingleAnswer question with input sequence ["Coyote", "Lynx", "Wolf", "Fox", "Coyote", "I don't know"] (randomize order true except for ["wolf", "fox", "other", "idk"]) 1`] = `"[\\"Lynx\\",\\"Panda\\",\\"Coyote\\",\\"Wolf\\",\\"Fox\\",\\"Other\\",\\"I don't know\\"]"`;
 
 exports[`ChoicesWithSingleAnswer question with input sequence ["Fox"] (randomize order true except for ["other", "idk"]) 1`] = `"[\\"Lynx\\",\\"Coyote\\",\\"Wolf\\",\\"Panda\\",\\"Fox\\",\\"Other\\",\\"I don't know\\"]"`;
