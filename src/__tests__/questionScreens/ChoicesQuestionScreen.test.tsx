@@ -165,7 +165,7 @@ const basicTestForChoicesWithSingleAnswerOrMultipleAnswersQuestionAsync = async 
     expect(displayedList).toStrictEqual(FLATTENED_CHOICES_VALUES);
   }
 
-  expect(JSON.stringify(displayedList)).toMatchSnapshot();
+  expect(JSON.stringify(displayedList)).toMatchSnapshot("displayed list");
 
   mathRandomSpy.mockRestore();
 
@@ -200,7 +200,7 @@ const inputTestForChoicesWithSingleAnswerQuestionAsync = async (
   }
 
   if (expectedResults != null) {
-    expect(expectedResults).toMatchSnapshot();
+    expect(expectedResults).toMatchSnapshot("data");
   }
 
   return renderResults;
@@ -236,7 +236,7 @@ const inputTestForChoicesWithMultipleAnswersQuestionAsync = async (
     expect(mockOnDataChangeFn).toHaveBeenCalledTimes(calledTimes);
   }
 
-  expect(expectedResults).toMatchSnapshot();
+  expect(expectedResults).toMatchSnapshot("data");
 
   return renderResults;
 };
