@@ -6,6 +6,7 @@ import {
   A11yAPI,
   FireEventAPI,
   waitFor,
+  RenderAPI,
 } from "react-native-testing-library";
 import { ReactTestInstance } from "react-test-renderer";
 
@@ -17,6 +18,7 @@ import { QuestionType } from "../../helpers/helpers";
 import {
   YesNoQuestion,
   ChoicesWithSingleAnswerQuestion,
+  ChoicesWithMultipleAnswersQuestion,
 } from "../../helpers/types";
 import ChoicesQuestionScreen from "../../questionScreens/ChoicesQuestionScreen";
 import { simplePipeInExtraMetaData } from "../helper";
@@ -92,9 +94,10 @@ test.each([true, false])("YesNo question with input %p", async (value) => {
   await basicTestForYesNoQuestionAsync(question, value);
 });
 
-const basicTestForChoicesWithSingleAnswerQuestionAsync = async (
-  question: ChoicesWithSingleAnswerQuestion,
-  inputValueSequence: string[],
+const basicTestForChoicesWithSingleAnswerOrMultipleAnswersQuestionAsync = async (
+  question:
+    | ChoicesWithSingleAnswerQuestion
+    | ChoicesWithMultipleAnswersQuestion,
 ) => {
   // To make sure we can deterministically confirm the randomness.
   // https://stackoverflow.com/a/57730344/2603230
@@ -149,6 +152,21 @@ const basicTestForChoicesWithSingleAnswerQuestionAsync = async (
     expect(displayedList).toStrictEqual(FLATTENED_CHOICES_VALUES);
   }
 
+  expect(JSON.stringify(displayedList)).toMatchSnapshot();
+
+  mathRandomSpy.mockRestore();
+
+  return { renderResults, mockOnDataChangeFn };
+};
+
+const inputTestForChoicesWithSingleAnswerQuestionAsync = async (
+  renderResults: RenderAPI,
+  mockOnDataChangeFn: jest.Mock<any, any>,
+  question: ChoicesWithSingleAnswerQuestion,
+  inputValueSequence: string[],
+) => {
+  const { getAllByA11yLabel } = renderResults;
+
   let calledTimes = 0;
   for (let i = 0; i < inputValueSequence.length; i++) {
     const inputValue = inputValueSequence[i];
@@ -166,8 +184,6 @@ const basicTestForChoicesWithSingleAnswerQuestionAsync = async (
     expect(mockOnDataChangeFn).toHaveBeenCalledTimes(calledTimes);
   }
 
-  mathRandomSpy.mockRestore();
-
   return renderResults;
 };
 
@@ -181,11 +197,17 @@ const CHOICES = [
   { key: "idk", value: "I don't know" },
 ];
 const FLATTENED_CHOICES_VALUES = CHOICES.map((choice) => choice.value);
-test.each([
+const CHOICES_TEST_TABLE = [
   [["Wolf", "Coyote"], false, undefined],
   [["Lynx", "Panda", "Other"], true, ["other"]],
   [["Fox"], true, ["other", "idk"]],
-])(
+  [
+    ["Coyote", "Lynx", "Wolf", "Fox", "Coyote", "I don't know"],
+    true,
+    ["wolf", "fox", "other", "idk"],
+  ],
+] as [string[], boolean, string[] | undefined][];
+test.each(CHOICES_TEST_TABLE)(
   "ChoicesWithSingleAnswer question with input sequence %p (randomize order %p except for %p)",
   async (
     inputValueSequence,
@@ -202,7 +224,16 @@ test.each([
       next: null,
     } as ChoicesWithSingleAnswerQuestion;
 
-    await basicTestForChoicesWithSingleAnswerQuestionAsync(
+    const {
+      renderResults,
+      mockOnDataChangeFn,
+    } = await basicTestForChoicesWithSingleAnswerOrMultipleAnswersQuestionAsync(
+      question,
+    );
+
+    await inputTestForChoicesWithSingleAnswerQuestionAsync(
+      renderResults,
+      mockOnDataChangeFn,
       question,
       inputValueSequence,
     );
