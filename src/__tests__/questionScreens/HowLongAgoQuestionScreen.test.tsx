@@ -54,9 +54,8 @@ const basicTestForQuestionAsync = async (
   expect(mockPipeInExtraMetaData).not.toHaveBeenCalled();
 
   // There shouldn't need to be any validation
-  expect(mockSetDataValidationFunction).not.toHaveBeenCalledTimes(1);
+  expect(mockSetDataValidationFunction).not.toHaveBeenCalled();
 
-  // This also helps test the placeholder property.
   const selections = getAllByA11yLabel(/select (.*?)/);
   expect(selections).toHaveLength(10 + 4);
 
@@ -94,7 +93,7 @@ test.each([
   [null, "hours"],
 ])("input [%p, %p]", async (left, right) => {
   const question = {
-    id: "WithoutChoicesDict",
+    id: "HowLongAgoQuestion",
     type: QuestionType.HowLongAgo,
     question: "How long ago?",
     next: null,

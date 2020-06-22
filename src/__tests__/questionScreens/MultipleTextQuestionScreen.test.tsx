@@ -132,7 +132,7 @@ const basicTestForQuestionAsync = async (
           expectedAnswerData,
         );
 
-        alertSpy.mockClear();
+        alertSpy.mockRestore();
       }
     }
 
