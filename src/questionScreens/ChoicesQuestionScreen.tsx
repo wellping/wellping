@@ -32,6 +32,7 @@ export function ChoiceItem({ id, title, selected, onSelect }: ChoiceItemProps) {
         styles.item,
         { backgroundColor: selected ? "#b3995d" : "#F9F6EF" },
       ]}
+      accessibilityLabel={`select ${title}`}
     >
       <Text style={styles.title}>{title}</Text>
     </TouchableOpacity>

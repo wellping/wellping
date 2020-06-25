@@ -6,9 +6,9 @@ import { QuestionScreenProps, SliderAnswerData } from "../helpers/answerTypes";
 import { getNonCriticalProblemTextForUser } from "../helpers/debug";
 import { SliderQuestion } from "../helpers/types";
 
-const DEFAULT_SLIDER_VALUE = 50;
+export const DEFAULT_SLIDER_VALUE = 50;
 
-const getQuestionDefaultSliderValue = (question: SliderQuestion) => {
+export const getQuestionDefaultSliderValue = (question: SliderQuestion) => {
   if (question.defaultValue == null) {
     return DEFAULT_SLIDER_VALUE;
   }
@@ -63,6 +63,7 @@ const SliderQuestionScreen: React.ElementType<SliderQuestionScreenProps> = ({
         onSlidingComplete={(value) => {
           onDataChange({ value } as SliderAnswerData);
         }}
+        accessibilityLabel="slider input"
       />
       <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
         <Text style={{ maxWidth: "40%" }}>{question.slider[0]}</Text>

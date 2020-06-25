@@ -1,0 +1,21 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`input \`["Co-worker", "", "Co-worker", ":)", "Co-worker"]\` with max 5 and forceChoice true with a choices object 1`] = `"{\\"value\\":{\\"Input_1\\":\\"Co-worker\\",\\"Input_2\\":\\"Co-worker\\",\\"Input_3\\":\\"Co-worker\\"}}"`;
+
+exports[`input \`["Friend", "RANDOM INPUT", "Other"]\` with max 5 and forceChoice true with a choices object 1`] = `"{\\"value\\":{\\"Input_1\\":\\"Friend\\",\\"Input_2\\":\\"Other\\"}}"`;
+
+exports[`input \`["I am typing 1", "I am typing 2", "I am typing 3", "I am typing 4"]\` with max 4 and forceChoice false with a choices object 1`] = `"{\\"value\\":{\\"Input_1\\":\\"I am typing 1\\",\\"Input_2\\":\\"I am typing 2\\",\\"Input_3\\":\\"I am typing 3\\",\\"Input_4\\":\\"I am typing 4\\"}}"`;
+
+exports[`input \`["I am typing 1", "I am typing 2", "I am typing 3", "I am typing 4"]\` with max 4 without choices 1`] = `"{\\"value\\":{\\"1\\":\\"I am typing 1\\",\\"2\\":\\"I am typing 2\\",\\"3\\":\\"I am typing 3\\",\\"4\\":\\"I am typing 4\\"}}"`;
+
+exports[`input \`["I am typing 1", "I am typing 2"]\` with max 2 and forceChoice true with a choices object 1`] = `"{\\"value\\":{}}"`;
+
+exports[`input \`["I am typing 1", "Sibling / other relative", "I am typing 1", "I am typing 2", "Parent"]\` with max 5 and forceChoice true with a choices object 1`] = `"{\\"value\\":{\\"Input_1\\":\\"Sibling / other relative\\",\\"Input_2\\":\\"Parent\\"}}"`;
+
+exports[`input \`["I am typing 1"]\` with max 3 without choices 1`] = `"{\\"value\\":{\\"Typing_1\\":\\"I am typing 1\\"}}"`;
+
+exports[`input \`["John Doe", "王小明"]\` with max 5 without choices 1`] = `"{\\"value\\":{\\"Name_1\\":\\"John Doe\\",\\"Name_2\\":\\"王小明\\"}}"`;
+
+exports[`input \`["Mr. Fox", "Felicity Fox", "Ash Fox", "Kristofferson Silverfox"]\` with max 4 without choices 1`] = `"{\\"value\\":{\\"Fox1\\":\\"Mr. Fox\\",\\"Fox2\\":\\"Felicity Fox\\",\\"Fox3\\":\\"Ash Fox\\",\\"Fox4\\":\\"Kristofferson Silverfox\\"}}"`;
+
+exports[`input \`["Stranger", "Stranger", "Stranger", "Stranger", "RANDOM"]\` with max 5 and forceChoice false with a choices object 1`] = `"{\\"value\\":{\\"Input_1\\":\\"Stranger\\",\\"Input_2\\":\\"Stranger\\",\\"Input_3\\":\\"Stranger\\",\\"Input_4\\":\\"Stranger\\",\\"Input_5\\":\\"RANDOM\\"}}"`;
