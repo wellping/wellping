@@ -20,6 +20,7 @@ import {
   YesNoQuestion,
   ChoicesWithSingleAnswerQuestion,
   ChoicesWithMultipleAnswersQuestion,
+  Choice,
 } from "../../helpers/types";
 import ChoicesQuestionScreen from "../../questionScreens/ChoicesQuestionScreen";
 import { simplePipeInExtraMetaData } from "../helper";
@@ -35,34 +36,18 @@ export const getSelection = (
   return selection;
 };
 
-const basicTestForYesNoQuestionAsync = async (
-  question: YesNoQuestion,
-  inputValue: boolean | null,
-) => {
-  const mockOnDataChangeFn = jest.fn();
-  const mockPipeInExtraMetaData = jest.fn(simplePipeInExtraMetaData);
-  const mockSetDataValidationFunction = jest.fn();
+test.each([true, false])("YesNo question with input %p", async (inputValue) => {
+  const question = {
+    id: "YesNo",
+    type: QuestionType.YesNo,
+    question: "Are you happy?",
+    next: null,
+  } as YesNoQuestion;
 
-  const renderResults = render(
-    <ChoicesQuestionScreen
-      key={question.id}
-      question={question}
-      onDataChange={mockOnDataChangeFn}
-      allAnswers={{}}
-      allQuestions={{ [question.id]: question }}
-      pipeInExtraMetaData={mockPipeInExtraMetaData}
-      setDataValidationFunction={mockSetDataValidationFunction}
-    />,
-  );
-  const { getAllByA11yLabel } = renderResults;
-
-  expect(mockPipeInExtraMetaData).toHaveBeenCalledTimes(2); // For "Yes, No" two options
-
-  // There shouldn't need to be any validation
-  expect(mockSetDataValidationFunction).not.toHaveBeenCalled();
-
-  const selections = getAllByA11yLabel(/select (.*?)/);
-  expect(selections).toHaveLength(2);
+  const {
+    renderResults: { getAllByA11yLabel },
+    mockOnDataChangeFn,
+  } = await basicTestForChoicesQuestionScreenAsync(question);
 
   if (inputValue === true) {
     const yesSelection = getSelection(`Yes`, getAllByA11yLabel);
@@ -80,26 +65,24 @@ const basicTestForYesNoQuestionAsync = async (
       value: false,
     } as YesNoAnswerData);
   }
-
-  return renderResults;
-};
-
-test.each([true, false])("YesNo question with input %p", async (value) => {
-  const question = {
-    id: "YesNo",
-    type: QuestionType.YesNo,
-    question: "Are you happy?",
-    next: null,
-  } as YesNoQuestion;
-
-  await basicTestForYesNoQuestionAsync(question, value);
 });
 
-const basicTestForChoicesWithSingleAnswerOrMultipleAnswersQuestionAsync = async (
+const basicTestForChoicesQuestionScreenAsync = async (
   question:
+    | YesNoQuestion
     | ChoicesWithSingleAnswerQuestion
     | ChoicesWithMultipleAnswersQuestion,
 ) => {
+  let choices: Choice[];
+  if (question.type === QuestionType.YesNo) {
+    choices = [
+      { key: "yes", value: "Yes" },
+      { key: "no", value: "No" },
+    ];
+  } else {
+    choices = question.choices;
+  }
+
   // To make sure we can deterministically confirm the randomness.
   // https://stackoverflow.com/a/57730344/2603230
   const mathRandomSpy = jest
@@ -123,46 +106,46 @@ const basicTestForChoicesWithSingleAnswerOrMultipleAnswersQuestionAsync = async 
   );
   const { findAllByA11yLabel } = renderResults;
 
-  expect(mockPipeInExtraMetaData).toHaveBeenCalledTimes(
-    question.choices.length,
-  ); // For each choices
+  expect(mockPipeInExtraMetaData).toHaveBeenCalledTimes(choices.length); // For each choices
 
   // There shouldn't need to be any validation
   expect(mockSetDataValidationFunction).not.toHaveBeenCalled();
 
   const selections = await findAllByA11yLabel(/select (.*?)/);
-  expect(selections).toHaveLength(question.choices.length);
+  expect(selections).toHaveLength(choices.length);
 
   const displayedList: string[] = selections.map((selection) =>
     selection.props.accessibilityLabel.replace(/^(select )/, ""),
   );
-  if (question.randomizeChoicesOrder) {
-    expect(displayedList).not.toStrictEqual(FLATTENED_CHOICES_VALUES);
-    if (question.randomizeExceptForChoiceIds) {
-      // Sort the `randomizeExceptForChoiceIds` by the order of `choices`.
-      const sortedRandomizeExceptForChoiceIds = [];
-      for (const choice of question.choices) {
-        if (question.randomizeExceptForChoiceIds.includes(choice.key)) {
-          sortedRandomizeExceptForChoiceIds.push(choice.key);
+  if (question.type !== QuestionType.YesNo) {
+    if (question.randomizeChoicesOrder) {
+      expect(displayedList).not.toStrictEqual(FLATTENED_CHOICES_VALUES);
+      if (question.randomizeExceptForChoiceIds) {
+        // Sort the `randomizeExceptForChoiceIds` by the order of `choices`.
+        const sortedRandomizeExceptForChoiceIds = [];
+        for (const choice of choices) {
+          if (question.randomizeExceptForChoiceIds.includes(choice.key)) {
+            sortedRandomizeExceptForChoiceIds.push(choice.key);
+          }
+        }
+        // Just a sanity check to make sure the items are the same.
+        expect(sortedRandomizeExceptForChoiceIds).toHaveLength(
+          question.randomizeExceptForChoiceIds.length,
+        );
+
+        for (let i = sortedRandomizeExceptForChoiceIds.length; i > 0; i--) {
+          const key =
+            sortedRandomizeExceptForChoiceIds[
+              sortedRandomizeExceptForChoiceIds.length - i
+            ];
+          const value = question.choices.find((choice) => choice.key === key)
+            ?.value;
+          expect(displayedList[displayedList.length - i]).toBe(value);
         }
       }
-      // Just a sanity check to make sure the items are the same.
-      expect(sortedRandomizeExceptForChoiceIds).toHaveLength(
-        question.randomizeExceptForChoiceIds.length,
-      );
-
-      for (let i = sortedRandomizeExceptForChoiceIds.length; i > 0; i--) {
-        const key =
-          sortedRandomizeExceptForChoiceIds[
-            sortedRandomizeExceptForChoiceIds.length - i
-          ];
-        const value = question.choices.find((choice) => choice.key === key)
-          ?.value;
-        expect(displayedList[displayedList.length - i]).toBe(value);
-      }
+    } else {
+      expect(displayedList).toStrictEqual(FLATTENED_CHOICES_VALUES);
     }
-  } else {
-    expect(displayedList).toStrictEqual(FLATTENED_CHOICES_VALUES);
   }
 
   expect(JSON.stringify(displayedList)).toMatchSnapshot("displayed list");
@@ -306,9 +289,7 @@ test.each(CHOICES_TEST_TABLE)(
     const {
       renderResults,
       mockOnDataChangeFn,
-    } = await basicTestForChoicesWithSingleAnswerOrMultipleAnswersQuestionAsync(
-      question,
-    );
+    } = await basicTestForChoicesQuestionScreenAsync(question);
 
     await inputTestForChoicesWithSingleAnswerQuestionAsync(
       renderResults,
@@ -339,9 +320,7 @@ test.each(CHOICES_TEST_TABLE)(
     const {
       renderResults,
       mockOnDataChangeFn,
-    } = await basicTestForChoicesWithSingleAnswerOrMultipleAnswersQuestionAsync(
-      question,
-    );
+    } = await basicTestForChoicesQuestionScreenAsync(question);
 
     await inputTestForChoicesWithMultipleAnswersQuestionAsync(
       renderResults,

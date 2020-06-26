@@ -123,3 +123,7 @@ exports[`ChoicesWithSingleAnswer question with input sequence ["Wolf", "Coyote"]
 exports[`ChoicesWithSingleAnswer question with input sequence ["Wolf", "Coyote"] (randomize order false except for undefined): displayed list 1`] = `"[\\"Wolf\\",\\"Fox\\",\\"Coyote\\",\\"Lynx\\",\\"Panda\\",\\"Other\\",\\"I don't know\\"]"`;
 
 exports[`ChoicesWithSingleAnswer question with input sequence [] (randomize order false except for undefined): displayed list 1`] = `"[\\"Wolf\\",\\"Fox\\",\\"Coyote\\",\\"Lynx\\",\\"Panda\\",\\"Other\\",\\"I don't know\\"]"`;
+
+exports[`YesNo question with input false: displayed list 1`] = `"[\\"Yes\\",\\"No\\"]"`;
+
+exports[`YesNo question with input true: displayed list 1`] = `"[\\"Yes\\",\\"No\\"]"`;
