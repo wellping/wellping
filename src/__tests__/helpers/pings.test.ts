@@ -52,29 +52,29 @@ test("insert pings and set end date", async () => {
 });
 
 test("get today's ping", async () => {
-  DateMock.advanceTo(+new Date("2010-04-30T08:08:08+08:00"));
+  DateMock.advanceTo(+new Date("2010-04-30T08:08:08Z"));
   expect(await getTodayPingsAsync()).toEqual([]);
 
-  DateMock.advanceTo(+new Date("2010-05-01T08:08:08+08:00"));
+  DateMock.advanceTo(+new Date("2010-05-01T08:08:08Z"));
   expect(await getTodayPingsAsync()).toEqual([
     PINGS_DICT["cat1"],
     PINGS_DICT["dog1"],
     PINGS_DICT["wolf1"],
   ]);
 
-  DateMock.advanceTo(+new Date("2010-05-02T08:08:08+08:00"));
+  DateMock.advanceTo(+new Date("2010-05-02T08:08:08Z"));
   expect(await getTodayPingsAsync()).toEqual([PINGS_DICT["cat2"]]);
 
-  DateMock.advanceTo(+new Date("2010-05-03T08:08:08+08:00"));
+  DateMock.advanceTo(+new Date("2010-05-03T08:08:08Z"));
   expect(await getTodayPingsAsync()).toEqual([PINGS_DICT["cat3"]]);
 
-  DateMock.advanceTo(+new Date("2010-05-05T08:08:08+08:00"));
+  DateMock.advanceTo(+new Date("2010-05-05T08:08:08Z"));
   expect(await getTodayPingsAsync()).toEqual([]);
 
-  DateMock.advanceTo(+new Date("2010-05-10T08:08:08+08:00"));
+  DateMock.advanceTo(+new Date("2010-05-10T08:08:08Z"));
   expect(await getTodayPingsAsync()).toEqual([PINGS_DICT["cat4"]]);
 
-  DateMock.advanceTo(+new Date("2011-01-01T08:08:08+08:00"));
+  DateMock.advanceTo(+new Date("2011-01-01T08:08:08Z"));
   expect(await getTodayPingsAsync()).toEqual([]);
 
   DateMock.clear();
