@@ -14,15 +14,24 @@ import {
 } from "../data/database_helper";
 import { PINGS, PINGS_DICT } from "../data/pings";
 
+const fs = require("fs");
+
 let connection: Connection;
+const DB_NAME = "pings";
+const DB_FILENAME = getTestDatabaseFilename(DB_NAME);
 beforeAll(async () => {
-  connection = await connectTestDatabaseAsync(getTestDatabaseFilename("pings"));
+  connection = await connectTestDatabaseAsync(DB_FILENAME);
 
   // Reset database on start.
   await connection.dropDatabase();
   await connection.synchronize();
+  fs.unlinkSync(`${DB_FILENAME}.json`);
 });
 afterAll(async () => {
+  const allPings = await getPingsAsync();
+  fs.writeFileSync(`${DB_FILENAME}.json`, JSON.stringify(allPings));
+  expect(allPings).toMatchSnapshot();
+
   await connection.close();
 });
 
@@ -61,6 +70,9 @@ test("set end date to non-existent ping", async () => {
   ).rejects.toThrowErrorMatchingInlineSnapshot(
     `"pingId _OwO_ not found in getPingsAsync."`,
   );
+
+  // The pings data should not be changed.
+  expect(await getPingsAsync()).toEqual(PINGS);
 });
 
 test("get today's ping", async () => {
