@@ -1,6 +1,8 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`get this week's ping 1`] = `
+exports[`database match: getAnswersAsync 1`] = `Array []`;
+
+exports[`database match: getPingsAsync 1`] = `
 Array [
   PingEntity {
     "answers": undefined,

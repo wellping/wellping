@@ -1,6 +1,7 @@
 import * as DateMock from "jest-date-mock";
 import { Connection } from "typeorm";
 
+import { getAnswersAsync } from "../../helpers/answers";
 import {
   getPingsAsync,
   getTodayPingsAsync,
@@ -25,9 +26,6 @@ beforeAll(async () => {
   await connection.synchronize();
 });
 afterAll(async () => {
-  const allPings = await getPingsAsync();
-  expect(allPings).toMatchSnapshot(); // A snapshot of the Ping table in database.
-
   await connection.close();
 });
 
@@ -183,4 +181,14 @@ test("get this week's ping", async () => {
   expect(await getThisWeekPingsAsync()).toEqual([]);
 
   DateMock.clear();
+});
+
+test("database match", async () => {
+  const allPings = await getPingsAsync();
+  // A snapshot of the "ping" table in database.
+  expect(allPings).toMatchSnapshot("getPingsAsync");
+
+  const allAnswers = await getAnswersAsync();
+  // A snapshot of the "answer" table in database.
+  expect(allAnswers).toMatchSnapshot("getAnswersAsync");
 });
