@@ -10,8 +10,8 @@ import {
 import {
   connectTestDatabaseAsync,
   getTestDatabaseFilename,
-} from "../__data/database_helper";
-import { PINGS, PINGS_DICT } from "../__data/pings";
+} from "../data/database_helper";
+import { PINGS, PINGS_DICT } from "../data/pings";
 
 let connection: Connection;
 beforeAll(async () => {

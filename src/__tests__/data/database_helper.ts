@@ -3,7 +3,7 @@ import { Connection, createConnection } from "typeorm";
 import { entities } from "../../helpers/database";
 
 export const getTestDatabaseFilename = (filename: string) =>
-  `./src/__tests__/__data/db/${filename}.db`;
+  `./src/__tests__/data/db/${filename}.db`;
 
 export async function connectTestDatabaseAsync(
   databaseFilename: string,

@@ -1,4 +1,4 @@
-import { PINGS, PINGS_DICT } from "./__data/pings";
+import { PINGS, PINGS_DICT } from "./data/pings";
 
 const originalErrorFn = console.error;
 jest.spyOn(console, "error").mockImplementation((...error: any[]) => {
