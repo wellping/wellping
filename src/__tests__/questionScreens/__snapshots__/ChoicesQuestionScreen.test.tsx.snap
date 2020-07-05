@@ -12,7 +12,17 @@ Object {
 }
 `;
 
-exports[`ChoicesWithMultipleAnswers question with input sequence ["Coyote", "Coyote", "Wolf", "Wolf", "Coyote"] (randomize order true except for ["idk", "other"]): displayed list 1`] = `"[\\"Lynx\\",\\"Coyote\\",\\"Wolf\\",\\"Panda\\",\\"Fox\\",\\"Other\\",\\"I don't know\\"]"`;
+exports[`ChoicesWithMultipleAnswers question with input sequence ["Coyote", "Coyote", "Wolf", "Wolf", "Coyote"] (randomize order true except for ["idk", "other"]): displayed list 1`] = `
+Array [
+  "Lynx",
+  "Coyote",
+  "Wolf",
+  "Panda",
+  "Fox",
+  "Other",
+  "I don't know",
+]
+`;
 
 exports[`ChoicesWithMultipleAnswers question with input sequence ["Coyote", "Lynx", "Wolf", "Fox", "Coyote", "I don't know"] (randomize order true except for ["wolf", "fox", "other", "idk"]): data 1`] = `
 Object {
@@ -26,7 +36,17 @@ Object {
 }
 `;
 
-exports[`ChoicesWithMultipleAnswers question with input sequence ["Coyote", "Lynx", "Wolf", "Fox", "Coyote", "I don't know"] (randomize order true except for ["wolf", "fox", "other", "idk"]): displayed list 1`] = `"[\\"Lynx\\",\\"Panda\\",\\"Coyote\\",\\"Wolf\\",\\"Fox\\",\\"Other\\",\\"I don't know\\"]"`;
+exports[`ChoicesWithMultipleAnswers question with input sequence ["Coyote", "Lynx", "Wolf", "Fox", "Coyote", "I don't know"] (randomize order true except for ["wolf", "fox", "other", "idk"]): displayed list 1`] = `
+Array [
+  "Lynx",
+  "Panda",
+  "Coyote",
+  "Wolf",
+  "Fox",
+  "Other",
+  "I don't know",
+]
+`;
 
 exports[`ChoicesWithMultipleAnswers question with input sequence ["Coyote", "Wolf", "Fox", "Lynx", "Panda", "Other", "Coyote", "Wolf", "Fox", "Lynx", "Panda", "Other", "I don't know"] (randomize order true except for undefined): data 1`] = `
 Object {
@@ -40,7 +60,17 @@ Object {
 }
 `;
 
-exports[`ChoicesWithMultipleAnswers question with input sequence ["Coyote", "Wolf", "Fox", "Lynx", "Panda", "Other", "Coyote", "Wolf", "Fox", "Lynx", "Panda", "Other", "I don't know"] (randomize order true except for undefined): displayed list 1`] = `"[\\"Lynx\\",\\"I don't know\\",\\"Wolf\\",\\"Panda\\",\\"Other\\",\\"Fox\\",\\"Coyote\\"]"`;
+exports[`ChoicesWithMultipleAnswers question with input sequence ["Coyote", "Wolf", "Fox", "Lynx", "Panda", "Other", "Coyote", "Wolf", "Fox", "Lynx", "Panda", "Other", "I don't know"] (randomize order true except for undefined): displayed list 1`] = `
+Array [
+  "Lynx",
+  "I don't know",
+  "Wolf",
+  "Panda",
+  "Other",
+  "Fox",
+  "Coyote",
+]
+`;
 
 exports[`ChoicesWithMultipleAnswers question with input sequence ["Fox"] (randomize order true except for ["other", "idk"]): data 1`] = `
 Object {
@@ -54,7 +84,17 @@ Object {
 }
 `;
 
-exports[`ChoicesWithMultipleAnswers question with input sequence ["Fox"] (randomize order true except for ["other", "idk"]): displayed list 1`] = `"[\\"Lynx\\",\\"Coyote\\",\\"Wolf\\",\\"Panda\\",\\"Fox\\",\\"Other\\",\\"I don't know\\"]"`;
+exports[`ChoicesWithMultipleAnswers question with input sequence ["Fox"] (randomize order true except for ["other", "idk"]): displayed list 1`] = `
+Array [
+  "Lynx",
+  "Coyote",
+  "Wolf",
+  "Panda",
+  "Fox",
+  "Other",
+  "I don't know",
+]
+`;
 
 exports[`ChoicesWithMultipleAnswers question with input sequence ["Lynx", "Panda", "Other"] (randomize order true except for ["other"]): data 1`] = `
 Object {
@@ -68,7 +108,17 @@ Object {
 }
 `;
 
-exports[`ChoicesWithMultipleAnswers question with input sequence ["Lynx", "Panda", "Other"] (randomize order true except for ["other"]): displayed list 1`] = `"[\\"Lynx\\",\\"Coyote\\",\\"Wolf\\",\\"Panda\\",\\"I don't know\\",\\"Fox\\",\\"Other\\"]"`;
+exports[`ChoicesWithMultipleAnswers question with input sequence ["Lynx", "Panda", "Other"] (randomize order true except for ["other"]): displayed list 1`] = `
+Array [
+  "Lynx",
+  "Coyote",
+  "Wolf",
+  "Panda",
+  "I don't know",
+  "Fox",
+  "Other",
+]
+`;
 
 exports[`ChoicesWithMultipleAnswers question with input sequence ["Wolf", "Coyote"] (randomize order false except for undefined): data 1`] = `
 Object {
@@ -82,7 +132,17 @@ Object {
 }
 `;
 
-exports[`ChoicesWithMultipleAnswers question with input sequence ["Wolf", "Coyote"] (randomize order false except for undefined): displayed list 1`] = `"[\\"Wolf\\",\\"Fox\\",\\"Coyote\\",\\"Lynx\\",\\"Panda\\",\\"Other\\",\\"I don't know\\"]"`;
+exports[`ChoicesWithMultipleAnswers question with input sequence ["Wolf", "Coyote"] (randomize order false except for undefined): displayed list 1`] = `
+Array [
+  "Wolf",
+  "Fox",
+  "Coyote",
+  "Lynx",
+  "Panda",
+  "Other",
+  "I don't know",
+]
+`;
 
 exports[`ChoicesWithMultipleAnswers question with input sequence [] (randomize order false except for undefined): data 1`] = `
 Object {
@@ -96,34 +156,124 @@ Object {
 }
 `;
 
-exports[`ChoicesWithMultipleAnswers question with input sequence [] (randomize order false except for undefined): displayed list 1`] = `"[\\"Wolf\\",\\"Fox\\",\\"Coyote\\",\\"Lynx\\",\\"Panda\\",\\"Other\\",\\"I don't know\\"]"`;
+exports[`ChoicesWithMultipleAnswers question with input sequence [] (randomize order false except for undefined): displayed list 1`] = `
+Array [
+  "Wolf",
+  "Fox",
+  "Coyote",
+  "Lynx",
+  "Panda",
+  "Other",
+  "I don't know",
+]
+`;
 
 exports[`ChoicesWithSingleAnswer question with input sequence ["Coyote", "Coyote", "Wolf", "Wolf", "Coyote"] (randomize order true except for ["idk", "other"]): data 1`] = `"coyote"`;
 
-exports[`ChoicesWithSingleAnswer question with input sequence ["Coyote", "Coyote", "Wolf", "Wolf", "Coyote"] (randomize order true except for ["idk", "other"]): displayed list 1`] = `"[\\"Lynx\\",\\"Coyote\\",\\"Wolf\\",\\"Panda\\",\\"Fox\\",\\"Other\\",\\"I don't know\\"]"`;
+exports[`ChoicesWithSingleAnswer question with input sequence ["Coyote", "Coyote", "Wolf", "Wolf", "Coyote"] (randomize order true except for ["idk", "other"]): displayed list 1`] = `
+Array [
+  "Lynx",
+  "Coyote",
+  "Wolf",
+  "Panda",
+  "Fox",
+  "Other",
+  "I don't know",
+]
+`;
 
 exports[`ChoicesWithSingleAnswer question with input sequence ["Coyote", "Lynx", "Wolf", "Fox", "Coyote", "I don't know"] (randomize order true except for ["wolf", "fox", "other", "idk"]): data 1`] = `"idk"`;
 
-exports[`ChoicesWithSingleAnswer question with input sequence ["Coyote", "Lynx", "Wolf", "Fox", "Coyote", "I don't know"] (randomize order true except for ["wolf", "fox", "other", "idk"]): displayed list 1`] = `"[\\"Lynx\\",\\"Panda\\",\\"Coyote\\",\\"Wolf\\",\\"Fox\\",\\"Other\\",\\"I don't know\\"]"`;
+exports[`ChoicesWithSingleAnswer question with input sequence ["Coyote", "Lynx", "Wolf", "Fox", "Coyote", "I don't know"] (randomize order true except for ["wolf", "fox", "other", "idk"]): displayed list 1`] = `
+Array [
+  "Lynx",
+  "Panda",
+  "Coyote",
+  "Wolf",
+  "Fox",
+  "Other",
+  "I don't know",
+]
+`;
 
 exports[`ChoicesWithSingleAnswer question with input sequence ["Coyote", "Wolf", "Fox", "Lynx", "Panda", "Other", "Coyote", "Wolf", "Fox", "Lynx", "Panda", "Other", "I don't know"] (randomize order true except for undefined): data 1`] = `"idk"`;
 
-exports[`ChoicesWithSingleAnswer question with input sequence ["Coyote", "Wolf", "Fox", "Lynx", "Panda", "Other", "Coyote", "Wolf", "Fox", "Lynx", "Panda", "Other", "I don't know"] (randomize order true except for undefined): displayed list 1`] = `"[\\"Lynx\\",\\"I don't know\\",\\"Wolf\\",\\"Panda\\",\\"Other\\",\\"Fox\\",\\"Coyote\\"]"`;
+exports[`ChoicesWithSingleAnswer question with input sequence ["Coyote", "Wolf", "Fox", "Lynx", "Panda", "Other", "Coyote", "Wolf", "Fox", "Lynx", "Panda", "Other", "I don't know"] (randomize order true except for undefined): displayed list 1`] = `
+Array [
+  "Lynx",
+  "I don't know",
+  "Wolf",
+  "Panda",
+  "Other",
+  "Fox",
+  "Coyote",
+]
+`;
 
 exports[`ChoicesWithSingleAnswer question with input sequence ["Fox"] (randomize order true except for ["other", "idk"]): data 1`] = `"fox"`;
 
-exports[`ChoicesWithSingleAnswer question with input sequence ["Fox"] (randomize order true except for ["other", "idk"]): displayed list 1`] = `"[\\"Lynx\\",\\"Coyote\\",\\"Wolf\\",\\"Panda\\",\\"Fox\\",\\"Other\\",\\"I don't know\\"]"`;
+exports[`ChoicesWithSingleAnswer question with input sequence ["Fox"] (randomize order true except for ["other", "idk"]): displayed list 1`] = `
+Array [
+  "Lynx",
+  "Coyote",
+  "Wolf",
+  "Panda",
+  "Fox",
+  "Other",
+  "I don't know",
+]
+`;
 
 exports[`ChoicesWithSingleAnswer question with input sequence ["Lynx", "Panda", "Other"] (randomize order true except for ["other"]): data 1`] = `"other"`;
 
-exports[`ChoicesWithSingleAnswer question with input sequence ["Lynx", "Panda", "Other"] (randomize order true except for ["other"]): displayed list 1`] = `"[\\"Lynx\\",\\"Coyote\\",\\"Wolf\\",\\"Panda\\",\\"I don't know\\",\\"Fox\\",\\"Other\\"]"`;
+exports[`ChoicesWithSingleAnswer question with input sequence ["Lynx", "Panda", "Other"] (randomize order true except for ["other"]): displayed list 1`] = `
+Array [
+  "Lynx",
+  "Coyote",
+  "Wolf",
+  "Panda",
+  "I don't know",
+  "Fox",
+  "Other",
+]
+`;
 
 exports[`ChoicesWithSingleAnswer question with input sequence ["Wolf", "Coyote"] (randomize order false except for undefined): data 1`] = `"coyote"`;
 
-exports[`ChoicesWithSingleAnswer question with input sequence ["Wolf", "Coyote"] (randomize order false except for undefined): displayed list 1`] = `"[\\"Wolf\\",\\"Fox\\",\\"Coyote\\",\\"Lynx\\",\\"Panda\\",\\"Other\\",\\"I don't know\\"]"`;
+exports[`ChoicesWithSingleAnswer question with input sequence ["Wolf", "Coyote"] (randomize order false except for undefined): displayed list 1`] = `
+Array [
+  "Wolf",
+  "Fox",
+  "Coyote",
+  "Lynx",
+  "Panda",
+  "Other",
+  "I don't know",
+]
+`;
 
-exports[`ChoicesWithSingleAnswer question with input sequence [] (randomize order false except for undefined): displayed list 1`] = `"[\\"Wolf\\",\\"Fox\\",\\"Coyote\\",\\"Lynx\\",\\"Panda\\",\\"Other\\",\\"I don't know\\"]"`;
+exports[`ChoicesWithSingleAnswer question with input sequence [] (randomize order false except for undefined): displayed list 1`] = `
+Array [
+  "Wolf",
+  "Fox",
+  "Coyote",
+  "Lynx",
+  "Panda",
+  "Other",
+  "I don't know",
+]
+`;
 
-exports[`YesNo question with input false: displayed list 1`] = `"[\\"Yes\\",\\"No\\"]"`;
+exports[`YesNo question with input false: displayed list 1`] = `
+Array [
+  "Yes",
+  "No",
+]
+`;
 
-exports[`YesNo question with input true: displayed list 1`] = `"[\\"Yes\\",\\"No\\"]"`;
+exports[`YesNo question with input true: displayed list 1`] = `
+Array [
+  "Yes",
+  "No",
+]
+`;

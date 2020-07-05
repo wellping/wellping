@@ -148,7 +148,7 @@ const basicTestForChoicesQuestionScreenAsync = async (
     }
   }
 
-  expect(JSON.stringify(displayedList)).toMatchSnapshot("displayed list");
+  expect(displayedList).toMatchSnapshot("displayed list");
 
   mathRandomSpy.mockRestore();
 
