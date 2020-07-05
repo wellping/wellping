@@ -1,5 +1,3 @@
-import { BaseEntity } from "typeorm";
-
 const PINGS_PARTIAL = [
   {
     id: "cat1",

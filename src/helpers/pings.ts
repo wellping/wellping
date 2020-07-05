@@ -121,12 +121,12 @@ export async function getThisWeekPingsAsync(): Promise<PingEntity[]> {
   const thisWeekPings: PingEntity[] = [];
   // TODO: USE SQL HERE? (MAKE SURE TIMEZONE PROBLEM)
   for (const ping of allPings) {
-    if (await isTimeThisWeekAsync(ping.notificationTime)) {
-      thisWeekPings.push(ping);
-    }
     if (ping.notificationTime > new Date()) {
       // Stop when the notification time is in the future.
       break;
+    }
+    if (await isTimeThisWeekAsync(ping.notificationTime)) {
+      thisWeekPings.push(ping);
     }
   }
   return thisWeekPings;
