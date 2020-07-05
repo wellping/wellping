@@ -57,3 +57,6 @@ buck-out/
 \.buckd/
 android/app/libs
 android/keystores/debug.keystore
+
+# Jest coverage (https://docs.expo.io/guides/testing-with-jest/#code-coverage-reports)
+coverage/**/*

@@ -71,7 +71,17 @@
       "@testing-library/jest-native/extend-expect",
       "<rootDir>/src/__tests__/setup.ts"
     ],
-    "globalSetup": "<rootDir>/src/__tests__/globalSetup.ts"
+    "globalSetup": "<rootDir>/src/__tests__/globalSetup.ts",
+    "collectCoverage": true,
+    "collectCoverageFrom": [
+      "App.tsx",
+      "src/**/*.{js,jsx,ts,tsx}",
+      "!src/inc/**",
+      "config/**/*.{js,jsx,ts,tsx}",
+      "utility/**/*.{js,jsx,ts,tsx}",
+      "!**/__tests__/**",
+      "!**/node_modules/**"
+    ]
   },
   "private": true
 }
