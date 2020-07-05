@@ -9,6 +9,9 @@ import {
   addEndTimeToPingAsync,
   getThisWeekPingsAsync,
   getLatestPingAsync,
+  NumbersOfPingsForAllStreamNames,
+  getNumbersOfPingsForAllStreamNames,
+  getNumberOfPingsForStreamName,
 } from "../../helpers/pings";
 import {
   connectTestDatabaseAsync,
@@ -34,8 +37,17 @@ test("insert pings and set end date", async () => {
   expect(await getPingsAsync()).toEqual([]);
   expect(await getLatestPingAsync()).toEqual(null);
 
+  const numbersOfPingsForAllStreamNames: NumbersOfPingsForAllStreamNames = {};
+  expect(await getNumbersOfPingsForAllStreamNames()).toEqual(
+    numbersOfPingsForAllStreamNames,
+  );
+
   for (let i = 0; i < PINGS.length; i++) {
     const ping = PINGS[i];
+
+    expect(await getNumberOfPingsForStreamName(ping.streamName)).toEqual(
+      numbersOfPingsForAllStreamNames[ping.streamName] || 0,
+    );
 
     const addedPing = await insertPingAsync({
       notificationTime: ping.notificationTime,
@@ -60,6 +72,15 @@ test("insert pings and set end date", async () => {
     expect(await getLatestPingAsync()).toEqual(ping);
 
     expect(await getPingsAsync()).toEqual(PINGS.slice(0, i + 1));
+
+    numbersOfPingsForAllStreamNames[ping.streamName] =
+      (numbersOfPingsForAllStreamNames[ping.streamName] || 0) + 1;
+    expect(await getNumberOfPingsForStreamName(ping.streamName)).toEqual(
+      numbersOfPingsForAllStreamNames[ping.streamName],
+    );
+    expect(await getNumbersOfPingsForAllStreamNames()).toEqual(
+      numbersOfPingsForAllStreamNames,
+    );
   }
 });
 

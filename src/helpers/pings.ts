@@ -16,7 +16,7 @@ export async function getNumberOfPingsForStreamName(
   return countRaw.count;
 }
 
-type NumbersOfPingsForAllStreamNames = {
+export type NumbersOfPingsForAllStreamNames = {
   [stream: string /* actually StreamName */]: number;
 };
 export async function getNumbersOfPingsForAllStreamNames(): Promise<
