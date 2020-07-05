@@ -141,7 +141,7 @@ const basicTestForQuestionAsync = async (
   }
 
   // Store the expected data object.
-  expect(JSON.stringify(expectedAnswerData)).toMatchSnapshot();
+  expect(expectedAnswerData).toMatchSnapshot();
 
   return renderResults;
 };
