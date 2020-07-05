@@ -26,7 +26,7 @@ beforeAll(async () => {
 });
 afterAll(async () => {
   const allPings = await getPingsAsync();
-  expect(allPings).toMatchSnapshot();
+  expect(allPings).toMatchSnapshot(); // A snapshot of the Ping table in database.
 
   await connection.close();
 });
