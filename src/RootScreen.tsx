@@ -4,11 +4,15 @@ import { Button, TextInput, Text, View, ScrollView, Alert } from "react-native";
 
 import HomeScreen from "./HomeScreen";
 import { registerUserAsync } from "./helpers/apiManager";
+import {
+  getUserAsync,
+  User,
+  clearUserAsync,
+} from "./helpers/asyncStorage/user";
 import { getSurveyFileAsync } from "./helpers/configFiles";
 import { connectDatabaseAsync } from "./helpers/database";
 import { getCriticalProblemTextForUser } from "./helpers/debug";
 import { SurveyFile } from "./helpers/types";
-import { getUserAsync, User, clearUserAsync } from "./helpers/user";
 
 interface RootScreenProps {}
 

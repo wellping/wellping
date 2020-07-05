@@ -25,18 +25,19 @@ import {
   getServerUrlAsync,
 } from "./helpers/apiManager";
 import {
+  dequeueFuturePingIfAny,
+  getFuturePingsQueue,
+  initFuturePingQueueAsync,
+} from "./helpers/asyncStorage/futurePings";
+import {
   getNotificationTimesAsync,
   clearNotificationTimesAsync,
-  insertPingAsync,
-  getLatestPingAsync,
+} from "./helpers/asyncStorage/notificationTimes";
+import {
   getPingStateAsync,
-  getTodayPingsAsync,
-  dequeueFuturePingIfAny,
-  initFuturePingQueueAsync,
-  getFuturePingsQueue,
   clearPingStateAsync,
-  getNumbersOfPingsForAllStreamNames,
-} from "./helpers/asyncStorage";
+} from "./helpers/asyncStorage/pingState";
+import { getUserAsync } from "./helpers/asyncStorage/user";
 import { getAllStreamNames } from "./helpers/configFiles";
 import {
   shareDatabaseFileAsync,
@@ -52,13 +53,18 @@ import {
   _sendTestNotificationAsync,
 } from "./helpers/notifications";
 import {
+  getLatestPingAsync,
+  getTodayPingsAsync,
+  insertPingAsync,
+  getNumbersOfPingsForAllStreamNames,
+} from "./helpers/pings";
+import {
   Streams,
   QuestionsList,
   SurveyFile,
   StreamName,
   StudyInfo,
 } from "./helpers/types";
-import { getUserAsync } from "./helpers/user";
 
 const VERSION_NUMBER = "1.1.0";
 

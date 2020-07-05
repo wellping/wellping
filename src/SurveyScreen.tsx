@@ -21,11 +21,10 @@ import {
 } from "./helpers/answerTypes";
 import { uploadDataAsync } from "./helpers/apiManager";
 import {
-  storePingStateAsync,
-  addEndTimeToPingAsync,
-  enqueueToFuturePingQueue,
   getFuturePingsQueue,
-} from "./helpers/asyncStorage";
+  enqueueToFuturePingQueue,
+} from "./helpers/asyncStorage/futurePings";
+import { storePingStateAsync } from "./helpers/asyncStorage/pingState";
 import { getNonCriticalProblemTextForUser } from "./helpers/debug";
 import {
   QuestionType,
@@ -33,6 +32,7 @@ import {
   replacePreviousAnswerPlaceholdersWithActualContent,
   decapitalizeFirstCharacter,
 } from "./helpers/helpers";
+import { addEndTimeToPingAsync } from "./helpers/pings";
 import {
   Question,
   SliderQuestion,

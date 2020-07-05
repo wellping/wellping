@@ -17,11 +17,11 @@ import { Platform } from "react-native";
 
 import { _DEBUG_CONFIGS } from "../../config/debug";
 import {
-  storeNotificationTimesAsync,
   getNotificationTimesAsync,
-  getThisWeekPingsAsync,
-} from "./asyncStorage";
+  storeNotificationTimesAsync,
+} from "./asyncStorage/notificationTimes";
 import { isTimeThisWeekAsync } from "./configFiles";
+import { getThisWeekPingsAsync } from "./pings";
 import { StudyInfo } from "./types";
 
 const ANDROID_CHANNEL_NAME = "ssnlPingChannel";

@@ -5,9 +5,10 @@ import { Platform } from "react-native";
 
 import { AnswerEntity } from "../entities/AnswerEntity";
 import { PingEntity } from "../entities/PingEntity";
-import { getPingsAsync, getAnswersAsync } from "./asyncStorage";
+import { getAnswersAsync } from "./answers";
+import { User, storeUserAsync, getUserAsync } from "./asyncStorage/user";
 import { getSurveyFileAsync } from "./configFiles";
-import { getUserAsync, User, storeUserAsync } from "./user";
+import { getPingsAsync } from "./pings";
 
 export async function getServerUrlAsync(): Promise<string> {
   return (await getSurveyFileAsync()).studyInfo.serverURL;
