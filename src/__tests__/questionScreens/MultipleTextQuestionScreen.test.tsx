@@ -68,6 +68,7 @@ const basicTestForQuestionAsync = async (
     }
   }
   expect(textInputs).toHaveLength(textInputsLength);
+  expect(textInputs.length).toMatchSnapshot("text inputs length");
 
   const expectedAnswerData: MultipleTextAnswerData = { value: {} };
   let callCount = 0;
@@ -149,6 +150,7 @@ const basicTestForQuestionAsync = async (
 const generateTypingInput = (length: number) => {
   return Array.from(Array(length), (_, i) => `I am typing ${i + 1}`);
 };
+
 test.each([
   [
     generateTypingInput(1),
@@ -245,4 +247,3 @@ test.each([
 
 // TODO: TEST CHOICES WITH EXTERNAL JSON
 
-// TODO: TEST
