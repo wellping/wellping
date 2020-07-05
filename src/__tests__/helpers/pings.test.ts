@@ -8,6 +8,7 @@ import {
   insertPingAsync,
   addEndTimeToPingAsync,
   getThisWeekPingsAsync,
+  getLatestPingAsync,
 } from "../../helpers/pings";
 import {
   connectTestDatabaseAsync,
@@ -30,6 +31,9 @@ afterAll(async () => {
 });
 
 test("insert pings and set end date", async () => {
+  expect(await getPingsAsync()).toEqual([]);
+  expect(await getLatestPingAsync()).toEqual(null);
+
   for (let i = 0; i < PINGS.length; i++) {
     const ping = PINGS[i];
 
@@ -38,10 +42,13 @@ test("insert pings and set end date", async () => {
       startTime: ping.startTime,
       streamName: ping.streamName,
     });
-    expect(addedPing).toEqual({
+
+    const pingWithoutEndDate = {
       ...ping,
       endTime: null, // Doesn't have end time yet.
-    });
+    };
+    expect(addedPing).toEqual(pingWithoutEndDate);
+    expect(await getLatestPingAsync()).toEqual(pingWithoutEndDate);
 
     if (ping.endTime) {
       const updatedEndedPing = await addEndTimeToPingAsync(
@@ -50,6 +57,7 @@ test("insert pings and set end date", async () => {
       );
       expect(updatedEndedPing).toEqual(ping);
     }
+    expect(await getLatestPingAsync()).toEqual(ping);
 
     expect(await getPingsAsync()).toEqual(PINGS.slice(0, i + 1));
   }
