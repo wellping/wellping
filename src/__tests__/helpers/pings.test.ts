@@ -1,7 +1,6 @@
 import * as DateMock from "jest-date-mock";
 import { Connection } from "typeorm";
 
-import * as ConfigFile from "../../helpers/configFiles";
 import {
   getPingsAsync,
   getTodayPingsAsync,
@@ -51,6 +50,17 @@ test("insert pings and set end date", async () => {
 
     expect(await getPingsAsync()).toEqual(PINGS.slice(0, i + 1));
   }
+});
+
+test("set end date to non-existent ping", async () => {
+  // https://github.com/facebook/jest/issues/1700
+  expect(
+    (async () => {
+      await addEndTimeToPingAsync("_OwO_", new Date());
+    })(),
+  ).rejects.toThrowErrorMatchingInlineSnapshot(
+    `"pingId _OwO_ not found in getPingsAsync."`,
+  );
 });
 
 test("get today's ping", async () => {
