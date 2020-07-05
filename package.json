@@ -45,6 +45,7 @@
     "prettier": "^2.0.5",
     "react-native-testing-library": "^2.1.0",
     "react-test-renderer": "^16.13.1",
+    "sqlite3": "^5.0.0",
     "typescript": "^3.9.5"
   },
   "jest": {
@@ -66,7 +67,8 @@
     "setupFilesAfterEnv": [
       "@testing-library/jest-native/extend-expect",
       "<rootDir>/src/__tests__/setup.ts"
-    ]
+    ],
+    "globalSetup": "<rootDir>/src/__tests__/globalSetup.ts"
   },
   "private": true
 }

@@ -15,6 +15,17 @@ import { PingEntity } from "../entities/PingEntity";
 
 const getDatabaseFilename = (databaseName: string) => `${databaseName}.db`;
 
+export const entities = [
+  AnswerEntity,
+  SliderAnswerEntity,
+  ChoicesWithSingleAnswerAnswerEntity,
+  ChoicesWithMultipleAnswersAnswerEntity,
+  YesNoAnswerEntity,
+  MultipleTextAnswerEntity,
+  HowLongAgoAnswerEntity,
+  PingEntity,
+];
+
 export async function connectDatabaseAsync(
   databaseName: string,
 ): Promise<Connection> {
@@ -22,16 +33,7 @@ export async function connectDatabaseAsync(
     type: "expo",
     driver: require("expo-sqlite"),
     database: getDatabaseFilename(databaseName),
-    entities: [
-      AnswerEntity,
-      SliderAnswerEntity,
-      ChoicesWithSingleAnswerAnswerEntity,
-      ChoicesWithMultipleAnswersAnswerEntity,
-      YesNoAnswerEntity,
-      MultipleTextAnswerEntity,
-      HowLongAgoAnswerEntity,
-      PingEntity,
-    ],
+    entities,
     synchronize: true,
     logging: true,
   });
