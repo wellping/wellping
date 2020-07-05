@@ -193,6 +193,99 @@ test.each([
   },
 );
 
+test.each([
+  [
+    generateTypingInput(1),
+    3,
+    "PrevQuestionId",
+    "Enter something...",
+    "Typing_[__INDEX__]",
+    "INDEX",
+    {},
+  ],
+  [
+    [],
+    4,
+    "PrevQuestionId",
+    "Enter something...",
+    "Typing_[__INDEX__]",
+    "INDEX",
+    {
+      PrevQuestionId: {
+        questionId: "PrevQuestionId",
+        data: {
+          value: {},
+        },
+      },
+    },
+  ],
+  [
+    ["John Doe", "王小明"],
+    4,
+    "FamilyNames",
+    "Enter a name...",
+    "Name_[__NAMEINDEX__]",
+    "NAMEINDEX",
+    {
+      FamilyNames: {
+        questionId: "FamilyNames",
+        data: {
+          value: {
+            FamilyNames_1: "Father",
+            FamilyNames_2: "Mother",
+          },
+        },
+      },
+    },
+  ],
+  [
+    ["Kristofferson Silverfox"],
+    4,
+    "ZootopiaCharacters",
+    undefined,
+    "Fox[__FOX_INDEX__]",
+    "FOX_INDEX",
+    {
+      ZootopiaCharacters: {
+        questionId: "ZootopiaCharacters",
+        data: {
+          value: {
+            ZootopiaCharacter_1: "Judy Hopps",
+            ZootopiaCharacter_2: "Nick Wilde",
+            ZootopiaCharacter_3: "Flash",
+          },
+        },
+      },
+    },
+  ],
+])(
+  "input `%p` with max %d and maxMinus %p without choices",
+  async (
+    inputValues,
+    max,
+    maxMinus,
+    placeholder,
+    eachId,
+    indexName,
+    allAnswers,
+  ) => {
+    const question = {
+      id: "WithoutChoicesWithMaxMinusDict",
+      eachId,
+      type: QuestionType.MultipleText,
+      question: "A question",
+      placeholder,
+      max,
+      maxMinus,
+      variableName: "TARGET_CATEGORY",
+      indexName,
+      next: null,
+    } as MultipleTextQuestion;
+
+    await basicTestForQuestionAsync(question, allAnswers as any, inputValues);
+  },
+);
+
 const CHOICES = [
   { key: "friend", value: "Friend" },
   { key: "coworker", value: "Co-worker" },
@@ -246,4 +339,3 @@ test.each([
 );
 
 // TODO: TEST CHOICES WITH EXTERNAL JSON
-

@@ -68,6 +68,16 @@ Object {
 
 exports[`input \`["I am typing 1", "Sibling / other relative", "I am typing 1", "I am typing 2", "Parent"]\` with max 5 and forceChoice true with a choices object: text inputs length 1`] = `5`;
 
+exports[`input \`["I am typing 1"]\` with max 3 and maxMinus "PrevQuestionId" without choices 1`] = `
+Object {
+  "value": Object {
+    "Typing_1": "I am typing 1",
+  },
+}
+`;
+
+exports[`input \`["I am typing 1"]\` with max 3 and maxMinus "PrevQuestionId" without choices: text inputs length 1`] = `3`;
+
 exports[`input \`["I am typing 1"]\` with max 3 without choices 1`] = `
 Object {
   "value": Object {
@@ -77,6 +87,17 @@ Object {
 `;
 
 exports[`input \`["I am typing 1"]\` with max 3 without choices: text inputs length 1`] = `3`;
+
+exports[`input \`["John Doe", "王小明"]\` with max 4 and maxMinus "FamilyNames" without choices 1`] = `
+Object {
+  "value": Object {
+    "Name_1": "John Doe",
+    "Name_2": "王小明",
+  },
+}
+`;
+
+exports[`input \`["John Doe", "王小明"]\` with max 4 and maxMinus "FamilyNames" without choices: text inputs length 1`] = `2`;
 
 exports[`input \`["John Doe", "王小明"]\` with max 5 without choices 1`] = `
 Object {
@@ -88,6 +109,16 @@ Object {
 `;
 
 exports[`input \`["John Doe", "王小明"]\` with max 5 without choices: text inputs length 1`] = `5`;
+
+exports[`input \`["Kristofferson Silverfox"]\` with max 4 and maxMinus "ZootopiaCharacters" without choices 1`] = `
+Object {
+  "value": Object {
+    "Fox1": "Kristofferson Silverfox",
+  },
+}
+`;
+
+exports[`input \`["Kristofferson Silverfox"]\` with max 4 and maxMinus "ZootopiaCharacters" without choices: text inputs length 1`] = `1`;
 
 exports[`input \`["Mr. Fox", "Felicity Fox", "Ash Fox", "Kristofferson Silverfox"]\` with max 4 without choices 1`] = `
 Object {
@@ -115,3 +146,11 @@ Object {
 `;
 
 exports[`input \`["Stranger", "Stranger", "Stranger", "Stranger", "RANDOM"]\` with max 5 and forceChoice false with a choices object: text inputs length 1`] = `5`;
+
+exports[`input \`[]\` with max 4 and maxMinus "PrevQuestionId" without choices 1`] = `
+Object {
+  "value": Object {},
+}
+`;
+
+exports[`input \`[]\` with max 4 and maxMinus "PrevQuestionId" without choices: text inputs length 1`] = `4`;
