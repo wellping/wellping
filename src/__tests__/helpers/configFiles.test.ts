@@ -1,10 +1,14 @@
-import MockDate from "mockdate";
+import * as DateMock from "jest-date-mock";
 
 import { isTimeThisWeek } from "../../helpers/configFiles";
 
 describe("isTimeThisWeek", () => {
+  beforeEach(() => {
+    DateMock.advanceTo(+new Date("2008-08-08"));
+  });
+
   afterEach(() => {
-    MockDate.reset();
+    DateMock.clear();
   });
 
   test("weekStartsOn: 0", async () => {
@@ -14,7 +18,6 @@ describe("isTimeThisWeek", () => {
 
     expect(isTimeThisWeek(new Date(), studyInfo)).toBe(true);
 
-    MockDate.set("2008-08-08");
     expect(isTimeThisWeek(new Date("2008-08-01"), studyInfo)).toBe(false);
     expect(isTimeThisWeek(new Date("2008-08-02"), studyInfo)).toBe(false);
 
@@ -39,7 +42,6 @@ describe("isTimeThisWeek", () => {
 
     expect(isTimeThisWeek(new Date(), studyInfo)).toBe(true);
 
-    MockDate.set("2008-08-08");
     expect(isTimeThisWeek(new Date("2008-08-02"), studyInfo)).toBe(false);
     expect(isTimeThisWeek(new Date("2008-08-03"), studyInfo)).toBe(false);
 
@@ -64,7 +66,6 @@ describe("isTimeThisWeek", () => {
 
     expect(isTimeThisWeek(new Date(), studyInfo)).toBe(true);
 
-    MockDate.set("2008-08-08");
     expect(isTimeThisWeek(new Date("2008-08-04"), studyInfo)).toBe(false);
     expect(isTimeThisWeek(new Date("2008-08-05"), studyInfo)).toBe(false);
 
@@ -89,7 +90,6 @@ describe("isTimeThisWeek", () => {
 
     expect(isTimeThisWeek(new Date(), studyInfo)).toBe(true);
 
-    MockDate.set("2008-08-08");
     expect(isTimeThisWeek(new Date("2008-08-06"), studyInfo)).toBe(false);
     expect(isTimeThisWeek(new Date("2008-08-07"), studyInfo)).toBe(false);
 
