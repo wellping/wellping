@@ -94,40 +94,55 @@ export async function getLatestPingAsync(): Promise<PingEntity | null> {
   return latestPing;
 }
 
-export async function getPingsAsync(): Promise<PingEntity[]> {
+export async function getPingsAsync(
+  order: "ASC" | "DESC" = "ASC",
+): Promise<PingEntity[]> {
   const pings = await PingEntity.createQueryBuilder()
-    .orderBy("startTime", "ASC")
+    .orderBy("startTime", order)
     .getMany();
   return pings;
 }
 
-export async function getTodayPingsAsync(): Promise<PingEntity[]> {
-  const allPings = await getPingsAsync();
-  const todayPings: PingEntity[] = [];
-  // TODO: USE SQL HERE? (MAKE SURE TIMEZONE PROBLEM)
+// Returns all pings in the order of `order` until the `untilAsync`
+// condition is met.
+// The returning pings are always in `order` order.
+export async function getPingsUntilAsync(
+  untilAsync: (ping: PingEntity) => Promise<boolean> | boolean,
+  order: "ASC" | "DESC",
+): Promise<PingEntity[]> {
+  const allPings = await getPingsAsync(order);
+  const resultsPings: PingEntity[] = [];
   for (const ping of allPings) {
-    if (isToday(ping.notificationTime)) {
-      todayPings.push(ping);
+    if (ping.notificationTime > new Date()) {
+      // It is almost impossible to get this, because finished pings
+      // cannot be in the future.
+      continue;
     }
-    if (ping.notificationTime > addDays(new Date(), 1)) {
+    if (await untilAsync(ping)) {
+      // Stops when the condition is met.
       break;
     }
+    resultsPings.push(ping);
   }
+  return resultsPings;
+}
+
+export async function getTodayPingsAsync(): Promise<PingEntity[]> {
+  // Stops when the finished ping was in yesterday.
+  const todayPings = await getPingsUntilAsync(
+    (ping) => !isToday(ping.notificationTime),
+    "DESC",
+  );
+  todayPings.reverse(); // So that pings are in ascending order.
   return todayPings;
 }
 
 export async function getThisWeekPingsAsync(): Promise<PingEntity[]> {
-  const allPings = await getPingsAsync();
-  const thisWeekPings: PingEntity[] = [];
-  // TODO: USE SQL HERE? (MAKE SURE TIMEZONE PROBLEM)
-  for (const ping of allPings) {
-    if (await isTimeThisWeekAsync(ping.notificationTime)) {
-      thisWeekPings.push(ping);
-    }
-    if (ping.notificationTime > new Date()) {
-      // Stop when the notification time is in the future.
-      break;
-    }
-  }
+  // Stops when the finished ping was last week.
+  const thisWeekPings = await getPingsUntilAsync(
+    async (ping) => !(await isTimeThisWeekAsync(ping.notificationTime)),
+    "DESC",
+  );
+  thisWeekPings.reverse(); // So that pings are in ascending order.
   return thisWeekPings;
 }
