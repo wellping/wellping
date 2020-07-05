@@ -119,7 +119,6 @@ export async function setNotificationsAsync(studyInfo: StudyInfo) {
     }
   }
 
-  // TODO: THIS FUNCTION NEED MORE TEST
   const startedPingsThisWeek = await getThisWeekPingsAsync();
   const numberOfPingsStartedThisWeek = startedPingsThisWeek.length;
 
