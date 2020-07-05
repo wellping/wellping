@@ -41,6 +41,7 @@
     "eslint-config-universe": "^3.0.1",
     "eslint-plugin-prettier": "^3.1.3",
     "jest-expo": "^37.0.0",
+    "mockdate": "^3.0.2",
     "prettier": "^2.0.5",
     "react-native-testing-library": "^2.1.0",
     "react-test-renderer": "^16.13.1",
@@ -51,8 +52,17 @@
     "transformIgnorePatterns": [
       "node_modules/(?!(jest-)?react-native|react-clone-referenced-element|@react-native-community|expo(nent)?|@expo(nent)?/.*|react-navigation|@react-navigation/.*|@unimodules/.*|unimodules|sentry-expo|native-base|@sentry/.*)"
     ],
-    "moduleFileExtensions": ["ts", "tsx", "js", "jsx", "json", "node"],
-    "testMatch": [ "**/__tests__/**/*.(spec|test).[jt]s?(x)" ],
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js",
+      "jsx",
+      "json",
+      "node"
+    ],
+    "testMatch": [
+      "**/__tests__/**/*.(spec|test).[jt]s?(x)"
+    ],
     "setupFilesAfterEnv": [
       "@testing-library/jest-native/extend-expect",
       "<rootDir>/src/__tests__/setup.ts"
