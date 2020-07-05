@@ -106,11 +106,11 @@ export async function getTodayPingsAsync(): Promise<PingEntity[]> {
   const todayPings: PingEntity[] = [];
   // TODO: USE SQL HERE? (MAKE SURE TIMEZONE PROBLEM)
   for (const ping of allPings) {
+    if (ping.notificationTime > new Date()) {
+      break;
+    }
     if (isToday(ping.notificationTime)) {
       todayPings.push(ping);
-    }
-    if (ping.notificationTime > addDays(new Date(), 1)) {
-      break;
     }
   }
   return todayPings;

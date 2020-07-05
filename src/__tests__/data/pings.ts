@@ -38,7 +38,7 @@ const PINGS_PARTIAL = [
     id: "cat4",
     notificationTime: new Date("2010-05-10T23:08:07Z"),
     startTime: new Date("2010-05-10T23:09:09Z"),
-    endTime: new Date("2010-05-10T23:59:59Z"),
+    endTime: new Date("2010-05-10T23:59:58Z"),
     streamName: "cat",
   },
 ];
