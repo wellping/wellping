@@ -21,7 +21,6 @@ jest.spyOn(console, "error").mockImplementation((...error: any[]) => {
     if (ping.endTime !== null) {
       expect(ping.startTime < ping.endTime).toBeTruthy();
     }
-    expect(ping.notificationTime.getTimezoneOffset()).toEqual(ping.tzOffset);
 
     expect(ping.notificationTime > lastPingTime).toBeTruthy();
     lastPingTime = ping.notificationTime;
