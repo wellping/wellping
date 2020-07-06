@@ -8764,11 +8764,6 @@ react-native-appearance@~0.3.3:
     invariant "^2.2.4"
     use-subscription "^1.0.0"
 
-react-native-error-boundary@^1.1.0:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/react-native-error-boundary/-/react-native-error-boundary-1.1.0.tgz#a674c5b7fdde51957e8b28fee23cbd001d4ee50e"
-  integrity sha512-iuGaxgU7SUAJ/X1J0mp3bQMksOPMHzyU8dHI1NS+WPs0J6kxv7PFJsfnUdfyd71wJ8YpUOaQLWtF+hbQ8AZ7hw==
-
 react-native-safe-area-context@~3.0.7:
   version "3.0.7"
   resolved "https://registry.yarnpkg.com/react-native-safe-area-context/-/react-native-safe-area-context-3.0.7.tgz#0f53de7a30d626d82936000f3f6db374ecc4b800"

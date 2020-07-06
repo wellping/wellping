@@ -10,6 +10,16 @@ jest.spyOn(console, "error").mockImplementation((...error: any[]) => {
     // Slience error about Slider.
     return;
   }
+
+  if (
+    (error[0] as string).includes(
+      "Consider adding an error boundary to your tree to customize error handling behavior",
+    )
+  ) {
+    // https://github.com/facebook/react/issues/11098
+    return;
+  }
+
   originalErrorFn(...error);
 });
 
