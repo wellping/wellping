@@ -24,6 +24,7 @@ import {
 } from "../../helpers/types";
 import ChoicesQuestionScreen from "../../questionScreens/ChoicesQuestionScreen";
 import { simplePipeInExtraMetaData } from "../helper";
+import { errorBoundaryWrapper } from "../renderHelper";
 
 export const getSelectionA11YLabel = (option: string) => `select ${option}`;
 export const getSelection = (
@@ -330,3 +331,29 @@ test.each(CHOICES_TEST_TABLE)(
     );
   },
 );
+
+test("wrong QuestionType", async () => {
+  const question = {
+    id: "AnimalTest",
+    type: QuestionType.Slider,
+    question: "This is not a choice question!",
+    next: null,
+  } as any;
+
+  errorBoundaryWrapper(
+    <ChoicesQuestionScreen
+      key={question.id}
+      question={question}
+      onDataChange={jest.fn()}
+      allAnswers={{}}
+      allQuestions={{ [question.id]: question }}
+      pipeInExtraMetaData={jest.fn()}
+      setDataValidationFunction={jest.fn()}
+    />,
+    (error, stackTrace) => {
+      expect(error.message).toMatchInlineSnapshot(
+        `"Wrong QuestionType in ChoicesQuestionScreen"`,
+      );
+    },
+  );
+});
