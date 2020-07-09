@@ -104,7 +104,7 @@ const basicTestForQuestionAsync = async (
     );
     expect(mockOnDataChangeFn).toHaveBeenCalledTimes(callCount);
 
-    let stillNeedFireEndEditing = true;
+    let isInputValid = true;
     if (question.choices && question.forceChoice && inputValue.length > 0) {
       let isInputInChoice = false;
       if (typeof question.choices === "string") {
@@ -128,7 +128,7 @@ const basicTestForQuestionAsync = async (
             buttonPressed = true;
           });
         fireEvent(textInput, "onEndEditing", {});
-        stillNeedFireEndEditing = false;
+        isInputValid = false;
         expect(alertSpy).toHaveBeenCalledTimes(1);
 
         await waitFor(() => buttonPressed);
@@ -143,7 +143,7 @@ const basicTestForQuestionAsync = async (
         alertSpy.mockRestore();
       }
     }
-    if (stillNeedFireEndEditing) {
+    if (isInputValid) {
       fireEvent(textInput, "onEndEditing", {});
       // There should be no extra call.
       expect(mockOnDataChangeFn).toHaveBeenNthCalledWith(
