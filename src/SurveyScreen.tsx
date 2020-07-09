@@ -1,6 +1,13 @@
 import { addDays } from "date-fns";
 import React from "react";
-import { Button, Text, View, ScrollView, Dimensions } from "react-native";
+import {
+  Button,
+  Text,
+  View,
+  ScrollView,
+  Dimensions,
+  Alert,
+} from "react-native";
 
 import { _DEBUG_CONFIGS } from "../config/debug";
 import {
@@ -165,7 +172,7 @@ export default class SurveyScreen extends React.Component<
 
   onNextSelect() {
     // Reset this so that the new QuestionScreen can set it.
-    this.dataValidationFunction = null;
+    this.dataValidationFunctionAsync = null;
 
     const { survey, ping } = this.props;
 
@@ -567,7 +574,7 @@ export default class SurveyScreen extends React.Component<
     });
   }
 
-  dataValidationFunction: (() => boolean) | null = null;
+  dataValidationFunctionAsync: (() => Promise<boolean>) | null = null;
   render() {
     /*var contents = this.props.screenProps.scores.map(score => (
       <Text key={score.name}>
@@ -656,8 +663,21 @@ export default class SurveyScreen extends React.Component<
             allAnswers={currentQuestionAnswers}
             allQuestions={survey}
             pipeInExtraMetaData={(input) => this.pipeInExtraMetaData(input)}
-            setDataValidationFunction={(func) => {
-              this.dataValidationFunction = func;
+            setDataValidationFunctions={async (
+              validateFuncAsync,
+              feedbackFuncAsync,
+            ) => {
+              this.dataValidationFunctionAsync = async () => {
+                const valid = await validateFuncAsync();
+                if (!valid) {
+                  if (feedbackFuncAsync) {
+                    await feedbackFuncAsync(valid);
+                  } else {
+                    Alert.alert("Error", "The data your entered is not valid.");
+                  }
+                }
+                return valid;
+              };
             }}
           />
         </View>
@@ -681,8 +701,8 @@ export default class SurveyScreen extends React.Component<
           <Button
             onPress={async () => {
               if (
-                this.dataValidationFunction &&
-                !this.dataValidationFunction()
+                this.dataValidationFunctionAsync &&
+                !(await this.dataValidationFunctionAsync())
               ) {
                 return;
               }

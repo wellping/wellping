@@ -21,7 +21,7 @@ const MultipleTextQuestionScreen: React.ElementType<MultipleTextQuestionScreenPr
   question,
   onDataChange,
   allAnswers,
-  setDataValidationFunction,
+  setDataValidationFunctions,
 }) => {
   let numberOfTextFields = question.max;
   if (question.maxMinus) {

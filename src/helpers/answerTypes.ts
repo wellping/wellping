@@ -51,5 +51,8 @@ export interface QuestionScreenProps {
   allAnswers: AnswersList;
   allQuestions: QuestionsList;
   pipeInExtraMetaData: (input: string) => string;
-  setDataValidationFunction: (func: () => boolean) => void;
+  setDataValidationFunctions: (
+    validateFuncAsync: () => Promise<boolean>,
+    feedbackFuncAsync?: (valid: boolean) => Promise<void>,
+  ) => void;
 }
