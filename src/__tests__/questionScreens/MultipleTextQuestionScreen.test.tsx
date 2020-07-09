@@ -33,9 +33,13 @@ const basicTestForQuestionAsync = async (
   allAnswers: AnswersList,
   inputValues: string[],
 ) => {
+  let codeDataValidationFunction: (() => boolean) | null = null;
+
   const mockOnDataChangeFn = jest.fn();
   const mockPipeInExtraMetaData = jest.fn(simplePipeInExtraMetaData);
-  const mockSetDataValidationFunction = jest.fn();
+  const mockSetDataValidationFunction = jest.fn((func) => {
+    codeDataValidationFunction = func;
+  });
 
   const renderResults = render(
     <MultipleTextQuestionScreen
@@ -53,8 +57,8 @@ const basicTestForQuestionAsync = async (
   // Because there isn't a need to pipe in any data.
   expect(mockPipeInExtraMetaData).not.toHaveBeenCalled();
 
-  // TODO: VERIFY SET DATA VALIDATION FUNCTION TOO
   expect(mockSetDataValidationFunction).toHaveBeenCalledTimes(1);
+  expect(typeof codeDataValidationFunction).toBe("function");
 
   // This also helps test the placeholder property.
   const textInputs = getAllByA11yHint(A11Y_HINT);
