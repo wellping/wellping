@@ -163,7 +163,7 @@ export async function setNotificationsAsync(studyInfo: StudyInfo) {
             .join(mPingText);
         }
 
-        console.warn(`${notificationBody} for ${notificationTime}`);
+        //console.warn(`${notificationBody} for ${notificationTime}`);
 
         const notification: LocalNotification = {
           title: notificationTitle,
