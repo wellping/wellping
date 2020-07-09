@@ -100,6 +100,7 @@ const basicTestForQuestionAsync = async (
     );
     expect(mockOnDataChangeFn).toHaveBeenCalledTimes(callCount);
 
+    let stillNeedFireEndEditing = true;
     if (question.choices && question.forceChoice && inputValue.length > 0) {
       let isInputInChoice = false;
       if (typeof question.choices === "string") {
@@ -123,6 +124,7 @@ const basicTestForQuestionAsync = async (
             buttonPressed = true;
           });
         fireEvent(textInput, "onEndEditing", {});
+        stillNeedFireEndEditing = false;
         expect(alertSpy).toHaveBeenCalledTimes(1);
 
         await waitFor(() => buttonPressed);
@@ -136,6 +138,14 @@ const basicTestForQuestionAsync = async (
 
         alertSpy.mockRestore();
       }
+    }
+    if (stillNeedFireEndEditing) {
+      fireEvent(textInput, "onEndEditing", {});
+      // There should be no extra call.
+      expect(mockOnDataChangeFn).toHaveBeenNthCalledWith(
+        callCount,
+        expectedAnswerData,
+      );
     }
 
     // TODO: it doesn't seems to be testing whether the text field (UI) is cleared.
