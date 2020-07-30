@@ -3,7 +3,6 @@ import * as DateMock from "jest-date-mock";
 import { Connection } from "typeorm";
 
 import { setNotificationsAsync } from "../../helpers/notifications";
-import { StudyInfo } from "../../helpers/types";
 import {
   getTestDatabaseFilename,
   connectTestDatabaseAsync,
@@ -48,9 +47,7 @@ export const notificationsTest = () => {
     test("after the study already ends", async () => {
       DateMock.advanceTo(+new Date("2010-08-08T20:08:08Z"));
 
-      const studyInfo: StudyInfo = PINGS_STUDY_INFO;
-
-      await setNotificationsAsync(studyInfo);
+      await setNotificationsAsync(PINGS_STUDY_INFO);
 
       expect(spyCancelAllScheduledNotificationsAsync).toBeCalledTimes(1);
 
@@ -60,9 +57,7 @@ export const notificationsTest = () => {
     test("before the study starts", async () => {
       DateMock.advanceTo(+new Date("2010-04-20T20:08:08Z"));
 
-      const studyInfo: StudyInfo = PINGS_STUDY_INFO;
-
-      await setNotificationsAsync(studyInfo);
+      await setNotificationsAsync(PINGS_STUDY_INFO);
 
       expect(spyCancelAllScheduledNotificationsAsync).toBeCalledTimes(1);
 
@@ -75,9 +70,7 @@ export const notificationsTest = () => {
     test("near study ends", async () => {
       DateMock.advanceTo(+new Date("2010-05-28T20:08:08Z"));
 
-      const studyInfo: StudyInfo = PINGS_STUDY_INFO;
-
-      await setNotificationsAsync(studyInfo);
+      await setNotificationsAsync(PINGS_STUDY_INFO);
 
       expect(spyCancelAllScheduledNotificationsAsync).toBeCalledTimes(1);
 
@@ -92,9 +85,7 @@ export const notificationsTest = () => {
         test("(stay in current week)", async () => {
           DateMock.advanceTo(+new Date("2010-05-03T10:01:00Z"));
 
-          const studyInfo: StudyInfo = PINGS_STUDY_INFO;
-
-          await setNotificationsAsync(studyInfo);
+          await setNotificationsAsync(PINGS_STUDY_INFO);
 
           expect(spyCancelAllScheduledNotificationsAsync).toBeCalledTimes(1);
 
@@ -109,9 +100,7 @@ export const notificationsTest = () => {
         test("(jump to next week)", async () => {
           DateMock.advanceTo(+new Date("2010-05-01T11:00:00Z"));
 
-          const studyInfo: StudyInfo = PINGS_STUDY_INFO;
-
-          await setNotificationsAsync(studyInfo);
+          await setNotificationsAsync(PINGS_STUDY_INFO);
 
           expect(spyCancelAllScheduledNotificationsAsync).toBeCalledTimes(1);
 
@@ -127,9 +116,7 @@ export const notificationsTest = () => {
       test("(1 ping from reaching bonus)", async () => {
         DateMock.advanceTo(+new Date("2010-05-11T13:01:00Z"));
 
-        const studyInfo: StudyInfo = PINGS_STUDY_INFO;
-
-        await setNotificationsAsync(studyInfo);
+        await setNotificationsAsync(PINGS_STUDY_INFO);
 
         expect(spyCancelAllScheduledNotificationsAsync).toBeCalledTimes(1);
 
@@ -143,9 +130,7 @@ export const notificationsTest = () => {
         test("(stay in current week)", async () => {
           DateMock.advanceTo(+new Date("2010-05-11T17:01:00Z"));
 
-          const studyInfo: StudyInfo = PINGS_STUDY_INFO;
-
-          await setNotificationsAsync(studyInfo);
+          await setNotificationsAsync(PINGS_STUDY_INFO);
 
           expect(spyCancelAllScheduledNotificationsAsync).toBeCalledTimes(1);
 
@@ -160,9 +145,7 @@ export const notificationsTest = () => {
         test("(jump to next week)", async () => {
           DateMock.advanceTo(+new Date("2010-05-15T14:01:00Z"));
 
-          const studyInfo: StudyInfo = PINGS_STUDY_INFO;
-
-          await setNotificationsAsync(studyInfo);
+          await setNotificationsAsync(PINGS_STUDY_INFO);
 
           expect(spyCancelAllScheduledNotificationsAsync).toBeCalledTimes(1);
 
