@@ -1,5 +1,6 @@
 import * as z from "zod";
-import { idRegexCheck, idRegexErrorMessage } from "./StudyFile";
+
+import { idRegexCheck, idRegexErrorMessage } from "./helper";
 
 export const QuestionIdSchema = z.string().refine(idRegexCheck, {
   message: idRegexErrorMessage("Question ID"),

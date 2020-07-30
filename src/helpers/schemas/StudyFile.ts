@@ -2,11 +2,8 @@ import { parseJSON } from "date-fns";
 import * as z from "zod";
 
 import { StudyFile } from "../types";
-import { QuestionsListSchema } from "./Question";
-
-export const idRegexCheck = (val: string) => /^\w+$/.test(val);
-export const idRegexErrorMessage = (name: string) =>
-  `${name} can only include letters, numbers, and "_".`;
+import { QuestionsListSchema, QuestionIdSchema } from "./Question";
+import { idRegexErrorMessage, idRegexCheck } from "./helper";
 
 export const StudyIdSchema = z.string().refine(idRegexCheck, {
   message: idRegexErrorMessage("Study ID"),
