@@ -843,6 +843,155 @@ Array [
 ]
 `;
 
+exports[`notifications setNotificationsAsync near study ends 1`] = `
+Array [
+  Array [
+    Object {
+      "android": Object {
+        "channelId": "ssnlPingChannel",
+      },
+      "body": "You are 5 pings away from the weekly bonus.",
+      "title": "You can earn bonus!",
+    },
+    Object {
+      "time": 2010-05-28T22:14:08.000Z,
+    },
+  ],
+  Array [
+    Object {
+      "android": Object {
+        "channelId": "ssnlPingChannel",
+      },
+      "body": "You are 5 pings away from the weekly bonus.",
+      "title": "You can earn bonus!",
+    },
+    Object {
+      "time": 2010-05-29T08:14:08.000Z,
+    },
+  ],
+  Array [
+    Object {
+      "android": Object {
+        "channelId": "ssnlPingChannel",
+      },
+      "body": "You are 5 pings away from the weekly bonus.",
+      "title": "You can earn bonus!",
+    },
+    Object {
+      "time": 2010-05-29T10:14:08.000Z,
+    },
+  ],
+  Array [
+    Object {
+      "android": Object {
+        "channelId": "ssnlPingChannel",
+      },
+      "body": "You are 5 pings away from the weekly bonus.",
+      "title": "You can earn bonus!",
+    },
+    Object {
+      "time": 2010-05-29T12:14:08.000Z,
+    },
+  ],
+  Array [
+    Object {
+      "android": Object {
+        "channelId": "ssnlPingChannel",
+      },
+      "body": "You are 5 pings away from the weekly bonus.",
+      "title": "You can earn bonus!",
+    },
+    Object {
+      "time": 2010-05-29T16:14:08.000Z,
+    },
+  ],
+  Array [
+    Object {
+      "android": Object {
+        "channelId": "ssnlPingChannel",
+      },
+      "body": "You are 5 pings away from the weekly bonus.",
+      "title": "You can earn bonus!",
+    },
+    Object {
+      "time": 2010-05-29T18:14:08.000Z,
+    },
+  ],
+  Array [
+    Object {
+      "android": Object {
+        "channelId": "ssnlPingChannel",
+      },
+      "body": "You are 5 pings away from the weekly bonus.",
+      "title": "You can earn bonus!",
+    },
+    Object {
+      "time": 2010-05-29T22:14:08.000Z,
+    },
+  ],
+  Array [
+    Object {
+      "android": Object {
+        "channelId": "ssnlPingChannel",
+      },
+      "body": "You are 5 pings away from the weekly bonus.",
+      "title": "You can earn bonus!",
+    },
+    Object {
+      "time": 2010-05-30T08:14:08.000Z,
+    },
+  ],
+  Array [
+    Object {
+      "android": Object {
+        "channelId": "ssnlPingChannel",
+      },
+      "body": "You are 5 pings away from the weekly bonus.",
+      "title": "You can earn bonus!",
+    },
+    Object {
+      "time": 2010-05-30T10:14:08.000Z,
+    },
+  ],
+  Array [
+    Object {
+      "android": Object {
+        "channelId": "ssnlPingChannel",
+      },
+      "body": "You are 5 pings away from the weekly bonus.",
+      "title": "You can earn bonus!",
+    },
+    Object {
+      "time": 2010-05-30T12:14:08.000Z,
+    },
+  ],
+  Array [
+    Object {
+      "android": Object {
+        "channelId": "ssnlPingChannel",
+      },
+      "body": "You are 5 pings away from the weekly bonus.",
+      "title": "You can earn bonus!",
+    },
+    Object {
+      "time": 2010-05-30T16:14:08.000Z,
+    },
+  ],
+  Array [
+    Object {
+      "android": Object {
+        "channelId": "ssnlPingChannel",
+      },
+      "body": "You are 5 pings away from the weekly bonus.",
+      "title": "You can earn bonus!",
+    },
+    Object {
+      "time": 2010-05-30T18:14:08.000Z,
+    },
+  ],
+]
+`;
+
 exports[`pings database match: getAnswersAsync 1`] = `Array []`;
 
 exports[`pings database match: getPingsAsync 1`] = `

@@ -110,7 +110,7 @@ export const PINGS_DICT = PINGS.reduce((map, value) => {
 export const PINGS_STUDY_INFO: StudyInfo = {
   ...BASE_STUDY_INFO,
   startDate: new Date("2010-05-01T06:00:00Z"),
-  endDate: new Date("2010-05-30T22:00:00Z"),
+  endDate: new Date("2010-05-30T21:00:00Z"),
   weekStartsOn: 1 as StudyInfo["weekStartsOn"],
   notificationContent: {
     default: {

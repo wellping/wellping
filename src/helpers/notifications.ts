@@ -99,6 +99,10 @@ export async function setNotificationsAsync(studyInfo: StudyInfo) {
     for (const hour of hoursEveryday) {
       let notificationTime = setHours(setMinutes(date, 0), hour);
 
+      if (notificationTime >= studyEndDate) {
+        break;
+      }
+
       // Randomly add `randomMinMinuteAddition` to `randomMaxMinuteAddition` minutes (inclusive) to the notification time.
       const randomMinMinuteAddition =
         studyInfo.frequency.randomMinuteAddition.min;
