@@ -8,6 +8,7 @@ import {
   getTestDatabaseFilename,
   connectTestDatabaseAsync,
 } from "../data/database_helper";
+import { PINGS_STUDY_INFO } from "../data/pings";
 import { PINGS_DB_NAME } from "./pings.parttest";
 
 // https://github.com/facebook/jest/issues/6194#issuecomment-419837314
@@ -33,40 +34,9 @@ export const notificationsTest = () => {
     mathRandomSpy.mockRestore();
   });
 
-  const BASE_STUDY_INFO = {
-    id: "myStudy",
-    consentFormUrl: "https://example.com/",
-    serverURL: "https://example.com/",
-
-    weekStartsOn: 1 as StudyInfo["weekStartsOn"],
-    notificationContent: {
-      default: {
-        title: "New survey!",
-        body: "Do it now!",
-      },
-      bonus: {
-        title: "You can earn bonus!",
-        body: "You are #n_ping# away from the weekly bonus.",
-        numberOfCompletionEachWeek: 10,
-      },
-    },
-
-    // Not important for `notifications.ts` test purpose.
-    streamsOrder: {
-      0: [],
-      1: [],
-      2: [],
-      3: [],
-      4: [],
-      5: [],
-      6: [],
-    },
-    streamInCaseOfError: "myStream",
-  };
-
   describe("setNotificationsAsync", () => {
     test("after the study already ends", async () => {
-      DateMock.advanceTo(+new Date("2008-08-08T20:08:08Z"));
+      DateMock.advanceTo(+new Date("2010-08-08T20:08:08Z"));
 
       const spyCancelAllScheduledNotificationsAsync = jest.spyOn(
         Notifications,
@@ -78,16 +48,7 @@ export const notificationsTest = () => {
         "scheduleLocalNotificationAsync",
       );
 
-      const frequency = {
-        hoursEveryday: [8, 10, 12, 14, 16, 18],
-        randomMinuteAddition: { min: 0, max: 59 },
-      };
-      const studyInfo: StudyInfo = {
-        ...BASE_STUDY_INFO,
-        frequency,
-        startDate: new Date("2008-06-08T20:08:08Z"),
-        endDate: new Date("2008-08-08T08:08:08Z"),
-      };
+      const studyInfo: StudyInfo = PINGS_STUDY_INFO;
 
       await setNotificationsAsync(studyInfo);
 
@@ -100,7 +61,7 @@ export const notificationsTest = () => {
     });
 
     test("before the study starts", async () => {
-      DateMock.advanceTo(+new Date("2008-08-08T20:08:08Z"));
+      DateMock.advanceTo(+new Date("2010-04-20T20:08:08Z"));
 
       const spyCancelAllScheduledNotificationsAsync = jest.spyOn(
         Notifications,
@@ -112,23 +73,14 @@ export const notificationsTest = () => {
         "scheduleLocalNotificationAsync",
       );
 
-      const frequency = {
-        hoursEveryday: [8, 12, 16, 20],
-        randomMinuteAddition: { min: 0, max: 59 },
-      };
-      const studyInfo: StudyInfo = {
-        ...BASE_STUDY_INFO,
-        frequency,
-        // TODO: use times that match pings data
-        startDate: new Date("2008-08-10T19:00:00Z"),
-        endDate: new Date("2008-09-10T19:00:00Z"),
-      };
+      const studyInfo: StudyInfo = PINGS_STUDY_INFO;
 
       await setNotificationsAsync(studyInfo);
 
       expect(spyCancelAllScheduledNotificationsAsync).toBeCalledTimes(1);
 
-      expect(spyScheduleLocalNotificationAsync).toBeCalledTimes(28);
+      // 24 = Math.floor(28 / studyInfo.frequency.hoursEveryday.length) * studyInfo.frequency.hoursEveryday.length
+      expect(spyScheduleLocalNotificationAsync).toBeCalledTimes(24);
       // TODO: CHECK IF SNAPSHOT IS CORRECT.
       expect(spyScheduleLocalNotificationAsync.mock.calls).toMatchSnapshot();
 

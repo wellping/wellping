@@ -72,8 +72,11 @@ export async function setNotificationsAsync(studyInfo: StudyInfo) {
   const studyEndDate = new Date(studyInfo.endDate);
   // You can only schedule at most 64 local notifications on iOS.
   // Some say on Android, the limit is even lower: 50 (https://stackoverflow.com/a/36677835/2603230)
-  // To be safe, we schedule at most 28 notifications, which means 7 days.
-  const setNotificationsUntil = min([addDays(startDate, 7), studyEndDate]);
+  // To be safe, we schedule at most 28 notifications, which means (28 / hoursEveryday.length) days.
+  const setNotificationsUntil = min([
+    addDays(startDate, Math.floor(28 / hoursEveryday.length)),
+    studyEndDate,
+  ]);
   const notificationTimes: Date[] = [];
 
   const currentlySetNotifications = (await getNotificationTimesAsync()) || [];

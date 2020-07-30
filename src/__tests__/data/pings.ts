@@ -1,3 +1,6 @@
+import { StudyInfo } from "../../helpers/types";
+import { BASE_STUDY_INFO } from "./studyInfo";
+
 const PINGS_PARTIAL = [
   {
     id: "cat1",
@@ -54,3 +57,22 @@ export const PINGS_DICT = PINGS.reduce((map, value) => {
   map[value.id] = value;
   return map;
 }, {} as any);
+
+export const PINGS_STUDY_INFO: StudyInfo = {
+  ...BASE_STUDY_INFO,
+  startDate: new Date("2010-05-01T06:00:00Z"),
+  endDate: new Date("2010-05-30T22:00:00Z"),
+  frequency: {
+    hoursEveryday: [8, 10, 12, 16, 18, 22],
+    randomMinuteAddition: { min: 0, max: 119 },
+  },
+  streamsOrder: {
+    0: ["cat", "dog", "wolf", "lynx", "cat", "dog"],
+    1: ["cat", "dog", "wolf", "lynx", "cat", "dog"],
+    2: ["cat", "dog", "wolf", "lynx", "cat", "dog"],
+    3: ["cat", "dog", "wolf", "lynx", "cat", "dog"],
+    4: ["cat", "dog", "wolf", "lynx", "cat", "dog"],
+    5: ["cat", "dog", "wolf", "lynx", "cat", "dog"],
+    6: ["cat", "dog", "wolf", "lynx", "cat", "dog"],
+  },
+};
