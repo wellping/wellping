@@ -44,6 +44,36 @@ export const QuestionSchema = z.object({
   next: QuestionIdSchema.nullable(),
 });
 
+export const SliderQuestionSchema = QuestionSchema.extend({
+  type: z.literal(QuestionTypeSchema.enum.Slider),
+  slider: z.tuple([z.string(), z.string()]), // [left, right]
+  defaultValue: z.number().nonnegative().max(100).optional(),
+  defaultValueFromQuestionId: QuestionIdSchema.optional(),
+});
+
+export const ChoiceSchema = z.object({
+  key: z.string(),
+  value: z.string(),
+});
+
+export const ChoicesQuestionSchema = QuestionSchema.extend({
+  type: z.union([
+    z.literal(QuestionTypeSchema.enum.ChoicesWithSingleAnswer),
+    z.literal(QuestionTypeSchema.enum.ChoicesWithMultipleAnswers),
+  ]),
+  choices: z.array(ChoiceSchema).nonempty(),
+  specialCasesStartId: z
+    .union([
+      // Record<QuestionId, QuestionId>
+      z.record(QuestionIdSchema.nullable()),
+      // For when the user click "Prefer not to answer" or next without option.
+      z.object({ _pna: QuestionIdSchema.nullable() }),
+    ])
+    .optional(),
+  randomizeChoicesOrder: z.boolean().optional(),
+  randomizeExceptForChoiceIds: z.array(z.string()).optional(),
+});
+
 export const QuestionsListSchema = z.record(QuestionSchema).refine(
   (questions) => {
     for (const questionId in questions) {
