@@ -25,6 +25,7 @@ import { StudyInfo } from "./types";
 
 const ANDROID_CHANNEL_NAME = "ssnlPingChannel";
 
+/* istanbul ignore next */
 export async function setupNotificationsPermissionAsync(): Promise<boolean> {
   const { status: existingStatus } = await Permissions.getAsync(
     Permissions.USER_FACING_NOTIFICATIONS,
@@ -196,6 +197,7 @@ export async function getCurrentNotificationTimeAsync(
   studyInfo: StudyInfo,
 ): Promise<Date | null> {
   // DEBUG
+  /* istanbul ignore if */
   if (__DEV__ && _DEBUG_CONFIGS().ignoreNotificationTime) {
     const fakeNotificationTime = addMinutes(new Date(), -10);
     return fakeNotificationTime;
@@ -240,6 +242,7 @@ export async function getIncomingNotificationTimeAsync(): Promise<Date | null> {
   return notificationsTimes[currentIndex];
 }
 
+/* istanbul ignore next */
 export async function _sendTestNotificationAsync() {
   await Notifications.scheduleLocalNotificationAsync(
     {
