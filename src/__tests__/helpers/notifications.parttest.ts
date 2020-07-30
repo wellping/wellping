@@ -102,6 +102,12 @@ export const notificationsTest = () => {
             new Date("2010-05-11T16:44:07Z"),
             new Date("2010-05-11T18:55:07Z"),
             new Date("2010-05-11T22:44:07Z"),
+            new Date("2010-05-12T08:59:07Z"),
+            new Date("2010-05-12T10:58:07Z"),
+            new Date("2010-05-12T12:57:07Z"),
+            new Date("2010-05-12T16:56:07Z"),
+            new Date("2010-05-12T18:55:07Z"),
+            new Date("2010-05-12T22:54:07Z"),
           ];
         });
       });
