@@ -6,6 +6,7 @@ import * as notificationTimesAsyncStorage from "../../helpers/asyncStorage/notif
 import {
   setNotificationsAsync,
   getCurrentNotificationTimeAsync,
+  getIncomingNotificationTimeAsync,
 } from "../../helpers/notifications";
 import {
   getTestDatabaseFilename,
@@ -282,6 +283,80 @@ export const notificationsTest = () => {
       expect(
         await getCurrentNotificationTimeAsync(PINGS_STUDY_INFO),
       ).toMatchInlineSnapshot(`null`);
+    });
+  });
+
+  describe("getIncomingNotificationTimeAsync", () => {
+    describe("with stored notification times", () => {
+      let spyGetNotificationTimesAsync: FunctionSpyInstance<typeof notificationTimesAsyncStorage.getNotificationTimesAsync>;
+      beforeEach(() => {
+        spyGetNotificationTimesAsync = jest
+          .spyOn(notificationTimesAsyncStorage, "getNotificationTimesAsync")
+          .mockImplementation(async () => {
+            return [
+              new Date("2010-05-11T08:11:07Z"),
+              new Date("2010-05-11T10:22:07Z"),
+              new Date("2010-05-11T12:33:07Z"),
+              new Date("2010-05-11T16:44:07Z"),
+              new Date("2010-05-11T18:55:07Z"),
+              new Date("2010-05-11T22:44:07Z"),
+              new Date("2010-05-12T08:59:07Z"),
+              new Date("2010-05-12T10:58:07Z"),
+              new Date("2010-05-12T12:57:07Z"),
+              new Date("2010-05-12T16:56:07Z"),
+              new Date("2010-05-12T18:55:07Z"),
+              new Date("2010-05-12T22:54:07Z"),
+            ];
+          });
+      });
+
+      test("before and after a ping", async () => {
+        DateMock.advanceTo(+new Date("2010-05-12T12:57:00Z"));
+        expect(await getIncomingNotificationTimeAsync()).toMatchInlineSnapshot(
+          `2010-05-12T12:57:07.000Z`,
+        );
+
+        DateMock.advanceTo(+new Date("2010-05-12T12:57:08Z"));
+        expect(await getIncomingNotificationTimeAsync()).toMatchInlineSnapshot(
+          `2010-05-12T16:56:07.000Z`,
+        );
+
+        DateMock.advanceTo(+new Date("2010-05-12T13:00:08Z"));
+        expect(await getIncomingNotificationTimeAsync()).toMatchInlineSnapshot(
+          `2010-05-12T16:56:07.000Z`,
+        );
+
+        DateMock.advanceTo(+new Date("2010-05-12T13:26:59Z"));
+        expect(await getIncomingNotificationTimeAsync()).toMatchInlineSnapshot(
+          `2010-05-12T16:56:07.000Z`,
+        );
+
+        DateMock.advanceTo(+new Date("2010-05-12T13:27:08Z"));
+        expect(await getIncomingNotificationTimeAsync()).toMatchInlineSnapshot(
+          `2010-05-12T16:56:07.000Z`,
+        );
+      });
+
+      test("before first ping", async () => {
+        DateMock.advanceTo(+new Date("2010-05-10T14:01:00Z"));
+        expect(await getIncomingNotificationTimeAsync()).toMatchInlineSnapshot(
+          `2010-05-11T08:11:07.000Z`,
+        );
+      });
+
+      test("after last ping", async () => {
+        DateMock.advanceTo(+new Date("2010-05-12T23:59:00Z"));
+        expect(await getIncomingNotificationTimeAsync()).toMatchInlineSnapshot(
+          `null`,
+        );
+      });
+    });
+
+    test("without stored notification times", async () => {
+      DateMock.advanceTo(+new Date("2010-05-12T13:00:08Z"));
+      expect(await getIncomingNotificationTimeAsync()).toMatchInlineSnapshot(
+        `null`,
+      );
     });
   });
 };
