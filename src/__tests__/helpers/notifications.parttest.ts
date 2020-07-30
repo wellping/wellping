@@ -13,15 +13,6 @@ import { PINGS_DB_NAME } from "./pings.parttest";
 
 // https://github.com/facebook/jest/issues/6194#issuecomment-419837314
 export const notificationsTest = () => {
-  const spyCancelAllScheduledNotificationsAsync = jest.spyOn(
-    Notifications,
-    "cancelAllScheduledNotificationsAsync",
-  );
-  const spyScheduleLocalNotificationAsync = jest.spyOn(
-    Notifications,
-    "scheduleLocalNotificationAsync",
-  );
-
   let connection: Connection;
   const DB_NAME = PINGS_DB_NAME;
   const DB_FILENAME = getTestDatabaseFilename(DB_NAME);
@@ -32,16 +23,21 @@ export const notificationsTest = () => {
     await connection.close();
   });
 
-  let mathRandomSpy: any;
-  beforeEach(() => {
-    mathRandomSpy = jest
-      .spyOn(global.Math, "random")
-      .mockReturnValue(0.123456789);
-  });
+  const spyCancelAllScheduledNotificationsAsync = jest.spyOn(
+    Notifications,
+    "cancelAllScheduledNotificationsAsync",
+  );
+  const spyScheduleLocalNotificationAsync = jest.spyOn(
+    Notifications,
+    "scheduleLocalNotificationAsync",
+  );
+  const mathRandomSpy = jest
+    .spyOn(global.Math, "random")
+    .mockReturnValue(0.123456789);
   afterEach(() => {
     DateMock.clear();
-    mathRandomSpy.mockRestore();
 
+    mathRandomSpy.mockClear();
     spyCancelAllScheduledNotificationsAsync.mockClear();
     spyScheduleLocalNotificationAsync.mockClear();
   });
