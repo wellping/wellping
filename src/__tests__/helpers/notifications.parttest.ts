@@ -172,6 +172,34 @@ export const notificationsTest = () => {
       spyScheduleLocalNotificationAsync.mockRestore();
     });
 
+    test("during the survey (reached bonus) (stay in current week)", async () => {
+      DateMock.advanceTo(+new Date("2010-05-11T19:01:00Z"));
+
+      const spyCancelAllScheduledNotificationsAsync = jest.spyOn(
+        Notifications,
+        "cancelAllScheduledNotificationsAsync",
+      );
+
+      const spyScheduleLocalNotificationAsync = jest.spyOn(
+        Notifications,
+        "scheduleLocalNotificationAsync",
+      );
+
+      const studyInfo: StudyInfo = PINGS_STUDY_INFO;
+
+      await setNotificationsAsync(studyInfo);
+
+      expect(spyCancelAllScheduledNotificationsAsync).toBeCalledTimes(1);
+
+      // 19 = Math.floor(28 / studyInfo.frequency.hoursEveryday.length) * studyInfo.frequency.hoursEveryday.length - shown notification today (5)
+      expect(spyScheduleLocalNotificationAsync).toBeCalledTimes(19);
+      // TODO: CHECK IF SNAPSHOT IS CORRECT.
+      expect(spyScheduleLocalNotificationAsync.mock.calls).toMatchSnapshot();
+
+      spyCancelAllScheduledNotificationsAsync.mockRestore();
+      spyScheduleLocalNotificationAsync.mockRestore();
+    });
+
     test("during the survey (reached bonus) (jump to next week)", async () => {
       DateMock.advanceTo(+new Date("2010-05-15T14:01:00Z"));
 
