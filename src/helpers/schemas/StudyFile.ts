@@ -47,7 +47,7 @@ export const QuestionSchema = z.object({
 export const SliderQuestionSchema = QuestionSchema.extend({
   type: z.literal(QuestionTypeSchema.enum.Slider),
   slider: z.tuple([z.string(), z.string()]), // [left, right]
-  defaultValue: z.number().nonnegative().max(100).optional(),
+  defaultValue: z.number().int().nonnegative().max(100).optional(),
   defaultValueFromQuestionId: QuestionIdSchema.optional(),
 });
 
@@ -63,12 +63,12 @@ export const ChoicesQuestionSchema = QuestionSchema.extend({
   ]),
   choices: z.array(ChoiceSchema).nonempty(),
   specialCasesStartId: z
-    .union([
+    .intersection(
       // Record<QuestionId, QuestionId>
       z.record(QuestionIdSchema.nullable()),
       // For when the user click "Prefer not to answer" or next without option.
-      z.object({ _pna: QuestionIdSchema.nullable() }),
-    ])
+      z.object({ _pna: QuestionIdSchema.nullable().optional() }),
+    )
     .optional(),
   randomizeChoicesOrder: z.boolean().optional(),
   randomizeExceptForChoiceIds: z.array(z.string()).optional(),
@@ -260,7 +260,7 @@ export const StudyInfoSchema = z
         .object({
           title: z.string(),
           body: z.string(),
-          numberOfCompletionEachWeek: z.number().positive(),
+          numberOfCompletionEachWeek: z.number().int().positive(),
         })
         .optional(),
     }),
