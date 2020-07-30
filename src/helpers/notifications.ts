@@ -25,7 +25,6 @@ import { StudyInfo } from "./types";
 
 const ANDROID_CHANNEL_NAME = "ssnlPingChannel";
 
-/* istanbul ignore next */
 export async function setupNotificationsPermissionAsync(): Promise<boolean> {
   const { status: existingStatus } = await Permissions.getAsync(
     Permissions.USER_FACING_NOTIFICATIONS,
