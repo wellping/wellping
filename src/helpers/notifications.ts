@@ -192,16 +192,6 @@ export async function setNotificationsAsync(studyInfo: StudyInfo) {
   //console.warn("NEW NOTIFICATION SET!");
 }
 
-function getCurrentTime(): Date {
-  const currentTime = new Date();
-
-  // DEBUG
-  //let currentTime = addMinutes(new Date(), 30);
-  //currentTime = addHours(currentTime, 1);
-
-  return currentTime;
-}
-
 // If `null` is returned, it means that currently there's no active ping.
 export async function getCurrentNotificationTimeAsync(): Promise<Date | null> {
   // DEBUG
@@ -219,7 +209,7 @@ export async function getCurrentNotificationTimeAsync(): Promise<Date | null> {
 
   for (const notificationsTime of notificationsTimes) {
     const expirationTime = addHours(notificationsTime, 2);
-    const currentTime = getCurrentTime();
+    const currentTime = new Date();
 
     if (currentTime >= notificationsTime && currentTime <= expirationTime) {
       return notificationsTime;
@@ -233,7 +223,7 @@ export async function getCurrentNotificationTimeAsync(): Promise<Date | null> {
 export async function getIncomingNotificationTimeAsync(): Promise<Date | null> {
   const notificationsTimes = (await getNotificationTimesAsync()) || [];
 
-  const currentTime = getCurrentTime();
+  const currentTime = new Date();
 
   const currentIndex = notificationsTimes.findIndex(
     (notificationsTime) => currentTime < notificationsTime,
