@@ -1,5 +1,6 @@
 import * as z from "zod";
 
+import { StreamNameSchema } from "./StudyFile";
 import { idRegexCheck, idRegexErrorMessage } from "./helper";
 
 export const QuestionIdSchema = z.string().refine(idRegexCheck, {
@@ -62,6 +63,36 @@ export const ChoicesQuestionSchema = QuestionSchema.extend({
     .optional(),
   randomizeChoicesOrder: z.boolean().optional(),
   randomizeExceptForChoiceIds: z.array(z.string()).optional(),
+});
+
+export const ChoicesWithSingleAnswerQuestionSchema = ChoicesQuestionSchema.extend(
+  {
+    type: z.literal(QuestionTypeSchema.enum.ChoicesWithSingleAnswer),
+  },
+);
+
+export const ChoicesWithMultipleAnswersQuestionSchema = ChoicesQuestionSchema.extend(
+  {
+    type: z.literal(QuestionTypeSchema.enum.ChoicesWithMultipleAnswers),
+  },
+);
+
+export const YesNoQuestionSchema = QuestionSchema.extend({
+  type: z.literal(QuestionTypeSchema.enum.YesNo),
+  branchStartId: z
+    .object({
+      yes: QuestionIdSchema.nullable().optional(),
+      no: QuestionIdSchema.nullable().optional(),
+    })
+    .optional(),
+  // Currently only `yes` is supported and also can only followup after 3 days
+  // and 7 days with the same stream.
+  addFollowupStream: z
+    .object({
+      yes: StreamNameSchema.optional(),
+      // TODO: no: StreamNameSchema.optional(),
+    })
+    .optional(),
 });
 
 export const QuestionsListSchema = z.record(QuestionSchema).refine(

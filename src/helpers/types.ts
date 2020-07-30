@@ -2,11 +2,15 @@ import * as z from "zod";
 
 import { QuestionType } from "./helpers";
 import {
-  SliderQuestionSchema,
   QuestionSchema,
-  StudyFileSchema,
-  StudyInfoSchema,
-} from "./schemas/StudyFile";
+  SliderQuestionSchema,
+  ChoiceSchema,
+  ChoicesQuestionSchema,
+  ChoicesWithSingleAnswerQuestionSchema,
+  ChoicesWithMultipleAnswersQuestionSchema,
+  YesNoQuestionSchema,
+} from "./schemas/Question";
+import { StudyFileSchema, StudyInfoSchema } from "./schemas/StudyFile";
 
 export type StreamName = string;
 
@@ -28,30 +32,33 @@ export interface Question extends z.infer<typeof QuestionSchema> {}
 }*/
 export interface SliderQuestion extends z.infer<typeof SliderQuestionSchema> {}
 
-export type Choice = {
-  key: string;
-  value: string;
-};
+export type Choice = z.infer<typeof ChoiceSchema>;
 
-export interface ChoicesQuestion extends Question {
+/*export interface ChoicesQuestion extends Question {
   choices: Choice[];
   specialCasesStartId?: {
-    [questionId: string /* actually QuestionId */]: QuestionId | undefined;
+    [questionId: string /* actually QuestionId *]: QuestionId | undefined;
     _pna?: QuestionId;
   };
   randomizeChoicesOrder?: boolean;
   randomizeExceptForChoiceIds?: string[];
-}
+}*/
+export interface ChoicesQuestion
+  extends z.infer<typeof ChoicesQuestionSchema> {}
 
-export interface ChoicesWithSingleAnswerQuestion extends ChoicesQuestion {
+/*export interface ChoicesWithSingleAnswerQuestion extends ChoicesQuestion {
   type: QuestionType.ChoicesWithSingleAnswer;
-}
+}*/
+export interface ChoicesWithSingleAnswerQuestion
+  extends z.infer<typeof ChoicesWithSingleAnswerQuestionSchema> {}
 
-export interface ChoicesWithMultipleAnswersQuestion extends ChoicesQuestion {
+/*export interface ChoicesWithMultipleAnswersQuestion extends ChoicesQuestion {
   type: QuestionType.ChoicesWithMultipleAnswers;
-}
+}*/
+export interface ChoicesWithMultipleAnswersQuestion
+  extends z.infer<typeof ChoicesWithMultipleAnswersQuestionSchema> {}
 
-export interface YesNoQuestion extends Question {
+/*export interface YesNoQuestion extends Question {
   type: QuestionType.YesNo;
   branchStartId?: {
     yes?: QuestionId;
@@ -62,7 +69,8 @@ export interface YesNoQuestion extends Question {
     yes?: StreamName;
     // TODO: no?: StreamName;
   };
-}
+}*/
+export interface YesNoQuestion extends z.infer<typeof YesNoQuestionSchema> {}
 
 export interface MultipleTextQuestion extends Question {
   // `id` will store the number of text fields answered.

@@ -1,4 +1,4 @@
-import { QuestionTypeSchema } from "./schemas/StudyFile";
+import { QuestionTypeSchema } from "./schemas/Question";
 import { QuestionId } from "./types";
 
 /*export enum QuestionType {
