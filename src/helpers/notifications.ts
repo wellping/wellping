@@ -1,6 +1,5 @@
 import {
   addDays,
-  addHours,
   addMinutes,
   setHours,
   setMinutes,
@@ -20,7 +19,7 @@ import {
   getNotificationTimesAsync,
   storeNotificationTimesAsync,
 } from "./asyncStorage/notificationTimes";
-import { isTimeThisWeekAsync } from "./configFiles";
+import { isTimeThisWeekAsync, getSurveyFileAsync } from "./configFiles";
 import { getThisWeekPingsAsync } from "./pings";
 import { StudyInfo } from "./types";
 
@@ -208,7 +207,10 @@ export async function getCurrentNotificationTimeAsync(): Promise<Date | null> {
   });*/
 
   for (const notificationsTime of notificationsTimes) {
-    const expirationTime = addHours(notificationsTime, 2);
+    const expirationTime = addMinutes(
+      notificationsTime,
+      (await getSurveyFileAsync()).studyInfo.frequency.expireAfterMinutes,
+    );
     const currentTime = new Date();
 
     if (currentTime >= notificationsTime && currentTime <= expirationTime) {

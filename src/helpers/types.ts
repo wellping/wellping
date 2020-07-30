@@ -120,6 +120,9 @@ export type StudyInfo = {
   startDate: Date; // First survey will be sent after this time.
   endDate: Date; // Last survey will be sent before this time.
   frequency: {
+    expireAfterMinutes: number; // A survey will expire after this amount of minutes.
+    // Notice that the duration between `(hoursEveryday[n] + randomMinuteAddition.max)` and
+    // `(hoursEveryday[n+1] + randomMinuteAddition.min)` should be greater than `expireAfterMinutes`.
     hoursEveryday: number[];
 
     // Randomly add a number of minutes between `min` to `max` minutes (inclusive) to the notification time.

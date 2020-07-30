@@ -7,6 +7,7 @@
     "endDate": "2020-04-25T08:00:00.000Z",
     "weekStartsOn": 1,
     "frequency": {
+      "expireAfterMinutes": 120,
       "hoursEveryday": [9, 13, 17, 21],
       "randomMinuteAddition": { "min": 0, "max": 119 }
     },

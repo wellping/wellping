@@ -124,8 +124,9 @@ export const PINGS_STUDY_INFO: StudyInfo = {
     },
   },
   frequency: {
+    expireAfterMinutes: 30,
     hoursEveryday: [8, 10, 12, 16, 18, 22],
-    randomMinuteAddition: { min: 0, max: 119 },
+    randomMinuteAddition: { min: 0, max: 89 },
   },
   streamsOrder: {
     0: ["cat", "dog", "wolf", "lynx", "cat", "dog"],
