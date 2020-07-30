@@ -2,15 +2,12 @@ import { parseJSON } from "date-fns";
 import * as z from "zod";
 
 import { StudyFile } from "../types";
-import { QuestionsListSchema, QuestionIdSchema } from "./Question";
+import { QuestionIdSchema } from "./Question";
+import { StreamNameSchema, StreamsSchema } from "./Stream";
 import { idRegexErrorMessage, idRegexCheck } from "./helper";
 
 export const StudyIdSchema = z.string().refine(idRegexCheck, {
   message: idRegexErrorMessage("Study ID"),
-});
-
-export const StreamNameSchema = z.string().refine(idRegexCheck, {
-  message: idRegexErrorMessage("Stream name"),
 });
 
 export const WeekStartsOnSchema = z.union([
@@ -22,8 +19,6 @@ export const WeekStartsOnSchema = z.union([
   z.literal(5),
   z.literal(6),
 ]);
-
-export const StreamsSchema = z.record(QuestionsListSchema);
 
 export const StudyInfoSchema = z
   .object({

@@ -1,6 +1,6 @@
 import * as z from "zod";
 
-import { StreamNameSchema } from "./StudyFile";
+import { StreamNameSchema } from "./Stream";
 import { idRegexCheck, idRegexErrorMessage } from "./helper";
 
 export const QuestionIdSchema = z.string().refine(idRegexCheck, {
