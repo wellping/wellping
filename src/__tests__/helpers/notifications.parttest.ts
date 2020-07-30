@@ -13,6 +13,15 @@ import { PINGS_DB_NAME } from "./pings.parttest";
 
 // https://github.com/facebook/jest/issues/6194#issuecomment-419837314
 export const notificationsTest = () => {
+  const spyCancelAllScheduledNotificationsAsync = jest.spyOn(
+    Notifications,
+    "cancelAllScheduledNotificationsAsync",
+  );
+  const spyScheduleLocalNotificationAsync = jest.spyOn(
+    Notifications,
+    "scheduleLocalNotificationAsync",
+  );
+
   let connection: Connection;
   const DB_NAME = PINGS_DB_NAME;
   const DB_FILENAME = getTestDatabaseFilename(DB_NAME);
@@ -32,21 +41,14 @@ export const notificationsTest = () => {
   afterEach(() => {
     DateMock.clear();
     mathRandomSpy.mockRestore();
+
+    spyCancelAllScheduledNotificationsAsync.mockClear();
+    spyScheduleLocalNotificationAsync.mockClear();
   });
 
   describe("setNotificationsAsync", () => {
     test("after the study already ends", async () => {
       DateMock.advanceTo(+new Date("2010-08-08T20:08:08Z"));
-
-      const spyCancelAllScheduledNotificationsAsync = jest.spyOn(
-        Notifications,
-        "cancelAllScheduledNotificationsAsync",
-      );
-
-      const spyScheduleLocalNotificationAsync = jest.spyOn(
-        Notifications,
-        "scheduleLocalNotificationAsync",
-      );
 
       const studyInfo: StudyInfo = PINGS_STUDY_INFO;
 
@@ -55,23 +57,10 @@ export const notificationsTest = () => {
       expect(spyCancelAllScheduledNotificationsAsync).toBeCalledTimes(1);
 
       expect(spyScheduleLocalNotificationAsync).toBeCalledTimes(0);
-
-      spyCancelAllScheduledNotificationsAsync.mockRestore();
-      spyScheduleLocalNotificationAsync.mockRestore();
     });
 
     test("before the study starts", async () => {
       DateMock.advanceTo(+new Date("2010-04-20T20:08:08Z"));
-
-      const spyCancelAllScheduledNotificationsAsync = jest.spyOn(
-        Notifications,
-        "cancelAllScheduledNotificationsAsync",
-      );
-
-      const spyScheduleLocalNotificationAsync = jest.spyOn(
-        Notifications,
-        "scheduleLocalNotificationAsync",
-      );
 
       const studyInfo: StudyInfo = PINGS_STUDY_INFO;
 
@@ -83,23 +72,10 @@ export const notificationsTest = () => {
       expect(spyScheduleLocalNotificationAsync).toBeCalledTimes(24);
       // TODO: CHECK IF SNAPSHOT IS CORRECT.
       expect(spyScheduleLocalNotificationAsync.mock.calls).toMatchSnapshot();
-
-      spyCancelAllScheduledNotificationsAsync.mockRestore();
-      spyScheduleLocalNotificationAsync.mockRestore();
     });
 
     test("near study ends", async () => {
       DateMock.advanceTo(+new Date("2010-05-28T20:08:08Z"));
-
-      const spyCancelAllScheduledNotificationsAsync = jest.spyOn(
-        Notifications,
-        "cancelAllScheduledNotificationsAsync",
-      );
-
-      const spyScheduleLocalNotificationAsync = jest.spyOn(
-        Notifications,
-        "scheduleLocalNotificationAsync",
-      );
 
       const studyInfo: StudyInfo = PINGS_STUDY_INFO;
 
@@ -111,23 +87,10 @@ export const notificationsTest = () => {
       expect(spyScheduleLocalNotificationAsync).toBeCalledTimes(12);
       // TODO: CHECK IF SNAPSHOT IS CORRECT.
       expect(spyScheduleLocalNotificationAsync.mock.calls).toMatchSnapshot();
-
-      spyCancelAllScheduledNotificationsAsync.mockRestore();
-      spyScheduleLocalNotificationAsync.mockRestore();
     });
 
     test("during the survey (still haven't reached bonus) (stay in current week)", async () => {
       DateMock.advanceTo(+new Date("2010-05-03T10:01:00Z"));
-
-      const spyCancelAllScheduledNotificationsAsync = jest.spyOn(
-        Notifications,
-        "cancelAllScheduledNotificationsAsync",
-      );
-
-      const spyScheduleLocalNotificationAsync = jest.spyOn(
-        Notifications,
-        "scheduleLocalNotificationAsync",
-      );
 
       const studyInfo: StudyInfo = PINGS_STUDY_INFO;
 
@@ -139,23 +102,10 @@ export const notificationsTest = () => {
       expect(spyScheduleLocalNotificationAsync).toBeCalledTimes(23);
       // TODO: CHECK IF SNAPSHOT IS CORRECT.
       expect(spyScheduleLocalNotificationAsync.mock.calls).toMatchSnapshot();
-
-      spyCancelAllScheduledNotificationsAsync.mockRestore();
-      spyScheduleLocalNotificationAsync.mockRestore();
     });
 
     test("during the survey (still haven't reached bonus) (jump to next week)", async () => {
       DateMock.advanceTo(+new Date("2010-05-01T11:00:00Z"));
-
-      const spyCancelAllScheduledNotificationsAsync = jest.spyOn(
-        Notifications,
-        "cancelAllScheduledNotificationsAsync",
-      );
-
-      const spyScheduleLocalNotificationAsync = jest.spyOn(
-        Notifications,
-        "scheduleLocalNotificationAsync",
-      );
 
       const studyInfo: StudyInfo = PINGS_STUDY_INFO;
 
@@ -167,23 +117,10 @@ export const notificationsTest = () => {
       expect(spyScheduleLocalNotificationAsync).toBeCalledTimes(22);
       // TODO: CHECK IF SNAPSHOT IS CORRECT.
       expect(spyScheduleLocalNotificationAsync.mock.calls).toMatchSnapshot();
-
-      spyCancelAllScheduledNotificationsAsync.mockRestore();
-      spyScheduleLocalNotificationAsync.mockRestore();
     });
 
     test("during the survey (1 ping from reaching bonus)", async () => {
       DateMock.advanceTo(+new Date("2010-05-11T13:01:00Z"));
-
-      const spyCancelAllScheduledNotificationsAsync = jest.spyOn(
-        Notifications,
-        "cancelAllScheduledNotificationsAsync",
-      );
-
-      const spyScheduleLocalNotificationAsync = jest.spyOn(
-        Notifications,
-        "scheduleLocalNotificationAsync",
-      );
 
       const studyInfo: StudyInfo = PINGS_STUDY_INFO;
 
@@ -195,23 +132,10 @@ export const notificationsTest = () => {
       expect(spyScheduleLocalNotificationAsync).toBeCalledTimes(21);
       // TODO: CHECK IF SNAPSHOT IS CORRECT.
       expect(spyScheduleLocalNotificationAsync.mock.calls).toMatchSnapshot();
-
-      spyCancelAllScheduledNotificationsAsync.mockRestore();
-      spyScheduleLocalNotificationAsync.mockRestore();
     });
 
     test("during the survey (reached bonus) (stay in current week)", async () => {
       DateMock.advanceTo(+new Date("2010-05-11T17:01:00Z"));
-
-      const spyCancelAllScheduledNotificationsAsync = jest.spyOn(
-        Notifications,
-        "cancelAllScheduledNotificationsAsync",
-      );
-
-      const spyScheduleLocalNotificationAsync = jest.spyOn(
-        Notifications,
-        "scheduleLocalNotificationAsync",
-      );
 
       const studyInfo: StudyInfo = PINGS_STUDY_INFO;
 
@@ -223,23 +147,10 @@ export const notificationsTest = () => {
       expect(spyScheduleLocalNotificationAsync).toBeCalledTimes(20);
       // TODO: CHECK IF SNAPSHOT IS CORRECT.
       expect(spyScheduleLocalNotificationAsync.mock.calls).toMatchSnapshot();
-
-      spyCancelAllScheduledNotificationsAsync.mockRestore();
-      spyScheduleLocalNotificationAsync.mockRestore();
     });
 
     test("during the survey (reached bonus) (jump to next week)", async () => {
       DateMock.advanceTo(+new Date("2010-05-15T14:01:00Z"));
-
-      const spyCancelAllScheduledNotificationsAsync = jest.spyOn(
-        Notifications,
-        "cancelAllScheduledNotificationsAsync",
-      );
-
-      const spyScheduleLocalNotificationAsync = jest.spyOn(
-        Notifications,
-        "scheduleLocalNotificationAsync",
-      );
 
       const studyInfo: StudyInfo = PINGS_STUDY_INFO;
 
@@ -251,9 +162,6 @@ export const notificationsTest = () => {
       expect(spyScheduleLocalNotificationAsync).toBeCalledTimes(21);
       // TODO: CHECK IF SNAPSHOT IS CORRECT.
       expect(spyScheduleLocalNotificationAsync.mock.calls).toMatchSnapshot();
-
-      spyCancelAllScheduledNotificationsAsync.mockRestore();
-      spyScheduleLocalNotificationAsync.mockRestore();
     });
   });
 };
