@@ -207,8 +207,52 @@ export const pingsTest = () => {
     DateMock.advanceTo(+new Date("2010-05-10T00:00:01Z"));
     expect(await getThisWeekPingsAsync()).toEqual([]);
 
-    DateMock.advanceTo(+new Date("2010-05-11T08:08:08Z"));
+    DateMock.advanceTo(+new Date("2010-05-11T07:00:08Z"));
     expect(await getThisWeekPingsAsync()).toEqual([PINGS_DICT["cat4"]]);
+
+    DateMock.advanceTo(+new Date("2010-05-11T09:00:08Z"));
+    expect(await getThisWeekPingsAsync()).toEqual([
+      PINGS_DICT["cat4"],
+      PINGS_DICT["cat5"],
+    ]);
+
+    DateMock.advanceTo(+new Date("2010-05-12T09:00:08Z"));
+    expect(await getThisWeekPingsAsync()).toEqual([
+      PINGS_DICT["cat4"],
+      PINGS_DICT["cat5"],
+      PINGS_DICT["dog2"],
+      PINGS_DICT["wolf2"],
+      PINGS_DICT["lynx1"],
+      PINGS_DICT["cat6"],
+      PINGS_DICT["dog3"],
+    ]);
+
+    DateMock.advanceTo(+new Date("2010-05-12T17:00:08Z"));
+    expect(await getThisWeekPingsAsync()).toEqual([
+      PINGS_DICT["cat4"],
+      PINGS_DICT["cat5"],
+      PINGS_DICT["dog2"],
+      PINGS_DICT["wolf2"],
+      PINGS_DICT["lynx1"],
+      PINGS_DICT["cat6"],
+      PINGS_DICT["dog3"],
+      PINGS_DICT["cat7"],
+    ]);
+
+    DateMock.advanceTo(+new Date("2010-05-16T23:59:08Z"));
+    expect(await getThisWeekPingsAsync()).toEqual([
+      PINGS_DICT["cat4"],
+      PINGS_DICT["cat5"],
+      PINGS_DICT["dog2"],
+      PINGS_DICT["wolf2"],
+      PINGS_DICT["lynx1"],
+      PINGS_DICT["cat6"],
+      PINGS_DICT["dog3"],
+      PINGS_DICT["cat7"],
+    ]);
+
+    DateMock.advanceTo(+new Date("2010-05-17T01:01:08Z"));
+    expect(await getThisWeekPingsAsync()).toEqual([]);
 
     DateMock.advanceTo(+new Date("2011-01-01T08:08:08Z"));
     expect(await getThisWeekPingsAsync()).toEqual([]);
