@@ -442,6 +442,7 @@ export default class SurveyScreen extends React.Component<
         if (currentQuestion.specialCasesStartId) {
           let fallbackNext: QuestionId | null = null;
           if (
+            // TODO: ALLOW THE VALUE TO BE NULL (ONLY CHECK FOR !== undefined)
             currentQuestion.specialCasesStartId._pna &&
             (currentAnswer.nextWithoutOption || currentAnswer.preferNotToAnswer)
           ) {
