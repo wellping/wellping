@@ -192,7 +192,9 @@ export async function setNotificationsAsync(studyInfo: StudyInfo) {
 }
 
 // If `null` is returned, it means that currently there's no active ping.
-export async function getCurrentNotificationTimeAsync(): Promise<Date | null> {
+export async function getCurrentNotificationTimeAsync(
+  studyInfo: StudyInfo,
+): Promise<Date | null> {
   // DEBUG
   if (__DEV__ && _DEBUG_CONFIGS().ignoreNotificationTime) {
     const fakeNotificationTime = addMinutes(new Date(), -10);
@@ -209,7 +211,7 @@ export async function getCurrentNotificationTimeAsync(): Promise<Date | null> {
   for (const notificationsTime of notificationsTimes) {
     const expirationTime = addMinutes(
       notificationsTime,
-      (await getSurveyFileAsync()).studyInfo.frequency.expireAfterMinutes,
+      studyInfo.frequency.expireAfterMinutes,
     );
     const currentTime = new Date();
 

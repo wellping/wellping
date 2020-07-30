@@ -147,10 +147,13 @@ export default class HomeScreen extends React.Component<
       await Notifications.setBadgeNumberAsync(0);
     }
 
-    await setNotificationsAsync(this.props.survey.studyInfo);
+    const studyInfo = this.props.survey.studyInfo;
+    await setNotificationsAsync(studyInfo);
 
     const doEveryHalfMinutes = async () => {
-      const currentNotificationTime = await getCurrentNotificationTimeAsync();
+      const currentNotificationTime = await getCurrentNotificationTimeAsync(
+        studyInfo,
+      );
       this.setState({ time: new Date(), currentNotificationTime });
 
       if (currentNotificationTime == null) {
@@ -171,7 +174,9 @@ export default class HomeScreen extends React.Component<
 
     const latestPing = await getLatestPingAsync();
     //console.warn(latestStartedPing);
-    const currentNotificationTime = await getCurrentNotificationTimeAsync();
+    const currentNotificationTime = await getCurrentNotificationTimeAsync(
+      studyInfo,
+    );
     if (
       latestPing &&
       currentNotificationTime &&
@@ -405,7 +410,9 @@ export default class HomeScreen extends React.Component<
             color="orange"
             title="getCurrentNotificationTimeAsync()"
             onPress={async () => {
-              const currentNotificationTime = await getCurrentNotificationTimeAsync();
+              const currentNotificationTime = await getCurrentNotificationTimeAsync(
+                studyInfo,
+              );
               alert(JSON.stringify(currentNotificationTime));
             }}
           />
