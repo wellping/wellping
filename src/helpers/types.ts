@@ -1,22 +1,32 @@
+import * as z from "zod";
+
 import { QuestionType } from "./helpers";
+import {
+  SliderQuestionSchema,
+  QuestionSchema,
+  StudyFileSchema,
+  StudyInfoSchema,
+} from "./schemas/StudyFile";
 
 export type StreamName = string;
 
 export type QuestionId = string;
 
-export interface Question {
+/*export interface Question {
   id: QuestionId;
   type: QuestionType;
   question: string;
   next: QuestionId | null;
-}
+}*/
+export interface Question extends z.infer<typeof QuestionSchema> {}
 
-export interface SliderQuestion extends Question {
+/*export interface SliderQuestion extends Question {
   type: QuestionType.Slider;
   slider: [string, string]; // [left, right]
   defaultValue?: number;
   defaultValueFromQuestionId?: QuestionId;
-}
+}*/
+export interface SliderQuestion extends z.infer<typeof SliderQuestionSchema> {}
 
 export type Choice = {
   key: string;
@@ -112,7 +122,7 @@ export type StreamStartingQuestionIds = {
 
 export type StudyID = string;
 
-export type StudyInfo = {
+/*export type StudyInfo = {
   id: StudyID;
   consentFormUrl: string;
   contactEmail?: string;
@@ -164,7 +174,8 @@ export type StudyInfo = {
     };
   };
   serverURL: string;
-};
+};*/
+export type StudyInfo = z.infer<typeof StudyInfoSchema>;
 
 export type SurveyFile = {
   studyInfo: StudyInfo;
@@ -173,5 +184,6 @@ export type SurveyFile = {
   };
   streams: Streams;
 };
+export type StudyFile = z.infer<typeof StudyFileSchema>;
 
 export type Names = string[];

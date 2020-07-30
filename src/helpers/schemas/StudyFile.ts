@@ -1,4 +1,7 @@
+import { parseJSON } from "date-fns";
 import * as z from "zod";
+
+import { StudyFile } from "../types";
 
 const idRegexCheck = (val: string) => /^\w+$/.test(val);
 const idRegexErrorMessage = (name: string) =>
@@ -37,12 +40,22 @@ export const QuestionTypeSchema = z.enum([
   "BranchWithRelativeComparison",
 ]);
 
-export const QuestionSchema = z.object({
-  id: QuestionIdSchema,
-  type: QuestionTypeSchema,
-  question: z.string(),
-  next: QuestionIdSchema.nullable(),
-});
+export const QuestionSchema = z
+  .object({
+    id: QuestionIdSchema,
+    type: QuestionTypeSchema,
+    question: z.string(),
+    next: QuestionIdSchema.nullable(),
+  })
+  .refine(
+    (question) => {
+      // TODO: MAKE SURE VALIDATE TYPES MATCH
+      return true;
+    },
+    {
+      message: "The question does not have required fields for its type.",
+    },
+  );
 
 export const SliderQuestionSchema = QuestionSchema.extend({
   type: z.literal(QuestionTypeSchema.enum.Slider),
@@ -190,7 +203,6 @@ export const StudyInfoSchema = z
           message:
             "`randomMinuteAddition.max` needs to be greater than " +
             "`randomMinuteAddition.min`.",
-          path: ["min", "max"],
         }),
     }),
 
@@ -267,7 +279,6 @@ export const StudyInfoSchema = z
   })
   .refine((data) => data.endDate > data.startDate, {
     message: "`endDate` needs to be later than `startDate`.",
-    path: ["startDate", "endDate"],
   })
   .refine(
     (data) => {
@@ -282,7 +293,6 @@ export const StudyInfoSchema = z
       message:
         "The number of each day's streams in `streamsOrder` needs to be equal " +
         "to the length of `frequency.hoursEveryday`.",
-      path: ["streamsOrder", "hoursEveryday"],
     },
   );
 
@@ -293,3 +303,13 @@ export const StudyFileSchema = z.object({
   }),
   streams: StreamsSchema,
 });
+
+export function parseJsonToStudyFile(rawJson: any): StudyFile {
+  if (rawJson.studyInfo?.startDate) {
+    rawJson.studyInfo.startDate = parseJSON(rawJson.studyInfo.startDate);
+  }
+  if (rawJson.studyInfo?.endDate) {
+    rawJson.studyInfo.endDate = parseJSON(rawJson.studyInfo.endDate);
+  }
+  return StudyFileSchema.parse(rawJson);
+}

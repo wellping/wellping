@@ -1,6 +1,7 @@
+import { QuestionTypeSchema } from "./schemas/StudyFile";
 import { QuestionId } from "./types";
 
-export enum QuestionType {
+/*export enum QuestionType {
   Slider = "slider",
   ChoicesWithSingleAnswer = "choicesWithSingleAnswer",
   ChoicesWithMultipleAnswers = "choicesWithMultipleAnswers",
@@ -9,7 +10,8 @@ export enum QuestionType {
   HowLongAgo = "howLongAgo",
   Branch = "branch", // Not in answer data
   BranchWithRelativeComparison = "branchWithRelativeComparison", // Not in answer data
-}
+}*/
+export const QuestionType = QuestionTypeSchema.enum;
 
 export const decapitalizeFirstCharacter = (s: string): string => {
   return s.charAt(0).toLowerCase() + s.slice(1);
