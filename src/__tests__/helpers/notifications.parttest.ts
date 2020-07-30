@@ -23,26 +23,28 @@ export const notificationsTest = () => {
     await connection.close();
   });
 
-  const spyCancelAllScheduledNotificationsAsync = jest.spyOn(
-    Notifications,
-    "cancelAllScheduledNotificationsAsync",
-  );
-  const spyScheduleLocalNotificationAsync = jest.spyOn(
-    Notifications,
-    "scheduleLocalNotificationAsync",
-  );
   const mathRandomSpy = jest
     .spyOn(global.Math, "random")
     .mockReturnValue(0.123456789);
   afterEach(() => {
     DateMock.clear();
-
     mathRandomSpy.mockClear();
-    spyCancelAllScheduledNotificationsAsync.mockClear();
-    spyScheduleLocalNotificationAsync.mockClear();
   });
 
   describe("setNotificationsAsync", () => {
+    const spyCancelAllScheduledNotificationsAsync = jest.spyOn(
+      Notifications,
+      "cancelAllScheduledNotificationsAsync",
+    );
+    const spyScheduleLocalNotificationAsync = jest.spyOn(
+      Notifications,
+      "scheduleLocalNotificationAsync",
+    );
+    afterEach(() => {
+      spyCancelAllScheduledNotificationsAsync.mockClear();
+      spyScheduleLocalNotificationAsync.mockClear();
+    });
+
     test("after the study already ends", async () => {
       DateMock.advanceTo(+new Date("2010-08-08T20:08:08Z"));
 
