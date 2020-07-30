@@ -157,7 +157,7 @@ export type StudyInfo = {
     };
     // We will use `bonus` content for the notification until the number of survey completed that week is greater than `bonus.numberOfCompletionEachWeek - 1`.
     // `#n_ping#` will turn into "5 pings" or "1 ping".
-    bonus: {
+    bonus?: {
       title: string;
       body: string;
       numberOfCompletionEachWeek: number;

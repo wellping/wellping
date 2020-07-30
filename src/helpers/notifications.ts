@@ -133,40 +133,43 @@ export async function setNotificationsAsync(studyInfo: StudyInfo) {
       if (notificationTime >= new Date()) {
         const configNotificationContent = studyInfo.notificationContent;
 
-        let remainingPingCount =
-          configNotificationContent.bonus.numberOfCompletionEachWeek;
-        let shouldUseDefaultContent = false;
-        if (await isTimeThisWeekAsync(notificationTime)) {
-          if (
-            numberOfPingsStartedThisWeek <
-            configNotificationContent.bonus.numberOfCompletionEachWeek
-          ) {
-            remainingPingCount =
-              configNotificationContent.bonus.numberOfCompletionEachWeek -
-              numberOfPingsStartedThisWeek;
-          } else {
-            shouldUseDefaultContent = true;
-          }
-        }
+        let notificationTitle = configNotificationContent.default.title;
+        let notificationBody = configNotificationContent.default.body;
 
-        let notificationTitle: string, notificationBody: string;
-        if (shouldUseDefaultContent) {
-          notificationTitle = configNotificationContent.default.title;
-          notificationBody = configNotificationContent.default.body;
-        } else {
-          const nPingKeyword = "#n_ping#";
-          let mPingText = `${remainingPingCount} pings`;
-          if (remainingPingCount === 1) {
-            mPingText = `1 ping`;
+        if (configNotificationContent.bonus) {
+          let remainingPingCount =
+            configNotificationContent.bonus.numberOfCompletionEachWeek;
+          let shouldUseDefaultContent = false;
+          if (await isTimeThisWeekAsync(notificationTime)) {
+            if (
+              numberOfPingsStartedThisWeek <
+              configNotificationContent.bonus.numberOfCompletionEachWeek
+            ) {
+              remainingPingCount =
+                configNotificationContent.bonus.numberOfCompletionEachWeek -
+                numberOfPingsStartedThisWeek;
+            } else {
+              // The user has already completed enough pings for bonus this week.
+              // There is no need to use the "bonus" notification content.
+              shouldUseDefaultContent = true;
+            }
           }
 
-          // https://stackoverflow.com/a/1145525/2603230
-          notificationTitle = configNotificationContent.bonus.title
-            .split(nPingKeyword)
-            .join(mPingText);
-          notificationBody = configNotificationContent.bonus.body
-            .split(nPingKeyword)
-            .join(mPingText);
+          if (!shouldUseDefaultContent) {
+            const nPingKeyword = "#n_ping#";
+            let mPingText = `${remainingPingCount} pings`;
+            if (remainingPingCount === 1) {
+              mPingText = `1 ping`;
+            }
+
+            // https://stackoverflow.com/a/1145525/2603230
+            notificationTitle = configNotificationContent.bonus.title
+              .split(nPingKeyword)
+              .join(mPingText);
+            notificationBody = configNotificationContent.bonus.body
+              .split(nPingKeyword)
+              .join(mPingText);
+          }
         }
 
         //console.warn(`${notificationBody} for ${notificationTime}`);
