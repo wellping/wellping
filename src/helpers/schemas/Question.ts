@@ -95,6 +95,31 @@ export const YesNoQuestionSchema = QuestionSchema.extend({
     .optional(),
 });
 
+export const MultipleTextQuestionSchema = QuestionSchema.extend({
+  // `id` will store the number of text fields answered.
+  type: z.literal(QuestionTypeSchema.enum.MultipleText),
+  indexName: z.string(),
+  variableName: z.string(),
+  eachId: z.string(),
+  placeholder: z.string().optional(),
+  choices: z.union([z.literal("NAMES"), z.array(ChoiceSchema)]).optional(),
+  forceChoice: z.boolean().optional(),
+  max: z.number().int().positive(),
+  // The max number of text field will be `max` minus the number of text the
+  // participant entered in `maxMinus` question.
+  maxMinus: QuestionIdSchema.optional(),
+  repeatedItemStartId: QuestionIdSchema.optional(),
+  // This is used when the user does not enter any name or select prefer not to
+  // answer. Note that this has to exists somewhere else. If it is `null`, we
+  // will go to `next` directly.
+  // TODO: MAKE THIS null = stop HERE
+  fallbackItemStartId: QuestionIdSchema.nullable().optional(),
+});
+
+export const HowLongAgoQuestionSchema = QuestionSchema.extend({
+  type: z.literal(QuestionTypeSchema.enum.HowLongAgo),
+});
+
 export const QuestionsListSchema = z.record(QuestionSchema).refine(
   (questions) => {
     for (const questionId in questions) {

@@ -9,12 +9,21 @@ import {
   ChoicesWithSingleAnswerQuestionSchema,
   ChoicesWithMultipleAnswersQuestionSchema,
   YesNoQuestionSchema,
+  MultipleTextQuestionSchema,
+  HowLongAgoQuestionSchema,
+  QuestionsListSchema,
+  QuestionIdSchema,
 } from "./schemas/Question";
-import { StudyFileSchema, StudyInfoSchema } from "./schemas/StudyFile";
+import { StreamsSchema, StreamNameSchema } from "./schemas/Stream";
+import {
+  StudyFileSchema,
+  StudyInfoSchema,
+  StudyIdSchema,
+} from "./schemas/StudyFile";
 
-export type StreamName = string;
+export type StreamName = z.infer<typeof StreamNameSchema>;
 
-export type QuestionId = string;
+export type QuestionId = z.infer<typeof QuestionIdSchema>;
 
 /*export interface Question {
   id: QuestionId;
@@ -72,7 +81,7 @@ export interface ChoicesWithMultipleAnswersQuestion
 }*/
 export interface YesNoQuestion extends z.infer<typeof YesNoQuestionSchema> {}
 
-export interface MultipleTextQuestion extends Question {
+/*export interface MultipleTextQuestion extends Question {
   // `id` will store the number of text fields answered.
   type: QuestionType.MultipleText;
   eachId: QuestionId;
@@ -85,11 +94,15 @@ export interface MultipleTextQuestion extends Question {
   fallbackItemStartId?: QuestionId; // This is used when the user does not enter any name or select prefer not to answer. Note that this has to exists somewhere else. If it is `null`, we will go to `next` directly.
   indexName: string;
   variableName: string;
-}
+}*/
+export interface MultipleTextQuestion
+  extends z.infer<typeof MultipleTextQuestionSchema> {}
 
-export interface HowLongAgoQuestion extends Question {
+/*export interface HowLongAgoQuestion extends Question {
   type: QuestionType.HowLongAgo;
-}
+}*/
+export interface HowLongAgoQuestion
+  extends z.infer<typeof HowLongAgoQuestionSchema> {}
 
 export interface BranchQuestion extends Question {
   // This is not actually a question (it will not be displayed to the user)
@@ -116,19 +129,11 @@ export interface BranchWithRelativeComparisonQuestion extends Question {
   };
 }
 
-export interface QuestionsList {
-  [id: string]: Question;
-}
+export interface QuestionsList extends z.infer<typeof QuestionsListSchema> {}
 
-export type Streams = {
-  [stream: string /* actually StreamName */]: QuestionsList;
-};
+export type Streams = z.infer<typeof StreamsSchema>;
 
-export type StreamStartingQuestionIds = {
-  [stream: string /* actually StreamName */]: QuestionId;
-};
-
-export type StudyID = string;
+export type StudyID = z.infer<typeof StudyIdSchema>;
 
 /*export type StudyInfo = {
   id: StudyID;
@@ -185,13 +190,13 @@ export type StudyID = string;
 };*/
 export type StudyInfo = z.infer<typeof StudyInfoSchema>;
 
-export type SurveyFile = {
+/*export type SurveyFile = {
   studyInfo: StudyInfo;
   meta: {
     startingQuestionIds: StreamStartingQuestionIds;
   };
   streams: Streams;
-};
+};*/
 export type StudyFile = z.infer<typeof StudyFileSchema>;
 
 export type Names = string[];
