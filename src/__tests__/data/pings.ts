@@ -120,7 +120,7 @@ export const PINGS_STUDY_INFO: StudyInfo = {
     bonus: {
       title: "You can earn bonus!",
       body: "You are #n_ping# away from the weekly bonus.",
-      numberOfCompletionEachWeek: 10,
+      numberOfCompletionEachWeek: 5,
     },
   },
   frequency: {
