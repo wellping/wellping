@@ -85,79 +85,93 @@ export const notificationsTest = () => {
       expect(spyScheduleLocalNotificationAsync.mock.calls).toMatchSnapshot();
     });
 
-    test("during the survey (still haven't reached bonus) (stay in current week)", async () => {
-      DateMock.advanceTo(+new Date("2010-05-03T10:01:00Z"));
+    describe("during the survey", () => {
+      describe("(still haven't reached bonus)", () => {
+        test("(stay in current week)", async () => {
+          DateMock.advanceTo(+new Date("2010-05-03T10:01:00Z"));
 
-      const studyInfo: StudyInfo = PINGS_STUDY_INFO;
+          const studyInfo: StudyInfo = PINGS_STUDY_INFO;
 
-      await setNotificationsAsync(studyInfo);
+          await setNotificationsAsync(studyInfo);
 
-      expect(spyCancelAllScheduledNotificationsAsync).toBeCalledTimes(1);
+          expect(spyCancelAllScheduledNotificationsAsync).toBeCalledTimes(1);
 
-      // 22 = Math.floor(28 / studyInfo.frequency.hoursEveryday.length) * studyInfo.frequency.hoursEveryday.length - shown notification today (1)
-      expect(spyScheduleLocalNotificationAsync).toBeCalledTimes(23);
-      // TODO: CHECK IF SNAPSHOT IS CORRECT.
-      expect(spyScheduleLocalNotificationAsync.mock.calls).toMatchSnapshot();
-    });
+          // 22 = Math.floor(28 / studyInfo.frequency.hoursEveryday.length) * studyInfo.frequency.hoursEveryday.length - shown notification today (1)
+          expect(spyScheduleLocalNotificationAsync).toBeCalledTimes(23);
+          // TODO: CHECK IF SNAPSHOT IS CORRECT.
+          expect(
+            spyScheduleLocalNotificationAsync.mock.calls,
+          ).toMatchSnapshot();
+        });
 
-    test("during the survey (still haven't reached bonus) (jump to next week)", async () => {
-      DateMock.advanceTo(+new Date("2010-05-01T11:00:00Z"));
+        test("(jump to next week)", async () => {
+          DateMock.advanceTo(+new Date("2010-05-01T11:00:00Z"));
 
-      const studyInfo: StudyInfo = PINGS_STUDY_INFO;
+          const studyInfo: StudyInfo = PINGS_STUDY_INFO;
 
-      await setNotificationsAsync(studyInfo);
+          await setNotificationsAsync(studyInfo);
 
-      expect(spyCancelAllScheduledNotificationsAsync).toBeCalledTimes(1);
+          expect(spyCancelAllScheduledNotificationsAsync).toBeCalledTimes(1);
 
-      // 22 = Math.floor(28 / studyInfo.frequency.hoursEveryday.length) * studyInfo.frequency.hoursEveryday.length - shown notification today (2)
-      expect(spyScheduleLocalNotificationAsync).toBeCalledTimes(22);
-      // TODO: CHECK IF SNAPSHOT IS CORRECT.
-      expect(spyScheduleLocalNotificationAsync.mock.calls).toMatchSnapshot();
-    });
+          // 22 = Math.floor(28 / studyInfo.frequency.hoursEveryday.length) * studyInfo.frequency.hoursEveryday.length - shown notification today (2)
+          expect(spyScheduleLocalNotificationAsync).toBeCalledTimes(22);
+          // TODO: CHECK IF SNAPSHOT IS CORRECT.
+          expect(
+            spyScheduleLocalNotificationAsync.mock.calls,
+          ).toMatchSnapshot();
+        });
+      });
 
-    test("during the survey (1 ping from reaching bonus)", async () => {
-      DateMock.advanceTo(+new Date("2010-05-11T13:01:00Z"));
+      test("(1 ping from reaching bonus)", async () => {
+        DateMock.advanceTo(+new Date("2010-05-11T13:01:00Z"));
 
-      const studyInfo: StudyInfo = PINGS_STUDY_INFO;
+        const studyInfo: StudyInfo = PINGS_STUDY_INFO;
 
-      await setNotificationsAsync(studyInfo);
+        await setNotificationsAsync(studyInfo);
 
-      expect(spyCancelAllScheduledNotificationsAsync).toBeCalledTimes(1);
+        expect(spyCancelAllScheduledNotificationsAsync).toBeCalledTimes(1);
 
-      // 21 = Math.floor(28 / studyInfo.frequency.hoursEveryday.length) * studyInfo.frequency.hoursEveryday.length - shown notification today (3)
-      expect(spyScheduleLocalNotificationAsync).toBeCalledTimes(21);
-      // TODO: CHECK IF SNAPSHOT IS CORRECT.
-      expect(spyScheduleLocalNotificationAsync.mock.calls).toMatchSnapshot();
-    });
+        // 21 = Math.floor(28 / studyInfo.frequency.hoursEveryday.length) * studyInfo.frequency.hoursEveryday.length - shown notification today (3)
+        expect(spyScheduleLocalNotificationAsync).toBeCalledTimes(21);
+        // TODO: CHECK IF SNAPSHOT IS CORRECT.
+        expect(spyScheduleLocalNotificationAsync.mock.calls).toMatchSnapshot();
+      });
 
-    test("during the survey (reached bonus) (stay in current week)", async () => {
-      DateMock.advanceTo(+new Date("2010-05-11T17:01:00Z"));
+      describe("(reached bonus)", () => {
+        test("(stay in current week)", async () => {
+          DateMock.advanceTo(+new Date("2010-05-11T17:01:00Z"));
 
-      const studyInfo: StudyInfo = PINGS_STUDY_INFO;
+          const studyInfo: StudyInfo = PINGS_STUDY_INFO;
 
-      await setNotificationsAsync(studyInfo);
+          await setNotificationsAsync(studyInfo);
 
-      expect(spyCancelAllScheduledNotificationsAsync).toBeCalledTimes(1);
+          expect(spyCancelAllScheduledNotificationsAsync).toBeCalledTimes(1);
 
-      // 20 = Math.floor(28 / studyInfo.frequency.hoursEveryday.length) * studyInfo.frequency.hoursEveryday.length - shown notification today (4)
-      expect(spyScheduleLocalNotificationAsync).toBeCalledTimes(20);
-      // TODO: CHECK IF SNAPSHOT IS CORRECT.
-      expect(spyScheduleLocalNotificationAsync.mock.calls).toMatchSnapshot();
-    });
+          // 20 = Math.floor(28 / studyInfo.frequency.hoursEveryday.length) * studyInfo.frequency.hoursEveryday.length - shown notification today (4)
+          expect(spyScheduleLocalNotificationAsync).toBeCalledTimes(20);
+          // TODO: CHECK IF SNAPSHOT IS CORRECT.
+          expect(
+            spyScheduleLocalNotificationAsync.mock.calls,
+          ).toMatchSnapshot();
+        });
 
-    test("during the survey (reached bonus) (jump to next week)", async () => {
-      DateMock.advanceTo(+new Date("2010-05-15T14:01:00Z"));
+        test("(jump to next week)", async () => {
+          DateMock.advanceTo(+new Date("2010-05-15T14:01:00Z"));
 
-      const studyInfo: StudyInfo = PINGS_STUDY_INFO;
+          const studyInfo: StudyInfo = PINGS_STUDY_INFO;
 
-      await setNotificationsAsync(studyInfo);
+          await setNotificationsAsync(studyInfo);
 
-      expect(spyCancelAllScheduledNotificationsAsync).toBeCalledTimes(1);
+          expect(spyCancelAllScheduledNotificationsAsync).toBeCalledTimes(1);
 
-      // 21 = Math.floor(28 / studyInfo.frequency.hoursEveryday.length) * studyInfo.frequency.hoursEveryday.length - shown notification today (3)
-      expect(spyScheduleLocalNotificationAsync).toBeCalledTimes(21);
-      // TODO: CHECK IF SNAPSHOT IS CORRECT.
-      expect(spyScheduleLocalNotificationAsync.mock.calls).toMatchSnapshot();
+          // 21 = Math.floor(28 / studyInfo.frequency.hoursEveryday.length) * studyInfo.frequency.hoursEveryday.length - shown notification today (3)
+          expect(spyScheduleLocalNotificationAsync).toBeCalledTimes(21);
+          // TODO: CHECK IF SNAPSHOT IS CORRECT.
+          expect(
+            spyScheduleLocalNotificationAsync.mock.calls,
+          ).toMatchSnapshot();
+        });
+      });
     });
   });
 };
