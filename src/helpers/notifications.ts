@@ -1,6 +1,5 @@
 import {
   addDays,
-  addHours,
   addMinutes,
   setHours,
   setMinutes,
@@ -20,12 +19,13 @@ import {
   getNotificationTimesAsync,
   storeNotificationTimesAsync,
 } from "./asyncStorage/notificationTimes";
-import { isTimeThisWeekAsync } from "./configFiles";
+import { isTimeThisWeekAsync, getSurveyFileAsync } from "./configFiles";
 import { getThisWeekPingsAsync } from "./pings";
 import { StudyInfo } from "./types";
 
 const ANDROID_CHANNEL_NAME = "ssnlPingChannel";
 
+/* istanbul ignore next */
 export async function setupNotificationsPermissionAsync(): Promise<boolean> {
   const { status: existingStatus } = await Permissions.getAsync(
     Permissions.USER_FACING_NOTIFICATIONS,
@@ -72,8 +72,11 @@ export async function setNotificationsAsync(studyInfo: StudyInfo) {
   const studyEndDate = new Date(studyInfo.endDate);
   // You can only schedule at most 64 local notifications on iOS.
   // Some say on Android, the limit is even lower: 50 (https://stackoverflow.com/a/36677835/2603230)
-  // To be safe, we schedule at most 28 notifications, which means 7 days.
-  const setNotificationsUntil = min([addDays(startDate, 7), studyEndDate]);
+  // To be safe, we schedule at most 28 notifications, which means (28 / hoursEveryday.length) days.
+  const setNotificationsUntil = min([
+    addDays(startDate, Math.floor(28 / hoursEveryday.length)),
+    studyEndDate,
+  ]);
   const notificationTimes: Date[] = [];
 
   const currentlySetNotifications = (await getNotificationTimesAsync()) || [];
@@ -95,6 +98,10 @@ export async function setNotificationsAsync(studyInfo: StudyInfo) {
   ) {
     for (const hour of hoursEveryday) {
       let notificationTime = setHours(setMinutes(date, 0), hour);
+
+      if (notificationTime >= studyEndDate) {
+        break;
+      }
 
       // Randomly add `randomMinMinuteAddition` to `randomMaxMinuteAddition` minutes (inclusive) to the notification time.
       const randomMinMinuteAddition =
@@ -163,7 +170,7 @@ export async function setNotificationsAsync(studyInfo: StudyInfo) {
             .join(mPingText);
         }
 
-        console.warn(`${notificationBody} for ${notificationTime}`);
+        //console.warn(`${notificationBody} for ${notificationTime}`);
 
         const notification: LocalNotification = {
           title: notificationTitle,
@@ -185,19 +192,12 @@ export async function setNotificationsAsync(studyInfo: StudyInfo) {
   //console.warn("NEW NOTIFICATION SET!");
 }
 
-function getCurrentTime(): Date {
-  const currentTime = new Date();
-
-  // DEBUG
-  //let currentTime = addMinutes(new Date(), 30);
-  //currentTime = addHours(currentTime, 1);
-
-  return currentTime;
-}
-
 // If `null` is returned, it means that currently there's no active ping.
-export async function getCurrentNotificationTimeAsync(): Promise<Date | null> {
+export async function getCurrentNotificationTimeAsync(
+  studyInfo: StudyInfo,
+): Promise<Date | null> {
   // DEBUG
+  /* istanbul ignore if */
   if (__DEV__ && _DEBUG_CONFIGS().ignoreNotificationTime) {
     const fakeNotificationTime = addMinutes(new Date(), -10);
     return fakeNotificationTime;
@@ -211,8 +211,11 @@ export async function getCurrentNotificationTimeAsync(): Promise<Date | null> {
   });*/
 
   for (const notificationsTime of notificationsTimes) {
-    const expirationTime = addHours(notificationsTime, 2);
-    const currentTime = getCurrentTime();
+    const expirationTime = addMinutes(
+      notificationsTime,
+      studyInfo.frequency.expireAfterMinutes,
+    );
+    const currentTime = new Date();
 
     if (currentTime >= notificationsTime && currentTime <= expirationTime) {
       return notificationsTime;
@@ -226,7 +229,7 @@ export async function getCurrentNotificationTimeAsync(): Promise<Date | null> {
 export async function getIncomingNotificationTimeAsync(): Promise<Date | null> {
   const notificationsTimes = (await getNotificationTimesAsync()) || [];
 
-  const currentTime = getCurrentTime();
+  const currentTime = new Date();
 
   const currentIndex = notificationsTimes.findIndex(
     (notificationsTime) => currentTime < notificationsTime,
@@ -239,6 +242,7 @@ export async function getIncomingNotificationTimeAsync(): Promise<Date | null> {
   return notificationsTimes[currentIndex];
 }
 
+/* istanbul ignore next */
 export async function _sendTestNotificationAsync() {
   await Notifications.scheduleLocalNotificationAsync(
     {
