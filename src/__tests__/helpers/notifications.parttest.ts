@@ -2,6 +2,7 @@ import { Notifications } from "expo";
 import * as DateMock from "jest-date-mock";
 import { Connection } from "typeorm";
 
+import * as notificationTimesAsyncStorage from "../../helpers/asyncStorage/notificationTimes";
 import { setNotificationsAsync } from "../../helpers/notifications";
 import {
   getTestDatabaseFilename,
@@ -29,6 +30,9 @@ export const notificationsTest = () => {
     DateMock.clear();
     mathRandomSpy.mockClear();
   });
+  afterAll(() => {
+    mathRandomSpy.mockRestore();
+  });
 
   describe("setNotificationsAsync", () => {
     const spyCancelAllScheduledNotificationsAsync = jest.spyOn(
@@ -42,6 +46,10 @@ export const notificationsTest = () => {
     afterEach(() => {
       spyCancelAllScheduledNotificationsAsync.mockClear();
       spyScheduleLocalNotificationAsync.mockClear();
+    });
+    afterAll(() => {
+      spyCancelAllScheduledNotificationsAsync.mockRestore();
+      spyScheduleLocalNotificationAsync.mockRestore();
     });
 
     test("after the study already ends", async () => {
@@ -78,6 +86,57 @@ export const notificationsTest = () => {
       expect(spyScheduleLocalNotificationAsync).toBeCalledTimes(12);
       // TODO: CHECK IF SNAPSHOT IS CORRECT.
       expect(spyScheduleLocalNotificationAsync.mock.calls).toMatchSnapshot();
+    });
+
+    describe("with existing notifications", () => {
+      const spyGetNotificationTimesAsync = jest.spyOn(
+        notificationTimesAsyncStorage,
+        "getNotificationTimesAsync",
+      );
+      beforeEach(() => {
+        spyGetNotificationTimesAsync.mockImplementation(async () => {
+          return [
+            new Date("2010-05-11T08:11:07Z"),
+            new Date("2010-05-11T10:22:07Z"),
+            new Date("2010-05-11T12:33:07Z"),
+            new Date("2010-05-11T16:44:07Z"),
+            new Date("2010-05-11T18:55:07Z"),
+            new Date("2010-05-11T22:44:07Z"),
+          ];
+        });
+      });
+      afterEach(() => {
+        spyGetNotificationTimesAsync.mockClear();
+      });
+      afterAll(() => {
+        spyGetNotificationTimesAsync.mockRestore();
+      });
+
+      test("(at the start of the day)", async () => {
+        DateMock.advanceTo(+new Date("2010-05-11T08:00:00Z"));
+
+        await setNotificationsAsync(PINGS_STUDY_INFO);
+
+        expect(spyCancelAllScheduledNotificationsAsync).toBeCalledTimes(1);
+
+        // 24 = Math.floor(28 / studyInfo.frequency.hoursEveryday.length) * studyInfo.frequency.hoursEveryday.length - shown notification today (0)
+        expect(spyScheduleLocalNotificationAsync).toBeCalledTimes(24);
+        // TODO: CHECK IF SNAPSHOT IS CORRECT.
+        expect(spyScheduleLocalNotificationAsync.mock.calls).toMatchSnapshot();
+      });
+
+      test("(in the middle of the day)", async () => {
+        DateMock.advanceTo(+new Date("2010-05-11T13:00:00Z"));
+
+        await setNotificationsAsync(PINGS_STUDY_INFO);
+
+        expect(spyCancelAllScheduledNotificationsAsync).toBeCalledTimes(1);
+
+        // 21 = Math.floor(28 / studyInfo.frequency.hoursEveryday.length) * studyInfo.frequency.hoursEveryday.length - shown notification today (3)
+        expect(spyScheduleLocalNotificationAsync).toBeCalledTimes(21);
+        // TODO: CHECK IF SNAPSHOT IS CORRECT.
+        expect(spyScheduleLocalNotificationAsync.mock.calls).toMatchSnapshot();
+      });
     });
 
     describe("during the survey", () => {
