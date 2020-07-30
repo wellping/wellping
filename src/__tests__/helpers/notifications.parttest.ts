@@ -8,6 +8,7 @@ import {
   getCurrentNotificationTimeAsync,
   getIncomingNotificationTimeAsync,
 } from "../../helpers/notifications";
+import { StudyInfo } from "../../helpers/types";
 import {
   getTestDatabaseFilename,
   connectTestDatabaseAsync,
@@ -224,6 +225,72 @@ export const notificationsTest = () => {
 
           // 21 = Math.floor(28 / studyInfo.frequency.hoursEveryday.length) * studyInfo.frequency.hoursEveryday.length - shown notification today (3)
           expect(spyScheduleLocalNotificationAsync).toBeCalledTimes(21);
+          // TODO: CHECK IF SNAPSHOT IS CORRECT.
+          expect(
+            spyScheduleLocalNotificationAsync.mock.calls,
+          ).toMatchSnapshot();
+        });
+      });
+
+      describe("(no bonus is set)", () => {
+        const PINGS_STUDY_INFO_WITH_NO_BONUS: StudyInfo = {
+          ...PINGS_STUDY_INFO,
+          notificationContent: {
+            ...PINGS_STUDY_INFO.notificationContent,
+            bonus: undefined,
+          },
+        };
+
+        test("(stay in current week)", async () => {
+          DateMock.advanceTo(+new Date("2010-05-11T17:01:00Z"));
+
+          await setNotificationsAsync(PINGS_STUDY_INFO_WITH_NO_BONUS);
+
+          expect(spyCancelAllScheduledNotificationsAsync).toBeCalledTimes(1);
+
+          // 20 = Math.floor(28 / studyInfo.frequency.hoursEveryday.length) * studyInfo.frequency.hoursEveryday.length - shown notification today (4)
+          expect(spyScheduleLocalNotificationAsync).toBeCalledTimes(20);
+
+          for (const eachCall of spyScheduleLocalNotificationAsync.mock.calls) {
+            expect(
+              eachCall[0].title ===
+                PINGS_STUDY_INFO_WITH_NO_BONUS.notificationContent.default
+                  .title,
+            );
+            expect(
+              eachCall[0].body ===
+                PINGS_STUDY_INFO_WITH_NO_BONUS.notificationContent.default.body,
+            );
+          }
+
+          // TODO: CHECK IF SNAPSHOT IS CORRECT.
+          expect(
+            spyScheduleLocalNotificationAsync.mock.calls,
+          ).toMatchSnapshot();
+        });
+
+        test("(jump to next week)", async () => {
+          DateMock.advanceTo(+new Date("2010-05-15T14:01:00Z"));
+
+          await setNotificationsAsync(PINGS_STUDY_INFO_WITH_NO_BONUS);
+
+          expect(spyCancelAllScheduledNotificationsAsync).toBeCalledTimes(1);
+
+          // 21 = Math.floor(28 / studyInfo.frequency.hoursEveryday.length) * studyInfo.frequency.hoursEveryday.length - shown notification today (3)
+          expect(spyScheduleLocalNotificationAsync).toBeCalledTimes(21);
+
+          for (const eachCall of spyScheduleLocalNotificationAsync.mock.calls) {
+            expect(
+              eachCall[0].title ===
+                PINGS_STUDY_INFO_WITH_NO_BONUS.notificationContent.default
+                  .title,
+            );
+            expect(
+              eachCall[0].body ===
+                PINGS_STUDY_INFO_WITH_NO_BONUS.notificationContent.default.body,
+            );
+          }
+
           // TODO: CHECK IF SNAPSHOT IS CORRECT.
           expect(
             spyScheduleLocalNotificationAsync.mock.calls,
