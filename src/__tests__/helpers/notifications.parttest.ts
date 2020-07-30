@@ -90,26 +90,26 @@ export const notificationsTest = () => {
     });
 
     describe("with existing notifications", () => {
+      const notificationTimes = [
+        new Date("2010-05-11T08:11:07Z"),
+        new Date("2010-05-11T10:22:07Z"),
+        new Date("2010-05-11T12:33:07Z"),
+        new Date("2010-05-11T16:44:07Z"),
+        new Date("2010-05-11T18:55:07Z"),
+        new Date("2010-05-11T22:44:07Z"),
+        new Date("2010-05-12T08:59:07Z"),
+        new Date("2010-05-12T10:58:07Z"),
+        new Date("2010-05-12T12:57:07Z"),
+        new Date("2010-05-12T16:56:07Z"),
+        new Date("2010-05-12T18:55:07Z"),
+        new Date("2010-05-12T22:54:07Z"),
+      ];
+
       let spyGetNotificationTimesAsync: FunctionSpyInstance<typeof notificationTimesAsyncStorage.getNotificationTimesAsync>;
       beforeEach(() => {
         spyGetNotificationTimesAsync = jest
           .spyOn(notificationTimesAsyncStorage, "getNotificationTimesAsync")
-          .mockImplementation(async () => {
-            return [
-              new Date("2010-05-11T08:11:07Z"),
-              new Date("2010-05-11T10:22:07Z"),
-              new Date("2010-05-11T12:33:07Z"),
-              new Date("2010-05-11T16:44:07Z"),
-              new Date("2010-05-11T18:55:07Z"),
-              new Date("2010-05-11T22:44:07Z"),
-              new Date("2010-05-12T08:59:07Z"),
-              new Date("2010-05-12T10:58:07Z"),
-              new Date("2010-05-12T12:57:07Z"),
-              new Date("2010-05-12T16:56:07Z"),
-              new Date("2010-05-12T18:55:07Z"),
-              new Date("2010-05-12T22:54:07Z"),
-            ];
-          });
+          .mockImplementation(async () => notificationTimes);
       });
 
       test("(at the start of the day)", async () => {
@@ -121,6 +121,13 @@ export const notificationsTest = () => {
 
         // 24 = Math.floor(28 / studyInfo.frequency.hoursEveryday.length) * studyInfo.frequency.hoursEveryday.length - shown notification today (0)
         expect(spyScheduleLocalNotificationAsync).toBeCalledTimes(24);
+
+        for (let i = 0; i < 6; i++) {
+          expect(spyScheduleLocalNotificationAsync.mock.calls[i][1]?.time).toBe(
+            notificationTimes[i],
+          );
+        }
+
         // TODO: CHECK IF SNAPSHOT IS CORRECT.
         expect(spyScheduleLocalNotificationAsync.mock.calls).toMatchSnapshot();
       });
@@ -134,6 +141,13 @@ export const notificationsTest = () => {
 
         // 21 = Math.floor(28 / studyInfo.frequency.hoursEveryday.length) * studyInfo.frequency.hoursEveryday.length - shown notification today (3)
         expect(spyScheduleLocalNotificationAsync).toBeCalledTimes(21);
+
+        for (let i = 3; i < 6; i++) {
+          expect(
+            spyScheduleLocalNotificationAsync.mock.calls[i - 3][1]?.time,
+          ).toBe(notificationTimes[i]);
+        }
+
         // TODO: CHECK IF SNAPSHOT IS CORRECT.
         expect(spyScheduleLocalNotificationAsync.mock.calls).toMatchSnapshot();
       });
