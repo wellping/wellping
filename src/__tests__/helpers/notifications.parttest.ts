@@ -9,6 +9,7 @@ import {
   connectTestDatabaseAsync,
 } from "../data/database_helper";
 import { PINGS_STUDY_INFO } from "../data/pings";
+import { FunctionSpyInstance } from "../jestHelper";
 import { PINGS_DB_NAME } from "./pings.parttest";
 
 // https://github.com/facebook/jest/issues/6194#issuecomment-419837314
@@ -23,31 +24,32 @@ export const notificationsTest = () => {
     await connection.close();
   });
 
-  const mathRandomSpy = jest
-    .spyOn(global.Math, "random")
-    .mockReturnValue(0.123456789);
+  let mathRandomSpy: FunctionSpyInstance<typeof global.Math.random>;
+
+  beforeEach(() => {
+    mathRandomSpy = jest
+      .spyOn(global.Math, "random")
+      .mockReturnValue(0.123456789);
+  });
   afterEach(() => {
     DateMock.clear();
-    mathRandomSpy.mockClear();
-  });
-  afterAll(() => {
     mathRandomSpy.mockRestore();
   });
 
   describe("setNotificationsAsync", () => {
-    const spyCancelAllScheduledNotificationsAsync = jest.spyOn(
-      Notifications,
-      "cancelAllScheduledNotificationsAsync",
-    );
-    const spyScheduleLocalNotificationAsync = jest.spyOn(
-      Notifications,
-      "scheduleLocalNotificationAsync",
-    );
-    afterEach(() => {
-      spyCancelAllScheduledNotificationsAsync.mockClear();
-      spyScheduleLocalNotificationAsync.mockClear();
+    let spyCancelAllScheduledNotificationsAsync: FunctionSpyInstance<typeof Notifications.cancelAllScheduledNotificationsAsync>;
+    let spyScheduleLocalNotificationAsync: FunctionSpyInstance<typeof Notifications.scheduleLocalNotificationAsync>;
+    beforeEach(() => {
+      spyScheduleLocalNotificationAsync = jest.spyOn(
+        Notifications,
+        "scheduleLocalNotificationAsync",
+      );
+      spyCancelAllScheduledNotificationsAsync = jest.spyOn(
+        Notifications,
+        "cancelAllScheduledNotificationsAsync",
+      );
     });
-    afterAll(() => {
+    afterEach(() => {
       spyCancelAllScheduledNotificationsAsync.mockRestore();
       spyScheduleLocalNotificationAsync.mockRestore();
     });
@@ -89,32 +91,28 @@ export const notificationsTest = () => {
     });
 
     describe("with existing notifications", () => {
-      const spyGetNotificationTimesAsync = jest.spyOn(
-        notificationTimesAsyncStorage,
-        "getNotificationTimesAsync",
-      );
+      let spyGetNotificationTimesAsync: FunctionSpyInstance<typeof notificationTimesAsyncStorage.getNotificationTimesAsync>;
       beforeEach(() => {
-        spyGetNotificationTimesAsync.mockImplementation(async () => {
-          return [
-            new Date("2010-05-11T08:11:07Z"),
-            new Date("2010-05-11T10:22:07Z"),
-            new Date("2010-05-11T12:33:07Z"),
-            new Date("2010-05-11T16:44:07Z"),
-            new Date("2010-05-11T18:55:07Z"),
-            new Date("2010-05-11T22:44:07Z"),
-            new Date("2010-05-12T08:59:07Z"),
-            new Date("2010-05-12T10:58:07Z"),
-            new Date("2010-05-12T12:57:07Z"),
-            new Date("2010-05-12T16:56:07Z"),
-            new Date("2010-05-12T18:55:07Z"),
-            new Date("2010-05-12T22:54:07Z"),
-          ];
-        });
+        spyGetNotificationTimesAsync = jest
+          .spyOn(notificationTimesAsyncStorage, "getNotificationTimesAsync")
+          .mockImplementation(async () => {
+            return [
+              new Date("2010-05-11T08:11:07Z"),
+              new Date("2010-05-11T10:22:07Z"),
+              new Date("2010-05-11T12:33:07Z"),
+              new Date("2010-05-11T16:44:07Z"),
+              new Date("2010-05-11T18:55:07Z"),
+              new Date("2010-05-11T22:44:07Z"),
+              new Date("2010-05-12T08:59:07Z"),
+              new Date("2010-05-12T10:58:07Z"),
+              new Date("2010-05-12T12:57:07Z"),
+              new Date("2010-05-12T16:56:07Z"),
+              new Date("2010-05-12T18:55:07Z"),
+              new Date("2010-05-12T22:54:07Z"),
+            ];
+          });
       });
       afterEach(() => {
-        spyGetNotificationTimesAsync.mockClear();
-      });
-      afterAll(() => {
         spyGetNotificationTimesAsync.mockRestore();
       });
 
