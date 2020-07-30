@@ -111,6 +111,18 @@ export const PINGS_STUDY_INFO: StudyInfo = {
   ...BASE_STUDY_INFO,
   startDate: new Date("2010-05-01T06:00:00Z"),
   endDate: new Date("2010-05-30T22:00:00Z"),
+  weekStartsOn: 1 as StudyInfo["weekStartsOn"],
+  notificationContent: {
+    default: {
+      title: "New survey!",
+      body: "Do it now!",
+    },
+    bonus: {
+      title: "You can earn bonus!",
+      body: "You are #n_ping# away from the weekly bonus.",
+      numberOfCompletionEachWeek: 10,
+    },
+  },
   frequency: {
     hoursEveryday: [8, 10, 12, 16, 18, 22],
     randomMinuteAddition: { min: 0, max: 119 },
