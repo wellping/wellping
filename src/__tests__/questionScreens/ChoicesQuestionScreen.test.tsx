@@ -150,8 +150,6 @@ const basicTestForChoicesQuestionScreenAsync = async (
 
   expect(displayedList).toMatchSnapshot("displayed list");
 
-  mathRandomSpy.mockRestore();
-
   return { renderResults, mockOnDataChangeFn };
 };
 

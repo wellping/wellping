@@ -33,7 +33,6 @@ export const notificationsTest = () => {
   });
   afterEach(() => {
     DateMock.clear();
-    mathRandomSpy.mockRestore();
   });
 
   describe("setNotificationsAsync", () => {
@@ -48,10 +47,6 @@ export const notificationsTest = () => {
         Notifications,
         "cancelAllScheduledNotificationsAsync",
       );
-    });
-    afterEach(() => {
-      spyCancelAllScheduledNotificationsAsync.mockRestore();
-      spyScheduleLocalNotificationAsync.mockRestore();
     });
 
     test("after the study already ends", async () => {
@@ -111,9 +106,6 @@ export const notificationsTest = () => {
               new Date("2010-05-12T22:54:07Z"),
             ];
           });
-      });
-      afterEach(() => {
-        spyGetNotificationTimesAsync.mockRestore();
       });
 
       test("(at the start of the day)", async () => {
