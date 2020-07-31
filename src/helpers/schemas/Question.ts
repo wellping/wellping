@@ -44,6 +44,7 @@ export const ChoicesQuestionSchema = BaseQuestionSchema.extend({
   choices: z.array(ChoiceSchema).nonempty(),
   specialCasesStartId: z
     .union([
+      // TODO: https://github.com/vriad/zod/issues/104
       // Record<choice key, question ID>
       z.record(QuestionIdSchema.nullable()),
       // For when the user click "Prefer not to answer" or next without option.
