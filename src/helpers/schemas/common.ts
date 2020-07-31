@@ -35,10 +35,13 @@ export const QuestionIdSchema = z
  * > Issue #0: invalid_union at
  * > Invalid input
  */
-export const QuestionIdSchemaNullable = (path: string[]) =>
-  QuestionIdSchema.nullable().refine((val) => {
+export const CustomNullable = (Schema: z.ZodType<any, any>, path: string[]) =>
+  Schema.nullable().refine((val) => {
     if (val === undefined) {
-      QuestionIdSchema.parse(val, { path });
+      z.null().parse(val, { path });
     }
     return true;
   });
+
+export const QuestionIdSchemaNullable = (path: string[]) =>
+  CustomNullable(QuestionIdSchema, path);
