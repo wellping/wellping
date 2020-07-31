@@ -18,7 +18,7 @@ import {
   HowLongAgoAnswerData,
 } from "../helpers/answerTypes";
 import { QuestionType } from "../helpers/helpers";
-import { QuestionId } from "../helpers/types";
+import { QuestionId, QuestionTypeType } from "../helpers/types";
 import { PingEntity } from "./PingEntity";
 
 @Entity("answer")
@@ -95,7 +95,7 @@ export class HowLongAgoAnswerEntity extends AnswerEntity {
   data: HowLongAgoAnswerData | null;
 }
 
-export function getAnswerEntity(questionType: QuestionType): AnswerEntity {
+export function getAnswerEntity(questionType: QuestionTypeType): AnswerEntity {
   switch (questionType) {
     case QuestionType.Slider:
       return new SliderAnswerEntity();

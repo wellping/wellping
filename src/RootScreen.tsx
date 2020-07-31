@@ -12,7 +12,7 @@ import {
 import { getSurveyFileAsync } from "./helpers/configFiles";
 import { connectDatabaseAsync } from "./helpers/database";
 import { getCriticalProblemTextForUser } from "./helpers/debug";
-import { SurveyFile } from "./helpers/types";
+import { StudyFile } from "./helpers/types";
 
 interface RootScreenProps {}
 
@@ -23,7 +23,7 @@ interface RootScreenState {
   formDataPassword?: string;
   errorText: string | null;
   unableToParticipate?: boolean;
-  survey?: SurveyFile;
+  survey?: StudyFile;
 }
 
 export default class RootScreen extends React.Component<

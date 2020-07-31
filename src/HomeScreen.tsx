@@ -60,7 +60,7 @@ import {
 import {
   Streams,
   QuestionsList,
-  SurveyFile,
+  StudyFile,
   StreamName,
   StudyInfo,
 } from "./helpers/types";
@@ -77,7 +77,7 @@ const styles = StyleSheet.create({
 });
 
 interface HomeScreenProps {
-  survey: SurveyFile;
+  survey: StudyFile;
   logout: () => Promise<void>;
 }
 

@@ -28,7 +28,7 @@ export type StreamName = z.infer<typeof StreamNameSchema>;
 
 export type QuestionId = z.infer<typeof QuestionIdSchema>;
 
-export type QuestionType = z.infer<typeof QuestionTypeSchema>;
+export type QuestionTypeType = z.infer<typeof QuestionTypeSchema>;
 
 /*export interface Question {
   id: QuestionId;
