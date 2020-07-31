@@ -60,6 +60,13 @@ describe("MultipleTextQuestionSchema", () => {
       expect(() => {
         MultipleTextQuestionSchema.parse({
           ...question,
+          indexName: "INDEX",
+        });
+      }).not.toThrowError();
+
+      expect(() => {
+        MultipleTextQuestionSchema.parse({
+          ...question,
           indexName: "hello_world",
         });
       }).not.toThrowError();
@@ -75,6 +82,65 @@ describe("MultipleTextQuestionSchema", () => {
         MultipleTextQuestionSchema.parse({
           ...question,
           indexName: "__+O+__",
+        });
+      }).not.toThrowError();
+    });
+  });
+
+  describe("variableName", () => {
+    const question = {
+      id: "Feel_Ideal",
+      type: QuestionType.MultipleText,
+      question: "Multiple text question",
+      indexName: "INDEX",
+      eachId: "Name_[__INDEX__]",
+      max: 3,
+      next: "Next_Question",
+    };
+
+    test("should not be undefined", () => {
+      expect(() => {
+        MultipleTextQuestionSchema.parse({
+          ...question,
+        });
+      }).toThrowErrorMatchingSnapshot();
+    });
+
+    test("should not be empty", () => {
+      expect(() => {
+        MultipleTextQuestionSchema.parse({
+          ...question,
+          variableName: "",
+        });
+      }).toThrowErrorMatchingSnapshot();
+    });
+
+    test("can be any string", () => {
+      expect(() => {
+        MultipleTextQuestionSchema.parse({
+          ...question,
+          variableName: "TARGET",
+        });
+      }).not.toThrowError();
+
+      expect(() => {
+        MultipleTextQuestionSchema.parse({
+          ...question,
+          variableName: "target_name",
+        });
+      }).not.toThrowError();
+
+      expect(() => {
+        MultipleTextQuestionSchema.parse({
+          ...question,
+          variableName: "HELLO WORLD",
+        });
+      }).not.toThrowError();
+
+      expect(() => {
+        MultipleTextQuestionSchema.parse({
+          ...question,
+          variableName: "__+O+__",
         });
       }).not.toThrowError();
     });

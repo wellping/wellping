@@ -23,3 +23,19 @@ exports[`MultipleTextQuestionSchema type 1`] = `
   Input must be \\"MultipleText\\"
 "
 `;
+
+exports[`MultipleTextQuestionSchema variableName should not be empty 1`] = `
+"1 validation issue(s)
+
+  Issue #0: too_small at variableName
+  Should be at least 1 characters
+"
+`;
+
+exports[`MultipleTextQuestionSchema variableName should not be undefined 1`] = `
+"1 validation issue(s)
+
+  Issue #0: invalid_type at variableName
+  Required
+"
+`;
