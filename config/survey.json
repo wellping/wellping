@@ -45,14 +45,14 @@
     "myStream": {
       "Feel_Current": {
         "id": "Feel_Current",
-        "type": "slider",
+        "type": "Slider",
         "question": "Please use the slider bar to indicate how you are feeling right now.",
         "slider": ["extremely negative", "extremely positive"],
         "next": "Feel_Ideal"
       },
       "Feel_Ideal": {
         "id": "Feel_Ideal",
-        "type": "slider",
+        "type": "Slider",
         "question": "The current value on the slider bar is your previous response about how you currently feel. Please use the slider bar to indicate how you WOULD LIKE to feel.",
         "slider": ["extremely negative", "extremely positive"],
         "defaultValueFromQuestionId": "Feel_Current",
@@ -60,7 +60,7 @@
       },
       "Stressor": {
         "id": "Stressor",
-        "type": "choicesWithSingleAnswer",
+        "type": "ChoicesWithSingleAnswer",
         "question": "Which of the following best categorizes the PRIMARY stress you are experiencing?",
         "choices": [
           { "key": "academic", "value": "Academic" },
@@ -77,13 +77,13 @@
       },
       "StressDurationNum": {
         "id": "StressDurationNum",
-        "type": "howLongAgo",
+        "type": "HowLongAgo",
         "question": "How long ago did your {PREV:Stressor} stress first come about?",
         "next": "StressorCope"
       },
       "StressorCope": {
         "id": "StressorCope",
-        "type": "choicesWithMultipleAnswers",
+        "type": "ChoicesWithMultipleAnswers",
         "question": "Which of the following have you done in response your {PREV:Stressor} stress? Please select all that apply.",
         "choices": [
           { "key": "think", "value": "I thought extensively about the causes / consequences" },
@@ -98,7 +98,7 @@
       },
       "SocInteraction": {
         "id": "SocInteraction",
-        "type": "yesNo",
+        "type": "YesNo",
         "question": "In the past hour, did you interact with anyone?",
         "branchStartId": {
           "yes": "SocInteraction_Names",
@@ -109,7 +109,7 @@
       "SocInteraction_Names": {
         "id": "SocInteraction_Names",
         "eachId": "Name_[__INDEX__]",
-        "type": "multipleText",
+        "type": "MultipleText",
         "question": "Who were you talking to?",
         "placeholder": "Enter a name...",
         "choices": "NAMES",
@@ -121,7 +121,7 @@
       "SocInteraction_Relationships": {
         "id": "SocInteraction_Relationships",
         "eachId": "Rel_[__INDEX__]",
-        "type": "multipleText",
+        "type": "MultipleText",
         "question": "How would you best describe your relationship to the people you had an interaction with?",
         "placeholder": "Select a category...",
         "choices": [
@@ -143,7 +143,7 @@
     "errorStream": {
       "firstQuestion": {
         "id": "firstQuestion",
-        "type": "slider",
+        "type": "Slider",
         "question": "Why are we here?",
         "slider": ["extremely negative", "extremely positive"],
         "next": null

@@ -29,34 +29,34 @@ export type QuestionId = z.infer<typeof QuestionIdSchema>;
 
 export type QuestionTypeType = z.infer<typeof QuestionTypeSchema>;
 
-export interface Question extends z.infer<typeof QuestionSchema> {}
+export type Question = z.infer<typeof QuestionSchema>;
 
-export interface SliderQuestion extends z.infer<typeof SliderQuestionSchema> {}
+export type SliderQuestion = z.infer<typeof SliderQuestionSchema>;
 
 export type Choice = z.infer<typeof ChoiceSchema>;
-export interface ChoicesQuestion
-  extends z.infer<typeof ChoicesQuestionSchema> {}
+export type ChoicesQuestion = z.infer<typeof ChoicesQuestionSchema>;
 
-export interface ChoicesWithSingleAnswerQuestion
-  extends z.infer<typeof ChoicesWithSingleAnswerQuestionSchema> {}
+export type ChoicesWithSingleAnswerQuestion = z.infer<
+  typeof ChoicesWithSingleAnswerQuestionSchema
+>;
 
-export interface ChoicesWithMultipleAnswersQuestion
-  extends z.infer<typeof ChoicesWithMultipleAnswersQuestionSchema> {}
+export type ChoicesWithMultipleAnswersQuestion = z.infer<
+  typeof ChoicesWithMultipleAnswersQuestionSchema
+>;
 
-export interface YesNoQuestion extends z.infer<typeof YesNoQuestionSchema> {}
+export type YesNoQuestion = z.infer<typeof YesNoQuestionSchema>;
 
-export interface MultipleTextQuestion
-  extends z.infer<typeof MultipleTextQuestionSchema> {}
+export type MultipleTextQuestion = z.infer<typeof MultipleTextQuestionSchema>;
 
-export interface HowLongAgoQuestion
-  extends z.infer<typeof HowLongAgoQuestionSchema> {}
+export type HowLongAgoQuestion = z.infer<typeof HowLongAgoQuestionSchema>;
 
-export interface BranchQuestion extends z.infer<typeof BranchQuestionSchema> {}
+export type BranchQuestion = z.infer<typeof BranchQuestionSchema>;
 
-export interface BranchWithRelativeComparisonQuestion
-  extends z.infer<typeof BranchWithRelativeComparisonQuestionSchema> {}
+export type BranchWithRelativeComparisonQuestion = z.infer<
+  typeof BranchWithRelativeComparisonQuestionSchema
+>;
 
-export interface QuestionsList extends z.infer<typeof QuestionsListSchema> {}
+export type QuestionsList = z.infer<typeof QuestionsListSchema>;
 
 export type Streams = z.infer<typeof StreamsSchema>;
 

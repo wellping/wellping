@@ -13,24 +13,14 @@ export const QuestionTypeSchema = z.enum([
   "BranchWithRelativeComparison",
 ]);
 
-export const QuestionSchema = z
-  .object({
-    id: QuestionIdSchema,
-    type: QuestionTypeSchema,
-    question: z.string(),
-    next: QuestionIdSchema.nullable(),
-  })
-  .refine(
-    (question) => {
-      // TODO: MAKE SURE VALIDATE TYPES MATCH
-      return true;
-    },
-    {
-      message: "The question does not have required fields for its type.",
-    },
-  );
+const BaseQuestionSchema = z.object({
+  id: QuestionIdSchema,
+  type: QuestionTypeSchema,
+  question: z.string(),
+  next: QuestionIdSchema.nullable(),
+});
 
-export const SliderQuestionSchema = QuestionSchema.extend({
+export const SliderQuestionSchema = BaseQuestionSchema.extend({
   type: z.literal(QuestionTypeSchema.enum.Slider),
   slider: z.tuple([z.string(), z.string()]), // [left, right]
   defaultValue: z.number().int().nonnegative().max(100).optional(),
@@ -42,7 +32,7 @@ export const ChoiceSchema = z.object({
   value: z.string(),
 });
 
-export const ChoicesQuestionSchema = QuestionSchema.extend({
+export const ChoicesQuestionSchema = BaseQuestionSchema.extend({
   type: z.union([
     z.literal(QuestionTypeSchema.enum.ChoicesWithSingleAnswer),
     z.literal(QuestionTypeSchema.enum.ChoicesWithMultipleAnswers),
@@ -72,7 +62,7 @@ export const ChoicesWithMultipleAnswersQuestionSchema = ChoicesQuestionSchema.ex
   },
 );
 
-export const YesNoQuestionSchema = QuestionSchema.extend({
+export const YesNoQuestionSchema = BaseQuestionSchema.extend({
   type: z.literal(QuestionTypeSchema.enum.YesNo),
   branchStartId: z
     .object({
@@ -90,7 +80,7 @@ export const YesNoQuestionSchema = QuestionSchema.extend({
     .optional(),
 });
 
-export const MultipleTextQuestionSchema = QuestionSchema.extend({
+export const MultipleTextQuestionSchema = BaseQuestionSchema.extend({
   // `id` will store the number of text fields answered.
   type: z.literal(QuestionTypeSchema.enum.MultipleText),
   indexName: z.string(),
@@ -111,11 +101,11 @@ export const MultipleTextQuestionSchema = QuestionSchema.extend({
   fallbackItemStartId: QuestionIdSchema.nullable().optional(),
 });
 
-export const HowLongAgoQuestionSchema = QuestionSchema.extend({
+export const HowLongAgoQuestionSchema = BaseQuestionSchema.extend({
   type: z.literal(QuestionTypeSchema.enum.HowLongAgo),
 });
 
-export const BranchQuestionSchema = QuestionSchema.extend({
+export const BranchQuestionSchema = BaseQuestionSchema.extend({
   // This is not actually a question (it will not be displayed to the user)
   type: z.literal(QuestionTypeSchema.enum.Branch),
   condition: z.object({
@@ -134,7 +124,7 @@ export const BranchQuestionSchema = QuestionSchema.extend({
   }),
 });
 
-export const BranchWithRelativeComparisonQuestionSchema = QuestionSchema.extend(
+export const BranchWithRelativeComparisonQuestionSchema = BaseQuestionSchema.extend(
   {
     // This is not actually a question (it will not be displayed to the user)
     type: z.literal(QuestionTypeSchema.enum.BranchWithRelativeComparison),
@@ -142,6 +132,17 @@ export const BranchWithRelativeComparisonQuestionSchema = QuestionSchema.extend(
     branchStartId: z.record(QuestionIdSchema.nullable()),
   },
 );
+
+export const QuestionSchema = z.union([
+  SliderQuestionSchema,
+  ChoicesWithSingleAnswerQuestionSchema,
+  ChoicesWithMultipleAnswersQuestionSchema,
+  YesNoQuestionSchema,
+  MultipleTextQuestionSchema,
+  HowLongAgoQuestionSchema,
+  BranchQuestionSchema,
+  BranchWithRelativeComparisonQuestionSchema,
+]);
 
 export const QuestionsListSchema = z.record(QuestionSchema).refine(
   (questions) => {
