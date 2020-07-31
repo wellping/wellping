@@ -264,7 +264,14 @@ describe("SliderQuestionSchema", () => {
           ...question,
           defaultValueFromQuestionId: "INVALID QUESTION-ID",
         });
-      }).toThrowErrorMatchingSnapshot();
+      }).toThrowErrorMatchingSnapshot("invalid id");
+
+      expect(() => {
+        SliderQuestionSchema.parse({
+          ...question,
+          defaultValueFromQuestionId: "",
+        });
+      }).toThrowErrorMatchingSnapshot("empty id");
     });
   });
 });

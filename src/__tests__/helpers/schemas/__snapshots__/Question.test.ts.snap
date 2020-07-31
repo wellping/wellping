@@ -87,7 +87,18 @@ exports[`SliderQuestionSchema defaultValueFromQuestionId cannot be null 1`] = `
 "
 `;
 
-exports[`SliderQuestionSchema defaultValueFromQuestionId is question ID 1`] = `
+exports[`SliderQuestionSchema defaultValueFromQuestionId is question ID: empty id 1`] = `
+"2 validation issue(s)
+
+  Issue #0: too_small at defaultValueFromQuestionId
+  Should be at least 1 characters
+
+  Issue #1: custom_error at defaultValueFromQuestionId
+  Question ID can only include letters, numbers, and \\"_\\".
+"
+`;
+
+exports[`SliderQuestionSchema defaultValueFromQuestionId is question ID: invalid id 1`] = `
 "1 validation issue(s)
 
   Issue #0: custom_error at defaultValueFromQuestionId
