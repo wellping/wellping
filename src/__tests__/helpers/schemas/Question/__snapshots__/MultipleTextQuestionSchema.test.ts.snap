@@ -1,5 +1,21 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`MultipleTextQuestionSchema indexName should not be empty 1`] = `
+"1 validation issue(s)
+
+  Issue #0: too_small at indexName
+  Should be at least 1 characters
+"
+`;
+
+exports[`MultipleTextQuestionSchema indexName should not be undefined 1`] = `
+"1 validation issue(s)
+
+  Issue #0: invalid_type at indexName
+  Required
+"
+`;
+
 exports[`MultipleTextQuestionSchema type 1`] = `
 "1 validation issue(s)
 

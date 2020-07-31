@@ -146,9 +146,9 @@ export const YesNoQuestionSchema = BaseQuestionSchema.extend({
 export const MultipleTextQuestionSchema = BaseQuestionSchema.extend({
   // `id` will store the number of text fields answered.
   type: z.literal(QuestionTypeSchema.enum.MultipleText),
-  indexName: z.string(),
-  variableName: z.string(),
-  eachId: z.string(),
+  indexName: z.string().nonempty(),
+  variableName: z.string().nonempty(),
+  eachId: z.string().nonempty(),
   placeholder: z.string().optional(),
   choices: z.union([z.literal("NAMES"), z.array(ChoiceSchema)]).optional(),
   forceChoice: z.boolean().optional(),
