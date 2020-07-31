@@ -465,5 +465,35 @@ describe("ChoicesQuestionSchema", () => {
         });
       }).toThrowErrorMatchingSnapshot(`non-choices key with "_pna"`);
     });
+
+    test(`question id can be null`, () => {
+      expect(() => {
+        ChoicesQuestionSchema.parse({
+          ...question,
+          specialCasesStartId: {
+            hello: "new_world",
+            _pna: null,
+          },
+        });
+      }).not.toThrowError();
+
+      expect(() => {
+        ChoicesQuestionSchema.parse({
+          ...question,
+          specialCasesStartId: {
+            world: null,
+          },
+        });
+      }).not.toThrowError();
+
+      expect(() => {
+        ChoicesQuestionSchema.parse({
+          ...question,
+          specialCasesStartId: {
+            _pna: null,
+          },
+        });
+      }).not.toThrowError();
+    });
   });
 });
