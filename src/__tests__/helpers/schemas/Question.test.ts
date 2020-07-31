@@ -496,4 +496,50 @@ describe("ChoicesQuestionSchema", () => {
       }).not.toThrowError();
     });
   });
+
+  describe("randomizeChoicesOrder", () => {
+    const question = {
+      id: "Feel_Ideal",
+      type: QuestionType.ChoicesWithSingleAnswer,
+      question: "Choice question",
+      choices: [
+        { key: "hello", value: "Hello" },
+        { key: "world", value: "World" },
+      ],
+      next: "Next_Question",
+    };
+
+    test("can be undefined", () => {
+      expect(() => {
+        ChoicesQuestionSchema.parse({
+          ...question,
+        });
+      }).not.toThrowError();
+    });
+
+    test("should not be null", () => {
+      expect(() => {
+        ChoicesQuestionSchema.parse({
+          ...question,
+          randomizeChoicesOrder: null,
+        });
+      }).toThrowErrorMatchingSnapshot();
+    });
+
+    test("can be true and false", () => {
+      expect(() => {
+        ChoicesQuestionSchema.parse({
+          ...question,
+          randomizeChoicesOrder: true,
+        });
+      }).not.toThrowError();
+
+      expect(() => {
+        ChoicesQuestionSchema.parse({
+          ...question,
+          randomizeChoicesOrder: false,
+        });
+      }).not.toThrowError();
+    });
+  });
 });

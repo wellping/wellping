@@ -41,6 +41,14 @@ exports[`ChoicesQuestionSchema choices should not be undefined 1`] = `
 "
 `;
 
+exports[`ChoicesQuestionSchema randomizeChoicesOrder should not be null 1`] = `
+"1 validation issue(s)
+
+  Issue #0: invalid_union at randomizeChoicesOrder
+  Invalid input
+"
+`;
+
 exports[`ChoicesQuestionSchema specialCasesStartId cannot include non-choices key: non-choices key only 1`] = `
 "1 validation issue(s)
 
