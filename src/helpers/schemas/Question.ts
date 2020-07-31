@@ -43,12 +43,12 @@ export const ChoicesQuestionSchema = BaseQuestionSchema.extend({
   ]),
   choices: z.array(ChoiceSchema).nonempty(),
   specialCasesStartId: z
-    .intersection(
-      // Record<QuestionId, QuestionId>
+    .union([
+      // Record<choice key, question ID>
       z.record(QuestionIdSchema.nullable()),
       // For when the user click "Prefer not to answer" or next without option.
       z.object({ _pna: QuestionIdSchema.nullable().optional() }),
-    )
+    ])
     .optional(),
   randomizeChoicesOrder: z.boolean().optional(),
   randomizeExceptForChoiceIds: z.array(z.string()).optional(),

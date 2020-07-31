@@ -41,6 +41,14 @@ exports[`ChoicesQuestionSchema choices should not be undefined 1`] = `
 "
 `;
 
+exports[`ChoicesQuestionSchema specialCasesStartId should not be null 1`] = `
+"1 validation issue(s)
+
+  Issue #0: invalid_union at specialCasesStartId
+  Invalid input
+"
+`;
+
 exports[`ChoicesQuestionSchema type 1`] = `
 "1 validation issue(s)
 

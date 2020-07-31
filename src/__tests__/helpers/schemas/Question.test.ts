@@ -362,4 +362,77 @@ describe("ChoicesQuestionSchema", () => {
       }).toThrowErrorMatchingSnapshot("numbers");
     });
   });
+
+  describe("specialCasesStartId", () => {
+    const question = {
+      id: "Feel_Ideal",
+      type: QuestionType.ChoicesWithSingleAnswer,
+      question: "Choice question",
+      choices: [
+        { key: "hello", value: "Hello" },
+        { key: "world", value: "World" },
+      ],
+      next: "Next_Question",
+    };
+
+    test("can be undefined", () => {
+      expect(() => {
+        ChoicesQuestionSchema.parse({
+          ...question,
+        });
+      }).not.toThrowError();
+    });
+
+    test("should not be null", () => {
+      expect(() => {
+        ChoicesQuestionSchema.parse({
+          ...question,
+          specialCasesStartId: null,
+        });
+      }).toThrowErrorMatchingSnapshot();
+    });
+
+    test("can be empty object", () => {
+      expect(() => {
+        ChoicesQuestionSchema.parse({
+          ...question,
+          specialCasesStartId: {},
+        });
+      }).not.toThrowError();
+    });
+
+    test(`can include only "_pna"`, () => {
+      expect(() => {
+        ChoicesQuestionSchema.parse({
+          ...question,
+          specialCasesStartId: {
+            _pna: "hello_world",
+          },
+        });
+      }).not.toThrowError();
+    });
+
+    test(`can include only choices keys`, () => {
+      expect(() => {
+        ChoicesQuestionSchema.parse({
+          ...question,
+          specialCasesStartId: {
+            hello: "hello_world",
+          },
+        });
+      }).not.toThrowError();
+    });
+
+    test(`can include both "_pna" and choices keys`, () => {
+      expect(() => {
+        ChoicesQuestionSchema.parse({
+          ...question,
+          specialCasesStartId: {
+            hello: "hello_world",
+            _pna: "goodbye",
+          },
+        });
+      }).not.toThrowError();
+    });
+  });
 });
