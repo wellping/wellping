@@ -4,6 +4,8 @@ import {
   SliderQuestionSchema,
   QuestionTypeSchema,
   ChoicesQuestionSchema,
+  ChoicesWithMultipleAnswersQuestionSchema,
+  ChoicesWithSingleAnswerQuestionSchema,
 } from "../../../helpers/schemas/Question";
 
 describe("QuestionTypeSchema", () => {
@@ -623,5 +625,75 @@ describe("ChoicesQuestionSchema", () => {
         });
       }).toThrowErrorMatchingSnapshot("without choice keys");
     });
+  });
+});
+
+describe("ChoicesWithSingleAnswerQuestionSchema", () => {
+  test("type", () => {
+    const question = {
+      id: "Feel_Ideal",
+      question: "Choice question",
+      next: "Next_Question",
+      choices: [
+        { key: "hello", value: "Hello" },
+        { key: "world", value: "World" },
+      ],
+    };
+
+    expect(() => {
+      ChoicesWithSingleAnswerQuestionSchema.parse({
+        ...question,
+        type: QuestionType.ChoicesWithSingleAnswer,
+      });
+    }).not.toThrowError();
+
+    expect(() => {
+      ChoicesWithSingleAnswerQuestionSchema.parse({
+        ...question,
+        type: QuestionType.ChoicesWithMultipleAnswers,
+      });
+    }).toThrowErrorMatchingSnapshot("ChoicesWithMultipleAnswers");
+
+    expect(() => {
+      ChoicesWithSingleAnswerQuestionSchema.parse({
+        ...question,
+        type: QuestionType.YesNo,
+      });
+    }).toThrowErrorMatchingSnapshot("other");
+  });
+});
+
+describe("ChoicesWithMultipleAnswersQuestionSchema", () => {
+  test("type", () => {
+    const question = {
+      id: "Feel_Ideal",
+      question: "Choice question",
+      next: "Next_Question",
+      choices: [
+        { key: "hello", value: "Hello" },
+        { key: "world", value: "World" },
+      ],
+    };
+
+    expect(() => {
+      ChoicesWithMultipleAnswersQuestionSchema.parse({
+        ...question,
+        type: QuestionType.ChoicesWithMultipleAnswers,
+      });
+    }).not.toThrowError();
+
+    expect(() => {
+      ChoicesWithMultipleAnswersQuestionSchema.parse({
+        ...question,
+        type: QuestionType.ChoicesWithSingleAnswer,
+      });
+    }).toThrowErrorMatchingSnapshot("ChoicesWithSingleAnswer");
+
+    expect(() => {
+      ChoicesWithMultipleAnswersQuestionSchema.parse({
+        ...question,
+        type: QuestionType.YesNo,
+      });
+    }).toThrowErrorMatchingSnapshot("other");
   });
 });

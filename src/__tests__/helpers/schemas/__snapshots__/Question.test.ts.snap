@@ -121,6 +121,38 @@ exports[`ChoicesQuestionSchema type 1`] = `
 "
 `;
 
+exports[`ChoicesWithMultipleAnswersQuestionSchema type: ChoicesWithSingleAnswer 1`] = `
+"1 validation issue(s)
+
+  Issue #0: invalid_literal_value at type
+  Input must be \\"ChoicesWithMultipleAnswers\\"
+"
+`;
+
+exports[`ChoicesWithMultipleAnswersQuestionSchema type: other 1`] = `
+"1 validation issue(s)
+
+  Issue #0: invalid_literal_value at type
+  Input must be \\"ChoicesWithMultipleAnswers\\"
+"
+`;
+
+exports[`ChoicesWithSingleAnswerQuestionSchema type: ChoicesWithMultipleAnswers 1`] = `
+"1 validation issue(s)
+
+  Issue #0: invalid_literal_value at type
+  Input must be \\"ChoicesWithSingleAnswer\\"
+"
+`;
+
+exports[`ChoicesWithSingleAnswerQuestionSchema type: other 1`] = `
+"1 validation issue(s)
+
+  Issue #0: invalid_literal_value at type
+  Input must be \\"ChoicesWithSingleAnswer\\"
+"
+`;
+
 exports[`QuestionSchema empty 1`] = `
 "4 validation issue(s)
 
