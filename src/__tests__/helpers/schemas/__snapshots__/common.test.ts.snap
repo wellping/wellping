@@ -1,0 +1,52 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`QuestionIdSchema doesn't allow empty 1`] = `
+"2 validation issue(s)
+
+  Issue #0: too_small at 
+  Should be at least 1 characters
+
+  Issue #1: custom_error at 
+  Question ID can only include letters, numbers, and \\"_\\".
+"
+`;
+
+exports[`QuestionIdSchema doesn't allow null 1`] = `
+"1 validation issue(s)
+
+  Issue #0: invalid_type at 
+  Expected string, received null
+"
+`;
+
+exports[`QuestionIdSchema doesn't allow special characters 1`] = `
+"1 validation issue(s)
+
+  Issue #0: custom_error at 
+  Question ID can only include letters, numbers, and \\"_\\".
+"
+`;
+
+exports[`QuestionIdSchema doesn't allow special characters 2`] = `
+"1 validation issue(s)
+
+  Issue #0: custom_error at 
+  Question ID can only include letters, numbers, and \\"_\\".
+"
+`;
+
+exports[`QuestionIdSchema doesn't allow special characters 3`] = `
+"1 validation issue(s)
+
+  Issue #0: custom_error at 
+  Question ID can only include letters, numbers, and \\"_\\".
+"
+`;
+
+exports[`QuestionIdSchema doesn't allow undefined 1`] = `
+"1 validation issue(s)
+
+  Issue #0: invalid_type at 
+  Required
+"
+`;
