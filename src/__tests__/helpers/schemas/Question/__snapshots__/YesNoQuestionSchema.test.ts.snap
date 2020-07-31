@@ -1,0 +1,33 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`YesNoQuestionSchema branchStartId should not be null 1`] = `
+"1 validation issue(s)
+
+  Issue #0: invalid_union at branchStartId
+  Invalid input
+"
+`;
+
+exports[`YesNoQuestionSchema branchStartId should not contain keys beside yes and no: with yes & no 1`] = `
+"1 validation issue(s)
+
+  Issue #0: unrecognized_keys at branchStartId
+  Unrecognized key(s) in object: 'other'
+"
+`;
+
+exports[`YesNoQuestionSchema branchStartId should not contain keys beside yes and no: without yes / no 1`] = `
+"1 validation issue(s)
+
+  Issue #0: unrecognized_keys at branchStartId
+  Unrecognized key(s) in object: 'other'
+"
+`;
+
+exports[`YesNoQuestionSchema type 1`] = `
+"1 validation issue(s)
+
+  Issue #0: invalid_literal_value at type
+  Input must be \\"YesNo\\"
+"
+`;
