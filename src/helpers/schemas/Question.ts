@@ -120,6 +120,34 @@ export const HowLongAgoQuestionSchema = QuestionSchema.extend({
   type: z.literal(QuestionTypeSchema.enum.HowLongAgo),
 });
 
+export const BranchQuestionSchema = QuestionSchema.extend({
+  // This is not actually a question (it will not be displayed to the user)
+  type: z.literal(QuestionTypeSchema.enum.Branch),
+  condition: z.object({
+    questionId: QuestionIdSchema,
+    questionType: z.union([
+      z.literal(QuestionTypeSchema.enum.MultipleText),
+      z.literal(QuestionTypeSchema.enum.ChoicesWithSingleAnswer),
+    ]),
+    compare: z.literal("equal"),
+    target: z.union([z.number(), z.string()]),
+  }),
+  branchStartId: z.object({
+    // TODO: ALSO ALLOW NULL = STOP HERE
+    true: QuestionIdSchema.nullable().optional(),
+    false: QuestionIdSchema.nullable().optional(),
+  }),
+});
+
+export const BranchWithRelativeComparisonQuestionSchema = QuestionSchema.extend(
+  {
+    // This is not actually a question (it will not be displayed to the user)
+    type: z.literal(QuestionTypeSchema.enum.BranchWithRelativeComparison),
+    // TODO: ALSO ALLOW NULL = STOP HERE
+    branchStartId: z.record(QuestionIdSchema.nullable()),
+  },
+);
+
 export const QuestionsListSchema = z.record(QuestionSchema).refine(
   (questions) => {
     for (const questionId in questions) {

@@ -13,6 +13,9 @@ import {
   HowLongAgoQuestionSchema,
   QuestionsListSchema,
   QuestionIdSchema,
+  BranchQuestionSchema,
+  BranchWithRelativeComparisonQuestionSchema,
+  QuestionTypeSchema,
 } from "./schemas/Question";
 import { StreamsSchema, StreamNameSchema } from "./schemas/Stream";
 import {
@@ -24,6 +27,8 @@ import {
 export type StreamName = z.infer<typeof StreamNameSchema>;
 
 export type QuestionId = z.infer<typeof QuestionIdSchema>;
+
+export type QuestionType = z.infer<typeof QuestionTypeSchema>;
 
 /*export interface Question {
   id: QuestionId;
@@ -104,7 +109,7 @@ export interface MultipleTextQuestion
 export interface HowLongAgoQuestion
   extends z.infer<typeof HowLongAgoQuestionSchema> {}
 
-export interface BranchQuestion extends Question {
+/*export interface BranchQuestion extends Question {
   // This is not actually a question (it will not be displayed to the user)
   type: QuestionType.Branch;
   condition: {
@@ -119,15 +124,18 @@ export interface BranchQuestion extends Question {
     true?: QuestionId;
     false?: QuestionId;
   };
-}
+}*/
+export interface BranchQuestion extends z.infer<typeof BranchQuestionSchema> {}
 
-export interface BranchWithRelativeComparisonQuestion extends Question {
+/*export interface BranchWithRelativeComparisonQuestion extends Question {
   // This is not actually a question (it will not be displayed to the user)
   type: QuestionType.BranchWithRelativeComparison;
   branchStartId: {
-    [questionId: string /* actually QuestionId */]: QuestionId;
+    [questionId: string /* actually QuestionId *]: QuestionId;
   };
-}
+}*/
+export interface BranchWithRelativeComparisonQuestion
+  extends z.infer<typeof BranchWithRelativeComparisonQuestionSchema> {}
 
 export interface QuestionsList extends z.infer<typeof QuestionsListSchema> {}
 
