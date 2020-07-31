@@ -542,4 +542,86 @@ describe("ChoicesQuestionSchema", () => {
       }).not.toThrowError();
     });
   });
+
+  describe("randomizeExceptForChoiceIds", () => {
+    const question = {
+      id: "Feel_Ideal",
+      type: QuestionType.ChoicesWithSingleAnswer,
+      question: "Choice question",
+      choices: [
+        { key: "hello", value: "Hello" },
+        { key: "world", value: "World" },
+      ],
+      randomizeChoicesOrder: true,
+      next: "Next_Question",
+    };
+
+    test("can be undefined", () => {
+      expect(() => {
+        ChoicesQuestionSchema.parse({
+          ...question,
+        });
+      }).not.toThrowError();
+    });
+
+    test("should not be null", () => {
+      expect(() => {
+        ChoicesQuestionSchema.parse({
+          ...question,
+          randomizeExceptForChoiceIds: null,
+        });
+      }).toThrowErrorMatchingSnapshot();
+    });
+
+    test("should not be set if `randomizeChoicesOrder` is false", () => {
+      expect(() => {
+        ChoicesQuestionSchema.parse({
+          ...question,
+          randomizeChoicesOrder: false,
+          randomizeExceptForChoiceIds: ["hello"],
+        });
+      }).toThrowErrorMatchingSnapshot();
+    });
+
+    test("can be empty", () => {
+      expect(() => {
+        ChoicesQuestionSchema.parse({
+          ...question,
+          randomizeExceptForChoiceIds: [],
+        });
+      }).not.toThrowError();
+    });
+
+    test("can be choices keys", () => {
+      expect(() => {
+        ChoicesQuestionSchema.parse({
+          ...question,
+          randomizeExceptForChoiceIds: ["hello", "world"],
+        });
+      }).not.toThrowError();
+
+      expect(() => {
+        ChoicesQuestionSchema.parse({
+          ...question,
+          randomizeExceptForChoiceIds: ["world"],
+        });
+      }).not.toThrowError();
+    });
+
+    test("should not be non-choices keys", () => {
+      expect(() => {
+        ChoicesQuestionSchema.parse({
+          ...question,
+          randomizeExceptForChoiceIds: ["nono", "world"],
+        });
+      }).toThrowErrorMatchingSnapshot("with choice keys");
+
+      expect(() => {
+        ChoicesQuestionSchema.parse({
+          ...question,
+          randomizeExceptForChoiceIds: ["haha"],
+        });
+      }).toThrowErrorMatchingSnapshot("without choice keys");
+    });
+  });
 });

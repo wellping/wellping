@@ -52,23 +52,65 @@ export const ChoicesQuestionSchema = BaseQuestionSchema.extend({
     .optional(),
   randomizeChoicesOrder: z.boolean().optional(),
   randomizeExceptForChoiceIds: z.array(z.string()).optional(),
-}).refine(
-  (question) => {
-    if (question.specialCasesStartId && question.choices) {
-      const choicesKeys = question.choices.map((choice) => choice.key);
-      for (const key of Object.keys(question.specialCasesStartId)) {
-        if (key !== "_pna" && !choicesKeys.includes(key)) {
-          return false;
+})
+  .refine(
+    (question) => {
+      if (question.specialCasesStartId && question.choices) {
+        const choicesKeys = question.choices.map((choice) => choice.key);
+        for (const key of Object.keys(question.specialCasesStartId)) {
+          if (key !== "_pna" && !choicesKeys.includes(key)) {
+            return false;
+          }
         }
       }
-    }
-    return true;
-  },
-  {
-    message:
-      'Keys in `specialCasesStartId` must also be in `choices` or be "_pna".',
-  },
-);
+      return true;
+    },
+    {
+      message:
+        'Keys in `specialCasesStartId` must also be in `choices` or be "_pna".',
+      path: ["specialCasesStartId"],
+    },
+  )
+  .refine(
+    (question) => {
+      if (
+        question.randomizeExceptForChoiceIds &&
+        !question.randomizeChoicesOrder
+      ) {
+        return false;
+      }
+      return true;
+    },
+    {
+      message:
+        "`randomizeExceptForChoiceIds` should only be set when " +
+        "`randomizeChoicesOrder` is set to `true`.",
+      path: ["randomizeExceptForChoiceIds"],
+    },
+  )
+  .refine(
+    (question) => {
+      if (
+        question.choices &&
+        question.randomizeExceptForChoiceIds &&
+        question.randomizeChoicesOrder
+      ) {
+        const choicesKeys = question.choices.map((choice) => choice.key);
+        for (const exceptKey of question.randomizeExceptForChoiceIds) {
+          if (!choicesKeys.includes(exceptKey)) {
+            return false;
+          }
+        }
+      }
+      return true;
+    },
+    {
+      message:
+        "Keys in `randomizeExceptForChoiceIds` should also be present in " +
+        "`choices`.",
+      path: ["randomizeExceptForChoiceIds"],
+    },
+  );
 
 export const ChoicesWithSingleAnswerQuestionSchema = ChoicesQuestionSchema.extend(
   {

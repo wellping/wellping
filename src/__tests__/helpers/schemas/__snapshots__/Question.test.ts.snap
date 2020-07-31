@@ -49,10 +49,42 @@ exports[`ChoicesQuestionSchema randomizeChoicesOrder should not be null 1`] = `
 "
 `;
 
+exports[`ChoicesQuestionSchema randomizeExceptForChoiceIds should not be non-choices keys: with choice keys 1`] = `
+"1 validation issue(s)
+
+  Issue #0: custom_error at randomizeExceptForChoiceIds
+  Keys in \`randomizeExceptForChoiceIds\` should also be present in \`choices\`.
+"
+`;
+
+exports[`ChoicesQuestionSchema randomizeExceptForChoiceIds should not be non-choices keys: without choice keys 1`] = `
+"1 validation issue(s)
+
+  Issue #0: custom_error at randomizeExceptForChoiceIds
+  Keys in \`randomizeExceptForChoiceIds\` should also be present in \`choices\`.
+"
+`;
+
+exports[`ChoicesQuestionSchema randomizeExceptForChoiceIds should not be null 1`] = `
+"1 validation issue(s)
+
+  Issue #0: invalid_union at randomizeExceptForChoiceIds
+  Invalid input
+"
+`;
+
+exports[`ChoicesQuestionSchema randomizeExceptForChoiceIds should not be set if \`randomizeChoicesOrder\` is false 1`] = `
+"1 validation issue(s)
+
+  Issue #0: custom_error at randomizeExceptForChoiceIds
+  \`randomizeExceptForChoiceIds\` should only be set when \`randomizeChoicesOrder\` is set to \`true\`.
+"
+`;
+
 exports[`ChoicesQuestionSchema specialCasesStartId cannot include non-choices key: non-choices key only 1`] = `
 "1 validation issue(s)
 
-  Issue #0: custom_error at 
+  Issue #0: custom_error at specialCasesStartId
   Keys in \`specialCasesStartId\` must also be in \`choices\` or be \\"_pna\\".
 "
 `;
@@ -60,7 +92,7 @@ exports[`ChoicesQuestionSchema specialCasesStartId cannot include non-choices ke
 exports[`ChoicesQuestionSchema specialCasesStartId cannot include non-choices key: non-choices key with "_pna" 1`] = `
 "1 validation issue(s)
 
-  Issue #0: custom_error at 
+  Issue #0: custom_error at specialCasesStartId
   Keys in \`specialCasesStartId\` must also be in \`choices\` or be \\"_pna\\".
 "
 `;
@@ -68,7 +100,7 @@ exports[`ChoicesQuestionSchema specialCasesStartId cannot include non-choices ke
 exports[`ChoicesQuestionSchema specialCasesStartId cannot include non-choices key: non-choices key with choice key 1`] = `
 "1 validation issue(s)
 
-  Issue #0: custom_error at 
+  Issue #0: custom_error at specialCasesStartId
   Keys in \`specialCasesStartId\` must also be in \`choices\` or be \\"_pna\\".
 "
 `;
