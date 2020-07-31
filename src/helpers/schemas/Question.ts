@@ -52,7 +52,23 @@ export const ChoicesQuestionSchema = BaseQuestionSchema.extend({
     .optional(),
   randomizeChoicesOrder: z.boolean().optional(),
   randomizeExceptForChoiceIds: z.array(z.string()).optional(),
-});
+}).refine(
+  (question) => {
+    if (question.specialCasesStartId && question.choices) {
+      const choicesKeys = question.choices.map((choice) => choice.key);
+      for (const key of Object.keys(question.specialCasesStartId)) {
+        if (key !== "_pna" && !choicesKeys.includes(key)) {
+          return false;
+        }
+      }
+    }
+    return true;
+  },
+  {
+    message:
+      'Keys in `specialCasesStartId` must also be in `choices` or be "_pna".',
+  },
+);
 
 export const ChoicesWithSingleAnswerQuestionSchema = ChoicesQuestionSchema.extend(
   {

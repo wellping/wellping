@@ -434,5 +434,36 @@ describe("ChoicesQuestionSchema", () => {
         });
       }).not.toThrowError();
     });
+
+    test(`cannot include non-choices key`, () => {
+      expect(() => {
+        ChoicesQuestionSchema.parse({
+          ...question,
+          specialCasesStartId: {
+            notakey: "nonono",
+          },
+        });
+      }).toThrowErrorMatchingSnapshot("non-choices key only");
+
+      expect(() => {
+        ChoicesQuestionSchema.parse({
+          ...question,
+          specialCasesStartId: {
+            notakey: "nonono",
+            world: "stillno",
+          },
+        });
+      }).toThrowErrorMatchingSnapshot("non-choices key with choice key");
+
+      expect(() => {
+        ChoicesQuestionSchema.parse({
+          ...question,
+          specialCasesStartId: {
+            notakey: "nonono",
+            _pna: "goodbye",
+          },
+        });
+      }).toThrowErrorMatchingSnapshot(`non-choices key with "_pna"`);
+    });
   });
 });
