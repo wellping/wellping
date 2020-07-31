@@ -44,7 +44,6 @@ import {
   deleteDatabaseFileAsync,
 } from "./helpers/database";
 import { getNonCriticalProblemTextForUser } from "./helpers/debug";
-import { QuestionType } from "./helpers/helpers";
 import {
   setNotificationsAsync,
   setupNotificationsPermissionAsync,
