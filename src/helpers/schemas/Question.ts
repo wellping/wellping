@@ -1,6 +1,10 @@
 import * as z from "zod";
 
-import { StreamNameSchema, QuestionIdSchema } from "./common";
+import {
+  StreamNameSchema,
+  QuestionIdSchema,
+  QuestionIdSchemaNullable,
+} from "./common";
 
 export const QuestionTypeSchema = z.enum([
   "Slider",
@@ -17,7 +21,7 @@ const BaseQuestionSchema = z.object({
   id: QuestionIdSchema,
   type: QuestionTypeSchema,
   question: z.string(),
-  next: QuestionIdSchema.nullable(),
+  next: QuestionIdSchemaNullable(["next"]),
 });
 
 export const SliderQuestionSchema = BaseQuestionSchema.extend({
@@ -133,16 +137,65 @@ export const BranchWithRelativeComparisonQuestionSchema = BaseQuestionSchema.ext
   },
 );
 
-export const QuestionSchema = z.union([
-  SliderQuestionSchema,
-  ChoicesWithSingleAnswerQuestionSchema,
-  ChoicesWithMultipleAnswersQuestionSchema,
-  YesNoQuestionSchema,
-  MultipleTextQuestionSchema,
-  HowLongAgoQuestionSchema,
-  BranchQuestionSchema,
-  BranchWithRelativeComparisonQuestionSchema,
-]);
+export const QuestionSchema = z
+  .union([
+    SliderQuestionSchema,
+    ChoicesWithSingleAnswerQuestionSchema,
+    ChoicesWithMultipleAnswersQuestionSchema,
+    YesNoQuestionSchema,
+    MultipleTextQuestionSchema,
+    HowLongAgoQuestionSchema,
+    BranchQuestionSchema,
+    BranchWithRelativeComparisonQuestionSchema,
+  ])
+  .refine((question) => {
+    /**
+     * This is to tell user in more details what is going wrong.
+     *
+     * `...Schema.parse` should throw error if any, replacing the default
+     * error.
+     *
+     * The `default:` clause should handle the case where the type is invalid.
+     */
+    switch (question.type) {
+      case QuestionTypeSchema.enum.Slider:
+        SliderQuestionSchema.parse(question);
+        break;
+
+      case QuestionTypeSchema.enum.ChoicesWithSingleAnswer:
+        ChoicesWithSingleAnswerQuestionSchema.parse(question);
+        break;
+
+      case QuestionTypeSchema.enum.ChoicesWithMultipleAnswers:
+        ChoicesWithMultipleAnswersQuestionSchema.parse(question);
+        break;
+
+      case QuestionTypeSchema.enum.YesNo:
+        YesNoQuestionSchema.parse(question);
+        break;
+
+      case QuestionTypeSchema.enum.MultipleText:
+        MultipleTextQuestionSchema.parse(question);
+        break;
+
+      case QuestionTypeSchema.enum.HowLongAgo:
+        HowLongAgoQuestionSchema.parse(question);
+        break;
+
+      case QuestionTypeSchema.enum.Branch:
+        BranchQuestionSchema.parse(question);
+        break;
+
+      case QuestionTypeSchema.enum.BranchWithRelativeComparison:
+        BranchWithRelativeComparisonQuestionSchema.parse(question);
+        break;
+
+      default:
+        BaseQuestionSchema.parse(question);
+        break;
+    }
+    return true;
+  });
 
 export const QuestionsListSchema = z.record(QuestionSchema).refine(
   (questions) => {
