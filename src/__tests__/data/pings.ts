@@ -137,4 +137,5 @@ export const PINGS_STUDY_INFO: StudyInfo = {
     5: ["cat", "dog", "wolf", "lynx", "cat", "dog"],
     6: ["cat", "dog", "wolf", "lynx", "cat", "dog"],
   },
+  streamsNotReplacedByFollowupStream: [],
 };
