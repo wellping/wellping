@@ -26,3 +26,19 @@ export const QuestionIdSchema = z
   .refine(idRegexCheck, {
     message: idRegexErrorMessage("Question ID"),
   });
+
+/**
+ * This is a workaround such that the error message for missing it will be
+ * > Issue #0: invalid_type at
+ * > Required
+ * instead of the more confusing
+ * > Issue #0: invalid_union at
+ * > Invalid input
+ */
+export const QuestionIdSchemaNullable = (path: string[]) =>
+  QuestionIdSchema.nullable().refine((val) => {
+    if (val === undefined) {
+      QuestionIdSchema.parse(val, { path });
+    }
+    return true;
+  });

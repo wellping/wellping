@@ -1,4 +1,7 @@
-import { QuestionIdSchema } from "../../../helpers/schemas/common";
+import {
+  QuestionIdSchema,
+  QuestionIdSchemaNullable,
+} from "../../../helpers/schemas/common";
 
 describe("QuestionIdSchema", () => {
   test("doesn't allow null", () => {
@@ -48,6 +51,50 @@ describe("QuestionIdSchema", () => {
 
     expect(() => {
       QuestionIdSchema.parse("HELLO_WORLD");
+    }).not.toThrowError();
+  });
+});
+
+describe("QuestionIdSchemaNullable", () => {
+  test("allow null", () => {
+    expect(() => {
+      QuestionIdSchemaNullable([]).parse(null);
+    }).not.toThrowError();
+  });
+
+  test("doesn't allow undefined", () => {
+    expect(() => {
+      QuestionIdSchemaNullable([]).parse(undefined);
+    }).toThrowErrorMatchingSnapshot();
+  });
+
+  test("doesn't allow empty", () => {
+    expect(() => {
+      QuestionIdSchemaNullable([]).parse("");
+    }).toThrowErrorMatchingSnapshot();
+  });
+
+  test("doesn't allow empty - path info", () => {
+    expect(() => {
+      QuestionIdSchemaNullable(["myPath"]).parse(undefined);
+    }).toThrowErrorMatchingSnapshot();
+  });
+
+  test("still allow to be optional", () => {
+    expect(() => {
+      QuestionIdSchemaNullable([]).optional().parse(undefined);
+    }).not.toThrowError();
+
+    expect(() => {
+      QuestionIdSchemaNullable(["myPath"]).optional().parse(undefined);
+    }).not.toThrowError();
+
+    expect(() => {
+      QuestionIdSchemaNullable([]).optional().parse(null);
+    }).not.toThrowError();
+
+    expect(() => {
+      QuestionIdSchemaNullable([]).optional().parse("hello");
     }).not.toThrowError();
   });
 });
