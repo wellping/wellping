@@ -80,6 +80,7 @@ describe("QuestionIdSchemaNullable", () => {
     }).toThrowErrorMatchingSnapshot();
   });
 
+  // In practice we should just use `QuestionIdSchema.nullable().optional()`.
   test("still allow to be optional", () => {
     expect(() => {
       QuestionIdSchemaNullable([]).optional().parse(undefined);

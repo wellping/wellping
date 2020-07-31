@@ -34,6 +34,11 @@ export const QuestionIdSchema = z
  * instead of the more confusing
  * > Issue #0: invalid_union at
  * > Invalid input
+ *
+ * Notice that if an `.optional()` follows, it is unnecessary to use this.
+ *
+ * Probably don't need to use it after https://github.com/vriad/zod/issues/97
+ * is addressed.
  */
 export const CustomNullable = (Schema: z.ZodType<any, any>, path: string[]) =>
   Schema.nullable().refine((val) => {
