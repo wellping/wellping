@@ -3,6 +3,7 @@ import {
   QuestionSchema,
   SliderQuestionSchema,
   QuestionTypeSchema,
+  ChoicesQuestionSchema,
 } from "../../../helpers/schemas/Question";
 
 describe("QuestionTypeSchema", () => {
@@ -273,5 +274,40 @@ describe("SliderQuestionSchema", () => {
         });
       }).toThrowErrorMatchingSnapshot("empty id");
     });
+  });
+});
+
+describe("ChoicesQuestionSchema", () => {
+  test("type", () => {
+    const question = {
+      id: "Feel_Ideal",
+      question: "Choice question",
+      next: "Next_Question",
+      choices: [
+        { key: "hello", value: "Hello" },
+        { key: "world", value: "World" },
+      ],
+    };
+
+    expect(() => {
+      ChoicesQuestionSchema.parse({
+        ...question,
+        type: QuestionType.ChoicesWithSingleAnswer,
+      });
+    }).not.toThrowError();
+
+    expect(() => {
+      ChoicesQuestionSchema.parse({
+        ...question,
+        type: QuestionType.ChoicesWithMultipleAnswers,
+      });
+    }).not.toThrowError();
+
+    expect(() => {
+      ChoicesQuestionSchema.parse({
+        ...question,
+        type: QuestionType.HowLongAgo,
+      });
+    }).toThrowErrorMatchingSnapshot();
   });
 });

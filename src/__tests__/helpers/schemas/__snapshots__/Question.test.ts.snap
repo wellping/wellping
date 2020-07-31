@@ -1,5 +1,13 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`ChoicesQuestionSchema type 1`] = `
+"1 validation issue(s)
+
+  Issue #0: invalid_union at type
+  Invalid input
+"
+`;
+
 exports[`QuestionSchema empty 1`] = `
 "4 validation issue(s)
 
