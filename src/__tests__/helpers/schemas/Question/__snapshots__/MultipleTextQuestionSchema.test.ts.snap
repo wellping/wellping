@@ -1,0 +1,9 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`MultipleTextQuestionSchema type 1`] = `
+"1 validation issue(s)
+
+  Issue #0: invalid_literal_value at type
+  Input must be \\"MultipleText\\"
+"
+`;
