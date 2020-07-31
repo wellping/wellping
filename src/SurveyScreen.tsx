@@ -390,7 +390,10 @@ export default class SurveyScreen extends React.Component<
             prevState.currentQuestionId!
           ] as BranchWithRelativeComparisonQuestion;
 
-          const values: { nextQuestionId: QuestionId; value: number }[] = [];
+          const values: {
+            nextQuestionId: QuestionId | null;
+            value: number;
+          }[] = [];
           for (const prevQuestionId of Object.keys(
             currentQuestion.branchStartId,
           )) {
