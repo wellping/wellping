@@ -11,17 +11,17 @@ import {
   MultipleTextQuestionSchema,
   HowLongAgoQuestionSchema,
   QuestionsListSchema,
-  QuestionIdSchema,
   BranchQuestionSchema,
   BranchWithRelativeComparisonQuestionSchema,
   QuestionTypeSchema,
 } from "./schemas/Question";
-import { StreamsSchema, StreamNameSchema } from "./schemas/Stream";
+import { StreamsSchema } from "./schemas/Stream";
+import { StudyFileSchema, StudyInfoSchema } from "./schemas/StudyFile";
 import {
-  StudyFileSchema,
-  StudyInfoSchema,
+  QuestionIdSchema,
+  StreamNameSchema,
   StudyIdSchema,
-} from "./schemas/StudyFile";
+} from "./schemas/common";
 
 export type StreamName = z.infer<typeof StreamNameSchema>;
 

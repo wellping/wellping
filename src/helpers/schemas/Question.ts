@@ -1,11 +1,6 @@
 import * as z from "zod";
 
-import { StreamNameSchema } from "./Stream";
-import { idRegexCheck, idRegexErrorMessage } from "./helper";
-
-export const QuestionIdSchema = z.string().refine(idRegexCheck, {
-  message: idRegexErrorMessage("Question ID"),
-});
+import { StreamNameSchema, QuestionIdSchema } from "./common";
 
 export const QuestionTypeSchema = z.enum([
   "Slider",

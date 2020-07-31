@@ -1,10 +1,10 @@
 import * as z from "zod";
 
 import { QuestionsListSchema } from "./Question";
-import { idRegexCheck, idRegexErrorMessage } from "./helper";
-
-export const StreamNameSchema = z.string().refine(idRegexCheck, {
-  message: idRegexErrorMessage("Stream name"),
-});
+import { QuestionIdSchema } from "./common";
 
 export const StreamsSchema = z.record(QuestionsListSchema);
+
+export const StreamsMetaSchema = z.object({
+  startingQuestionIds: z.record(QuestionIdSchema),
+});
