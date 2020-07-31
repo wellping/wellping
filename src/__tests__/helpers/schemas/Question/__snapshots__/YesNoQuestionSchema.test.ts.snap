@@ -1,5 +1,53 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`YesNoQuestionSchema addFollowupStream TODO: only supports \`yes\` right now: with yes 1`] = `
+"1 validation issue(s)
+
+  Issue #0: unrecognized_keys at addFollowupStream
+  Unrecognized key(s) in object: 'no'
+"
+`;
+
+exports[`YesNoQuestionSchema addFollowupStream TODO: only supports \`yes\` right now: without yes 1`] = `
+"1 validation issue(s)
+
+  Issue #0: unrecognized_keys at addFollowupStream
+  Unrecognized key(s) in object: 'no'
+"
+`;
+
+exports[`YesNoQuestionSchema addFollowupStream should not be null 1`] = `
+"1 validation issue(s)
+
+  Issue #0: invalid_union at addFollowupStream
+  Invalid input
+"
+`;
+
+exports[`YesNoQuestionSchema addFollowupStream should not contain keys other than yes: with yes 1`] = `
+"1 validation issue(s)
+
+  Issue #0: unrecognized_keys at addFollowupStream
+  Unrecognized key(s) in object: 'other_key'
+"
+`;
+
+exports[`YesNoQuestionSchema addFollowupStream should not contain keys other than yes: without yes 1`] = `
+"1 validation issue(s)
+
+  Issue #0: unrecognized_keys at addFollowupStream
+  Unrecognized key(s) in object: 'other_key'
+"
+`;
+
+exports[`YesNoQuestionSchema addFollowupStream stream name should not be null 1`] = `
+"1 validation issue(s)
+
+  Issue #0: invalid_union at addFollowupStream.yes
+  Invalid input
+"
+`;
+
 exports[`YesNoQuestionSchema branchStartId should not be null 1`] = `
 "1 validation issue(s)
 
