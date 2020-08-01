@@ -195,6 +195,22 @@ exports[`MultipleTextQuestionSchema placeholder should not be null 1`] = `
 "
 `;
 
+exports[`MultipleTextQuestionSchema repeatedItemStartId should be question ID 1`] = `
+"1 validation issue(s)
+
+  Issue #0: custom_error at repeatedItemStartId
+  Question ID can only include letters, numbers, and \\"_\\".
+"
+`;
+
+exports[`MultipleTextQuestionSchema repeatedItemStartId should not be null 1`] = `
+"1 validation issue(s)
+
+  Issue #0: invalid_union at repeatedItemStartId
+  Invalid input
+"
+`;
+
 exports[`MultipleTextQuestionSchema type 1`] = `
 "1 validation issue(s)
 
