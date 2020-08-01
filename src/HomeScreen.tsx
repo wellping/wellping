@@ -38,7 +38,7 @@ import {
   clearPingStateAsync,
 } from "./helpers/asyncStorage/pingState";
 import { getUserAsync } from "./helpers/asyncStorage/user";
-import { getAllStreamNames } from "./helpers/configFiles";
+import { getAllStreamNames, getStudyInfoAsync } from "./helpers/configFiles";
 import {
   shareDatabaseFileAsync,
   deleteDatabaseFileAsync,
@@ -380,6 +380,13 @@ export default class HomeScreen extends React.Component<
               await answer.save();*/
 
               await shareDatabaseFileAsync(studyInfo.id);
+            }}
+          />
+          <Button
+            color="orange"
+            title="getStudyInfoAsync()"
+            onPress={async () => {
+              alert(JSON.stringify(await getStudyInfoAsync()));
             }}
           />
           <Button
