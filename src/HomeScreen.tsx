@@ -149,13 +149,10 @@ export default class HomeScreen extends React.Component<
       await Notifications.setBadgeNumberAsync(0);
     }
 
-    const studyInfo = this.props.studyInfo;
-    await setNotificationsAsync(studyInfo);
+    await setNotificationsAsync();
 
     const doEveryHalfMinutes = async () => {
-      const currentNotificationTime = await getCurrentNotificationTimeAsync(
-        studyInfo,
-      );
+      const currentNotificationTime = await getCurrentNotificationTimeAsync();
       this.setState({ time: new Date(), currentNotificationTime });
 
       if (currentNotificationTime == null) {
@@ -176,9 +173,7 @@ export default class HomeScreen extends React.Component<
 
     const latestPing = await getLatestPingAsync();
     //console.warn(latestStartedPing);
-    const currentNotificationTime = await getCurrentNotificationTimeAsync(
-      studyInfo,
-    );
+    const currentNotificationTime = await getCurrentNotificationTimeAsync();
     if (
       latestPing &&
       currentNotificationTime &&
@@ -233,7 +228,7 @@ export default class HomeScreen extends React.Component<
     await this._startSurveyTypeAsync(newPingName);
 
     // So that the notification text ("n pings left") can be updated.
-    await setNotificationsAsync(studyInfo);
+    await setNotificationsAsync();
   }
 
   async _startSurveyTypeAsync(streamName: StreamName) {
@@ -411,9 +406,7 @@ export default class HomeScreen extends React.Component<
             color="orange"
             title="getCurrentNotificationTimeAsync()"
             onPress={async () => {
-              const currentNotificationTime = await getCurrentNotificationTimeAsync(
-                studyInfo,
-              );
+              const currentNotificationTime = await getCurrentNotificationTimeAsync();
               alert(JSON.stringify(currentNotificationTime));
             }}
           />
