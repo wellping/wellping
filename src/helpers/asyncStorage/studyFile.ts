@@ -40,7 +40,8 @@ export async function getCurrentStudyInfoAsync(): Promise<StudyInfo | null> {
     const studyInfo: StudyInfo = parseJsonToStudyInfo(JSON.parse(value));
     return studyInfo;
   } catch (error) {
-    // Error retrieving data
+    // We don't want this ill-formatted study file to be stored.
+    await clearCurrentStudyFileAsync();
     logError(error);
     return null;
   }
@@ -55,7 +56,8 @@ export async function getCurrentStreamsAsync(): Promise<Streams | null> {
     const streams: Streams = parseJsonToStreams(JSON.parse(value));
     return streams;
   } catch (error) {
-    // Error retrieving data
+    // We don't want this ill-formatted study file to be stored.
+    await clearCurrentStudyFileAsync();
     logError(error);
     return null;
   }
