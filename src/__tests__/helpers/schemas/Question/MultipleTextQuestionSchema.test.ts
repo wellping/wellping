@@ -145,4 +145,63 @@ describe("MultipleTextQuestionSchema", () => {
       }).not.toThrowError();
     });
   });
+
+  describe("eachId", () => {
+    const question = {
+      id: "Feel_Ideal",
+      type: QuestionType.MultipleText,
+      question: "Multiple text question",
+      indexName: "INDEX",
+      variableName: "TARGET_NAME",
+      max: 3,
+      next: "Next_Question",
+    };
+
+    test("should not be undefined", () => {
+      expect(() => {
+        MultipleTextQuestionSchema.parse({
+          ...question,
+        });
+      }).toThrowErrorMatchingSnapshot();
+    });
+
+    test("should not be empty", () => {
+      expect(() => {
+        MultipleTextQuestionSchema.parse({
+          ...question,
+          eachId: "",
+        });
+      }).toThrowErrorMatchingSnapshot();
+    });
+
+    test("can be any string", () => {
+      expect(() => {
+        MultipleTextQuestionSchema.parse({
+          ...question,
+          eachId: "Name_[__INDEX__]",
+        });
+      }).not.toThrowError();
+
+      expect(() => {
+        MultipleTextQuestionSchema.parse({
+          ...question,
+          eachId: "target_name",
+        });
+      }).not.toThrowError();
+
+      expect(() => {
+        MultipleTextQuestionSchema.parse({
+          ...question,
+          eachId: "HELLO WORLD",
+        });
+      }).not.toThrowError();
+
+      expect(() => {
+        MultipleTextQuestionSchema.parse({
+          ...question,
+          eachId: "__+O+__",
+        });
+      }).not.toThrowError();
+    });
+  });
 });
