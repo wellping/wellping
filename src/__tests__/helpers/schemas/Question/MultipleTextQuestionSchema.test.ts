@@ -452,4 +452,80 @@ describe("MultipleTextQuestionSchema", () => {
       }).not.toThrowError();
     });
   });
+
+  describe("max", () => {
+    const question = {
+      id: "Feel_Ideal",
+      type: QuestionType.MultipleText,
+      question: "Multiple text question",
+      variableName: "TARGET_NAME",
+      indexName: "INDEX",
+      next: "Next_Question",
+    };
+
+    test("should not be undefined", () => {
+      expect(() => {
+        MultipleTextQuestionSchema.parse({
+          ...question,
+        });
+      }).toThrowErrorMatchingSnapshot();
+    });
+
+    test("should not be null", () => {
+      expect(() => {
+        MultipleTextQuestionSchema.parse({
+          ...question,
+          max: null,
+        });
+      }).toThrowErrorMatchingSnapshot();
+    });
+
+    test("should not be decimal", () => {
+      expect(() => {
+        MultipleTextQuestionSchema.parse({
+          ...question,
+          max: 3.1415,
+        });
+      }).toThrowErrorMatchingSnapshot();
+    });
+
+    test("should not be zero or negative", () => {
+      expect(() => {
+        MultipleTextQuestionSchema.parse({
+          ...question,
+          max: 0,
+        });
+      }).toThrowErrorMatchingSnapshot("zero");
+
+      expect(() => {
+        MultipleTextQuestionSchema.parse({
+          ...question,
+          max: -1,
+        });
+      }).toThrowErrorMatchingSnapshot("negative integer");
+
+      expect(() => {
+        MultipleTextQuestionSchema.parse({
+          ...question,
+          max: -2.5,
+        });
+      }).toThrowErrorMatchingSnapshot("negative decimal");
+    });
+
+    test("can be any positive integer", () => {
+      expect(() => {
+        MultipleTextQuestionSchema.parse({
+          ...question,
+          max: 3,
+        });
+      }).not.toThrowError();
+
+      expect(() => {
+        MultipleTextQuestionSchema.parse({
+          ...question,
+          max: 7,
+        });
+      }).not.toThrowError();
+    });
+  });
 });

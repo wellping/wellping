@@ -120,6 +120,57 @@ exports[`MultipleTextQuestionSchema indexName should not be undefined 1`] = `
 "
 `;
 
+exports[`MultipleTextQuestionSchema max should not be decimal 1`] = `
+"1 validation issue(s)
+
+  Issue #0: invalid_type at max
+  Expected integer, received number
+"
+`;
+
+exports[`MultipleTextQuestionSchema max should not be null 1`] = `
+"1 validation issue(s)
+
+  Issue #0: invalid_type at max
+  Expected number, received null
+"
+`;
+
+exports[`MultipleTextQuestionSchema max should not be undefined 1`] = `
+"1 validation issue(s)
+
+  Issue #0: invalid_type at max
+  Required
+"
+`;
+
+exports[`MultipleTextQuestionSchema max should not be zero or negative: negative decimal 1`] = `
+"2 validation issue(s)
+
+  Issue #0: invalid_type at max
+  Expected integer, received number
+
+  Issue #1: too_small at max
+  Value should be greater than 0
+"
+`;
+
+exports[`MultipleTextQuestionSchema max should not be zero or negative: negative integer 1`] = `
+"1 validation issue(s)
+
+  Issue #0: too_small at max
+  Value should be greater than 0
+"
+`;
+
+exports[`MultipleTextQuestionSchema max should not be zero or negative: zero 1`] = `
+"1 validation issue(s)
+
+  Issue #0: too_small at max
+  Value should be greater than 0
+"
+`;
+
 exports[`MultipleTextQuestionSchema placeholder should not be null 1`] = `
 "1 validation issue(s)
 
