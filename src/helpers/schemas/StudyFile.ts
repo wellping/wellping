@@ -2,7 +2,7 @@ import { parseJSON } from "date-fns";
 import * as z from "zod";
 
 import { StudyFile } from "../types";
-import { StreamsSchema, StreamsMetaSchema } from "./Stream";
+import { StreamsSchema, StreamsStartingQuestionIdsSchema } from "./Stream";
 import { StudyIdSchema, StreamNameSchema } from "./common";
 
 export const WeekStartsOnSchema = z.union([
@@ -117,6 +117,11 @@ export const StudyInfoSchema = z
     }),
 
     /**
+     * The question ID of the first question of each stream.
+     */
+    streamsStartingQuestionIds: StreamsStartingQuestionIdsSchema,
+
+    /**
      * The streams that the user will fill (in this order) every day.
      *
      * For example, if `streamsOrder[0]` is `["dog", "cat", "wolf", "lynx"]`,
@@ -208,7 +213,6 @@ export const StudyInfoSchema = z
 
 export const StudyFileSchema = z.object({
   studyInfo: StudyInfoSchema,
-  meta: StreamsMetaSchema,
   streams: StreamsSchema,
 });
 

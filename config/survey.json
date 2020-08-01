@@ -11,6 +11,10 @@
       "hoursEveryday": [9, 13, 17, 21],
       "randomMinuteAddition": { "min": 0, "max": 119 }
     },
+    "streamsStartingQuestionIds": {
+      "myStream": "Feel_Current",
+      "errorStream": "firstQuestion"
+    },
     "streamsOrder": {
       "0": ["myStream", "myStream", "myStream", "myStream"],
       "1": ["myStream", "myStream", "myStream", "myStream"],
@@ -34,12 +38,6 @@
       }
     },
     "serverURL": "https://wellping.hesyifei.com/"
-  },
-  "meta": {
-    "startingQuestionIds": {
-      "myStream": "Feel_Current",
-      "errorStream": "firstQuestion"
-    }
   },
   "streams": {
     "myStream": {

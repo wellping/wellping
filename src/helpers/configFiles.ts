@@ -75,7 +75,9 @@ export async function getNamesFileAsync(): Promise<Names> {
 }
 
 export function getAllStreamNames(survey: StudyFile): StreamName[] {
-  return Object.keys(survey.meta.startingQuestionIds) as StreamName[];
+  return Object.keys(
+    survey.studyInfo.streamsStartingQuestionIds,
+  ) as StreamName[];
 }
 export async function getAllStreamNamesAsync(): Promise<StreamName[]> {
   return getAllStreamNames(await getStudyFileAsync());

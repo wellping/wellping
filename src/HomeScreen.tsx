@@ -653,7 +653,7 @@ export default class HomeScreen extends React.Component<
         <SurveyScreen
           survey={survey.streams[currentPing.streamName]}
           surveyStartingQuestionId={
-            survey.meta.startingQuestionIds[currentPing.streamName]
+            survey.studyInfo.streamsStartingQuestionIds[currentPing.streamName]
           }
           ping={currentPing}
           previousState={this.state.storedPingStateAsync}
