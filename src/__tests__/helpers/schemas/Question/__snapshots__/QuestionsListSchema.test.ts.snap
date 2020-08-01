@@ -31,3 +31,37 @@ exports[`QuestionsListSchema should not accept non-existent next: single 1`] = `
   A question's \`next\` question ID is not present in the question list.
 "
 `;
+
+exports[`QuestionsListSchema should show individual question error: multiple 1`] = `
+"5 validation issue(s)
+
+  Issue #0: invalid_type at choices
+  Required
+
+  Issue #1: invalid_type at slider
+  Required
+
+  Issue #2: invalid_type at indexName
+  Required
+
+  Issue #3: invalid_type at variableName
+  Required
+
+  Issue #4: invalid_type at max
+  Required
+"
+`;
+
+exports[`QuestionsListSchema should show individual question error: single 1`] = `
+"3 validation issue(s)
+
+  Issue #0: invalid_type at indexName
+  Required
+
+  Issue #1: invalid_type at variableName
+  Required
+
+  Issue #2: invalid_type at max
+  Required
+"
+`;
