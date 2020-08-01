@@ -3,9 +3,8 @@ import { AsyncStorage } from "react-native";
 import { logError } from "../debug";
 import { parseJsonToStudyFile } from "../schemas/StudyFile";
 import { StudyFile } from "../types";
-import { WELLPING_PREFIX } from "./asyncStorage";
 
-const STUDY_FILE_KEY = `${WELLPING_PREFIX}currentStudyFile`;
+const STUDY_FILE_KEY = `currentStudyFile`;
 
 export async function storeCurrentStudyFileAsync(studyFile: StudyFile) {
   try {
