@@ -38,12 +38,15 @@ import {
   clearPingStateAsync,
 } from "./helpers/asyncStorage/pingState";
 import { getUserAsync } from "./helpers/asyncStorage/user";
-import { getAllStreamNames } from "./helpers/configFiles";
 import {
   shareDatabaseFileAsync,
   deleteDatabaseFileAsync,
 } from "./helpers/database";
-import { getNonCriticalProblemTextForUser } from "./helpers/debug";
+import {
+  getNonCriticalProblemTextForUser,
+  VERSION_NUMBER,
+  getUsefulDebugInfo,
+} from "./helpers/debug";
 import {
   setNotificationsAsync,
   setupNotificationsPermissionAsync,
@@ -57,15 +60,8 @@ import {
   insertPingAsync,
   getNumbersOfPingsForAllStreamNames,
 } from "./helpers/pings";
-import {
-  Streams,
-  QuestionsList,
-  StudyFile,
-  StreamName,
-  StudyInfo,
-} from "./helpers/types";
-
-const VERSION_NUMBER = "1.1.0";
+import { getAllStreamNames, getStudyInfoAsync } from "./helpers/studyFile";
+import { Streams, StreamName, StudyInfo } from "./helpers/types";
 
 const styles = StyleSheet.create({
   onlyTextStyle: {
@@ -77,7 +73,8 @@ const styles = StyleSheet.create({
 });
 
 interface HomeScreenProps {
-  survey: StudyFile;
+  studyInfo: StudyInfo;
+  streams: Streams;
   logout: () => Promise<void>;
 }
 
@@ -146,13 +143,10 @@ export default class HomeScreen extends React.Component<
       await Notifications.setBadgeNumberAsync(0);
     }
 
-    const studyInfo = this.props.survey.studyInfo;
-    await setNotificationsAsync(studyInfo);
+    await setNotificationsAsync();
 
     const doEveryHalfMinutes = async () => {
-      const currentNotificationTime = await getCurrentNotificationTimeAsync(
-        studyInfo,
-      );
+      const currentNotificationTime = await getCurrentNotificationTimeAsync();
       this.setState({ time: new Date(), currentNotificationTime });
 
       if (currentNotificationTime == null) {
@@ -173,9 +167,7 @@ export default class HomeScreen extends React.Component<
 
     const latestPing = await getLatestPingAsync();
     //console.warn(latestStartedPing);
-    const currentNotificationTime = await getCurrentNotificationTimeAsync(
-      studyInfo,
-    );
+    const currentNotificationTime = await getCurrentNotificationTimeAsync();
     if (
       latestPing &&
       currentNotificationTime &&
@@ -198,7 +190,7 @@ export default class HomeScreen extends React.Component<
   }
 
   async startSurveyAsync() {
-    const studyInfo = this.props.survey.studyInfo;
+    const studyInfo = this.props.studyInfo;
 
     const todayWeekday = getDay(new Date());
     const todayPings = await getTodayPingsAsync();
@@ -230,7 +222,7 @@ export default class HomeScreen extends React.Component<
     await this._startSurveyTypeAsync(newPingName);
 
     // So that the notification text ("n pings left") can be updated.
-    await setNotificationsAsync(studyInfo);
+    await setNotificationsAsync();
   }
 
   async _startSurveyTypeAsync(streamName: StreamName) {
@@ -248,8 +240,7 @@ export default class HomeScreen extends React.Component<
   }
 
   render() {
-    const { survey } = this.props;
-    const studyInfo = survey.studyInfo;
+    const { studyInfo, streams } = this.props;
 
     const {
       allowsNotifications,
@@ -295,7 +286,7 @@ export default class HomeScreen extends React.Component<
                       `Please enter your question here (please attach a screenshot if applicable):\n\n\n\n\n\n` +
                         `====\n` +
                         `User ID: ${user!.patientId}\n` +
-                        `Version: ${VERSION_NUMBER}`,
+                        getUsefulDebugInfo(),
                     );
                     const mailtoLink = `mailto:${studyInfo.contactEmail}?subject=${emailSubject}&body=${emailBody}`;
                     Linking.openURL(mailtoLink);
@@ -382,7 +373,14 @@ export default class HomeScreen extends React.Component<
               answer.lastUpdateDate = new Date();
               await answer.save();*/
 
-              await shareDatabaseFileAsync(survey.studyInfo.id);
+              await shareDatabaseFileAsync(studyInfo.id);
+            }}
+          />
+          <Button
+            color="orange"
+            title="getStudyInfoAsync()"
+            onPress={async () => {
+              alert(JSON.stringify(await getStudyInfoAsync()));
             }}
           />
           <Button
@@ -409,9 +407,7 @@ export default class HomeScreen extends React.Component<
             color="orange"
             title="getCurrentNotificationTimeAsync()"
             onPress={async () => {
-              const currentNotificationTime = await getCurrentNotificationTimeAsync(
-                studyInfo,
-              );
+              const currentNotificationTime = await getCurrentNotificationTimeAsync();
               alert(JSON.stringify(currentNotificationTime));
             }}
           />
@@ -568,7 +564,7 @@ export default class HomeScreen extends React.Component<
                     text: "Confirm",
                     style: "destructive",
                     onPress: async () => {
-                      await deleteDatabaseFileAsync(survey.studyInfo.id);
+                      await deleteDatabaseFileAsync(studyInfo.id);
                       alert("Done! Please restart the app.");
                     },
                   },
@@ -598,7 +594,7 @@ export default class HomeScreen extends React.Component<
 
     if (currentPing == null) {
       const streamButtons = [];
-      for (const streamName of getAllStreamNames(survey)) {
+      for (const streamName of getAllStreamNames(studyInfo)) {
         streamButtons.push(
           <Button
             color="orange"
@@ -649,9 +645,9 @@ export default class HomeScreen extends React.Component<
       <View style={{ height: "100%" }}>
         {ExtraView}
         <SurveyScreen
-          survey={survey.streams[currentPing.streamName]}
+          survey={streams[currentPing.streamName]}
           surveyStartingQuestionId={
-            survey.meta.startingQuestionIds[currentPing.streamName]
+            studyInfo.streamsStartingQuestionIds[currentPing.streamName]
           }
           ping={currentPing}
           previousState={this.state.storedPingStateAsync}

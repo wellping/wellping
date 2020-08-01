@@ -1,6 +1,6 @@
-import { getSurveyFileAsync } from "../configFiles";
+import { getStudyInfoAsync } from "../studyFile";
 
 export async function getASKeyAsync(key: string = ""): Promise<string> {
-  const studyId = (await getSurveyFileAsync()).studyInfo.id;
-  return `@WELLPING:Study_${studyId}/${key}`; //TODO: ADD ENCODED URL HERE
+  const studyInfo = await getStudyInfoAsync();
+  return `@WELLPING:Study_${studyInfo.id}/${key}`; //TODO: ADD ENCODED URL HERE
 }

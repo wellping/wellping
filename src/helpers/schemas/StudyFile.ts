@@ -1,8 +1,8 @@
 import { parseJSON } from "date-fns";
 import * as z from "zod";
 
-import { StudyFile } from "../types";
-import { StreamsSchema, StreamsMetaSchema } from "./Stream";
+import { StudyFile, StudyInfo } from "../types";
+import { StreamsSchema, StreamsStartingQuestionIdsSchema } from "./Stream";
 import { StudyIdSchema, StreamNameSchema } from "./common";
 
 export const WeekStartsOnSchema = z.union([
@@ -117,6 +117,11 @@ export const StudyInfoSchema = z
     }),
 
     /**
+     * The question ID of the first question of each stream.
+     */
+    streamsStartingQuestionIds: StreamsStartingQuestionIdsSchema,
+
+    /**
      * The streams that the user will fill (in this order) every day.
      *
      * For example, if `streamsOrder[0]` is `["dog", "cat", "wolf", "lynx"]`,
@@ -208,17 +213,26 @@ export const StudyInfoSchema = z
 
 export const StudyFileSchema = z.object({
   studyInfo: StudyInfoSchema,
-  meta: StreamsMetaSchema,
   streams: StreamsSchema,
 });
 
-export function parseJsonToStudyFile(rawJson: any): StudyFile {
+// https://stackoverflow.com/a/13104500/2603230
+const convertSpecialTypesInStudyInfo = (studyInfoRawJson: any) => {
   // We have to parse the dates as JSON stores dates as strings.
-  if (rawJson.studyInfo?.startDate) {
-    rawJson.studyInfo.startDate = parseJSON(rawJson.studyInfo.startDate);
+  if (studyInfoRawJson?.startDate) {
+    studyInfoRawJson.startDate = parseJSON(studyInfoRawJson.startDate);
   }
-  if (rawJson.studyInfo?.endDate) {
-    rawJson.studyInfo.endDate = parseJSON(rawJson.studyInfo.endDate);
+  if (studyInfoRawJson?.endDate) {
+    studyInfoRawJson.endDate = parseJSON(studyInfoRawJson.endDate);
   }
+};
+
+export function parseJsonToStudyInfo(rawJson: any): StudyInfo {
+  convertSpecialTypesInStudyInfo(rawJson);
+  return StudyInfoSchema.parse(rawJson);
+}
+
+export function parseJsonToStudyFile(rawJson: any): StudyFile {
+  convertSpecialTypesInStudyInfo(rawJson?.studyInfo);
   return StudyFileSchema.parse(rawJson);
 }

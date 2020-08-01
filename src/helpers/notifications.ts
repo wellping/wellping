@@ -19,9 +19,8 @@ import {
   getNotificationTimesAsync,
   storeNotificationTimesAsync,
 } from "./asyncStorage/notificationTimes";
-import { isTimeThisWeekAsync, getSurveyFileAsync } from "./configFiles";
 import { getThisWeekPingsAsync } from "./pings";
-import { StudyInfo } from "./types";
+import { isTimeThisWeekAsync, getStudyInfoAsync } from "./studyFile";
 
 const ANDROID_CHANNEL_NAME = "ssnlPingChannel";
 
@@ -58,7 +57,9 @@ export async function setupNotificationsPermissionAsync(): Promise<boolean> {
   }
 }
 
-export async function setNotificationsAsync(studyInfo: StudyInfo) {
+export async function setNotificationsAsync() {
+  const studyInfo = await getStudyInfoAsync();
+
   await Notifications.cancelAllScheduledNotificationsAsync();
 
   const hoursEveryday = studyInfo.frequency.hoursEveryday;
@@ -195,15 +196,15 @@ export async function setNotificationsAsync(studyInfo: StudyInfo) {
 }
 
 // If `null` is returned, it means that currently there's no active ping.
-export async function getCurrentNotificationTimeAsync(
-  studyInfo: StudyInfo,
-): Promise<Date | null> {
+export async function getCurrentNotificationTimeAsync(): Promise<Date | null> {
   // DEBUG
   /* istanbul ignore if */
   if (__DEV__ && _DEBUG_CONFIGS().ignoreNotificationTime) {
     const fakeNotificationTime = addMinutes(new Date(), -10);
     return fakeNotificationTime;
   }
+
+  const studyInfo = await getStudyInfoAsync();
 
   const notificationsTimes = (await getNotificationTimesAsync()) || [];
 

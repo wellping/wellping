@@ -17,7 +17,8 @@ import {
   connectTestDatabaseAsync,
   getTestDatabaseFilename,
 } from "../data/database_helper";
-import { PINGS, PINGS_DICT } from "../data/pings";
+import { PINGS, PINGS_DICT, PINGS_STUDY_INFO } from "../data/pings";
+import { mockCurrentStudyInfo } from "../helper";
 
 export const PINGS_DB_NAME = "pings";
 
@@ -35,6 +36,10 @@ export const pingsTest = () => {
   });
   afterAll(async () => {
     await connection.close();
+  });
+
+  beforeEach(() => {
+    mockCurrentStudyInfo(PINGS_STUDY_INFO);
   });
 
   test("insert pings and set end date", async () => {
@@ -109,22 +114,6 @@ export const pingsTest = () => {
     DateMock.advanceTo(+new Date("2010-05-01T08:08:08Z"));
     expect(await getTodayPingsAsync()).toEqual([]);
 
-    DateMock.advanceTo(+new Date("2010-05-01T10:00:08Z"));
-    expect(await getThisWeekPingsAsync()).toEqual([PINGS_DICT["cat1"]]);
-
-    DateMock.advanceTo(+new Date("2010-05-01T18:58:08Z"));
-    expect(await getThisWeekPingsAsync()).toEqual([
-      PINGS_DICT["cat1"],
-      PINGS_DICT["dog1"],
-    ]);
-
-    DateMock.advanceTo(+new Date("2010-05-01T22:46:08Z"));
-    expect(await getThisWeekPingsAsync()).toEqual([
-      PINGS_DICT["cat1"],
-      PINGS_DICT["dog1"],
-      PINGS_DICT["wolf1"],
-    ]);
-
     DateMock.advanceTo(+new Date("2010-05-02T08:08:08Z"));
     expect(await getTodayPingsAsync()).toEqual([]);
 
@@ -156,8 +145,6 @@ export const pingsTest = () => {
   });
 
   test("get this week's ping", async () => {
-    // TODO: weekStartsOn IS NOT CONSIDERED HERE.
-
     DateMock.advanceTo(+new Date("2010-04-30T08:08:08Z"));
     expect(await getThisWeekPingsAsync()).toEqual([]);
 

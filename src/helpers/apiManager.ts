@@ -7,11 +7,11 @@ import { AnswerEntity } from "../entities/AnswerEntity";
 import { PingEntity } from "../entities/PingEntity";
 import { getAnswersAsync } from "./answers";
 import { User, storeUserAsync, getUserAsync } from "./asyncStorage/user";
-import { getSurveyFileAsync } from "./configFiles";
 import { getPingsAsync } from "./pings";
+import { getStudyInfoAsync } from "./studyFile";
 
 export async function getServerUrlAsync(): Promise<string> {
-  return (await getSurveyFileAsync()).studyInfo.serverURL;
+  return (await getStudyInfoAsync()).serverURL;
 }
 
 type UploadData = {

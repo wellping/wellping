@@ -1,6 +1,6 @@
 import * as DateMock from "jest-date-mock";
 
-import { isTimeThisWeek } from "../../helpers/configFiles";
+import { isTimeThisWeek } from "../../helpers/studyFile";
 
 describe("isTimeThisWeek", () => {
   beforeEach(() => {
