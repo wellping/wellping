@@ -63,9 +63,15 @@ export default class RootScreen extends React.Component<
       rawJsonString = await downloadStudyFileAsync(url);
     } catch (e) {
       if (!isRedownload) {
+        let downloadErrorMessage: string;
+        if (e instanceof Error) {
+          downloadErrorMessage = `**${e.name}**\n${e.message}`;
+        } else {
+          downloadErrorMessage = `Unknown error: ${e}`;
+        }
         alert("Download failed!");
         this.setState({
-          errorText: `Download failed: ${e}`,
+          errorText: `Download failed: ${downloadErrorMessage}`,
         });
         return false;
       } else {
@@ -75,10 +81,10 @@ export default class RootScreen extends React.Component<
       }
     }
 
-    const parseError = await parseAndStoreStudyFileAsync(rawJsonString);
-    if (parseError !== null) {
+    const parseErrorMessage = await parseAndStoreStudyFileAsync(rawJsonString);
+    if (parseErrorMessage !== null) {
       this.setState({
-        studyFileErrorText: parseError,
+        studyFileErrorText: parseErrorMessage,
       });
       return false;
     }
