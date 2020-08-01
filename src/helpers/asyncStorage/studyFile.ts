@@ -15,6 +15,15 @@ export async function storeCurrentStudyFileAsync(studyFile: StudyFile) {
   }
 }
 
+export async function clearCurrentStudyFileAsync() {
+  try {
+    await AsyncStorage.removeItem(STUDY_FILE_KEY);
+  } catch (error) {
+    // Error saving data
+    logError(error);
+  }
+}
+
 export async function getCurrentStudyFileAsync(): Promise<StudyFile | null> {
   try {
     const value = await AsyncStorage.getItem(STUDY_FILE_KEY);

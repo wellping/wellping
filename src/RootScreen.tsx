@@ -9,9 +9,13 @@ import {
   User,
   clearUserAsync,
 } from "./helpers/asyncStorage/user";
-import { getStudyFileAsync } from "./helpers/configFiles";
+import {
+  getStudyFileAsync,
+  downloadStudyFileAsync,
+  shouldDownloadStudyFileAsync,
+} from "./helpers/configFiles";
 import { connectDatabaseAsync } from "./helpers/database";
-import { getCriticalProblemTextForUser } from "./helpers/debug";
+import { getCriticalProblemTextForUser, shareDebugText } from "./helpers/debug";
 import { StudyFile } from "./helpers/types";
 
 interface RootScreenProps {}
@@ -22,6 +26,7 @@ interface RootScreenState {
   formDataUserId?: string;
   formDataPassword?: string;
   errorText: string | null;
+  studyFileErrorText: string | null;
   unableToParticipate?: boolean;
   survey?: StudyFile;
 }
@@ -37,12 +42,31 @@ export default class RootScreen extends React.Component<
       userInfo: null,
       isLoading: true,
       errorText: null,
+      studyFileErrorText: null,
     };
+  }
+
+  async downloadStudyFileHandleErrorAsync(url: string): Promise<boolean> {
+    const downloadError = await downloadStudyFileAsync(url);
+    if (downloadError !== null) {
+      this.setState({
+        studyFileErrorText: downloadError,
+      });
+      return false;
+    }
+    return true;
   }
 
   async componentDidMount() {
     const user = await getUserAsync();
     if (user) {
+      if (await shouldDownloadStudyFileAsync()) {
+        if (!(await this.downloadStudyFileHandleErrorAsync("TODO: "))) {
+          this.setState({ isLoading: false });
+          return;
+        }
+      }
+
       const survey = await getStudyFileAsync();
 
       await connectDatabaseAsync(survey.studyInfo.id);
@@ -72,7 +96,13 @@ export default class RootScreen extends React.Component<
   }
 
   render() {
-    const { isLoading, userInfo, errorText, unableToParticipate } = this.state;
+    const {
+      isLoading,
+      userInfo,
+      errorText,
+      studyFileErrorText,
+      unableToParticipate,
+    } = this.state;
     if (isLoading) {
       return (
         <View>
@@ -88,6 +118,52 @@ export default class RootScreen extends React.Component<
           <Text style={{ fontSize: 20 }}>
             Unfortunately, you cannot participate in this study.
           </Text>
+        </View>
+      );
+    }
+
+    if (studyFileErrorText) {
+      return (
+        <View style={{ height: "100%" }}>
+          <View
+            style={{
+              flex: 1,
+              marginTop: 20,
+              marginHorizontal: 20,
+            }}
+          >
+            <View style={{ flex: 0 }}>
+              <Text style={{ fontSize: 20, color: "red" }}>
+                Study File Error
+              </Text>
+              <Text style={{ marginTop: 10, marginBottom: 10 }}>
+                The study file contains the following error:
+              </Text>
+            </View>
+            <View style={{ flex: -1 }}>
+              <TextInput
+                multiline
+                editable={false}
+                value={studyFileErrorText}
+                style={{
+                  borderColor: "black",
+                  borderWidth: 1,
+                  padding: 5,
+                }}
+              />
+            </View>
+            <View style={{ flex: 0 }}>
+              <Text style={{ textAlign: "center" }}>
+                (Restart the app to try again.)
+              </Text>
+              <Button
+                onPress={() => {
+                  shareDebugText(studyFileErrorText);
+                }}
+                title="Send the error message to the research staff"
+              />
+            </View>
+          </View>
         </View>
       );
     }
@@ -149,15 +225,23 @@ export default class RootScreen extends React.Component<
                     {
                       text: "Review",
                       onPress: async () => {
-                        await WebBrowser.openBrowserAsync(
-                          (await getStudyFileAsync()).studyInfo.consentFormUrl,
-                        );
                         this.setState({
-                          errorText: "Downloading survey...",
+                          errorText: "Downloading study data...",
                         });
 
-                        // TODO: await downloadSurvey;
+                        if (
+                          !(await this.downloadStudyFileHandleErrorAsync(
+                            "TODO: ",
+                          ))
+                        ) {
+                          return;
+                        }
+
                         const survey = await getStudyFileAsync();
+
+                        await WebBrowser.openBrowserAsync(
+                          survey.studyInfo.consentFormUrl,
+                        );
 
                         this.setState({
                           userInfo: user,

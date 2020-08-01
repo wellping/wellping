@@ -43,7 +43,11 @@ import {
   shareDatabaseFileAsync,
   deleteDatabaseFileAsync,
 } from "./helpers/database";
-import { getNonCriticalProblemTextForUser } from "./helpers/debug";
+import {
+  getNonCriticalProblemTextForUser,
+  VERSION_NUMBER,
+  getUsefulDebugInfo,
+} from "./helpers/debug";
 import {
   setNotificationsAsync,
   setupNotificationsPermissionAsync,
@@ -64,8 +68,6 @@ import {
   StreamName,
   StudyInfo,
 } from "./helpers/types";
-
-const VERSION_NUMBER = "1.1.0";
 
 const styles = StyleSheet.create({
   onlyTextStyle: {
@@ -295,7 +297,7 @@ export default class HomeScreen extends React.Component<
                       `Please enter your question here (please attach a screenshot if applicable):\n\n\n\n\n\n` +
                         `====\n` +
                         `User ID: ${user!.patientId}\n` +
-                        `Version: ${VERSION_NUMBER}`,
+                        getUsefulDebugInfo(),
                     );
                     const mailtoLink = `mailto:${studyInfo.contactEmail}?subject=${emailSubject}&body=${emailBody}`;
                     Linking.openURL(mailtoLink);

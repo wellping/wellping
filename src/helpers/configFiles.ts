@@ -1,8 +1,10 @@
 import { isThisWeek } from "date-fns";
 
+import { _DEBUG_CONFIGS } from "../../config/debug";
 import {
   getCurrentStudyFileAsync,
   storeCurrentStudyFileAsync,
+  clearCurrentStudyFileAsync,
 } from "./asyncStorage/studyFile";
 import { parseJsonToStudyFile } from "./schemas/StudyFile";
 import { StudyFile, Names, StudyInfo, StreamName } from "./types";
@@ -12,6 +14,10 @@ import { StudyFile, Names, StudyInfo, StreamName } from "./types";
  * already exists).
  */
 export async function shouldDownloadStudyFileAsync(): Promise<boolean> {
+  if (__DEV__ && _DEBUG_CONFIGS().alwaysRedownloadStudyFile) {
+    return true;
+  }
+
   const currentStudyFile = await getCurrentStudyFileAsync();
   if (currentStudyFile === null) {
     return true;
@@ -39,7 +45,13 @@ export async function downloadStudyFileAsync(
     await storeCurrentStudyFileAsync(parsedStudy);
     return null;
   } catch (e) {
-    return e.message;
+    await clearCurrentStudyFileAsync();
+
+    if (e instanceof Error) {
+      return `**${e.name}**\n${e.message}`;
+    } else {
+      return `Unknown error: ${e}`;
+    }
   }
 }
 
