@@ -217,7 +217,7 @@ export default class RootScreen extends React.Component<
         margin: 15,
       };
       return (
-        <ScrollView>
+        <ScrollView style={{ height: "100%" }}>
           <View style={{ padding: 20 }}>
             <Text
               style={{ fontSize: 30, marginBottom: 20, textAlign: "center" }}
