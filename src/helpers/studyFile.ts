@@ -10,9 +10,15 @@ import {
 import { parseJsonToStudyFile } from "./schemas/StudyFile";
 import { StudyFile, Names, StudyInfo, StreamName, Streams } from "./types";
 
-const WELLPING_LOCAL_DEBUG_URL =
+export const WELLPING_LOCAL_DEBUG_URL =
   "https://wellping_local__.ssnl.stanford.edu/debug.json";
-// TODO: const WELLPING_LOCAL_DEMO_URL = "https://wellping_local__.ssnl.stanford.edu/demo.json";
+// TODO: export const WELLPING_LOCAL_DEMO_URL = "https://wellping_local__.ssnl.stanford.edu/demo.json";
+
+export async function isLocalStudyFile(): Promise<boolean> {
+  return (
+    (await getStudyInfoAsync()).studyFileJsonURL === WELLPING_LOCAL_DEBUG_URL
+  );
+}
 
 /**
  * Returns whether of not the study file is stored locally.
@@ -54,10 +60,26 @@ export async function shouldDownloadStudyFileAsync(): Promise<boolean> {
  * Throws an error if the download process failed.
  */
 export async function downloadStudyFileAsync(url: string): Promise<string> {
-  // TODO: PROBABLY CHECK E.G. IF `url` == "__WELLPING_LOCAL__", then load this local config
-  // TODO: ACTUAL DOWNLOAD PROCESS.
-  const rawJsonString = JSON.stringify(require("../../config/survey.json"));
-  return rawJsonString;
+  if (url === WELLPING_LOCAL_DEBUG_URL) {
+    await new Promise((r) => setTimeout(r, 3000)); // Simulate loading.
+    const rawJsonString = JSON.stringify(require("../../config/survey.json"));
+    return rawJsonString;
+  }
+
+  try {
+    const response = await fetch(url, {
+      method: "GET",
+      cache: "no-cache",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+    });
+
+    return response.text();
+  } catch (e) {
+    throw e;
+  }
 }
 
 /**

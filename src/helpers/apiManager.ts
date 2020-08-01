@@ -8,7 +8,7 @@ import { PingEntity } from "../entities/PingEntity";
 import { getAnswersAsync } from "./answers";
 import { User, storeUserAsync, getUserAsync } from "./asyncStorage/user";
 import { getPingsAsync } from "./pings";
-import { getStudyInfoAsync } from "./studyFile";
+import { getStudyInfoAsync, isLocalStudyFile } from "./studyFile";
 
 export async function getServerUrlAsync(): Promise<string> {
   return (await getStudyInfoAsync()).serverURL;
@@ -127,6 +127,12 @@ export async function makePostRequestAsync(
   body?: { [key: string]: any },
   user?: User,
 ): Promise<any> {
+  if (isLocalStudyFile()) {
+    // Always return successful response if it is a local study file.
+    await new Promise((r) => setTimeout(r, 3000)); // Simulate loading.
+    return {};
+  }
+
   const headers = {
     "Beiwe-Api-Version": "2",
     Accept: "application/vnd.beiwe.api.v2, application/json",
@@ -143,8 +149,6 @@ export async function makePostRequestAsync(
   });
 
   if (response.status < 200 || response.status >= 400) {
-    console.warn(`ERRORREQUEST: ${JSON.stringify(response)}`);
-
     if (response.status === 401 || response.status === 403) {
       throw new Error(
         `Verification failed.\n\nRequest: ${JSON.stringify(
