@@ -1,4 +1,4 @@
-import { getStudyInfoAsync } from "../configFiles";
+import { getStudyInfoAsync } from "../studyFile";
 
 export async function getASKeyAsync(key: string = ""): Promise<string> {
   const studyInfo = await getStudyInfoAsync();

@@ -55,6 +55,7 @@ export async function downloadStudyFileAsync(
   url: string,
 ): Promise<string | null> {
   try {
+    // TODO: PROBABLY CHECK E.G. IF `url` == "__WELLPING_LOCAL__", then load this local config
     // TODO: ACTUAL DOWNLOAD PROCESS.
     const study = require("../../config/survey.json");
 

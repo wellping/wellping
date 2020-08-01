@@ -1,7 +1,7 @@
-import { isToday, addDays } from "date-fns";
+import { isToday } from "date-fns";
 
 import { PingEntity } from "../entities/PingEntity";
-import { isTimeThisWeekAsync } from "./configFiles";
+import { isTimeThisWeekAsync } from "./studyFile";
 import { StreamName } from "./types";
 
 export async function getNumberOfPingsForStreamName(

@@ -9,13 +9,13 @@ import {
   User,
   clearUserAsync,
 } from "./helpers/asyncStorage/user";
+import { connectDatabaseAsync } from "./helpers/database";
+import { getCriticalProblemTextForUser, shareDebugText } from "./helpers/debug";
 import {
   getStudyFileAsync,
   downloadStudyFileAsync,
   shouldDownloadStudyFileAsync,
-} from "./helpers/configFiles";
-import { connectDatabaseAsync } from "./helpers/database";
-import { getCriticalProblemTextForUser, shareDebugText } from "./helpers/debug";
+} from "./helpers/studyFile";
 import { StudyFile } from "./helpers/types";
 
 interface RootScreenProps {}

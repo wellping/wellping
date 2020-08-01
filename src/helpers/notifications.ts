@@ -19,9 +19,8 @@ import {
   getNotificationTimesAsync,
   storeNotificationTimesAsync,
 } from "./asyncStorage/notificationTimes";
-import { isTimeThisWeekAsync, getStudyInfoAsync } from "./configFiles";
 import { getThisWeekPingsAsync } from "./pings";
-import { StudyInfo } from "./types";
+import { isTimeThisWeekAsync, getStudyInfoAsync } from "./studyFile";
 
 const ANDROID_CHANNEL_NAME = "ssnlPingChannel";
 

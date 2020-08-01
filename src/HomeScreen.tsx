@@ -38,7 +38,6 @@ import {
   clearPingStateAsync,
 } from "./helpers/asyncStorage/pingState";
 import { getUserAsync } from "./helpers/asyncStorage/user";
-import { getAllStreamNames, getStudyInfoAsync } from "./helpers/configFiles";
 import {
   shareDatabaseFileAsync,
   deleteDatabaseFileAsync,
@@ -61,13 +60,8 @@ import {
   insertPingAsync,
   getNumbersOfPingsForAllStreamNames,
 } from "./helpers/pings";
-import {
-  Streams,
-  QuestionsList,
-  StudyFile,
-  StreamName,
-  StudyInfo,
-} from "./helpers/types";
+import { getAllStreamNames, getStudyInfoAsync } from "./helpers/studyFile";
+import { Streams, StreamName, StudyInfo } from "./helpers/types";
 
 const styles = StyleSheet.create({
   onlyTextStyle: {

@@ -7,8 +7,7 @@ import {
   QuestionScreenProps,
   MultipleTextAnswerData,
 } from "../helpers/answerTypes";
-import { getNamesFileAsync } from "../helpers/configFiles";
-import { withVariable } from "../helpers/helpers";
+import { getNamesFileAsync } from "../helpers/studyFile";
 import { MultipleTextQuestion, Names } from "../helpers/types";
 // @ts-ignore
 import SearchableDropdown from "../inc/react-native-searchable-dropdown";
