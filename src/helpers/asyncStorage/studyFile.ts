@@ -21,7 +21,7 @@ export async function getCurrentStudyFileAsync(): Promise<StudyFile | null> {
     if (value == null) {
       return null;
     }
-    const studyFile: StudyFile = parseJsonToStudyFile(value);
+    const studyFile: StudyFile = parseJsonToStudyFile(JSON.parse(value));
     return studyFile;
   } catch (error) {
     // Error retrieving data
