@@ -130,6 +130,11 @@ export default class RootScreen extends React.Component<
     }
   }
 
+  async logoutAsync() {
+    await clearUserAsync();
+    this.setState({ userInfo: null });
+  }
+
   render() {
     const {
       isLoading,
@@ -313,8 +318,7 @@ export default class RootScreen extends React.Component<
         studyInfo={this.state.survey.studyInfo}
         streams={this.state.survey.streams}
         logout={async () => {
-          await clearUserAsync();
-          this.setState({ userInfo: null });
+          await this.logoutAsync();
         }}
       />
     );
