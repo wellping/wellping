@@ -113,6 +113,7 @@ export async function getStudyFileAsync(): Promise<StudyFile> {
 }
 
 // TODO: DECOUPLE FUNCTIONS LIKE THIS
+// MAYBE AN EXTRA FIELD IN StudyFile to be { studyInfo, extra: { choices: { key: [...] } }, streams }
 export async function getNamesFileAsync(): Promise<Names> {
   const names: Names = require("../../config/names.json");
   return names;
