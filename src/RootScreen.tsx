@@ -1,6 +1,14 @@
 import * as WebBrowser from "expo-web-browser";
 import React from "react";
-import { Button, TextInput, Text, View, ScrollView, Alert } from "react-native";
+import {
+  Button,
+  TextInput,
+  Text,
+  View,
+  ScrollView,
+  Alert,
+  Keyboard,
+} from "react-native";
 
 import HomeScreen from "./HomeScreen";
 import { registerUserAsync } from "./helpers/apiManager";
@@ -17,6 +25,7 @@ import {
 } from "./helpers/asyncStorage/user";
 import { connectDatabaseAsync } from "./helpers/database";
 import { getCriticalProblemTextForUser, shareDebugText } from "./helpers/debug";
+import { LoginSchema } from "./helpers/schemas/Login";
 import {
   getStudyFileAsync,
   downloadStudyFileAsync,
@@ -31,8 +40,7 @@ interface RootScreenProps {}
 interface RootScreenState {
   userInfo: User | null;
   isLoading: boolean;
-  formDataUserId?: string;
-  formDataPassword?: string;
+  formData?: string;
   errorText: string | null;
   studyFileErrorText: string | null;
   unableToParticipate?: boolean;
@@ -256,53 +264,81 @@ export default class RootScreen extends React.Component<
     }
 
     if (userInfo == null) {
-      const textFieldStyle = {
-        padding: 12,
-        borderWidth: 1,
-        borderColor: "#ccc",
-        borderRadius: 5,
-        margin: 15,
-      };
       return (
-        <ScrollView style={{ height: "100%" }}>
-          <View style={{ padding: 20 }}>
+        <ScrollView
+          style={{ height: "100%", paddingHorizontal: 20 }}
+          keyboardShouldPersistTaps="handled" /* https://github.com/facebook/react-native/issues/9404#issuecomment-252474548 */
+        >
+          <View style={{ marginVertical: 20 }}>
             <Text
               style={{ fontSize: 30, marginBottom: 20, textAlign: "center" }}
             >
               Welcome to Well Ping!
             </Text>
             <Text style={{ fontSize: 20 }}>
-              Please log in using the credentials sent to your email.
+              Please log in using the magic login code sent to your email. 🧙‍♀️
             </Text>
           </View>
           <TextInput
-            onChangeText={(text) => this.setState({ formDataUserId: text })}
+            onChangeText={(text) => this.setState({ formData: text })}
             autoCorrect={false}
             autoCapitalize="none"
             autoCompleteType="off"
-            placeholder="User ID"
-            style={textFieldStyle}
-          />
-          <TextInput
-            onChangeText={(text) => this.setState({ formDataPassword: text })}
-            secureTextEntry
-            autoCorrect={false}
-            autoCapitalize="none"
-            autoCompleteType="off"
-            placeholder="Password"
-            style={textFieldStyle}
+            placeholder="Paste your magic login code here..."
+            multiline
+            style={{
+              padding: 8,
+              borderWidth: 1,
+              borderColor: "#ccc",
+              borderRadius: 5,
+              marginBottom: 10,
+              height: 150,
+            }}
           />
           <Button
             title="Log in"
             onPress={async () => {
+              Keyboard.dismiss();
+
+              let user!: User;
+              let studyFileJsonUrl!: string;
+              try {
+                const base64EncodedString = this.state.formData?.trim();
+                if (!base64EncodedString) {
+                  throw new Error(
+                    "You have not entered your magic login code.",
+                  );
+                }
+
+                const Buffer = require("buffer").Buffer;
+                const loginJsonString = new Buffer(
+                  base64EncodedString,
+                  "base64",
+                ).toString();
+                const loginInfo = LoginSchema.parse(
+                  JSON.parse(loginJsonString),
+                );
+                user = {
+                  patientId: loginInfo.username,
+                  password: loginInfo.password,
+                };
+                studyFileJsonUrl = loginInfo.studyFileJsonUrl;
+              } catch (e) {
+                this.setState({
+                  errorText:
+                    "Your magic login code is invalid 😕. Please screenshot " +
+                    "the current page and contact the research staff.\n\n" +
+                    `${e}`,
+                });
+                return;
+              }
+
               this.setState({
                 errorText: "Loading study data...",
               });
 
               if (
-                !(await this.downloadAndParseStudyFileAsync(
-                  "https://wellping_local__.ssnl.stanford.edu/debug.json",
-                ))
+                !(await this.downloadAndParseStudyFileAsync(studyFileJsonUrl))
               ) {
                 return;
               }
@@ -313,10 +349,6 @@ export default class RootScreen extends React.Component<
                 errorText: "Authenticating...",
               });
 
-              const user: User = {
-                patientId: this.state.formDataUserId || "",
-                password: this.state.formDataPassword || "",
-              };
               const error = await registerUserAsync(user);
               if (!error) {
                 Alert.alert(
@@ -351,7 +383,9 @@ export default class RootScreen extends React.Component<
             }}
           />
           {errorText ? (
-            <Text style={{ margin: 15, fontWeight: "bold" }}>{errorText}</Text>
+            <Text style={{ fontWeight: "bold", marginTop: 10 }}>
+              {errorText}
+            </Text>
           ) : undefined}
         </ScrollView>
       );
