@@ -1,7 +1,7 @@
 import { parseJSON } from "date-fns";
 import * as z from "zod";
 
-import { StudyFile } from "../types";
+import { StudyFile, StudyInfo } from "../types";
 import { StreamsSchema, StreamsStartingQuestionIdsSchema } from "./Stream";
 import { StudyIdSchema, StreamNameSchema } from "./common";
 
@@ -216,13 +216,21 @@ export const StudyFileSchema = z.object({
   streams: StreamsSchema,
 });
 
+export function parseJsonToStudyInfo(rawJson: any): StudyInfo {
+  // We have to parse the dates as JSON stores dates as strings.
+  if (rawJson?.startDate) {
+    rawJson.startDate = parseJSON(rawJson.startDate);
+  }
+  if (rawJson?.endDate) {
+    rawJson.endDate = parseJSON(rawJson.endDate);
+  }
+  return StudyInfoSchema.parse(rawJson);
+}
+
 export function parseJsonToStudyFile(rawJson: any): StudyFile {
   // We have to parse the dates as JSON stores dates as strings.
-  if (rawJson.studyInfo?.startDate) {
-    rawJson.studyInfo.startDate = parseJSON(rawJson.studyInfo.startDate);
-  }
-  if (rawJson.studyInfo?.endDate) {
-    rawJson.studyInfo.endDate = parseJSON(rawJson.studyInfo.endDate);
+  if (rawJson.studyInfo) {
+    rawJson.studyInfo = parseJsonToStudyInfo(rawJson.studyInfo);
   }
   return StudyFileSchema.parse(rawJson);
 }

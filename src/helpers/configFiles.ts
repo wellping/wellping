@@ -2,12 +2,14 @@ import { isThisWeek } from "date-fns";
 
 import { _DEBUG_CONFIGS } from "../../config/debug";
 import {
-  getCurrentStudyFileAsync,
   storeCurrentStudyFileAsync,
   clearCurrentStudyFileAsync,
+  studyFileExistsAsync,
+  getCurrentStudyInfoAsync,
+  getCurrentStreamsAsync,
 } from "./asyncStorage/studyFile";
 import { parseJsonToStudyFile } from "./schemas/StudyFile";
-import { StudyFile, Names, StudyInfo, StreamName } from "./types";
+import { StudyFile, Names, StudyInfo, StreamName, Streams } from "./types";
 
 /**
  * Returns whether the study file should be downloaded (or redownloaded if
@@ -18,8 +20,7 @@ export async function shouldDownloadStudyFileAsync(): Promise<boolean> {
     return true;
   }
 
-  const currentStudyFile = await getCurrentStudyFileAsync();
-  if (currentStudyFile === null) {
+  if (!(await studyFileExistsAsync())) {
     return true;
   }
   // TODO: MAYBE ADD A FIELD IN STUDY INFO SUCH THAT WE WILL FETCH THAT URL
@@ -56,16 +57,43 @@ export async function downloadStudyFileAsync(
 }
 
 /**
- * Returns the current study file.
+ * Returns the stored study info.
+ * Throws an error if there isn't any current study file stored.
+ */
+export async function getStudyInfoAsync(): Promise<StudyInfo> {
+  const currentStudyInfo = await getCurrentStudyInfoAsync();
+  if (currentStudyInfo === null) {
+    throw new Error("getCurrentStudyInfoAsync = null");
+  }
+
+  return currentStudyInfo;
+}
+
+/**
+ * Returns the stored streams.
+ * Throws an error if there isn't any current study file stored.
+ */
+export async function getStreamsAsync(): Promise<Streams> {
+  const currentStreams = await getCurrentStreamsAsync();
+  if (currentStreams === null) {
+    throw new Error("getCurrentStreamsAsync = null");
+  }
+
+  return currentStreams;
+}
+
+/**
+ * *** Use the more specific `getStudyInfoAsync()` or `getStreamsAsync()` if
+ * possible. ***
+ *
+ * Returns the stored study file.
  * Throws an error if there isn't any current study file stored.
  */
 export async function getStudyFileAsync(): Promise<StudyFile> {
-  const currentStudyFile = await getCurrentStudyFileAsync();
-  if (currentStudyFile === null) {
-    throw new Error("getCurrentStudyFileAsync = null");
-  }
+  const studyInfo = await getStudyInfoAsync();
+  const streams = await getStreamsAsync();
 
-  return currentStudyFile;
+  return { studyInfo, streams };
 }
 
 // TODO: DECOUPLE FUNCTIONS LIKE THIS
@@ -74,13 +102,11 @@ export async function getNamesFileAsync(): Promise<Names> {
   return names;
 }
 
-export function getAllStreamNames(survey: StudyFile): StreamName[] {
-  return Object.keys(
-    survey.studyInfo.streamsStartingQuestionIds,
-  ) as StreamName[];
+export function getAllStreamNames(studyInfo: StudyInfo): StreamName[] {
+  return Object.keys(studyInfo.streamsStartingQuestionIds) as StreamName[];
 }
 export async function getAllStreamNamesAsync(): Promise<StreamName[]> {
-  return getAllStreamNames(await getStudyFileAsync());
+  return getAllStreamNames(await getStudyInfoAsync());
 }
 
 export function isTimeThisWeek(time: Date, studyInfo: StudyInfo): boolean {
@@ -89,5 +115,5 @@ export function isTimeThisWeek(time: Date, studyInfo: StudyInfo): boolean {
   });
 }
 export async function isTimeThisWeekAsync(time: Date): Promise<boolean> {
-  return isTimeThisWeek(time, (await getStudyFileAsync()).studyInfo);
+  return isTimeThisWeek(time, await getStudyInfoAsync());
 }

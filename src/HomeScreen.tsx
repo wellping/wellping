@@ -79,7 +79,8 @@ const styles = StyleSheet.create({
 });
 
 interface HomeScreenProps {
-  survey: StudyFile;
+  studyInfo: StudyInfo;
+  streams: Streams;
   logout: () => Promise<void>;
 }
 
@@ -148,7 +149,7 @@ export default class HomeScreen extends React.Component<
       await Notifications.setBadgeNumberAsync(0);
     }
 
-    const studyInfo = this.props.survey.studyInfo;
+    const studyInfo = this.props.studyInfo;
     await setNotificationsAsync(studyInfo);
 
     const doEveryHalfMinutes = async () => {
@@ -200,7 +201,7 @@ export default class HomeScreen extends React.Component<
   }
 
   async startSurveyAsync() {
-    const studyInfo = this.props.survey.studyInfo;
+    const studyInfo = this.props.studyInfo;
 
     const todayWeekday = getDay(new Date());
     const todayPings = await getTodayPingsAsync();
@@ -250,8 +251,7 @@ export default class HomeScreen extends React.Component<
   }
 
   render() {
-    const { survey } = this.props;
-    const studyInfo = survey.studyInfo;
+    const { studyInfo, streams } = this.props;
 
     const {
       allowsNotifications,
@@ -384,7 +384,7 @@ export default class HomeScreen extends React.Component<
               answer.lastUpdateDate = new Date();
               await answer.save();*/
 
-              await shareDatabaseFileAsync(survey.studyInfo.id);
+              await shareDatabaseFileAsync(studyInfo.id);
             }}
           />
           <Button
@@ -600,7 +600,7 @@ export default class HomeScreen extends React.Component<
 
     if (currentPing == null) {
       const streamButtons = [];
-      for (const streamName of getAllStreamNames(survey)) {
+      for (const streamName of getAllStreamNames(studyInfo)) {
         streamButtons.push(
           <Button
             color="orange"
@@ -651,9 +651,9 @@ export default class HomeScreen extends React.Component<
       <View style={{ height: "100%" }}>
         {ExtraView}
         <SurveyScreen
-          survey={survey.streams[currentPing.streamName]}
+          survey={streams[currentPing.streamName]}
           surveyStartingQuestionId={
-            survey.studyInfo.streamsStartingQuestionIds[currentPing.streamName]
+            studyInfo.streamsStartingQuestionIds[currentPing.streamName]
           }
           ping={currentPing}
           previousState={this.state.storedPingStateAsync}

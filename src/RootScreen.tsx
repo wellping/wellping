@@ -277,7 +277,8 @@ export default class RootScreen extends React.Component<
 
     return (
       <HomeScreen
-        survey={this.state.survey}
+        studyInfo={this.state.survey.studyInfo}
+        streams={this.state.survey.streams}
         logout={async () => {
           await clearUserAsync();
           this.setState({ userInfo: null });
