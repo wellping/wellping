@@ -56,6 +56,46 @@ exports[`MultipleTextQuestionSchema choices should not be null 1`] = `
 "
 `;
 
+exports[`MultipleTextQuestionSchema forceChoice should not be anything other than boolean: number 1`] = `
+"1 validation issue(s)
+
+  Issue #0: invalid_union at forceChoice
+  Invalid input
+"
+`;
+
+exports[`MultipleTextQuestionSchema forceChoice should not be anything other than boolean: string true 1`] = `
+"1 validation issue(s)
+
+  Issue #0: invalid_union at forceChoice
+  Invalid input
+"
+`;
+
+exports[`MultipleTextQuestionSchema forceChoice should not be null 1`] = `
+"1 validation issue(s)
+
+  Issue #0: invalid_union at forceChoice
+  Invalid input
+"
+`;
+
+exports[`MultipleTextQuestionSchema forceChoice should not be set if choices is not set: false 1`] = `
+"1 validation issue(s)
+
+  Issue #0: custom_error at forceChoice
+  \`forceChoice\` can only be set if \`choices\` is set.
+"
+`;
+
+exports[`MultipleTextQuestionSchema forceChoice should not be set if choices is not set: true 1`] = `
+"1 validation issue(s)
+
+  Issue #0: custom_error at forceChoice
+  \`forceChoice\` can only be set if \`choices\` is set.
+"
+`;
+
 exports[`MultipleTextQuestionSchema indexName should not be empty 1`] = `
 "1 validation issue(s)
 

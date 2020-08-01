@@ -351,4 +351,105 @@ describe("MultipleTextQuestionSchema", () => {
       }).not.toThrowError();
     });
   });
+
+  describe("forceChoice", () => {
+    const question = {
+      id: "Feel_Ideal",
+      type: QuestionType.MultipleText,
+      question: "Multiple text question",
+      variableName: "TARGET_NAME",
+      indexName: "INDEX",
+      max: 3,
+      choices: [
+        {
+          key: "hello",
+          value: "HELLO!",
+        },
+        {
+          key: "arefly",
+          value: "arefly.com!",
+        },
+        {
+          key: "world",
+          value: "WORLD!",
+        },
+      ],
+      next: "Next_Question",
+    };
+
+    test("can be undefined", () => {
+      expect(() => {
+        MultipleTextQuestionSchema.parse({
+          ...question,
+        });
+      }).not.toThrowError();
+    });
+
+    test("should not be null", () => {
+      expect(() => {
+        MultipleTextQuestionSchema.parse({
+          ...question,
+          forceChoice: null,
+        });
+      }).toThrowErrorMatchingSnapshot();
+    });
+
+    test("should not be anything other than boolean", () => {
+      expect(() => {
+        MultipleTextQuestionSchema.parse({
+          ...question,
+          forceChoice: "true",
+        });
+      }).toThrowErrorMatchingSnapshot("string true");
+
+      expect(() => {
+        MultipleTextQuestionSchema.parse({
+          ...question,
+          forceChoice: 1,
+        });
+      }).toThrowErrorMatchingSnapshot("number");
+    });
+
+    test("can be true of false", () => {
+      expect(() => {
+        MultipleTextQuestionSchema.parse({
+          ...question,
+          forceChoice: true,
+        });
+      }).not.toThrowError();
+
+      expect(() => {
+        MultipleTextQuestionSchema.parse({
+          ...question,
+          forceChoice: false,
+        });
+      }).not.toThrowError();
+    });
+
+    test("should not be set if choices is not set", () => {
+      expect(() => {
+        MultipleTextQuestionSchema.parse({
+          ...question,
+          choices: undefined,
+          forceChoice: true,
+        });
+      }).toThrowErrorMatchingSnapshot("true");
+
+      expect(() => {
+        MultipleTextQuestionSchema.parse({
+          ...question,
+          choices: undefined,
+          forceChoice: false,
+        });
+      }).toThrowErrorMatchingSnapshot("false");
+
+      expect(() => {
+        MultipleTextQuestionSchema.parse({
+          ...question,
+          choices: undefined,
+          forceChoice: undefined,
+        });
+      }).not.toThrowError();
+    });
+  });
 });

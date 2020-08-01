@@ -163,7 +163,20 @@ export const MultipleTextQuestionSchema = BaseQuestionSchema.extend({
   // will go to `next` directly.
   // TODO: MAKE THIS null = stop HERE
   fallbackItemStartId: QuestionIdSchema.nullable().optional(),
-});
+}).refine(
+  (question) => {
+    if (question.forceChoice !== undefined) {
+      if (question.choices === undefined) {
+        return false;
+      }
+    }
+    return true;
+  },
+  {
+    message: "`forceChoice` can only be set if `choices` is set.",
+    path: ["forceChoice"],
+  },
+);
 
 export const HowLongAgoQuestionSchema = BaseQuestionSchema.extend({
   type: z.literal(QuestionTypeSchema.enum.HowLongAgo),
