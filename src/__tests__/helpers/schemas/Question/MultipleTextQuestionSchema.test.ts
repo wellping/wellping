@@ -632,4 +632,56 @@ describe("MultipleTextQuestionSchema", () => {
       }).toThrowErrorMatchingSnapshot();
     });
   });
+
+  describe("fallbackItemStartId", () => {
+    const question = {
+      id: "Feel_Ideal",
+      type: QuestionType.MultipleText,
+      question: "Multiple text question",
+      variableName: "TARGET_NAME",
+      indexName: "INDEX",
+      max: 3,
+      next: "Next_Question",
+    };
+
+    test("can be undefined", () => {
+      expect(() => {
+        MultipleTextQuestionSchema.parse({
+          ...question,
+        });
+      }).not.toThrowError();
+    });
+
+    test("can be null", () => {
+      expect(() => {
+        MultipleTextQuestionSchema.parse({
+          ...question,
+          fallbackItemStartId: null,
+        });
+      }).not.toThrowError();
+    });
+
+    test("can be question ID", () => {
+      expect(() => {
+        MultipleTextQuestionSchema.parse({
+          ...question,
+          fallbackItemStartId: "Hello",
+        });
+      }).not.toThrowError();
+
+      expect(() => {
+        MultipleTextQuestionSchema.parse({
+          ...question,
+          fallbackItemStartId: "hello_world",
+        });
+      }).not.toThrowError();
+
+      expect(() => {
+        MultipleTextQuestionSchema.parse({
+          ...question,
+          fallbackItemStartId: "HELLO WORLD",
+        });
+      }).toThrowErrorMatchingSnapshot();
+    });
+  });
 });

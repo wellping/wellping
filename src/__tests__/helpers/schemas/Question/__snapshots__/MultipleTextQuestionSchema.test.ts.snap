@@ -56,6 +56,14 @@ exports[`MultipleTextQuestionSchema choices should not be null 1`] = `
 "
 `;
 
+exports[`MultipleTextQuestionSchema fallbackItemStartId can be question ID 1`] = `
+"1 validation issue(s)
+
+  Issue #0: custom_error at fallbackItemStartId
+  Question ID can only include letters, numbers, and \\"_\\".
+"
+`;
+
 exports[`MultipleTextQuestionSchema forceChoice should not be anything other than boolean: number 1`] = `
 "1 validation issue(s)
 
