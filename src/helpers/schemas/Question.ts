@@ -149,7 +149,9 @@ export const MultipleTextQuestionSchema = BaseQuestionSchema.extend({
   indexName: z.string().nonempty(),
   variableName: z.string().nonempty(),
   placeholder: z.string().optional(),
-  choices: z.union([z.literal("NAMES"), z.array(ChoiceSchema)]).optional(),
+  choices: z
+    .union([z.literal("NAMES"), z.array(ChoiceSchema).nonempty()])
+    .optional(),
   forceChoice: z.boolean().optional(),
   max: z.number().int().positive(),
   // The max number of text field will be `max` minus the number of text the

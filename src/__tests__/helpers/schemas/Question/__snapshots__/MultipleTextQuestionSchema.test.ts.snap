@@ -1,5 +1,61 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`MultipleTextQuestionSchema choices TODO: should not be string other than \`NAMES\`: string 1`] = `
+"1 validation issue(s)
+
+  Issue #0: invalid_literal_value at choices
+  Input must be \\"NAMES\\"
+"
+`;
+
+exports[`MultipleTextQuestionSchema choices TODO: should not be string other than \`NAMES\`: url 1`] = `
+"1 validation issue(s)
+
+  Issue #0: invalid_literal_value at choices
+  Input must be \\"NAMES\\"
+"
+`;
+
+exports[`MultipleTextQuestionSchema choices should not be an array of string 1`] = `
+"1 validation issue(s)
+
+  Issue #0: invalid_literal_value at choices
+  Input must be \\"NAMES\\"
+"
+`;
+
+exports[`MultipleTextQuestionSchema choices should not be anything besides array and string: number 1`] = `
+"1 validation issue(s)
+
+  Issue #0: invalid_literal_value at choices
+  Input must be \\"NAMES\\"
+"
+`;
+
+exports[`MultipleTextQuestionSchema choices should not be anything besides array and string: object 1`] = `
+"1 validation issue(s)
+
+  Issue #0: invalid_literal_value at choices
+  Input must be \\"NAMES\\"
+"
+`;
+
+exports[`MultipleTextQuestionSchema choices should not be empty array 1`] = `
+"1 validation issue(s)
+
+  Issue #0: invalid_union at choices
+  Invalid input
+"
+`;
+
+exports[`MultipleTextQuestionSchema choices should not be null 1`] = `
+"1 validation issue(s)
+
+  Issue #0: invalid_literal_value at choices
+  Input must be \\"NAMES\\"
+"
+`;
+
 exports[`MultipleTextQuestionSchema indexName should not be empty 1`] = `
 "1 validation issue(s)
 

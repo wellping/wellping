@@ -228,4 +228,127 @@ describe("MultipleTextQuestionSchema", () => {
       }).not.toThrowError();
     });
   });
+
+  describe("choices", () => {
+    const question = {
+      id: "Feel_Ideal",
+      type: QuestionType.MultipleText,
+      question: "Multiple text question",
+      variableName: "TARGET_NAME",
+      indexName: "INDEX",
+      max: 3,
+      next: "Next_Question",
+    };
+
+    test("can be undefined", () => {
+      expect(() => {
+        MultipleTextQuestionSchema.parse({
+          ...question,
+        });
+      }).not.toThrowError();
+    });
+
+    test("should not be null", () => {
+      expect(() => {
+        MultipleTextQuestionSchema.parse({
+          ...question,
+          choices: null,
+        });
+      }).toThrowErrorMatchingSnapshot();
+    });
+
+    test("should not be anything besides array and string", () => {
+      expect(() => {
+        MultipleTextQuestionSchema.parse({
+          ...question,
+          choices: 4,
+        });
+      }).toThrowErrorMatchingSnapshot("number");
+
+      expect(() => {
+        MultipleTextQuestionSchema.parse({
+          ...question,
+          choices: {
+            "HELLO WORLD": "hi!",
+          },
+        });
+      }).toThrowErrorMatchingSnapshot("object");
+    });
+
+    test("should not be empty array", () => {
+      expect(() => {
+        MultipleTextQuestionSchema.parse({
+          ...question,
+          choices: [],
+        });
+      }).toThrowErrorMatchingSnapshot();
+    });
+
+    test("should not be an array of string", () => {
+      expect(() => {
+        MultipleTextQuestionSchema.parse({
+          ...question,
+          choices: ["hello", "world"],
+        });
+      }).toThrowErrorMatchingSnapshot();
+    });
+
+    // TODO: WILL ONLY ACCEPT URL / ARRAY IN THE FUTURE
+    test("TODO: should not be string other than `NAMES`", () => {
+      expect(() => {
+        MultipleTextQuestionSchema.parse({
+          ...question,
+          choices: "NAMES",
+        });
+      }).not.toThrowError();
+
+      expect(() => {
+        MultipleTextQuestionSchema.parse({
+          ...question,
+          choices: "helloworld",
+        });
+      }).toThrowErrorMatchingSnapshot("string");
+
+      expect(() => {
+        MultipleTextQuestionSchema.parse({
+          ...question,
+          choices: "https://example.com/choices.json",
+        });
+      }).toThrowErrorMatchingSnapshot("url");
+    });
+
+    test("can be any Choice array", () => {
+      expect(() => {
+        MultipleTextQuestionSchema.parse({
+          ...question,
+          choices: [
+            {
+              key: "hello",
+              value: "HELLO WORLD!",
+            },
+          ],
+        });
+      }).not.toThrowError();
+
+      expect(() => {
+        MultipleTextQuestionSchema.parse({
+          ...question,
+          choices: [
+            {
+              key: "hello",
+              value: "HELLO!",
+            },
+            {
+              key: "arefly",
+              value: "arefly.com!",
+            },
+            {
+              key: "world",
+              value: "WORLD!",
+            },
+          ],
+        });
+      }).not.toThrowError();
+    });
+  });
 });
