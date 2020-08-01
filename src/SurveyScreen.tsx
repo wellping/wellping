@@ -270,8 +270,9 @@ export default class SurveyScreen extends React.Component<
             prevState.currentQuestionId!
           ] as MultipleTextAnswerEntity;
 
-          const valuesLength = Object.keys(
-            currentQuestionAnswer.data?.value || {},
+          const valuesLength = (currentQuestionAnswer.data
+            ? currentQuestionAnswer.data.value
+            : []
           ).length;
 
           if (
@@ -299,15 +300,11 @@ export default class SurveyScreen extends React.Component<
 
           const repeatedStartInfo: NextData[] = [];
           for (let i = 1; i <= valuesLength; i++) {
-            const eachFieldId = currentQuestion.eachId.replace(
-              withVariable(currentQuestion.indexName),
-              `${i}`,
-            );
             repeatedStartInfo.push({
               questionId: currentQuestion.repeatedItemStartId,
               extraMetaData: {
                 [currentQuestion.variableName]:
-                  currentQuestionAnswer.data.value[eachFieldId],
+                  currentQuestionAnswer.data.value[i - 1],
                 [currentQuestion.indexName]: i,
               },
             });
@@ -342,7 +339,7 @@ export default class SurveyScreen extends React.Component<
               ] as MultipleTextAnswerEntity;
               if (targetQuestionAnswer && targetQuestionAnswer.data) {
                 if (
-                  Object.keys(targetQuestionAnswer.data.value).length ===
+                  targetQuestionAnswer.data.value.length ===
                   currentQuestion.condition.target
                 ) {
                   selectedBranchId = currentQuestion.branchStartId.true;

@@ -108,7 +108,6 @@
       },
       "SocInteraction_Names": {
         "id": "SocInteraction_Names",
-        "eachId": "Name_[__INDEX__]",
         "type": "MultipleText",
         "question": "Who were you talking to?",
         "placeholder": "Enter a name...",
@@ -120,7 +119,6 @@
       },
       "SocInteraction_Relationships": {
         "id": "SocInteraction_Relationships",
-        "eachId": "Rel_[__INDEX__]",
         "type": "MultipleText",
         "question": "How would you best describe your relationship to the people you had an interaction with?",
         "placeholder": "Select a category...",

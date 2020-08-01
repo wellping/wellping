@@ -148,7 +148,6 @@ export const MultipleTextQuestionSchema = BaseQuestionSchema.extend({
   type: z.literal(QuestionTypeSchema.enum.MultipleText),
   indexName: z.string().nonempty(),
   variableName: z.string().nonempty(),
-  eachId: z.string().nonempty(),
   placeholder: z.string().optional(),
   choices: z.union([z.literal("NAMES"), z.array(ChoiceSchema)]).optional(),
   forceChoice: z.boolean().optional(),
