@@ -46,20 +46,29 @@ export async function shouldDownloadStudyFileAsync(): Promise<boolean> {
 
 /**
  * Downloads a study file (in JSON format) from `url`.
- * If the study file is successfully downloaded, parsed, and stored, stores
- * the downloaded study file in Async Storage.
- * Returns `null` if the whole process is successful.
- * Returns the error message if any part of the process is unsuccessful.
+ * Returns the content of the file (as a string).
+ * Throws an error if the download process failed.
  */
-export async function downloadStudyFileAsync(
-  url: string,
+export async function downloadStudyFileAsync(url: string): Promise<string> {
+  // TODO: PROBABLY CHECK E.G. IF `url` == "__WELLPING_LOCAL__", then load this local config
+  // TODO: ACTUAL DOWNLOAD PROCESS.
+  const rawJsonString = JSON.stringify(require("../../config/survey.json"));
+  return rawJsonString;
+}
+
+/**
+ * Parses a study file from `rawJsonString` (a string that can be parsed to a
+ * JSON object).
+ * If the study file is successfully parsed, stores the downloaded study file
+ * in Async Storage.
+ * Returns `null` if all processes are successful.
+ * Returns the error message if any process is unsuccessful.
+ */
+export async function parseAndStoreStudyFileAsync(
+  rawJsonString: string,
 ): Promise<string | null> {
   try {
-    // TODO: PROBABLY CHECK E.G. IF `url` == "__WELLPING_LOCAL__", then load this local config
-    // TODO: ACTUAL DOWNLOAD PROCESS.
-    const study = require("../../config/survey.json");
-
-    const parsedStudy = parseJsonToStudyFile(study);
+    const parsedStudy = parseJsonToStudyFile(JSON.parse(rawJsonString));
     await storeCurrentStudyFileAsync(parsedStudy);
     return null;
   } catch (e) {

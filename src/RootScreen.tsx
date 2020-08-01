@@ -14,6 +14,7 @@ import { getCriticalProblemTextForUser, shareDebugText } from "./helpers/debug";
 import {
   getStudyFileAsync,
   downloadStudyFileAsync,
+  parseAndStoreStudyFileAsync,
   shouldDownloadStudyFileAsync,
 } from "./helpers/studyFile";
 import { StudyFile } from "./helpers/types";
@@ -46,11 +47,38 @@ export default class RootScreen extends React.Component<
     };
   }
 
-  async downloadStudyFileHandleErrorAsync(url: string): Promise<boolean> {
-    const downloadError = await downloadStudyFileAsync(url);
-    if (downloadError !== null) {
+  /**
+   * Returns `false` if the downloading or the parsing process is unsuccessful.
+   * Returns `true` otherwise.
+   *
+   * Notice that if `isRedownload` is true, the function still returns `true`
+   * in case of downloading failure (but not parsing failure).
+   */
+  async downloadAndParseStudyFileAsync(
+    url: string,
+    isRedownload: boolean = false,
+  ): Promise<boolean> {
+    let rawJsonString: string;
+    try {
+      rawJsonString = await downloadStudyFileAsync(url);
+    } catch (e) {
+      if (!isRedownload) {
+        alert("Download failed!");
+        this.setState({
+          errorText: `Download failed: ${e}`,
+        });
+        return false;
+      } else {
+        // If it is re-download, we act as if nothing happens because at least
+        // the user can continue to fill the valid version they have right now.
+        return true;
+      }
+    }
+
+    const parseError = await parseAndStoreStudyFileAsync(rawJsonString);
+    if (parseError !== null) {
       this.setState({
-        studyFileErrorText: downloadError,
+        studyFileErrorText: parseError,
       });
       return false;
     }
@@ -61,7 +89,7 @@ export default class RootScreen extends React.Component<
     const user = await getUserAsync();
     if (user) {
       if (await shouldDownloadStudyFileAsync()) {
-        if (!(await this.downloadStudyFileHandleErrorAsync("TODO: "))) {
+        if (!(await this.downloadAndParseStudyFileAsync("TODO: ", true))) {
           this.setState({ isLoading: false });
           return;
         }
@@ -230,9 +258,7 @@ export default class RootScreen extends React.Component<
                         });
 
                         if (
-                          !(await this.downloadStudyFileHandleErrorAsync(
-                            "TODO: ",
-                          ))
+                          !(await this.downloadAndParseStudyFileAsync("TODO: "))
                         ) {
                           return;
                         }
