@@ -8,11 +8,27 @@ exports[`MultipleTextQuestionSchema indexName should not be empty 1`] = `
 "
 `;
 
+exports[`MultipleTextQuestionSchema indexName should not be null 1`] = `
+"1 validation issue(s)
+
+  Issue #0: invalid_type at indexName
+  Expected string, received null
+"
+`;
+
 exports[`MultipleTextQuestionSchema indexName should not be undefined 1`] = `
 "1 validation issue(s)
 
   Issue #0: invalid_type at indexName
   Required
+"
+`;
+
+exports[`MultipleTextQuestionSchema placeholder should not be null 1`] = `
+"1 validation issue(s)
+
+  Issue #0: invalid_union at placeholder
+  Invalid input
 "
 `;
 
@@ -29,6 +45,14 @@ exports[`MultipleTextQuestionSchema variableName should not be empty 1`] = `
 
   Issue #0: too_small at variableName
   Should be at least 1 characters
+"
+`;
+
+exports[`MultipleTextQuestionSchema variableName should not be null 1`] = `
+"1 validation issue(s)
+
+  Issue #0: invalid_type at variableName
+  Expected string, received null
 "
 `;
 
