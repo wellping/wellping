@@ -1,0 +1,17 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`QuestionsListSchema should not accept inconsistent key and id: multiple 1`] = `
+"1 validation issue(s)
+
+  Issue #0: custom_error at 
+  The key for the question in questions list should be same as its question ID.
+"
+`;
+
+exports[`QuestionsListSchema should not accept inconsistent key and id: single 1`] = `
+"1 validation issue(s)
+
+  Issue #0: custom_error at 
+  The key for the question in questions list should be same as its question ID.
+"
+`;

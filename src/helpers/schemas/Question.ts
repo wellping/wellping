@@ -281,7 +281,7 @@ export const QuestionsListSchema = z.record(QuestionSchema).refine(
   },
   {
     message:
-      "The key in for the question in questions list should be same as " +
+      "The key for the question in questions list should be same as " +
       "its question ID.",
   },
 );
