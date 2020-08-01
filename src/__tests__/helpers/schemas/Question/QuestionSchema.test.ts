@@ -89,4 +89,15 @@ describe("QuestionSchema", () => {
       });
     }).toThrowErrorMatchingSnapshot();
   });
+
+  test("id should not be empty", () => {
+    expect(() => {
+      QuestionSchema.parse({
+        id: "",
+        type: QuestionType.HowLongAgo,
+        question: "how long ago question",
+        next: "Next_Question",
+      });
+    }).toThrowErrorMatchingSnapshot();
+  });
 });

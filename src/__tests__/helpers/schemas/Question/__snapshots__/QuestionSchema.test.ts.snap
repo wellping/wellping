@@ -17,6 +17,17 @@ exports[`QuestionSchema empty 1`] = `
 "
 `;
 
+exports[`QuestionSchema id should not be empty 1`] = `
+"2 validation issue(s)
+
+  Issue #0: too_small at id
+  Should be at least 1 characters
+
+  Issue #1: custom_error at id
+  Question ID can only include letters, numbers, and \\"_\\".
+"
+`;
+
 exports[`QuestionSchema incomplete fields 1`] = `
 "1 validation issue(s)
 
