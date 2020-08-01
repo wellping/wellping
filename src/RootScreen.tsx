@@ -17,6 +17,7 @@ import {
   parseAndStoreStudyFileAsync,
   shouldDownloadStudyFileAsync,
 } from "./helpers/studyFile";
+import { styles } from "./helpers/styles";
 import { StudyFile } from "./helpers/types";
 
 interface RootScreenProps {}
@@ -140,7 +141,7 @@ export default class RootScreen extends React.Component<
     if (isLoading) {
       return (
         <View>
-          <Text>Loading...</Text>
+          <Text style={styles.onlyTextStyle}>Loading...</Text>
         </View>
       );
     }

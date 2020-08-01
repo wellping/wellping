@@ -8,7 +8,6 @@ import {
   View,
   ScrollView,
   Alert,
-  StyleSheet,
   Clipboard,
   Platform,
   TouchableWithoutFeedback,
@@ -61,16 +60,8 @@ import {
   getNumbersOfPingsForAllStreamNames,
 } from "./helpers/pings";
 import { getAllStreamNames, getStudyInfoAsync } from "./helpers/studyFile";
+import { styles } from "./helpers/styles";
 import { Streams, StreamName, StudyInfo } from "./helpers/types";
-
-const styles = StyleSheet.create({
-  onlyTextStyle: {
-    textAlign: "center",
-    marginTop: 30,
-    fontSize: 25,
-    marginHorizontal: 10,
-  },
-});
 
 interface HomeScreenProps {
   studyInfo: StudyInfo;
