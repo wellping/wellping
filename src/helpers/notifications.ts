@@ -19,7 +19,7 @@ import {
   getNotificationTimesAsync,
   storeNotificationTimesAsync,
 } from "./asyncStorage/notificationTimes";
-import { isTimeThisWeekAsync, getSurveyFileAsync } from "./configFiles";
+import { isTimeThisWeekAsync } from "./configFiles";
 import { getThisWeekPingsAsync } from "./pings";
 import { StudyInfo } from "./types";
 

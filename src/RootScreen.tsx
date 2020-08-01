@@ -9,7 +9,7 @@ import {
   User,
   clearUserAsync,
 } from "./helpers/asyncStorage/user";
-import { getSurveyFileAsync } from "./helpers/configFiles";
+import { getStudyFileAsync } from "./helpers/configFiles";
 import { connectDatabaseAsync } from "./helpers/database";
 import { getCriticalProblemTextForUser } from "./helpers/debug";
 import { StudyFile } from "./helpers/types";
@@ -43,7 +43,7 @@ export default class RootScreen extends React.Component<
   async componentDidMount() {
     const user = await getUserAsync();
     if (user) {
-      const survey = await getSurveyFileAsync();
+      const survey = await getStudyFileAsync();
 
       await connectDatabaseAsync(survey.studyInfo.id);
 
@@ -150,14 +150,14 @@ export default class RootScreen extends React.Component<
                       text: "Review",
                       onPress: async () => {
                         await WebBrowser.openBrowserAsync(
-                          (await getSurveyFileAsync()).studyInfo.consentFormUrl,
+                          (await getStudyFileAsync()).studyInfo.consentFormUrl,
                         );
                         this.setState({
                           errorText: "Downloading survey...",
                         });
 
                         // TODO: await downloadSurvey;
-                        const survey = await getSurveyFileAsync();
+                        const survey = await getStudyFileAsync();
 
                         this.setState({
                           userInfo: user,

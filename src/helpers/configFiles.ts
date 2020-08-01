@@ -4,7 +4,7 @@ import { getCriticalProblemTextForUser } from "./debug";
 import { parseJsonToStudyFile } from "./schemas/StudyFile";
 import { StudyFile, Names, StudyInfo, StreamName } from "./types";
 
-export async function getSurveyFileAsync(): Promise<StudyFile> {
+export async function getStudyFileAsync(): Promise<StudyFile> {
   const survey = require("../../config/survey.json");
 
   return parseJsonToStudyFile(survey);
@@ -15,7 +15,7 @@ export async function getSurveyFileAsync(): Promise<StudyFile> {
   } catch (e) {
     console.warn("Your study file has problem:");
     console.warn(e.message);
-    alert(getCriticalProblemTextForUser("getSurveyFileAsync"));
+    alert(getCriticalProblemTextForUser("getStudyFileAsync"));
   }*/
 }
 
@@ -29,7 +29,7 @@ export function getAllStreamNames(survey: StudyFile): StreamName[] {
   return Object.keys(survey.meta.startingQuestionIds) as StreamName[];
 }
 export async function getAllStreamNamesAsync(): Promise<StreamName[]> {
-  return getAllStreamNames(await getSurveyFileAsync());
+  return getAllStreamNames(await getStudyFileAsync());
 }
 
 export function isTimeThisWeek(time: Date, studyInfo: StudyInfo): boolean {
@@ -38,5 +38,5 @@ export function isTimeThisWeek(time: Date, studyInfo: StudyInfo): boolean {
   });
 }
 export async function isTimeThisWeekAsync(time: Date): Promise<boolean> {
-  return isTimeThisWeek(time, (await getSurveyFileAsync()).studyInfo);
+  return isTimeThisWeek(time, (await getStudyFileAsync()).studyInfo);
 }
