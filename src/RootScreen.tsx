@@ -4,6 +4,12 @@ import { Button, TextInput, Text, View, ScrollView, Alert } from "react-native";
 
 import HomeScreen from "./HomeScreen";
 import { registerUserAsync } from "./helpers/apiManager";
+import { clearCurrentStudyFileAsync } from "./helpers/asyncStorage/studyFile";
+import {
+  storeTempStudyFileAsync,
+  getTempStudyFileAsync,
+  clearTempStudyFileAsync,
+} from "./helpers/asyncStorage/tempStudyFile";
 import {
   getUserAsync,
   User,
@@ -15,7 +21,7 @@ import {
   getStudyFileAsync,
   downloadStudyFileAsync,
   parseAndStoreStudyFileAsync,
-  shouldDownloadStudyFileAsync,
+  studyFileExistsAsync,
 } from "./helpers/studyFile";
 import { styles } from "./helpers/styles";
 import { StudyFile } from "./helpers/types";
@@ -48,6 +54,18 @@ export default class RootScreen extends React.Component<
     };
   }
 
+  async parseStudyFileAsync(rawJsonString: string): Promise<boolean> {
+    const parseErrorMessage = await parseAndStoreStudyFileAsync(rawJsonString);
+    if (parseErrorMessage !== null) {
+      this.setState({
+        isLoading: false,
+        studyFileErrorText: parseErrorMessage,
+      });
+      return false;
+    }
+    return true;
+  }
+
   /**
    * Returns `false` if the downloading or the parsing process is unsuccessful.
    * Returns `true` otherwise.
@@ -70,9 +88,9 @@ export default class RootScreen extends React.Component<
         } else {
           downloadErrorMessage = `Unknown error: ${e}`;
         }
-        alert("Download failed!");
+        alert("Failed to download study data! Please try again later.");
         this.setState({
-          errorText: `Download failed: ${downloadErrorMessage}`,
+          errorText: `Failed to download study data!\n\n${downloadErrorMessage}`,
         });
         return false;
       } else {
@@ -82,35 +100,61 @@ export default class RootScreen extends React.Component<
       }
     }
 
-    const parseErrorMessage = await parseAndStoreStudyFileAsync(rawJsonString);
-    if (parseErrorMessage !== null) {
-      this.setState({
-        studyFileErrorText: parseErrorMessage,
-      });
-      return false;
+    if (isRedownload) {
+      // Store it in temp storage first, parse it next time.
+      await storeTempStudyFileAsync(rawJsonString);
+      return true;
     }
-    return true;
+
+    return this.parseStudyFileAsync(rawJsonString);
+  }
+
+  /**
+   * Loads and parse the study file from the temp study file Async Storage.
+   * Returns `true` if there is no error (or no temp study file).
+   * Returns `false` otherwise.
+   */
+  async loadTempStudyFileAsync(): Promise<boolean> {
+    const tempStudyFile = await getTempStudyFileAsync();
+    if (tempStudyFile === null) {
+      return true;
+    }
+    // We have to `clearTempStudyFileAsync` before `parseStudyFileAsync`
+    // because if the new study info is invalid, `parseStudyFileAsync` clears
+    // study info which `clearTempStudyFileAsync` needs.
+    await clearTempStudyFileAsync();
+    const results = await this.parseStudyFileAsync(tempStudyFile);
+    return results;
   }
 
   async componentDidMount() {
-    const user = await getUserAsync();
-    if (user) {
-      if (await shouldDownloadStudyFileAsync()) {
-        if (!(await this.downloadAndParseStudyFileAsync("TODO: ", true))) {
-          this.setState({ isLoading: false });
-          return;
-        }
+    if (await studyFileExistsAsync()) {
+      if (!(await this.loadTempStudyFileAsync())) {
+        return;
       }
 
       const survey = await getStudyFileAsync();
 
+      // Do it in background because there isn't any urgency to redownload.
+      this.downloadAndParseStudyFileAsync(
+        survey.studyInfo.studyFileJsonURL,
+        true,
+      );
+
+      const user = await getUserAsync();
+      if (user === null) {
+        // This will happen when e.g., the study file is downloads but the user
+        // didn't successfully login.
+        await this.logoutAsync();
+        this.setState({ isLoading: false });
+        return;
+      }
+
       await connectDatabaseAsync(survey.studyInfo.id);
 
-      this.setState({ survey });
-    }
-    this.setState({ userInfo: user, isLoading: false });
-
-    if (user == null) {
+      this.setState({ userInfo: user, survey });
+    } else {
+      // New user.
       Alert.alert(
         "Confirm",
         `Are you at least 18 years of age?`,
@@ -128,10 +172,13 @@ export default class RootScreen extends React.Component<
         { cancelable: false },
       );
     }
+
+    this.setState({ isLoading: false });
   }
 
   async logoutAsync() {
     await clearUserAsync();
+    await clearCurrentStudyFileAsync();
     this.setState({ userInfo: null });
   }
 
@@ -249,7 +296,21 @@ export default class RootScreen extends React.Component<
             title="Log in"
             onPress={async () => {
               this.setState({
-                errorText: "Loading...",
+                errorText: "Loading study data...",
+              });
+
+              if (
+                !(await this.downloadAndParseStudyFileAsync(
+                  "https://wellping_local__.ssnl.stanford.edu/debug.json",
+                ))
+              ) {
+                return;
+              }
+
+              const survey = await getStudyFileAsync();
+
+              this.setState({
+                errorText: "Authenticating...",
               });
 
               const user: User = {
@@ -265,21 +326,12 @@ export default class RootScreen extends React.Component<
                     {
                       text: "Review",
                       onPress: async () => {
-                        this.setState({
-                          errorText: "Downloading study data...",
-                        });
-
-                        if (
-                          !(await this.downloadAndParseStudyFileAsync("TODO: "))
-                        ) {
-                          return;
-                        }
-
-                        const survey = await getStudyFileAsync();
-
                         await WebBrowser.openBrowserAsync(
                           survey.studyInfo.consentFormUrl,
                         );
+
+                        // Because database was not previously connected.
+                        await connectDatabaseAsync(survey.studyInfo.id);
 
                         this.setState({
                           userInfo: user,

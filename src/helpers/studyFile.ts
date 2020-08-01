@@ -24,6 +24,10 @@ export async function isLocalStudyFile(): Promise<boolean> {
  * Returns whether of not the study file is stored locally.
  */
 export async function studyFileExistsAsync() {
+  if (__DEV__ && _DEBUG_CONFIGS().alwaysRedownloadStudyFile) {
+    return false;
+  }
+
   const currentStudyInfo = await getCurrentStudyInfoAsync();
   if (currentStudyInfo === null) {
     return false;
@@ -35,23 +39,6 @@ export async function studyFileExistsAsync() {
   }
 
   return true;
-}
-
-/**
- * Returns whether the study file should be downloaded (or redownloaded if
- * already exists).
- */
-export async function shouldDownloadStudyFileAsync(): Promise<boolean> {
-  if (__DEV__ && _DEBUG_CONFIGS().alwaysRedownloadStudyFile) {
-    return true;
-  }
-
-  if (!(await studyFileExistsAsync())) {
-    return true;
-  }
-  // TODO: MAYBE ADD A FIELD IN STUDY INFO SUCH THAT WE WILL FETCH THAT URL
-  // TO CHECK MD5 TO DETERMINE IF THE FILE SHOULD BE REDOWNLOADED.
-  return false;
 }
 
 /**
