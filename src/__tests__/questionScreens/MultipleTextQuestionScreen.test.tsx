@@ -11,7 +11,7 @@ import { ReactTestInstance } from "react-test-renderer";
 
 import { MultipleTextAnswerEntity } from "../../entities/AnswerEntity";
 import { AnswersList, MultipleTextAnswerData } from "../../helpers/answerTypes";
-import { QuestionType, withVariable } from "../../helpers/helpers";
+import { QuestionType } from "../../helpers/helpers";
 import { MultipleTextQuestion } from "../../helpers/types";
 import MultipleTextQuestionScreen from "../../questionScreens/MultipleTextQuestionScreen";
 import { simplePipeInExtraMetaData } from "../helper";
@@ -65,16 +65,15 @@ const basicTestForQuestionAsync = async (
   let textInputsLength = question.max;
   if (question.maxMinus) {
     if (allAnswers[question.maxMinus]) {
-      textInputsLength -= Object.keys(
-        (allAnswers[question.maxMinus] as MultipleTextAnswerEntity).data
-          ?.value || {},
-      ).length;
+      const data = (allAnswers[question.maxMinus] as MultipleTextAnswerEntity)
+        .data;
+      textInputsLength -= (data ? data.value : []).length;
     }
   }
   expect(textInputs).toHaveLength(textInputsLength);
   expect(textInputs.length).toMatchSnapshot("text inputs length");
 
-  const expectedAnswerData: MultipleTextAnswerData = { value: {} };
+  const expectedAnswerData: MultipleTextAnswerData = { value: [] };
   let callCount = 0;
   for (let i = 0; i < textInputsLength; i++) {
     const textInput = getTextInput(i, getAllByA11yLabel);
@@ -88,13 +87,8 @@ const basicTestForQuestionAsync = async (
       return inputValue === newTextInput.props.value;
     });
 
-    const currentKey = question.eachId.replace(
-      withVariable(question.indexName),
-      // Because we always start at 1 no matter which text field it is.
-      `${Object.keys(expectedAnswerData.value).length + 1}`,
-    );
     if (inputValue.length > 0) {
-      expectedAnswerData.value[currentKey] = inputValue;
+      expectedAnswerData.value[expectedAnswerData.value.length] = inputValue;
     }
 
     callCount += 1;
@@ -133,7 +127,7 @@ const basicTestForQuestionAsync = async (
 
         await waitFor(() => buttonPressed);
 
-        delete expectedAnswerData.value[currentKey];
+        expectedAnswerData.value.pop();
         callCount += 1;
         expect(mockOnDataChangeFn).toHaveBeenNthCalledWith(
           callCount,
@@ -168,34 +162,20 @@ const generateTypingInput = (length: number) => {
 };
 
 test.each([
-  [
-    generateTypingInput(1),
-    3,
-    "Enter something...",
-    "Typing_[__INDEX__]",
-    "INDEX",
-  ],
-  [generateTypingInput(4), 4, "", "[__ITEM__]", "ITEM"],
-  [
-    ["John Doe", "王小明"],
-    5,
-    "Enter a name...",
-    "Name_[__NAMEINDEX__]",
-    "NAMEINDEX",
-  ],
+  [generateTypingInput(1), 3, "Enter something...", "INDEX"],
+  [generateTypingInput(4), 4, "", "ITEM"],
+  [["John Doe", "王小明"], 5, "Enter a name...", "NAMEINDEX"],
   [
     ["Mr. Fox", "Felicity Fox", "Ash Fox", "Kristofferson Silverfox"],
     4,
     undefined,
-    "Fox[__FOX_INDEX__]",
     "FOX_INDEX",
   ],
 ])(
   "input `%p` with max %d without choices",
-  async (inputValues, max, placeholder, eachId, indexName) => {
+  async (inputValues, max, placeholder, indexName) => {
     const question = {
       id: "WithoutChoicesDict",
-      eachId,
       type: QuestionType.MultipleText,
       question: "A question",
       placeholder,
@@ -215,7 +195,6 @@ test.each([
     3,
     "PrevQuestionId",
     "Enter something...",
-    "Typing_[__INDEX__]",
     "INDEX",
     {},
   ],
@@ -224,13 +203,12 @@ test.each([
     4,
     "PrevQuestionId",
     "Enter something...",
-    "Typing_[__INDEX__]",
     "INDEX",
     {
       PrevQuestionId: {
         questionId: "PrevQuestionId",
         data: {
-          value: {},
+          value: [],
         },
       },
     },
@@ -240,16 +218,12 @@ test.each([
     4,
     "FamilyNames",
     "Enter a name...",
-    "Name_[__NAMEINDEX__]",
     "NAMEINDEX",
     {
       FamilyNames: {
         questionId: "FamilyNames",
         data: {
-          value: {
-            FamilyNames_1: "Father",
-            FamilyNames_2: "Mother",
-          },
+          value: ["Father", "Mother"],
         },
       },
     },
@@ -259,35 +233,21 @@ test.each([
     4,
     "ZootopiaCharacters",
     undefined,
-    "Fox[__FOX_INDEX__]",
     "FOX_INDEX",
     {
       ZootopiaCharacters: {
         questionId: "ZootopiaCharacters",
         data: {
-          value: {
-            ZootopiaCharacter_1: "Judy Hopps",
-            ZootopiaCharacter_2: "Nick Wilde",
-            ZootopiaCharacter_3: "Flash",
-          },
+          value: ["Judy Hopps", "Nick Wilde", "Flash"],
         },
       },
     },
   ],
 ])(
   "input `%p` with max %d and maxMinus %p without choices",
-  async (
-    inputValues,
-    max,
-    maxMinus,
-    placeholder,
-    eachId,
-    indexName,
-    allAnswers,
-  ) => {
+  async (inputValues, max, maxMinus, placeholder, indexName, allAnswers) => {
     const question = {
       id: "WithoutChoicesWithMaxMinusDict",
-      eachId,
       type: QuestionType.MultipleText,
       question: "A question",
       placeholder,
@@ -338,7 +298,6 @@ test.each([
   async (inputValues, max, forceChoice, placeholder) => {
     const question = {
       id: "WithChoicesDict",
-      eachId: "Input_[__INDEX__]",
       type: QuestionType.MultipleText,
       question: "A question",
       placeholder,

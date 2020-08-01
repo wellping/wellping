@@ -1,0 +1,75 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`QuestionSchema empty 1`] = `
+"4 validation issue(s)
+
+  Issue #0: invalid_type at id
+  Required
+
+  Issue #1: invalid_enum_value at type
+  Input must be one of these values: Slider, ChoicesWithSingleAnswer, ChoicesWithMultipleAnswers, YesNo, MultipleText, HowLongAgo, Branch, BranchWithRelativeComparison
+
+  Issue #2: invalid_type at question
+  Required
+
+  Issue #3: invalid_type at next
+  Required
+"
+`;
+
+exports[`QuestionSchema id should not be empty 1`] = `
+"2 validation issue(s)
+
+  Issue #0: too_small at id
+  Should be at least 1 characters
+
+  Issue #1: custom_error at id
+  Question ID can only include letters, numbers, and \\"_\\".
+"
+`;
+
+exports[`QuestionSchema incomplete fields 1`] = `
+"1 validation issue(s)
+
+  Issue #0: invalid_type at slider
+  Required
+"
+`;
+
+exports[`QuestionSchema invalid type 1`] = `
+"1 validation issue(s)
+
+  Issue #0: invalid_enum_value at type
+  Input must be one of these values: Slider, ChoicesWithSingleAnswer, ChoicesWithMultipleAnswers, YesNo, MultipleText, HowLongAgo, Branch, BranchWithRelativeComparison
+"
+`;
+
+exports[`QuestionSchema mismatch type 1`] = `
+"2 validation issue(s)
+
+  Issue #0: unrecognized_keys at 
+  Unrecognized key(s) in object: 'defaultValueFromQuestionId', 'slider'
+
+  Issue #1: invalid_type at choices
+  Required
+"
+`;
+
+exports[`QuestionSchema missing type 1`] = `
+"2 validation issue(s)
+
+  Issue #0: unrecognized_keys at 
+  Unrecognized key(s) in object: 'defaultValueFromQuestionId', 'slider'
+
+  Issue #1: invalid_enum_value at type
+  Input must be one of these values: Slider, ChoicesWithSingleAnswer, ChoicesWithMultipleAnswers, YesNo, MultipleText, HowLongAgo, Branch, BranchWithRelativeComparison
+"
+`;
+
+exports[`QuestionSchema next should not be undefined 1`] = `
+"1 validation issue(s)
+
+  Issue #0: invalid_type at next
+  Required
+"
+`;

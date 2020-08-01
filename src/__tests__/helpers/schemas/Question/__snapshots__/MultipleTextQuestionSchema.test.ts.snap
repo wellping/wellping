@@ -1,0 +1,252 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`MultipleTextQuestionSchema choices TODO: should not be string other than \`NAMES\`: string 1`] = `
+"1 validation issue(s)
+
+  Issue #0: invalid_literal_value at choices
+  Input must be \\"NAMES\\"
+"
+`;
+
+exports[`MultipleTextQuestionSchema choices TODO: should not be string other than \`NAMES\`: url 1`] = `
+"1 validation issue(s)
+
+  Issue #0: invalid_literal_value at choices
+  Input must be \\"NAMES\\"
+"
+`;
+
+exports[`MultipleTextQuestionSchema choices should not be an array of string 1`] = `
+"1 validation issue(s)
+
+  Issue #0: invalid_literal_value at choices
+  Input must be \\"NAMES\\"
+"
+`;
+
+exports[`MultipleTextQuestionSchema choices should not be anything besides array and string: number 1`] = `
+"1 validation issue(s)
+
+  Issue #0: invalid_literal_value at choices
+  Input must be \\"NAMES\\"
+"
+`;
+
+exports[`MultipleTextQuestionSchema choices should not be anything besides array and string: object 1`] = `
+"1 validation issue(s)
+
+  Issue #0: invalid_literal_value at choices
+  Input must be \\"NAMES\\"
+"
+`;
+
+exports[`MultipleTextQuestionSchema choices should not be empty array 1`] = `
+"1 validation issue(s)
+
+  Issue #0: invalid_union at choices
+  Invalid input
+"
+`;
+
+exports[`MultipleTextQuestionSchema choices should not be null 1`] = `
+"1 validation issue(s)
+
+  Issue #0: invalid_literal_value at choices
+  Input must be \\"NAMES\\"
+"
+`;
+
+exports[`MultipleTextQuestionSchema fallbackItemStartId can be question ID 1`] = `
+"1 validation issue(s)
+
+  Issue #0: custom_error at fallbackItemStartId
+  Question ID can only include letters, numbers, and \\"_\\".
+"
+`;
+
+exports[`MultipleTextQuestionSchema forceChoice should not be anything other than boolean: number 1`] = `
+"1 validation issue(s)
+
+  Issue #0: invalid_union at forceChoice
+  Invalid input
+"
+`;
+
+exports[`MultipleTextQuestionSchema forceChoice should not be anything other than boolean: string true 1`] = `
+"1 validation issue(s)
+
+  Issue #0: invalid_union at forceChoice
+  Invalid input
+"
+`;
+
+exports[`MultipleTextQuestionSchema forceChoice should not be null 1`] = `
+"1 validation issue(s)
+
+  Issue #0: invalid_union at forceChoice
+  Invalid input
+"
+`;
+
+exports[`MultipleTextQuestionSchema forceChoice should not be set if choices is not set: false 1`] = `
+"1 validation issue(s)
+
+  Issue #0: custom_error at forceChoice
+  \`forceChoice\` can only be set if \`choices\` is set.
+"
+`;
+
+exports[`MultipleTextQuestionSchema forceChoice should not be set if choices is not set: true 1`] = `
+"1 validation issue(s)
+
+  Issue #0: custom_error at forceChoice
+  \`forceChoice\` can only be set if \`choices\` is set.
+"
+`;
+
+exports[`MultipleTextQuestionSchema indexName should not be empty 1`] = `
+"1 validation issue(s)
+
+  Issue #0: too_small at indexName
+  Should be at least 1 characters
+"
+`;
+
+exports[`MultipleTextQuestionSchema indexName should not be null 1`] = `
+"1 validation issue(s)
+
+  Issue #0: invalid_type at indexName
+  Expected string, received null
+"
+`;
+
+exports[`MultipleTextQuestionSchema indexName should not be undefined 1`] = `
+"1 validation issue(s)
+
+  Issue #0: invalid_type at indexName
+  Required
+"
+`;
+
+exports[`MultipleTextQuestionSchema max should not be decimal 1`] = `
+"1 validation issue(s)
+
+  Issue #0: invalid_type at max
+  Expected integer, received number
+"
+`;
+
+exports[`MultipleTextQuestionSchema max should not be null 1`] = `
+"1 validation issue(s)
+
+  Issue #0: invalid_type at max
+  Expected number, received null
+"
+`;
+
+exports[`MultipleTextQuestionSchema max should not be undefined 1`] = `
+"1 validation issue(s)
+
+  Issue #0: invalid_type at max
+  Required
+"
+`;
+
+exports[`MultipleTextQuestionSchema max should not be zero or negative: negative decimal 1`] = `
+"2 validation issue(s)
+
+  Issue #0: invalid_type at max
+  Expected integer, received number
+
+  Issue #1: too_small at max
+  Value should be greater than 0
+"
+`;
+
+exports[`MultipleTextQuestionSchema max should not be zero or negative: negative integer 1`] = `
+"1 validation issue(s)
+
+  Issue #0: too_small at max
+  Value should be greater than 0
+"
+`;
+
+exports[`MultipleTextQuestionSchema max should not be zero or negative: zero 1`] = `
+"1 validation issue(s)
+
+  Issue #0: too_small at max
+  Value should be greater than 0
+"
+`;
+
+exports[`MultipleTextQuestionSchema maxMinus should be question ID 1`] = `
+"1 validation issue(s)
+
+  Issue #0: custom_error at maxMinus
+  Question ID can only include letters, numbers, and \\"_\\".
+"
+`;
+
+exports[`MultipleTextQuestionSchema maxMinus should not be null 1`] = `
+"1 validation issue(s)
+
+  Issue #0: invalid_union at maxMinus
+  Invalid input
+"
+`;
+
+exports[`MultipleTextQuestionSchema placeholder should not be null 1`] = `
+"1 validation issue(s)
+
+  Issue #0: invalid_union at placeholder
+  Invalid input
+"
+`;
+
+exports[`MultipleTextQuestionSchema repeatedItemStartId should be question ID 1`] = `
+"1 validation issue(s)
+
+  Issue #0: custom_error at repeatedItemStartId
+  Question ID can only include letters, numbers, and \\"_\\".
+"
+`;
+
+exports[`MultipleTextQuestionSchema repeatedItemStartId should not be null 1`] = `
+"1 validation issue(s)
+
+  Issue #0: invalid_union at repeatedItemStartId
+  Invalid input
+"
+`;
+
+exports[`MultipleTextQuestionSchema type 1`] = `
+"1 validation issue(s)
+
+  Issue #0: invalid_literal_value at type
+  Input must be \\"MultipleText\\"
+"
+`;
+
+exports[`MultipleTextQuestionSchema variableName should not be empty 1`] = `
+"1 validation issue(s)
+
+  Issue #0: too_small at variableName
+  Should be at least 1 characters
+"
+`;
+
+exports[`MultipleTextQuestionSchema variableName should not be null 1`] = `
+"1 validation issue(s)
+
+  Issue #0: invalid_type at variableName
+  Expected string, received null
+"
+`;
+
+exports[`MultipleTextQuestionSchema variableName should not be undefined 1`] = `
+"1 validation issue(s)
+
+  Issue #0: invalid_type at variableName
+  Required
+"
+`;

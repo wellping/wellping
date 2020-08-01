@@ -1,6 +1,6 @@
-import { SurveyFile, Question } from "../src/helpers/types";
+import { StudyFile, Question } from "../src/helpers/types";
 
-const questions: SurveyFile = require("../config/survey.json");
+const questions: StudyFile = require("../config/survey.json");
 
 for (const streamName of Object.keys(questions.streams)) {
   const stream: Question[] = Object.values(questions.streams[streamName]);

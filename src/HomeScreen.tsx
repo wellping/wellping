@@ -44,7 +44,6 @@ import {
   deleteDatabaseFileAsync,
 } from "./helpers/database";
 import { getNonCriticalProblemTextForUser } from "./helpers/debug";
-import { QuestionType } from "./helpers/helpers";
 import {
   setNotificationsAsync,
   setupNotificationsPermissionAsync,
@@ -61,7 +60,7 @@ import {
 import {
   Streams,
   QuestionsList,
-  SurveyFile,
+  StudyFile,
   StreamName,
   StudyInfo,
 } from "./helpers/types";
@@ -78,7 +77,7 @@ const styles = StyleSheet.create({
 });
 
 interface HomeScreenProps {
-  survey: SurveyFile;
+  survey: StudyFile;
   logout: () => Promise<void>;
 }
 

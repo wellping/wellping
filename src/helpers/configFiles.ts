@@ -1,14 +1,22 @@
 import { isThisWeek } from "date-fns";
 
 import { getCriticalProblemTextForUser } from "./debug";
-import { SurveyFile, Names, StudyInfo, StreamName } from "./types";
+import { parseJsonToStudyFile } from "./schemas/StudyFile";
+import { StudyFile, Names, StudyInfo, StreamName } from "./types";
 
-export async function getSurveyFileAsync(): Promise<SurveyFile> {
-  // TODO: if error
-  //alert(getCriticalProblemTextForUser("getSurveyFileAsync"));
+export async function getSurveyFileAsync(): Promise<StudyFile> {
+  const survey = require("../../config/survey.json");
 
-  const survey: SurveyFile = require("../../config/survey.json");
-  return survey;
+  return parseJsonToStudyFile(survey);
+  /*try {
+    const survey = require("../../config/survey.json");
+
+    return parseJsonToStudyFile(survey);
+  } catch (e) {
+    console.warn("Your study file has problem:");
+    console.warn(e.message);
+    alert(getCriticalProblemTextForUser("getSurveyFileAsync"));
+  }*/
 }
 
 // TODO: DECOUPLE FUNCTIONS LIKE THIS
@@ -17,7 +25,7 @@ export async function getNamesFileAsync(): Promise<Names> {
   return names;
 }
 
-export function getAllStreamNames(survey: SurveyFile): StreamName[] {
+export function getAllStreamNames(survey: StudyFile): StreamName[] {
   return Object.keys(survey.meta.startingQuestionIds) as StreamName[];
 }
 export async function getAllStreamNamesAsync(): Promise<StreamName[]> {

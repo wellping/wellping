@@ -25,7 +25,7 @@ export type YesNoAnswerData = {
 };
 
 export type MultipleTextAnswerData = {
-  value: { [key: string]: string }; // `key` will be piped with `eachId`
+  value: string[];
 };
 
 export type HowLongAgoAnswerDataType = [number | null, string | null];
