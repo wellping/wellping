@@ -133,6 +133,7 @@
         ],
         "forceChoice": true,
         "max": 3,
+        "maxMinus": "SocInteraction_Names",
         "variableName": "TARGET_CATEGORY",
         "indexName": "INDEX",
         "next": null
