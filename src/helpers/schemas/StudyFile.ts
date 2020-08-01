@@ -217,6 +217,7 @@ export const StudyInfoSchema = z
         "to the length of `frequency.hoursEveryday`.",
     },
   );
+// TODO: refine don't allow USE IT WHEN NEW DATE() IS AFTER THE ENDDATE.
 
 export const StudyFileSchema = z.object({
   studyInfo: StudyInfoSchema,
