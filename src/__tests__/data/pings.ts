@@ -128,6 +128,12 @@ export const PINGS_STUDY_INFO: StudyInfo = {
     hoursEveryday: [8, 10, 12, 16, 18, 22],
     randomMinuteAddition: { min: 0, max: 89 },
   },
+  streamsStartingQuestionIds: {
+    cat: "hello_cat",
+    dog: "hello_dog",
+    wolf: "hello_wolf",
+    lynx: "hello_lynx",
+  },
   streamsOrder: {
     0: ["cat", "dog", "wolf", "lynx", "cat", "dog"],
     1: ["cat", "dog", "wolf", "lynx", "cat", "dog"],
