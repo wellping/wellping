@@ -2,7 +2,7 @@
   "studyInfo": {
     "id": "example_study",
     "studyFileJsonURL": "https://wellping_local__.ssnl.stanford.edu/debug.json",
-    "consentFormUrl": "https://www.example.com/consentform",
+    "consentFormUrl": "http://ssnl.stanford.edu/research",
     "contactEmail": "testEmail@example.com",
     "startDate": "2020-03-10T08:00:00.000Z",
     "endDate": "2020-04-25T08:00:00.000Z",
@@ -38,7 +38,7 @@
         "numberOfCompletionEachWeek": 10
       }
     },
-    "serverURL": "https://www.example.com/"
+    "serverURL": "http://ssnl.stanford.edu/"
   },
   "streams": {
     "myStream": {
