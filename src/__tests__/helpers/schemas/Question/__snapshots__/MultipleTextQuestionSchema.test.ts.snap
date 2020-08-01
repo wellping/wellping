@@ -171,6 +171,22 @@ exports[`MultipleTextQuestionSchema max should not be zero or negative: zero 1`]
 "
 `;
 
+exports[`MultipleTextQuestionSchema maxMinus should be question ID 1`] = `
+"1 validation issue(s)
+
+  Issue #0: custom_error at maxMinus
+  Question ID can only include letters, numbers, and \\"_\\".
+"
+`;
+
+exports[`MultipleTextQuestionSchema maxMinus should not be null 1`] = `
+"1 validation issue(s)
+
+  Issue #0: invalid_union at maxMinus
+  Invalid input
+"
+`;
+
 exports[`MultipleTextQuestionSchema placeholder should not be null 1`] = `
 "1 validation issue(s)
 
