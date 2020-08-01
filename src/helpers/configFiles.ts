@@ -1,22 +1,59 @@
 import { isThisWeek } from "date-fns";
 
-import { getCriticalProblemTextForUser } from "./debug";
+import {
+  getCurrentStudyFileAsync,
+  storeCurrentStudyFileAsync,
+} from "./asyncStorage/studyFile";
 import { parseJsonToStudyFile } from "./schemas/StudyFile";
 import { StudyFile, Names, StudyInfo, StreamName } from "./types";
 
-export async function getStudyFileAsync(): Promise<StudyFile> {
-  const survey = require("../../config/survey.json");
+/**
+ * Returns whether the study file should be downloaded (or redownloaded if
+ * already exists).
+ */
+export async function shouldDownloadStudyFileAsync(): Promise<boolean> {
+  const currentStudyFile = await getCurrentStudyFileAsync();
+  if (currentStudyFile === null) {
+    return true;
+  }
+  // TODO: MAYBE ADD A FIELD IN STUDY INFO SUCH THAT WE WILL FETCH THAT URL
+  // TO CHECK MD5 TO DETERMINE IF THE FILE SHOULD BE REDOWNLOADED.
+  return false;
+}
 
-  return parseJsonToStudyFile(survey);
-  /*try {
-    const survey = require("../../config/survey.json");
+/**
+ * Downloads a study file (in JSON format) from `url`.
+ * If the study file is successfully downloaded, parsed, and stored, stores
+ * the downloaded study file in Async Storage.
+ * Returns `null` if the whole process is successful.
+ * Returns the error message if any part of the process is unsuccessful.
+ */
+export async function downloadStudyFileAsync(
+  url: string,
+): Promise<string | null> {
+  try {
+    // TODO: ACTUAL DOWNLOAD PROCESS.
+    const study = require("../../config/survey.json");
 
-    return parseJsonToStudyFile(survey);
+    const parsedStudy = parseJsonToStudyFile(study);
+    await storeCurrentStudyFileAsync(parsedStudy);
+    return null;
   } catch (e) {
-    console.warn("Your study file has problem:");
-    console.warn(e.message);
-    alert(getCriticalProblemTextForUser("getStudyFileAsync"));
-  }*/
+    return e.message;
+  }
+}
+
+/**
+ * Returns the current study file.
+ * Throws an error if there isn't any current study file stored.
+ */
+export async function getStudyFileAsync(): Promise<StudyFile> {
+  const currentStudyFile = await getCurrentStudyFileAsync();
+  if (currentStudyFile === null) {
+    throw new Error("getCurrentStudyFileAsync = null");
+  }
+
+  return currentStudyFile;
 }
 
 // TODO: DECOUPLE FUNCTIONS LIKE THIS
