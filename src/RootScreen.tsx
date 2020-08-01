@@ -298,6 +298,10 @@ export default class RootScreen extends React.Component<
           <Button
             title="Log in"
             onPress={async () => {
+              this.setState({
+                errorText: "Magical things happening... 🧙‍♂️",
+              });
+
               Keyboard.dismiss();
 
               let user!: User;
@@ -334,7 +338,7 @@ export default class RootScreen extends React.Component<
               }
 
               this.setState({
-                errorText: "Loading study data...",
+                errorText: "Loading study data... ☁️",
               });
 
               if (
@@ -346,7 +350,7 @@ export default class RootScreen extends React.Component<
               const survey = await getStudyFileAsync();
 
               this.setState({
-                errorText: "Authenticating...",
+                errorText: "Authenticating... 🤖",
               });
 
               const error = await registerUserAsync(user);
