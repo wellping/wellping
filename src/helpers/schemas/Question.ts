@@ -270,18 +270,36 @@ export const QuestionSchema = z
     return true;
   });
 
-export const QuestionsListSchema = z.record(QuestionSchema).refine(
-  (questions) => {
-    for (const questionId in questions) {
-      if (questionId !== questions[questionId].id) {
-        return false;
+export const QuestionsListSchema = z
+  .record(QuestionSchema)
+  .refine(
+    (questions) => {
+      for (const questionId in questions) {
+        if (questionId !== questions[questionId].id) {
+          return false;
+        }
       }
-    }
-    return true;
-  },
-  {
-    message:
-      "The key for the question in questions list should be same as " +
-      "its question ID.",
-  },
-);
+      return true;
+    },
+    {
+      message:
+        "The key for the question in questions list should be same as " +
+        "its question ID.",
+    },
+  )
+  .refine(
+    (questions) => {
+      const questionKeys = Object.keys(questions);
+      for (const questionId in questions) {
+        const nextId = questions[questionId].next;
+        if (nextId !== null && !questionKeys.includes(nextId)) {
+          return false;
+        }
+      }
+      return true;
+    },
+    {
+      message:
+        "A question's `next` question ID is not present in the question list.",
+    },
+  );

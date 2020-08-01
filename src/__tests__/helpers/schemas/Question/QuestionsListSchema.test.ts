@@ -9,7 +9,7 @@ describe("QuestionsListSchema", () => {
           id: "Feel_Ideal",
           type: QuestionType.HowLongAgo,
           question: "how long ago question",
-          next: "Next_Question",
+          next: null,
         },
       });
     }).not.toThrowError();
@@ -20,7 +20,7 @@ describe("QuestionsListSchema", () => {
           id: "Feel_Ideal",
           type: QuestionType.HowLongAgo,
           question: "how long ago question",
-          next: "Next_Question",
+          next: null,
         },
       });
     }).toThrowErrorMatchingSnapshot("single");
@@ -44,6 +44,53 @@ describe("QuestionsListSchema", () => {
           type: QuestionType.HowLongAgo,
           question: "how long ago question",
           next: null,
+        },
+      });
+    }).toThrowErrorMatchingSnapshot("multiple");
+  });
+
+  test("should not accept non-existent next", () => {
+    expect(() => {
+      QuestionsListSchema.parse({
+        Feel_Ideal: {
+          id: "Feel_Ideal",
+          type: QuestionType.HowLongAgo,
+          question: "how long ago question",
+          next: null,
+        },
+      });
+    }).not.toThrowError();
+
+    expect(() => {
+      QuestionsListSchema.parse({
+        Feel_Ideal: {
+          id: "Feel_Ideal",
+          type: QuestionType.HowLongAgo,
+          question: "how long ago question",
+          next: "Non_Existent_Question",
+        },
+      });
+    }).toThrowErrorMatchingSnapshot("single");
+
+    expect(() => {
+      QuestionsListSchema.parse({
+        Feel_Ideal: {
+          id: "Feel_Ideal",
+          type: QuestionType.HowLongAgo,
+          question: "how long ago question",
+          next: "Non_Existent1",
+        },
+        Feel_Current: {
+          id: "Feel_Current",
+          type: QuestionType.HowLongAgo,
+          question: "how long ago question",
+          next: "How_Are",
+        },
+        How_Are: {
+          id: "How_Are",
+          type: QuestionType.HowLongAgo,
+          question: "how long ago question",
+          next: "Non_Existent2",
         },
       });
     }).toThrowErrorMatchingSnapshot("multiple");
