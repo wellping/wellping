@@ -6,9 +6,7 @@
 
 export function _DEBUG_CONFIGS() {
   return {
-    ignoreLogin: false,
     ignoreNotificationTime: true,
     showCurrentStatesInSurveyScreen: false,
-    alwaysRedownloadStudyFile: false,
   };
 }

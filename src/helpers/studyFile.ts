@@ -24,10 +24,6 @@ export async function isLocalStudyFile(): Promise<boolean> {
  * Returns whether of not the study file is stored locally.
  */
 export async function studyFileExistsAsync() {
-  if (__DEV__ && _DEBUG_CONFIGS().alwaysRedownloadStudyFile) {
-    return false;
-  }
-
   const currentStudyInfo = await getCurrentStudyInfoAsync();
   if (currentStudyInfo === null) {
     return false;
