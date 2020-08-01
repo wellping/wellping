@@ -4,12 +4,28 @@ import { _DEBUG_CONFIGS } from "../../config/debug";
 import {
   storeCurrentStudyFileAsync,
   clearCurrentStudyFileAsync,
-  studyFileExistsAsync,
   getCurrentStudyInfoAsync,
   getCurrentStreamsAsync,
 } from "./asyncStorage/studyFile";
 import { parseJsonToStudyFile } from "./schemas/StudyFile";
 import { StudyFile, Names, StudyInfo, StreamName, Streams } from "./types";
+
+/**
+ * Returns whether of not the study file is stored locally.
+ */
+export async function studyFileExistsAsync() {
+  const currentStudyInfo = await getCurrentStudyInfoAsync();
+  if (currentStudyInfo === null) {
+    return false;
+  }
+
+  const currentStreams = await getCurrentStreamsAsync();
+  if (currentStreams === null) {
+    return false;
+  }
+
+  return true;
+}
 
 /**
  * Returns whether the study file should be downloaded (or redownloaded if

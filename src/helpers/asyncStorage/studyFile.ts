@@ -60,17 +60,3 @@ export async function getCurrentStreamsAsync(): Promise<Streams | null> {
     return null;
   }
 }
-
-export async function studyFileExistsAsync() {
-  const currentStudyInfo = await getCurrentStudyInfoAsync();
-  if (currentStudyInfo === null) {
-    return false;
-  }
-
-  const currentStreams = await getCurrentStreamsAsync();
-  if (currentStreams === null) {
-    return false;
-  }
-
-  return true;
-}
