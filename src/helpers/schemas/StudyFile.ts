@@ -213,6 +213,7 @@ export const StudyFileSchema = z.object({
 });
 
 export function parseJsonToStudyFile(rawJson: any): StudyFile {
+  // We have to parse the dates as JSON stores dates as strings.
   if (rawJson.studyInfo?.startDate) {
     rawJson.studyInfo.startDate = parseJSON(rawJson.studyInfo.startDate);
   }
