@@ -33,14 +33,6 @@ export async function clearUserAsync() {
 }
 
 export async function getUserAsync(): Promise<User | null> {
-  // DEBUG
-  if (__DEV__ && _DEBUG_CONFIGS().ignoreLogin) {
-    return {
-      patientId: "_DEBUGGING_USERNAME_",
-      password: "_DEBUGGING_PASSWORD_",
-    };
-  }
-
   try {
     const value = await AsyncStorage.getItem(await getASKeyAsync(USER_KEY));
     if (value == null) {

@@ -1,6 +1,6 @@
 import * as FileSystem from "expo-file-system";
 import { Share } from "react-native";
-import { createConnection, Connection } from "typeorm";
+import { createConnection, Connection, getConnection } from "typeorm";
 
 import {
   AnswerEntity,
@@ -29,14 +29,18 @@ export const entities = [
 export async function connectDatabaseAsync(
   databaseName: string,
 ): Promise<Connection> {
-  return await createConnection({
-    type: "expo",
-    driver: require("expo-sqlite"),
-    database: getDatabaseFilename(databaseName),
-    entities,
-    synchronize: true,
-    logging: true,
-  });
+  try {
+    return getConnection();
+  } catch {
+    return await createConnection({
+      type: "expo",
+      driver: require("expo-sqlite"),
+      database: getDatabaseFilename(databaseName),
+      entities,
+      synchronize: true,
+      logging: true,
+    });
+  }
 }
 
 export function getDatabaseFileUrl(databaseName: string): string {

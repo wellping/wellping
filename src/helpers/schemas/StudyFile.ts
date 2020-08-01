@@ -25,6 +25,13 @@ export const StudyInfoSchema = z
     id: StudyIdSchema,
 
     /**
+     * The URL that host this study file. The app fetches this URL in the
+     * background at every start and loads the downloaded new file at the
+     * next start.
+     */
+    studyFileJsonURL: z.string().url(),
+
+    /**
      * The server URL (including the trailing slash).
      */
     serverURL: z.string().url(),
@@ -210,6 +217,7 @@ export const StudyInfoSchema = z
         "to the length of `frequency.hoursEveryday`.",
     },
   );
+// TODO: refine don't allow USE IT WHEN NEW DATE() IS AFTER THE ENDDATE.
 
 export const StudyFileSchema = z.object({
   studyInfo: StudyInfoSchema,

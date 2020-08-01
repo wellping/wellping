@@ -1,9 +1,23 @@
 import * as WebBrowser from "expo-web-browser";
 import React from "react";
-import { Button, TextInput, Text, View, ScrollView, Alert } from "react-native";
+import {
+  Button,
+  TextInput,
+  Text,
+  View,
+  ScrollView,
+  Alert,
+  Keyboard,
+} from "react-native";
 
 import HomeScreen from "./HomeScreen";
 import { registerUserAsync } from "./helpers/apiManager";
+import { clearCurrentStudyFileAsync } from "./helpers/asyncStorage/studyFile";
+import {
+  storeTempStudyFileAsync,
+  getTempStudyFileAsync,
+  clearTempStudyFileAsync,
+} from "./helpers/asyncStorage/tempStudyFile";
 import {
   getUserAsync,
   User,
@@ -11,11 +25,14 @@ import {
 } from "./helpers/asyncStorage/user";
 import { connectDatabaseAsync } from "./helpers/database";
 import { getCriticalProblemTextForUser, shareDebugText } from "./helpers/debug";
+import { LoginSchema } from "./helpers/schemas/Login";
 import {
   getStudyFileAsync,
   downloadStudyFileAsync,
-  shouldDownloadStudyFileAsync,
+  parseAndStoreStudyFileAsync,
+  studyFileExistsAsync,
 } from "./helpers/studyFile";
+import { styles } from "./helpers/styles";
 import { StudyFile } from "./helpers/types";
 
 interface RootScreenProps {}
@@ -23,8 +40,8 @@ interface RootScreenProps {}
 interface RootScreenState {
   userInfo: User | null;
   isLoading: boolean;
-  formDataUserId?: string;
-  formDataPassword?: string;
+  formData?: string;
+  disableLoginButton: boolean;
   errorText: string | null;
   studyFileErrorText: string | null;
   unableToParticipate?: boolean;
@@ -41,41 +58,113 @@ export default class RootScreen extends React.Component<
     this.state = {
       userInfo: null,
       isLoading: true,
+      disableLoginButton: false,
       errorText: null,
       studyFileErrorText: null,
     };
   }
 
-  async downloadStudyFileHandleErrorAsync(url: string): Promise<boolean> {
-    const downloadError = await downloadStudyFileAsync(url);
-    if (downloadError !== null) {
+  async parseStudyFileAsync(rawJsonString: string): Promise<boolean> {
+    const parseErrorMessage = await parseAndStoreStudyFileAsync(rawJsonString);
+    if (parseErrorMessage !== null) {
       this.setState({
-        studyFileErrorText: downloadError,
+        isLoading: false,
+        studyFileErrorText: parseErrorMessage,
       });
       return false;
     }
     return true;
   }
 
-  async componentDidMount() {
-    const user = await getUserAsync();
-    if (user) {
-      if (await shouldDownloadStudyFileAsync()) {
-        if (!(await this.downloadStudyFileHandleErrorAsync("TODO: "))) {
-          this.setState({ isLoading: false });
-          return;
+  /**
+   * Returns `false` if the downloading or the parsing process is unsuccessful.
+   * Returns `true` otherwise.
+   *
+   * Notice that if `isRedownload` is true, the function still returns `true`
+   * in case of downloading failure (but not parsing failure).
+   */
+  async downloadAndParseStudyFileAsync(
+    url: string,
+    isRedownload: boolean = false,
+  ): Promise<boolean> {
+    let rawJsonString: string;
+    try {
+      rawJsonString = await downloadStudyFileAsync(url);
+    } catch (e) {
+      if (!isRedownload) {
+        let downloadErrorMessage: string;
+        if (e instanceof Error) {
+          downloadErrorMessage = `**${e.name}**\n${e.message}`;
+        } else {
+          downloadErrorMessage = `Unknown error: ${e}`;
         }
+        alert("Failed to download study data! Please try again later.");
+        this.setState({
+          errorText: `Failed to download study data!\n\n${downloadErrorMessage}`,
+        });
+        return false;
+      } else {
+        // If it is re-download, we act as if nothing happens because at least
+        // the user can continue to fill the valid version they have right now.
+        return true;
+      }
+    }
+
+    if (isRedownload) {
+      // Store it in temp storage first, parse it next time.
+      await storeTempStudyFileAsync(rawJsonString);
+      return true;
+    }
+
+    return this.parseStudyFileAsync(rawJsonString);
+  }
+
+  /**
+   * Loads and parse the study file from the temp study file Async Storage.
+   * Returns `true` if there is no error (or no temp study file).
+   * Returns `false` otherwise.
+   */
+  async loadTempStudyFileAsync(): Promise<boolean> {
+    const tempStudyFile = await getTempStudyFileAsync();
+    if (tempStudyFile === null) {
+      return true;
+    }
+    // We have to `clearTempStudyFileAsync` before `parseStudyFileAsync`
+    // because if the new study info is invalid, `parseStudyFileAsync` clears
+    // study info which `clearTempStudyFileAsync` needs.
+    await clearTempStudyFileAsync();
+    const results = await this.parseStudyFileAsync(tempStudyFile);
+    return results;
+  }
+
+  async componentDidMount() {
+    if (await studyFileExistsAsync()) {
+      if (!(await this.loadTempStudyFileAsync())) {
+        return;
       }
 
       const survey = await getStudyFileAsync();
 
+      // Do it in background because there isn't any urgency to redownload.
+      this.downloadAndParseStudyFileAsync(
+        survey.studyInfo.studyFileJsonURL,
+        true,
+      );
+
+      const user = await getUserAsync();
+      if (user === null) {
+        // This will happen when e.g., the study file is downloads but the user
+        // didn't successfully login.
+        await this.logoutAsync();
+        this.setState({ isLoading: false });
+        return;
+      }
+
       await connectDatabaseAsync(survey.studyInfo.id);
 
-      this.setState({ survey });
-    }
-    this.setState({ userInfo: user, isLoading: false });
-
-    if (user == null) {
+      this.setState({ userInfo: user, survey });
+    } else {
+      // New user.
       Alert.alert(
         "Confirm",
         `Are you at least 18 years of age?`,
@@ -93,6 +182,14 @@ export default class RootScreen extends React.Component<
         { cancelable: false },
       );
     }
+
+    this.setState({ isLoading: false });
+  }
+
+  async logoutAsync() {
+    await clearUserAsync();
+    await clearCurrentStudyFileAsync();
+    this.setState({ userInfo: null });
   }
 
   render() {
@@ -106,7 +203,7 @@ export default class RootScreen extends React.Component<
     if (isLoading) {
       return (
         <View>
-          <Text>Loading...</Text>
+          <Text style={styles.onlyTextStyle}>Loading...</Text>
         </View>
       );
     }
@@ -169,53 +266,100 @@ export default class RootScreen extends React.Component<
     }
 
     if (userInfo == null) {
-      const textFieldStyle = {
-        padding: 12,
-        borderWidth: 1,
-        borderColor: "#ccc",
-        borderRadius: 5,
-        margin: 15,
-      };
       return (
-        <ScrollView>
-          <View style={{ padding: 20 }}>
+        <ScrollView
+          style={{ height: "100%", paddingHorizontal: 20 }}
+          keyboardShouldPersistTaps="handled" /* https://github.com/facebook/react-native/issues/9404#issuecomment-252474548 */
+        >
+          <View style={{ marginVertical: 20 }}>
             <Text
               style={{ fontSize: 30, marginBottom: 20, textAlign: "center" }}
             >
               Welcome to Well Ping!
             </Text>
             <Text style={{ fontSize: 20 }}>
-              Please log in using the credentials sent to your email.
+              Please log in using the magic login code sent to your email. 🧙‍♀️
             </Text>
           </View>
           <TextInput
-            onChangeText={(text) => this.setState({ formDataUserId: text })}
+            onChangeText={(text) => this.setState({ formData: text })}
             autoCorrect={false}
             autoCapitalize="none"
             autoCompleteType="off"
-            placeholder="User ID"
-            style={textFieldStyle}
-          />
-          <TextInput
-            onChangeText={(text) => this.setState({ formDataPassword: text })}
-            secureTextEntry
-            autoCorrect={false}
-            autoCapitalize="none"
-            autoCompleteType="off"
-            placeholder="Password"
-            style={textFieldStyle}
+            placeholder="Paste your magic login code here..."
+            multiline
+            editable={!this.state.disableLoginButton}
+            style={{
+              padding: 8,
+              borderWidth: 1,
+              borderColor: "#ccc",
+              borderRadius: 5,
+              marginBottom: 10,
+              height: 150,
+            }}
           />
           <Button
             title="Log in"
+            disabled={this.state.disableLoginButton}
             onPress={async () => {
               this.setState({
-                errorText: "Loading...",
+                disableLoginButton: true,
+                errorText: "Magical things happening... 🧙‍♂️",
               });
 
-              const user: User = {
-                patientId: this.state.formDataUserId || "",
-                password: this.state.formDataPassword || "",
-              };
+              Keyboard.dismiss();
+
+              let user!: User;
+              let studyFileJsonUrl!: string;
+              try {
+                const base64EncodedString = this.state.formData?.trim();
+                if (!base64EncodedString) {
+                  throw new Error(
+                    "You have not entered your magic login code.",
+                  );
+                }
+
+                const Buffer = require("buffer").Buffer;
+                const loginJsonString = new Buffer(
+                  base64EncodedString,
+                  "base64",
+                ).toString();
+                const loginInfo = LoginSchema.parse(
+                  JSON.parse(loginJsonString),
+                );
+                user = {
+                  patientId: loginInfo.username,
+                  password: loginInfo.password,
+                };
+                studyFileJsonUrl = loginInfo.studyFileJsonUrl;
+              } catch (e) {
+                this.setState({
+                  disableLoginButton: false,
+                  errorText:
+                    "Your magic login code is invalid 😕. Please screenshot " +
+                    "the current page and contact the research staff.\n\n" +
+                    `${e}`,
+                });
+                return;
+              }
+
+              this.setState({
+                errorText: "Loading study data... ☁️",
+              });
+
+              if (
+                !(await this.downloadAndParseStudyFileAsync(studyFileJsonUrl))
+              ) {
+                this.setState({ disableLoginButton: false });
+                return;
+              }
+
+              const survey = await getStudyFileAsync();
+
+              this.setState({
+                errorText: "Authenticating... 🤖",
+              });
+
               const error = await registerUserAsync(user);
               if (!error) {
                 Alert.alert(
@@ -225,28 +369,18 @@ export default class RootScreen extends React.Component<
                     {
                       text: "Review",
                       onPress: async () => {
-                        this.setState({
-                          errorText: "Downloading study data...",
-                        });
-
-                        if (
-                          !(await this.downloadStudyFileHandleErrorAsync(
-                            "TODO: ",
-                          ))
-                        ) {
-                          return;
-                        }
-
-                        const survey = await getStudyFileAsync();
-
                         await WebBrowser.openBrowserAsync(
                           survey.studyInfo.consentFormUrl,
                         );
+
+                        // Because database was not previously connected.
+                        await connectDatabaseAsync(survey.studyInfo.id);
 
                         this.setState({
                           userInfo: user,
                           survey,
                           errorText: null,
+                          disableLoginButton: false,
                         });
                       },
                     },
@@ -256,12 +390,15 @@ export default class RootScreen extends React.Component<
               } else {
                 this.setState({
                   errorText: error,
+                  disableLoginButton: false,
                 });
               }
             }}
           />
           {errorText ? (
-            <Text style={{ margin: 15, fontWeight: "bold" }}>{errorText}</Text>
+            <Text style={{ fontWeight: "bold", marginTop: 10 }}>
+              {errorText}
+            </Text>
           ) : undefined}
         </ScrollView>
       );
@@ -280,8 +417,7 @@ export default class RootScreen extends React.Component<
         studyInfo={this.state.survey.studyInfo}
         streams={this.state.survey.streams}
         logout={async () => {
-          await clearUserAsync();
-          this.setState({ userInfo: null });
+          await this.logoutAsync();
         }}
       />
     );
