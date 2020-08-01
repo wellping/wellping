@@ -570,7 +570,7 @@ export default class HomeScreen extends React.Component<
                     text: "Confirm",
                     style: "destructive",
                     onPress: async () => {
-                      await deleteDatabaseFileAsync(survey.studyInfo.id);
+                      await deleteDatabaseFileAsync(studyInfo.id);
                       alert("Done! Please restart the app.");
                     },
                   },
