@@ -216,21 +216,23 @@ export const StudyFileSchema = z.object({
   streams: StreamsSchema,
 });
 
-export function parseJsonToStudyInfo(rawJson: any): StudyInfo {
+// https://stackoverflow.com/a/13104500/2603230
+const convertSpecialTypesInStudyInfo = (studyInfoRawJson: any) => {
   // We have to parse the dates as JSON stores dates as strings.
-  if (rawJson?.startDate) {
-    rawJson.startDate = parseJSON(rawJson.startDate);
+  if (studyInfoRawJson?.startDate) {
+    studyInfoRawJson.startDate = parseJSON(studyInfoRawJson.startDate);
   }
-  if (rawJson?.endDate) {
-    rawJson.endDate = parseJSON(rawJson.endDate);
+  if (studyInfoRawJson?.endDate) {
+    studyInfoRawJson.endDate = parseJSON(studyInfoRawJson.endDate);
   }
+};
+
+export function parseJsonToStudyInfo(rawJson: any): StudyInfo {
+  convertSpecialTypesInStudyInfo(rawJson);
   return StudyInfoSchema.parse(rawJson);
 }
 
 export function parseJsonToStudyFile(rawJson: any): StudyFile {
-  // We have to parse the dates as JSON stores dates as strings.
-  if (rawJson.studyInfo) {
-    rawJson.studyInfo = parseJsonToStudyInfo(rawJson.studyInfo);
-  }
+  convertSpecialTypesInStudyInfo(rawJson?.studyInfo);
   return StudyFileSchema.parse(rawJson);
 }
