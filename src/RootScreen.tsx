@@ -41,6 +41,7 @@ interface RootScreenState {
   userInfo: User | null;
   isLoading: boolean;
   formData?: string;
+  disableLoginButton: boolean;
   errorText: string | null;
   studyFileErrorText: string | null;
   unableToParticipate?: boolean;
@@ -57,6 +58,7 @@ export default class RootScreen extends React.Component<
     this.state = {
       userInfo: null,
       isLoading: true,
+      disableLoginButton: false,
       errorText: null,
       studyFileErrorText: null,
     };
@@ -286,6 +288,7 @@ export default class RootScreen extends React.Component<
             autoCompleteType="off"
             placeholder="Paste your magic login code here..."
             multiline
+            editable={!this.state.disableLoginButton}
             style={{
               padding: 8,
               borderWidth: 1,
@@ -297,8 +300,10 @@ export default class RootScreen extends React.Component<
           />
           <Button
             title="Log in"
+            disabled={this.state.disableLoginButton}
             onPress={async () => {
               this.setState({
+                disableLoginButton: true,
                 errorText: "Magical things happening... 🧙‍♂️",
               });
 
@@ -329,6 +334,7 @@ export default class RootScreen extends React.Component<
                 studyFileJsonUrl = loginInfo.studyFileJsonUrl;
               } catch (e) {
                 this.setState({
+                  disableLoginButton: false,
                   errorText:
                     "Your magic login code is invalid 😕. Please screenshot " +
                     "the current page and contact the research staff.\n\n" +
@@ -344,6 +350,7 @@ export default class RootScreen extends React.Component<
               if (
                 !(await this.downloadAndParseStudyFileAsync(studyFileJsonUrl))
               ) {
+                this.setState({ disableLoginButton: false });
                 return;
               }
 
@@ -373,6 +380,7 @@ export default class RootScreen extends React.Component<
                           userInfo: user,
                           survey,
                           errorText: null,
+                          disableLoginButton: false,
                         });
                       },
                     },
@@ -382,6 +390,7 @@ export default class RootScreen extends React.Component<
               } else {
                 this.setState({
                   errorText: error,
+                  disableLoginButton: false,
                 });
               }
             }}
