@@ -38,7 +38,10 @@ export function alertWithShareButtonContainingDebugInfo(
       text: "Share Data with Research Staff",
       style: "default",
       onPress: () => {
-        shareDebugText(text);
+        shareDebugText(
+          `Please enter any additional information here:\n\n\n\n` +
+            `====\n${text}`,
+        );
       },
     },
   ]);
