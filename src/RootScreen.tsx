@@ -229,6 +229,7 @@ export default class RootScreen extends React.Component<
           {
             text: "No",
             onPress: () => {
+              this.removeUrlEventListener();
               this.setState({ unableToParticipate: true });
               resolve(false);
             },
