@@ -1,3 +1,4 @@
+import * as Linking from "expo-linking";
 import * as WebBrowser from "expo-web-browser";
 import React from "react";
 import {
@@ -8,6 +9,7 @@ import {
   ScrollView,
   Alert,
   Keyboard,
+  TouchableWithoutFeedback,
 } from "react-native";
 
 import HomeScreen from "./HomeScreen";
@@ -404,15 +406,27 @@ export default class RootScreen extends React.Component<
               {errorText}
             </Text>
           ) : undefined}
-          <Text
-            style={{
-              textAlign: "center",
-              marginTop: 10,
-              color: "lightgray",
+          <TouchableWithoutFeedback
+            onLongPress={async () => {
+              //this.setState({ displayDebugView: true });
+              alertWithShareButtonContainingDebugInfo(
+                `parseInitialURLAsync:\n${JSON.stringify(
+                  await Linking.parseInitialURLAsync(),
+                )}`,
+                "👀",
+              );
             }}
           >
-            v.{JS_VERSION_NUMBER}
-          </Text>
+            <Text
+              style={{
+                textAlign: "center",
+                marginTop: 10,
+                color: "lightgray",
+              }}
+            >
+              v.{JS_VERSION_NUMBER}
+            </Text>
+          </TouchableWithoutFeedback>
         </ScrollView>
       );
     }
