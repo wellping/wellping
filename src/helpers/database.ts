@@ -12,6 +12,7 @@ import {
   HowLongAgoAnswerEntity,
 } from "../entities/AnswerEntity";
 import { PingEntity } from "../entities/PingEntity";
+import { getCriticalProblemTextForUser } from "./debug";
 
 const getDatabaseFilename = (databaseName: string) => `${databaseName}.db`;
 
@@ -31,15 +32,20 @@ export async function connectDatabaseAsync(
 ): Promise<Connection> {
   try {
     return getConnection();
-  } catch {
-    return await createConnection({
-      type: "expo",
-      driver: require("expo-sqlite"),
-      database: getDatabaseFilename(databaseName),
-      entities,
-      synchronize: true,
-      logging: true,
-    });
+  } catch (e) {
+    try {
+      return await createConnection({
+        type: "expo",
+        driver: require("expo-sqlite"),
+        database: getDatabaseFilename(databaseName),
+        entities,
+        synchronize: true,
+        logging: true,
+      });
+    } catch (e) {
+      alert(getCriticalProblemTextForUser(e));
+      throw e;
+    }
   }
 }
 
