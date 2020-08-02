@@ -198,29 +198,8 @@ export default class RootScreen extends React.Component<
       this.setState({ userInfo: user, survey });
     } else {
       // New user.
-      Alert.alert(
-        "Confirm",
-        `Are you at least 18 years of age?`,
-        [
-          {
-            text: "Yes",
-            onPress: async () => {
-              this.handleUrl(await Linking.parseInitialURLAsync());
-              Linking.addEventListener(
-                "url",
-                this.listenToUrlWhenForegroundHandler,
-              );
-            },
-          },
-          {
-            text: "No",
-            onPress: () => {
-              this.setState({ unableToParticipate: true });
-            },
-          },
-        ],
-        { cancelable: false },
-      );
+      this.handleUrl(await Linking.parseInitialURLAsync());
+      Linking.addEventListener("url", this.listenToUrlWhenForegroundHandler);
     }
 
     this.setState({ isLoading: false });
@@ -234,13 +213,49 @@ export default class RootScreen extends React.Component<
     this.removeUrlEventListener();
   }
 
+  async confirmAgeAsync(): Promise<boolean> {
+    return new Promise((resolve, reject) => {
+      // TODO: ALLOW CUSTOMIZE IT
+      Alert.alert(
+        "Confirm",
+        `Are you at least 18 years of age?`,
+        [
+          {
+            text: "Yes",
+            onPress: () => {
+              resolve(true);
+            },
+          },
+          {
+            text: "No",
+            onPress: () => {
+              this.setState({ unableToParticipate: true });
+              resolve(false);
+            },
+          },
+        ],
+        { cancelable: false },
+      );
+    });
+  }
+
   loginAsync = async () => {
     this.setState({
       disableLoginButton: true,
-      errorText: "Magical things happening... 🧙‍♂️",
     });
 
     Keyboard.dismiss();
+
+    if (!(await this.confirmAgeAsync())) {
+      this.setState({
+        disableLoginButton: false,
+      });
+      return;
+    }
+
+    this.setState({
+      errorText: "Magical things happening... 🧙‍♂️",
+    });
 
     let user!: User;
     let studyFileJsonUrl!: string;
