@@ -15,6 +15,7 @@ import {
 import { WebView } from "react-native-webview";
 
 import SurveyScreen, { SurveyScreenState } from "./SurveyScreen";
+import { Loading } from "./components/Loading";
 import { AnswerEntity } from "./entities/AnswerEntity";
 import { PingEntity } from "./entities/PingEntity";
 import {
@@ -241,11 +242,7 @@ export default class HomeScreen extends React.Component<
     } = this.state;
 
     if (isLoading) {
-      return (
-        <View>
-          <Text style={styles.onlyTextStyle}>Loading...</Text>
-        </View>
-      );
+      return <Loading />;
     }
 
     const ExtraView = allowsNotifications ? (

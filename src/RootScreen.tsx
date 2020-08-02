@@ -11,6 +11,7 @@ import {
 } from "react-native";
 
 import HomeScreen from "./HomeScreen";
+import { Loading } from "./components/Loading";
 import { registerUserAsync } from "./helpers/apiManager";
 import { clearCurrentStudyFileAsync } from "./helpers/asyncStorage/studyFile";
 import {
@@ -36,7 +37,6 @@ import {
   parseAndStoreStudyFileAsync,
   studyFileExistsAsync,
 } from "./helpers/studyFile";
-import { styles } from "./helpers/styles";
 import { StudyFile } from "./helpers/types";
 
 interface RootScreenProps {}
@@ -205,11 +205,7 @@ export default class RootScreen extends React.Component<
       unableToParticipate,
     } = this.state;
     if (isLoading) {
-      return (
-        <View>
-          <Text style={styles.onlyTextStyle}>Loading...</Text>
-        </View>
-      );
+      return <Loading />;
     }
 
     if (unableToParticipate) {
