@@ -33,7 +33,24 @@
     "android": {
       "package": "edu.stanford.ssnl.wellping",
       "versionCode": 11,
-      "permissions": []
+      "permissions": [],
+      "intentFilters": [
+        {
+          "action": "VIEW",
+          "autoVerify": true,
+          "data": [
+            {
+              "scheme": "https",
+              "host": "stanfordsocialneurosciencelab.github.io",
+              "pathPrefix": "/wellping"
+            }
+          ],
+          "category": [
+            "BROWSABLE",
+            "DEFAULT"
+          ]
+        }
+      ]
     }
   }
 }
