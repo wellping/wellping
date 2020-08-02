@@ -24,7 +24,11 @@ import {
   clearUserAsync,
 } from "./helpers/asyncStorage/user";
 import { connectDatabaseAsync } from "./helpers/database";
-import { getCriticalProblemTextForUser, shareDebugText } from "./helpers/debug";
+import {
+  getCriticalProblemTextForUser,
+  shareDebugText,
+  JS_VERSION_NUMBER,
+} from "./helpers/debug";
 import { LoginSchema } from "./helpers/schemas/Login";
 import {
   getStudyFileAsync,
@@ -400,6 +404,15 @@ export default class RootScreen extends React.Component<
               {errorText}
             </Text>
           ) : undefined}
+          <Text
+            style={{
+              textAlign: "center",
+              marginTop: 10,
+              color: "lightgray",
+            }}
+          >
+            v.{JS_VERSION_NUMBER}
+          </Text>
         </ScrollView>
       );
     }
