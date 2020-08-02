@@ -1,6 +1,10 @@
 import { Share } from "react-native";
 
-export const VERSION_NUMBER = "1.1.0";
+// Notice that this version number is different from the app version number
+// which is the number submitted App Store and Google Store.
+// This is the JS version number which can be updated OTA.
+// Format: YYMMDD-[the number of version on that day].
+export const JS_VERSION_NUMBER = "200802-1";
 
 export function logError(error: any) {
   console.error(error);
@@ -19,7 +23,7 @@ export function getCriticalProblemTextForUser(problem: string) {
 }
 
 export function getUsefulDebugInfo(): string {
-  return `Version: ${VERSION_NUMBER}`;
+  return `Version: ${JS_VERSION_NUMBER}`;
 }
 
 export function shareDebugText(debugText: string) {

@@ -43,7 +43,7 @@ import {
 } from "./helpers/database";
 import {
   getNonCriticalProblemTextForUser,
-  VERSION_NUMBER,
+  JS_VERSION_NUMBER,
   getUsefulDebugInfo,
 } from "./helpers/debug";
 import {
@@ -263,7 +263,7 @@ export default class HomeScreen extends React.Component<
               }}
             >
               <Text style={{ color: "lightgray" }}>
-                Version {VERSION_NUMBER}
+                Version {JS_VERSION_NUMBER}
               </Text>
               {studyInfo.contactEmail && (
                 <TouchableWithoutFeedback
