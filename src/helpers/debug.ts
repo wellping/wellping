@@ -4,8 +4,8 @@ import { Share } from "react-native";
 // Notice that this version number is different from the app version number
 // which is the number submitted App Store and Google Store.
 // This is the JS version number which can be updated OTA.
-// Format: YYMMDD-[the number of version on that day].
-export const JS_VERSION_NUMBER = "200802-1";
+// Format: [year - 2019].month.day.[the number of version on that day].
+export const JS_VERSION_NUMBER = "1.8.2.1";
 export const NATIVE_VERSION_NUMBER = Constants.nativeAppVersion;
 export const NATIVE_BUILD_NUMBER = Constants.nativeBuildVersion;
 

@@ -262,9 +262,7 @@ export default class HomeScreen extends React.Component<
                 justifyContent: "center",
               }}
             >
-              <Text style={{ color: "lightgray" }}>
-                Version {JS_VERSION_NUMBER}
-              </Text>
+              <Text style={{ color: "lightgray" }}>v{JS_VERSION_NUMBER}</Text>
               {studyInfo.contactEmail && (
                 <TouchableWithoutFeedback
                   onPress={async () => {
