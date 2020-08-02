@@ -29,6 +29,7 @@ import {
   getCriticalProblemTextForUser,
   shareDebugText,
   JS_VERSION_NUMBER,
+  alertWithShareButtonContainingDebugInfo,
 } from "./helpers/debug";
 import { LoginSchema } from "./helpers/schemas/Login";
 import {
@@ -102,9 +103,12 @@ export default class RootScreen extends React.Component<
         } else {
           downloadErrorMessage = `Unknown error: ${e}`;
         }
-        alert("Failed to download study data! Please try again later.");
+        const errorMessage =
+          `Failed to download study data! ` +
+          `Please try again later.\n\n${downloadErrorMessage}`;
+        alertWithShareButtonContainingDebugInfo(errorMessage);
         this.setState({
-          errorText: `Failed to download study data!\n\n${downloadErrorMessage}`,
+          errorText: errorMessage,
         });
         return false;
       } else {

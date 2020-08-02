@@ -46,6 +46,7 @@ import {
   getNonCriticalProblemTextForUser,
   JS_VERSION_NUMBER,
   getUsefulDebugInfo,
+  alertWithShareButtonContainingDebugInfo,
 } from "./helpers/debug";
 import {
   setNotificationsAsync,
@@ -189,7 +190,7 @@ export default class HomeScreen extends React.Component<
     let newPingName: StreamName;
 
     if (todayPings.length >= studyInfo.frequency.hoursEveryday.length) {
-      alert(
+      alertWithShareButtonContainingDebugInfo(
         getNonCriticalProblemTextForUser(
           `todayPings.length (${todayPings.length}) > ${studyInfo.frequency.hoursEveryday.length}`,
         ),
@@ -366,7 +367,9 @@ export default class HomeScreen extends React.Component<
             color="orange"
             title="getStudyInfoAsync()"
             onPress={async () => {
-              alert(JSON.stringify(await getStudyInfoAsync()));
+              alertWithShareButtonContainingDebugInfo(
+                JSON.stringify(await getStudyInfoAsync()),
+              );
             }}
           />
           <Button
@@ -374,7 +377,7 @@ export default class HomeScreen extends React.Component<
             title="getIncomingNotificationTimeAsync()"
             onPress={async () => {
               const nextPingTime = await getIncomingNotificationTimeAsync();
-              alert(
+              alertWithShareButtonContainingDebugInfo(
                 nextPingTime
                   ? format(nextPingTime, "yyyy-MM-dd' T 'HH:mm:ss.SSSxxx")
                   : "IS NULL",
@@ -386,7 +389,9 @@ export default class HomeScreen extends React.Component<
             title="getLatestPingAsync()"
             onPress={async () => {
               const latestStartedPing = await getLatestPingAsync();
-              alert(JSON.stringify(latestStartedPing));
+              alertWithShareButtonContainingDebugInfo(
+                JSON.stringify(latestStartedPing),
+              );
             }}
           />
           <Button
@@ -394,7 +399,9 @@ export default class HomeScreen extends React.Component<
             title="getCurrentNotificationTimeAsync()"
             onPress={async () => {
               const currentNotificationTime = await getCurrentNotificationTimeAsync();
-              alert(JSON.stringify(currentNotificationTime));
+              alertWithShareButtonContainingDebugInfo(
+                JSON.stringify(currentNotificationTime),
+              );
             }}
           />
           <Button
@@ -419,7 +426,7 @@ export default class HomeScreen extends React.Component<
               notificationsTimes!.forEach((element) => {
                 text += format(element, "yyyy-MM-dd'T'HH:mm:ss.SSSxxx") + `\n`;
               });
-              alert(text);
+              alertWithShareButtonContainingDebugInfo(text);
             }}
           />
           <Button
@@ -427,7 +434,9 @@ export default class HomeScreen extends React.Component<
             title="getNumbersOfPingsForAllStreamNames()"
             onPress={async () => {
               const typesOfPingsAnswered = await getNumbersOfPingsForAllStreamNames();
-              alert(JSON.stringify(typesOfPingsAnswered));
+              alertWithShareButtonContainingDebugInfo(
+                JSON.stringify(typesOfPingsAnswered),
+              );
             }}
           />
           <Button
@@ -435,7 +444,7 @@ export default class HomeScreen extends React.Component<
             title="getServerUrlAsync()"
             onPress={async () => {
               const serverUrl = await getServerUrlAsync();
-              alert(serverUrl);
+              alertWithShareButtonContainingDebugInfo(serverUrl);
             }}
           />
           <Button
@@ -443,7 +452,7 @@ export default class HomeScreen extends React.Component<
             title="getUserAsync()"
             onPress={async () => {
               const user = await getUserAsync();
-              alert(JSON.stringify(user));
+              alertWithShareButtonContainingDebugInfo(JSON.stringify(user));
             }}
           />
           <Button
@@ -451,7 +460,9 @@ export default class HomeScreen extends React.Component<
             title="getFuturePingsQueue()"
             onPress={async () => {
               const futurePingsQueues = await getFuturePingsQueue();
-              alert(JSON.stringify(futurePingsQueues));
+              alertWithShareButtonContainingDebugInfo(
+                JSON.stringify(futurePingsQueues),
+              );
             }}
           />
           <Button
@@ -466,7 +477,7 @@ export default class HomeScreen extends React.Component<
             title="getAllDataAsync()"
             onPress={async () => {
               const allData = await getAllDataAsync();
-              alert(JSON.stringify(allData));
+              alertWithShareButtonContainingDebugInfo(JSON.stringify(allData));
             }}
           />
           <Button
@@ -474,7 +485,7 @@ export default class HomeScreen extends React.Component<
             title="uploadDataAsync()"
             onPress={async () => {
               const response = await uploadDataAsync();
-              alert(JSON.stringify(response));
+              alertWithShareButtonContainingDebugInfo(JSON.stringify(response));
             }}
           />
           <Button
@@ -489,7 +500,7 @@ export default class HomeScreen extends React.Component<
             title="copy dashboard url"
             onPress={async () => {
               const url = await getRequestURLAsync("/ssnl_dashboard");
-              alert(url);
+              alertWithShareButtonContainingDebugInfo(url);
               Clipboard.setString(url);
             }}
           />

@@ -3,7 +3,10 @@ import { View, Text, Slider } from "react-native";
 
 import { SliderAnswerEntity } from "../entities/AnswerEntity";
 import { QuestionScreenProps, SliderAnswerData } from "../helpers/answerTypes";
-import { getNonCriticalProblemTextForUser } from "../helpers/debug";
+import {
+  getNonCriticalProblemTextForUser,
+  alertWithShareButtonContainingDebugInfo,
+} from "../helpers/debug";
 import { SliderQuestion } from "../helpers/types";
 
 export const DEFAULT_SLIDER_VALUE = 50;
@@ -40,7 +43,7 @@ const SliderQuestionScreen: React.ElementType<SliderQuestionScreenProps> = ({
         question.defaultValueFromQuestionId
       ] as SliderQuestion;
       if (prevQuestion == null) {
-        alert(
+        alertWithShareButtonContainingDebugInfo(
           getNonCriticalProblemTextForUser(
             `defaultValueFromQuestionId ${question.defaultValueFromQuestionId} prevQuestion == null`,
           ),

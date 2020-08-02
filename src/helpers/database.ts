@@ -12,7 +12,10 @@ import {
   HowLongAgoAnswerEntity,
 } from "../entities/AnswerEntity";
 import { PingEntity } from "../entities/PingEntity";
-import { getCriticalProblemTextForUser } from "./debug";
+import {
+  getCriticalProblemTextForUser,
+  alertWithShareButtonContainingDebugInfo,
+} from "./debug";
 
 const getDatabaseFilename = (databaseName: string) => `${databaseName}.db`;
 
@@ -43,7 +46,7 @@ export async function connectDatabaseAsync(
         logging: true,
       });
     } catch (e) {
-      alert(getCriticalProblemTextForUser(e));
+      alertWithShareButtonContainingDebugInfo(getCriticalProblemTextForUser(e));
       throw e;
     }
   }

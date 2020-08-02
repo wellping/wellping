@@ -1,5 +1,5 @@
 import Constants from "expo-constants";
-import { Share } from "react-native";
+import { Share, Alert } from "react-native";
 
 // Notice that this version number is different from the app version number
 // which is the number submitted App Store and Google Store.
@@ -23,6 +23,25 @@ export function getNonCriticalProblemTextForUser(problem: string) {
 
 export function getCriticalProblemTextForUser(problem: string) {
   return `[CRITICAL ERROR (Please screenshot this page and send it to the study staff as soon as possible): ${problem}]`;
+}
+
+export function alertWithShareButtonContainingDebugInfo(
+  text: string,
+  title: string = "Alert",
+) {
+  Alert.alert(title, text, [
+    {
+      text: "Close",
+      style: "cancel",
+    },
+    {
+      text: "Share Data with Research Staff",
+      style: "default",
+      onPress: () => {
+        shareDebugText(text);
+      },
+    },
+  ]);
 }
 
 export function getUsefulDebugInfo(): string {
