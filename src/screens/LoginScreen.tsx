@@ -181,7 +181,8 @@ export default class LoginScreen extends React.Component<
         },
       }))
     ) {
-      this.setState({ disableLoginButton: false });
+      // We don't have to set `disableLoginButton` here because the page
+      // will be unmounted anyway (to show stuty file error page).
       return;
     }
 
