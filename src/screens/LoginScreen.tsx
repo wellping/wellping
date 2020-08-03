@@ -210,6 +210,10 @@ export default class LoginScreen extends React.Component<
 
     const error = await registerUserAsync(user);
     if (!error) {
+      this.setState({
+        loadingText: "Logged in!",
+      });
+
       Alert.alert(
         "Welcome to Well Ping!",
         `Please review the consent form.`,
