@@ -164,7 +164,7 @@ export default class RootScreen extends React.Component<
   async logoutAsync() {
     await clearUserAsync();
     await clearCurrentStudyFileAsync();
-    this.setState({ userInfo: null });
+    this.setState({ userInfo: null, survey: undefined });
   }
 
   render() {
