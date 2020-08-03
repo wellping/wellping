@@ -173,7 +173,7 @@ export default class LoginScreen extends React.Component<
     } catch (e) {
       this.setState({
         disableLoginButton: false,
-        errorText: `Your login code is invalid:\n${e}`,
+        errorText: `**Your login code is invalid**\n${e}`,
       });
       return;
     }
