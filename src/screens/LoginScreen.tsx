@@ -176,8 +176,8 @@ export default class LoginScreen extends React.Component<
         handleNetworkErrorAsync: async (errorMessage) => {
           this.setState({
             errorText: errorMessage,
+            disableLoginButton: false,
           });
-          alertWithShareButtonContainingDebugInfo(errorMessage);
         },
       }))
     ) {
