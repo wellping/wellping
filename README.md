@@ -7,19 +7,12 @@ A survey app that pings you once a while to answer questions!
 - [Supported Question Types](https://github.com/StanfordSocialNeuroscienceLab/WellPing/wiki/Supported-Question-Types)
 
 ## Demo
-Login with the magic login code 🧙‍♀️:
+Log in with the login code
 ```
-ewoJInVzZXJuYW1lIjogIl9fZGVidWdfXyIsCgkicGFzc3dvcmQiOiAiX190ZXN0X18iLAoJInN0dWR5RmlsZUpzb25VcmwiOiAiaHR0cHM6Ly93ZWxscGluZ19sb2NhbF9fLnNzbmwuc3RhbmZvcmQuZWR1L2RlYnVnLmpzb24iCn0=
+__debug__ __test__ https://wellping_local__.ssnl.stanford.edu/debug.json
 ```
 
-In case you are wondering, it's just the Base64 encoding of this:
-```json
-{
-	"username": "__debug__",
-	"password": "__test__",
-	"studyFileJsonUrl": "https://wellping_local__.ssnl.stanford.edu/debug.json"
-}
-```
+Alternatively, click this link to log in: https://stanfordsocialneurosciencelab.github.io/wellping/login?code=__debug__%20__test__%20https%3A%2F%2Fwellping_local__.ssnl.stanford.edu%2Fdebug.json
 
 This access the local study file "config/survey.json".
 

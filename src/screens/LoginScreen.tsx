@@ -60,10 +60,16 @@ export default class LoginScreen extends React.Component<
 
   handleUrl(url: Linking.ParsedURL) {
     if (url.hostname === "stanfordsocialneurosciencelab.github.io") {
-      if (url.path === "wellping/login") {
-        this.setState({ formData: JSON.stringify(url) });
+      if (
+        url.path === "wellping/login" &&
+        url.queryParams &&
+        url.queryParams["code"]
+      ) {
+        const loginCode = decodeURIComponent(url.queryParams["code"]);
+
+        this.setState({ formData: loginCode });
         Alert.alert(
-          "Welcome to Well Ping!",
+          "Hi there!",
           `We have pre-filled your login information. Please click "OK" to log in.`,
           [
             {
@@ -139,17 +145,23 @@ export default class LoginScreen extends React.Component<
     let user!: User;
     let studyFileJsonUrl!: string;
     try {
-      const base64EncodedString = this.state.formData?.trim();
-      if (!base64EncodedString) {
-        throw new Error("You have not entered your magic login code.");
+      const loginCode = this.state.formData?.trim();
+      if (!loginCode) {
+        throw new Error("You have not entered your login code.");
       }
 
-      const Buffer = require("buffer").Buffer;
-      const loginJsonString = new Buffer(
-        base64EncodedString,
-        "base64",
-      ).toString();
-      const loginInfo = LoginSchema.parse(JSON.parse(loginJsonString));
+      const parsedLoginCode = loginCode.split(" ");
+      if (parsedLoginCode.length > 3) {
+        throw new Error(
+          "Your login code is not formatted correctly " +
+            "(`parsedLoginCode.length > 3`).",
+        );
+      }
+      const loginInfo = LoginSchema.parse({
+        username: parsedLoginCode[0] || "",
+        password: parsedLoginCode[1] || "",
+        studyFileJsonUrl: parsedLoginCode[2] || "",
+      });
       user = {
         patientId: loginInfo.username,
         password: loginInfo.password,
@@ -159,7 +171,7 @@ export default class LoginScreen extends React.Component<
       this.setState({
         disableLoginButton: false,
         errorText:
-          "Your magic login code is invalid 😕. Please screenshot " +
+          "Your login code is invalid. Please screenshot " +
           "the current page and contact the research staff.\n\n" +
           `${e}`,
       });
@@ -264,7 +276,7 @@ export default class LoginScreen extends React.Component<
             Welcome to Well Ping!
           </Text>
           <Text style={{ fontSize: 20 }}>
-            Please log in using the magic login code sent to your email. 🧙‍♀️
+            Please log in using the login code sent to your email.
           </Text>
         </View>
         <TextInput
@@ -273,7 +285,7 @@ export default class LoginScreen extends React.Component<
           autoCorrect={false}
           autoCapitalize="none"
           autoCompleteType="off"
-          placeholder="Paste your magic login code here..."
+          placeholder="Paste your login code here..."
           multiline
           editable={!this.state.disableLoginButton}
           style={{
@@ -282,7 +294,7 @@ export default class LoginScreen extends React.Component<
             borderColor: "#ccc",
             borderRadius: 5,
             marginBottom: 10,
-            height: 150,
+            height: 75,
           }}
         />
         <Button
@@ -294,6 +306,8 @@ export default class LoginScreen extends React.Component<
           <View style={{ marginTop: 10, marginBottom: 30 }}>
             <Text style={{ fontWeight: "bold" }}>{errorText}</Text>
             <Button
+              // TODO: MOVE BUTTON BEFORE TEXT SO THAT WHEN THE ERROR MESSAGE IS TOO LONG IT WON'T BE PROBLEM
+              // TODO: ADD A TEXT LIKE "LIKE THE BUTTON ABOVE TO SHARE ERROR WITH RESEARCH STAFF"
               onPress={() => {
                 shareDebugText(errorText);
               }}
