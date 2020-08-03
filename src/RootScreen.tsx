@@ -2,7 +2,6 @@ import React from "react";
 import { Text } from "react-native";
 
 import HomeScreen from "./HomeScreen";
-import { Loading } from "./components/Loading";
 import { clearCurrentStudyFileAsync } from "./helpers/asyncStorage/studyFile";
 import {
   storeTempStudyFileAsync,
@@ -23,6 +22,7 @@ import {
   studyFileExistsAsync,
 } from "./helpers/studyFile";
 import { StudyFile } from "./helpers/types";
+import LoadingScreen from "./screens/LoadingScreen";
 import LoginScreen, {
   ParamDownloadAndParseStudyFileAsync,
 } from "./screens/LoginScreen";
@@ -170,7 +170,7 @@ export default class RootScreen extends React.Component<
   render() {
     const { isLoading, userInfo, studyFileErrorText } = this.state;
     if (isLoading) {
-      return <Loading />;
+      return <LoadingScreen />;
     }
 
     if (studyFileErrorText) {

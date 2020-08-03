@@ -4,7 +4,7 @@ import { View, Text, Button } from "react-native";
 import { JS_VERSION_NUMBER, shareDebugText } from "../helpers/debug";
 import { styles } from "../helpers/styles";
 
-export const Loading: React.FunctionComponent = () => {
+const LoadingScreen: React.FunctionComponent = () => {
   return (
     <View>
       <Text style={{ ...styles.onlyTextStyle, fontWeight: "bold" }}>
@@ -34,3 +34,5 @@ export const Loading: React.FunctionComponent = () => {
     </View>
   );
 };
+
+export default LoadingScreen;
