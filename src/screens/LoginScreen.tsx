@@ -19,6 +19,7 @@ import {
   JS_VERSION_NUMBER,
   alertWithShareButtonContainingDebugInfo,
   getCriticalProblemTextForUser,
+  shareDebugText,
 } from "../helpers/debug";
 import { LoginSchema } from "../helpers/schemas/Login";
 import { getStudyFileAsync } from "../helpers/studyFile";
@@ -290,7 +291,16 @@ export default class LoginScreen extends React.Component<
           onPress={this.loginAsync}
         />
         {errorText ? (
-          <Text style={{ fontWeight: "bold", marginTop: 10 }}>{errorText}</Text>
+          <View style={{ marginTop: 10, marginBottom: 30 }}>
+            <Text style={{ fontWeight: "bold" }}>{errorText}</Text>
+            <Button
+              onPress={() => {
+                shareDebugText(errorText);
+              }}
+              color="red"
+              title="Share the error message with the research staff"
+            />
+          </View>
         ) : undefined}
         <TouchableWithoutFeedback
           onLongPress={async () => {
