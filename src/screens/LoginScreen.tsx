@@ -173,10 +173,7 @@ export default class LoginScreen extends React.Component<
     } catch (e) {
       this.setState({
         disableLoginButton: false,
-        errorText:
-          "Your login code is invalid. Please screenshot " +
-          "the current page and contact the research staff.\n\n" +
-          `${e}`,
+        errorText: `Your login code is invalid:\n${e}`,
       });
       return;
     }
@@ -306,21 +303,30 @@ export default class LoginScreen extends React.Component<
           }}
         />
         <Button
-          title="Log in"
+          title="Log In"
           disabled={this.state.disableLoginButton}
           onPress={this.loginAsync}
         />
         {errorText ? (
-          <View style={{ marginTop: 10 }}>
-            <Text style={{ fontWeight: "bold" }}>{errorText}</Text>
+          <View
+            style={{
+              marginVertical: 5,
+              padding: 10,
+              borderColor: "lightcoral",
+              borderWidth: 1,
+            }}
+          >
+            <Text style={{ fontWeight: "bold" }}>
+              {`A problem occurred! Please review the error log below. ` +
+                `If necessary, please press the "Share Error" button at the ` +
+                `bottom and send the error log to the research staff.`}
+            </Text>
+            <Text style={{ marginTop: 20 }}>{errorText}</Text>
             <Button
-              // TODO: MOVE BUTTON BEFORE TEXT SO THAT WHEN THE ERROR MESSAGE IS TOO LONG IT WON'T BE PROBLEM
-              // TODO: ADD A TEXT LIKE "LIKE THE BUTTON ABOVE TO SHARE ERROR WITH RESEARCH STAFF"
               onPress={() => {
                 shareDebugText(errorText);
               }}
-              color="red"
-              title="Share the error message with the research staff"
+              title="Share Error"
             />
           </View>
         ) : undefined}
