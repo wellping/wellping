@@ -24,6 +24,10 @@ import {
 import { LoginSchema } from "../helpers/schemas/Login";
 import { getStudyFileAsync } from "../helpers/studyFile";
 
+// This is an ugly hack so that the init url won't pop up again if the user log
+// in and then immediately log out.
+let firstTimeLoadingLoginScreen = true;
+
 export type ParamDownloadAndParseStudyFileAsync = {
   url: string;
   isRedownload: boolean;
@@ -91,8 +95,13 @@ export default class LoginScreen extends React.Component<
 
   async componentDidMount() {
     // If LoginScreen is loaded, it means that the user haven't logged in yet.
-    // So can addEventListener
-    this.handleUrl(await Linking.parseInitialURLAsync());
+    // So we can parse initial url and addEventListener.
+    if (firstTimeLoadingLoginScreen) {
+      // We have to check this, or else when the user log in and then
+      // immediately log out, they will be presented with this again.
+      this.handleUrl(await Linking.parseInitialURLAsync());
+      firstTimeLoadingLoginScreen = false;
+    }
     Linking.addEventListener("url", this.listenToUrlWhenForegroundHandler);
   }
 
