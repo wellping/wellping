@@ -38,10 +38,7 @@ export function alertWithShareButtonContainingDebugInfo(
       text: "Share Data with Research Staff",
       style: "default",
       onPress: () => {
-        shareDebugText(
-          `Please enter any additional information here:\n\n\n\n` +
-            `====\n${text}`,
-        );
+        shareDebugText(text);
       },
     },
   ]);
@@ -58,6 +55,8 @@ Expo Version: ${Constants.expoVersion}`;
 
 export function shareDebugText(debugText: string) {
   Share.share({
-    message: `${debugText}\n\n====\n${getUsefulDebugInfo()}`,
+    message:
+      `Please enter any additional information here:\n\n\n\n` +
+      `====\n${debugText}\n\n====\n${getUsefulDebugInfo()}`,
   });
 }
