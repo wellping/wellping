@@ -1,20 +1,8 @@
-import * as Linking from "expo-linking";
-import * as WebBrowser from "expo-web-browser";
 import React from "react";
-import {
-  Button,
-  TextInput,
-  Text,
-  View,
-  ScrollView,
-  Alert,
-  Keyboard,
-  TouchableWithoutFeedback,
-} from "react-native";
+import { Button, TextInput, Text, View } from "react-native";
 
 import HomeScreen from "./HomeScreen";
 import { Loading } from "./components/Loading";
-import { registerUserAsync } from "./helpers/apiManager";
 import { clearCurrentStudyFileAsync } from "./helpers/asyncStorage/studyFile";
 import {
   storeTempStudyFileAsync,
@@ -27,13 +15,7 @@ import {
   clearUserAsync,
 } from "./helpers/asyncStorage/user";
 import { connectDatabaseAsync } from "./helpers/database";
-import {
-  getCriticalProblemTextForUser,
-  shareDebugText,
-  JS_VERSION_NUMBER,
-  alertWithShareButtonContainingDebugInfo,
-} from "./helpers/debug";
-import { LoginSchema } from "./helpers/schemas/Login";
+import { getCriticalProblemTextForUser, shareDebugText } from "./helpers/debug";
 import {
   getStudyFileAsync,
   downloadStudyFileAsync,
@@ -41,17 +23,16 @@ import {
   studyFileExistsAsync,
 } from "./helpers/studyFile";
 import { StudyFile } from "./helpers/types";
+import LoginScreen, {
+  ParamDownloadAndParseStudyFileAsync,
+} from "./screens/LoginScreen";
 
 interface RootScreenProps {}
 
 interface RootScreenState {
   userInfo: User | null;
   isLoading: boolean;
-  formData?: string;
-  disableLoginButton: boolean;
-  errorText: string | null;
   studyFileErrorText: string | null;
-  unableToParticipate?: boolean;
   survey?: StudyFile;
 }
 
@@ -65,8 +46,6 @@ export default class RootScreen extends React.Component<
     this.state = {
       userInfo: null,
       isLoading: true,
-      disableLoginButton: false,
-      errorText: null,
       studyFileErrorText: null,
     };
   }
@@ -90,28 +69,27 @@ export default class RootScreen extends React.Component<
    * Notice that if `isRedownload` is true, the function still returns `true`
    * in case of downloading failure (but not parsing failure).
    */
-  async downloadAndParseStudyFileAsync(
-    url: string,
-    isRedownload: boolean = false,
-  ): Promise<boolean> {
+  async downloadAndParseStudyFileAsync({
+    url,
+    isRedownload,
+    handleNetworkErrorAsync,
+  }: ParamDownloadAndParseStudyFileAsync): Promise<boolean> {
     let rawJsonString: string;
     try {
       rawJsonString = await downloadStudyFileAsync(url);
     } catch (e) {
+      let downloadErrorMessage: string;
+      if (e instanceof Error) {
+        downloadErrorMessage = `**${e.name}**\n${e.message}`;
+      } else {
+        downloadErrorMessage = `Unknown error: ${e}`;
+      }
+      const errorMessage =
+        `Failed to download study data! Possible network failure. ` +
+        `Please try again later.\n\n${downloadErrorMessage}`;
+      await handleNetworkErrorAsync(errorMessage);
+
       if (!isRedownload) {
-        let downloadErrorMessage: string;
-        if (e instanceof Error) {
-          downloadErrorMessage = `**${e.name}**\n${e.message}`;
-        } else {
-          downloadErrorMessage = `Unknown error: ${e}`;
-        }
-        const errorMessage =
-          `Failed to download study data! ` +
-          `Please try again later.\n\n${downloadErrorMessage}`;
-        alertWithShareButtonContainingDebugInfo(errorMessage);
-        this.setState({
-          errorText: errorMessage,
-        });
         return false;
       } else {
         // If it is re-download, we act as if nothing happens because at least
@@ -147,29 +125,6 @@ export default class RootScreen extends React.Component<
     return results;
   }
 
-  handleUrl(url: Linking.ParsedURL) {
-    if (url.hostname === "stanfordsocialneurosciencelab.github.io") {
-      if (url.path === "wellping/login") {
-        this.setState({ formData: JSON.stringify(url) });
-        Alert.alert(
-          "Welcome to Well Ping!",
-          `We have pre-filled your login information. Please click "OK" to log in.`,
-          [
-            {
-              text: "OK",
-              style: "cancel",
-              onPress: this.loginAsync,
-            },
-          ],
-        );
-      }
-    }
-  }
-
-  listenToUrlWhenForegroundHandler = (event: Linking.EventType) => {
-    this.handleUrl(Linking.parse(event.url));
-  };
-
   async componentDidMount() {
     if (await studyFileExistsAsync()) {
       if (!(await this.loadTempStudyFileAsync())) {
@@ -179,10 +134,14 @@ export default class RootScreen extends React.Component<
       const survey = await getStudyFileAsync();
 
       // Do it in background because there isn't any urgency to redownload.
-      this.downloadAndParseStudyFileAsync(
-        survey.studyInfo.studyFileJsonURL,
-        true,
-      );
+      this.downloadAndParseStudyFileAsync({
+        url: survey.studyInfo.studyFileJsonURL,
+        isRedownload: true,
+        handleNetworkErrorAsync: async () => {
+          // No need to handle network error.
+          // Just do it next time.
+        },
+      });
 
       const user = await getUserAsync();
       if (user === null) {
@@ -196,149 +155,10 @@ export default class RootScreen extends React.Component<
       await connectDatabaseAsync(survey.studyInfo.id);
 
       this.setState({ userInfo: user, survey });
-    } else {
-      // New user.
-      this.handleUrl(await Linking.parseInitialURLAsync());
-      Linking.addEventListener("url", this.listenToUrlWhenForegroundHandler);
     }
 
     this.setState({ isLoading: false });
   }
-
-  removeUrlEventListener() {
-    Linking.removeEventListener("url", this.listenToUrlWhenForegroundHandler);
-  }
-
-  componentWillUnmount() {
-    this.removeUrlEventListener();
-  }
-
-  async confirmAgeAsync(): Promise<boolean> {
-    return new Promise((resolve, reject) => {
-      // TODO: ALLOW CUSTOMIZE IT
-      Alert.alert(
-        "Confirm",
-        `Are you at least 18 years of age?`,
-        [
-          {
-            text: "Yes",
-            onPress: () => {
-              resolve(true);
-            },
-          },
-          {
-            text: "No",
-            onPress: () => {
-              this.removeUrlEventListener();
-              this.setState({ unableToParticipate: true });
-              resolve(false);
-            },
-          },
-        ],
-        { cancelable: false },
-      );
-    });
-  }
-
-  loginAsync = async () => {
-    this.setState({
-      disableLoginButton: true,
-    });
-
-    Keyboard.dismiss();
-
-    if (!(await this.confirmAgeAsync())) {
-      this.setState({
-        disableLoginButton: false,
-      });
-      return;
-    }
-
-    this.setState({
-      errorText: "Magical things happening... 🧙‍♂️",
-    });
-
-    let user!: User;
-    let studyFileJsonUrl!: string;
-    try {
-      const base64EncodedString = this.state.formData?.trim();
-      if (!base64EncodedString) {
-        throw new Error("You have not entered your magic login code.");
-      }
-
-      const Buffer = require("buffer").Buffer;
-      const loginJsonString = new Buffer(
-        base64EncodedString,
-        "base64",
-      ).toString();
-      const loginInfo = LoginSchema.parse(JSON.parse(loginJsonString));
-      user = {
-        patientId: loginInfo.username,
-        password: loginInfo.password,
-      };
-      studyFileJsonUrl = loginInfo.studyFileJsonUrl;
-    } catch (e) {
-      this.setState({
-        disableLoginButton: false,
-        errorText:
-          "Your magic login code is invalid 😕. Please screenshot " +
-          "the current page and contact the research staff.\n\n" +
-          `${e}`,
-      });
-      return;
-    }
-
-    this.setState({
-      errorText: "Loading study data... ☁️",
-    });
-
-    if (!(await this.downloadAndParseStudyFileAsync(studyFileJsonUrl))) {
-      this.setState({ disableLoginButton: false });
-      return;
-    }
-
-    const survey = await getStudyFileAsync();
-
-    this.setState({
-      errorText: "Authenticating... 🤖",
-    });
-
-    const error = await registerUserAsync(user);
-    if (!error) {
-      Alert.alert(
-        "Welcome to Well Ping!",
-        `Please review the consent form.`,
-        [
-          {
-            text: "Review",
-            onPress: async () => {
-              await WebBrowser.openBrowserAsync(
-                survey.studyInfo.consentFormUrl,
-              );
-
-              // Because database was not previously connected.
-              await connectDatabaseAsync(survey.studyInfo.id);
-
-              this.removeUrlEventListener();
-
-              this.setState({
-                userInfo: user,
-                survey,
-                errorText: null,
-                disableLoginButton: false,
-              });
-            },
-          },
-        ],
-        { cancelable: false },
-      );
-    } else {
-      this.setState({
-        errorText: error,
-        disableLoginButton: false,
-      });
-    }
-  };
 
   async logoutAsync() {
     await clearUserAsync();
@@ -347,26 +167,9 @@ export default class RootScreen extends React.Component<
   }
 
   render() {
-    const {
-      isLoading,
-      userInfo,
-      errorText,
-      studyFileErrorText,
-      unableToParticipate,
-    } = this.state;
+    const { isLoading, userInfo, studyFileErrorText } = this.state;
     if (isLoading) {
       return <Loading />;
-    }
-
-    if (unableToParticipate) {
-      return (
-        <View style={{ marginTop: 20, marginHorizontal: 20 }}>
-          <Text style={{ fontSize: 20 }}>Thank you for your interests.</Text>
-          <Text style={{ fontSize: 20 }}>
-            Unfortunately, you cannot participate in this study.
-          </Text>
-        </View>
-      );
     }
 
     if (studyFileErrorText) {
@@ -417,70 +220,17 @@ export default class RootScreen extends React.Component<
 
     if (userInfo == null) {
       return (
-        <ScrollView
-          style={{ height: "100%", paddingHorizontal: 20 }}
-          keyboardShouldPersistTaps="handled" /* https://github.com/facebook/react-native/issues/9404#issuecomment-252474548 */
-        >
-          <View style={{ marginVertical: 20 }}>
-            <Text
-              style={{ fontSize: 30, marginBottom: 20, textAlign: "center" }}
-            >
-              Welcome to Well Ping!
-            </Text>
-            <Text style={{ fontSize: 20 }}>
-              Please log in using the magic login code sent to your email. 🧙‍♀️
-            </Text>
-          </View>
-          <TextInput
-            onChangeText={(text) => this.setState({ formData: text })}
-            value={this.state.formData}
-            autoCorrect={false}
-            autoCapitalize="none"
-            autoCompleteType="off"
-            placeholder="Paste your magic login code here..."
-            multiline
-            editable={!this.state.disableLoginButton}
-            style={{
-              padding: 8,
-              borderWidth: 1,
-              borderColor: "#ccc",
-              borderRadius: 5,
-              marginBottom: 10,
-              height: 150,
-            }}
-          />
-          <Button
-            title="Log in"
-            disabled={this.state.disableLoginButton}
-            onPress={this.loginAsync}
-          />
-          {errorText ? (
-            <Text style={{ fontWeight: "bold", marginTop: 10 }}>
-              {errorText}
-            </Text>
-          ) : undefined}
-          <TouchableWithoutFeedback
-            onLongPress={async () => {
-              //this.setState({ displayDebugView: true });
-              alertWithShareButtonContainingDebugInfo(
-                `parseInitialURLAsync:\n${JSON.stringify(
-                  await Linking.parseInitialURLAsync(),
-                )}`,
-                "👀",
-              );
-            }}
-          >
-            <Text
-              style={{
-                textAlign: "center",
-                marginTop: 10,
-                color: "lightgray",
-              }}
-            >
-              v.{JS_VERSION_NUMBER}
-            </Text>
-          </TouchableWithoutFeedback>
-        </ScrollView>
+        <LoginScreen
+          downloadAndParseStudyFileAsync={async (...parameter) => {
+            return await this.downloadAndParseStudyFileAsync(...parameter);
+          }}
+          loggedInAsync={async (user) => {
+            this.setState({
+              userInfo: user,
+              survey: await getStudyFileAsync(),
+            });
+          }}
+        />
       );
     }
 
