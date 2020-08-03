@@ -128,6 +128,8 @@ export default class LoginScreen extends React.Component<
 
   loginAsync = async () => {
     this.setState({
+      errorText: null,
+      loadingText: null,
       disableLoginButton: true,
     });
 
@@ -141,7 +143,6 @@ export default class LoginScreen extends React.Component<
     }
 
     this.setState({
-      errorText: null,
       loadingText: "Magical things happening...",
     });
 
