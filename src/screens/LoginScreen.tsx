@@ -41,6 +41,7 @@ interface LoginScreenState {
   unableToParticipate: boolean;
   formData?: string;
   disableLoginButton: boolean;
+  loadingText: string | null;
   errorText: string | null;
 }
 
@@ -54,6 +55,7 @@ export default class LoginScreen extends React.Component<
     this.state = {
       unableToParticipate: false,
       disableLoginButton: false,
+      loadingText: null,
       errorText: null,
     };
   }
@@ -139,7 +141,8 @@ export default class LoginScreen extends React.Component<
     }
 
     this.setState({
-      errorText: "Magical things happening... 🧙‍♂️",
+      errorText: null,
+      loadingText: "Magical things happening...",
     });
 
     let user!: User;
@@ -179,7 +182,7 @@ export default class LoginScreen extends React.Component<
     }
 
     this.setState({
-      errorText: "Loading study data... ☁️",
+      loadingText: "Loading study data...",
     });
 
     if (
@@ -202,7 +205,7 @@ export default class LoginScreen extends React.Component<
     const survey = await getStudyFileAsync();
 
     this.setState({
-      errorText: "Authenticating... 🤖",
+      loadingText: "Authenticating...",
     });
 
     const error = await registerUserAsync(user);
@@ -231,6 +234,7 @@ export default class LoginScreen extends React.Component<
 
               this.setState(
                 {
+                  loadingText: null,
                   errorText: null,
                   disableLoginButton: false,
                 },
@@ -253,7 +257,7 @@ export default class LoginScreen extends React.Component<
   };
 
   render() {
-    const { errorText, unableToParticipate } = this.state;
+    const { loadingText, errorText, unableToParticipate } = this.state;
 
     if (unableToParticipate) {
       return (
@@ -303,7 +307,7 @@ export default class LoginScreen extends React.Component<
           onPress={this.loginAsync}
         />
         {errorText ? (
-          <View style={{ marginTop: 10, marginBottom: 30 }}>
+          <View style={{ marginTop: 10 }}>
             <Text style={{ fontWeight: "bold" }}>{errorText}</Text>
             <Button
               // TODO: MOVE BUTTON BEFORE TEXT SO THAT WHEN THE ERROR MESSAGE IS TOO LONG IT WON'T BE PROBLEM
@@ -314,6 +318,19 @@ export default class LoginScreen extends React.Component<
               color="red"
               title="Share the error message with the research staff"
             />
+          </View>
+        ) : undefined}
+        {loadingText && !errorText ? (
+          <View style={{ marginTop: 10 }}>
+            <Text
+              style={{
+                fontWeight: "bold",
+                textAlign: "center",
+                fontSize: 20,
+              }}
+            >
+              {loadingText}
+            </Text>
           </View>
         ) : undefined}
         <TouchableWithoutFeedback
@@ -330,7 +347,7 @@ export default class LoginScreen extends React.Component<
           <Text
             style={{
               textAlign: "center",
-              marginTop: 10,
+              marginTop: 50,
               color: "lightgray",
             }}
           >
