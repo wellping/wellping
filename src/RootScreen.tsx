@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, TextInput, Text, View } from "react-native";
+import { Text } from "react-native";
 
 import HomeScreen from "./HomeScreen";
 import { Loading } from "./components/Loading";
@@ -15,7 +15,7 @@ import {
   clearUserAsync,
 } from "./helpers/asyncStorage/user";
 import { connectDatabaseAsync } from "./helpers/database";
-import { getCriticalProblemTextForUser, shareDebugText } from "./helpers/debug";
+import { getCriticalProblemTextForUser } from "./helpers/debug";
 import {
   getStudyFileAsync,
   downloadStudyFileAsync,
@@ -26,6 +26,7 @@ import { StudyFile } from "./helpers/types";
 import LoginScreen, {
   ParamDownloadAndParseStudyFileAsync,
 } from "./screens/LoginScreen";
+import StudyFileErrorScreen from "./screens/StudyFileErrorScreen";
 
 interface RootScreenProps {}
 
@@ -173,52 +174,11 @@ export default class RootScreen extends React.Component<
     }
 
     if (studyFileErrorText) {
-      return (
-        <View style={{ height: "100%" }}>
-          <View
-            style={{
-              flex: 1,
-              marginTop: 20,
-              marginHorizontal: 20,
-            }}
-          >
-            <View style={{ flex: 0 }}>
-              <Text style={{ fontSize: 20, color: "red" }}>
-                Study File Error
-              </Text>
-              <Text style={{ marginTop: 10, marginBottom: 10 }}>
-                The study file contains the following error:
-              </Text>
-            </View>
-            <View style={{ flex: -1 }}>
-              <TextInput
-                multiline
-                editable={false}
-                value={studyFileErrorText}
-                style={{
-                  borderColor: "black",
-                  borderWidth: 1,
-                  padding: 5,
-                }}
-              />
-            </View>
-            <View style={{ flex: 0 }}>
-              <Text style={{ textAlign: "center" }}>
-                (Restart the app to try again.)
-              </Text>
-              <Button
-                onPress={() => {
-                  shareDebugText(studyFileErrorText);
-                }}
-                title="Send the error message to the research staff"
-              />
-            </View>
-          </View>
-        </View>
-      );
+      return <StudyFileErrorScreen errorText={studyFileErrorText} />;
     }
 
     if (userInfo == null) {
+      // The user hasn't logged in.
       return (
         <LoginScreen
           downloadAndParseStudyFileAsync={async (...parameter) => {
