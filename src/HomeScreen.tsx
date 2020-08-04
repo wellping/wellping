@@ -15,7 +15,6 @@ import {
 import { WebView } from "react-native-webview";
 
 import SurveyScreen, { SurveyScreenState } from "./SurveyScreen";
-import { Loading } from "./components/Loading";
 import { AnswerEntity } from "./entities/AnswerEntity";
 import { PingEntity } from "./entities/PingEntity";
 import {
@@ -64,6 +63,7 @@ import {
 import { getAllStreamNames, getStudyInfoAsync } from "./helpers/studyFile";
 import { styles } from "./helpers/styles";
 import { Streams, StreamName, StudyInfo } from "./helpers/types";
+import LoadingScreen from "./screens/LoadingScreen";
 
 interface HomeScreenProps {
   studyInfo: StudyInfo;
@@ -243,7 +243,7 @@ export default class HomeScreen extends React.Component<
     } = this.state;
 
     if (isLoading) {
-      return <Loading />;
+      return <LoadingScreen />;
     }
 
     const ExtraView = allowsNotifications ? (

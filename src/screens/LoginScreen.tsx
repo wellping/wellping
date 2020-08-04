@@ -24,6 +24,10 @@ import {
 import { LoginSchema } from "../helpers/schemas/Login";
 import { getStudyFileAsync } from "../helpers/studyFile";
 
+// This is an ugly hack so that the init url won't pop up again if the user log
+// in and then immediately log out.
+let firstTimeLoadingLoginScreen = true;
+
 export type ParamDownloadAndParseStudyFileAsync = {
   url: string;
   isRedownload: boolean;
@@ -41,6 +45,7 @@ interface LoginScreenState {
   unableToParticipate: boolean;
   formData?: string;
   disableLoginButton: boolean;
+  loadingText: string | null;
   errorText: string | null;
 }
 
@@ -54,16 +59,23 @@ export default class LoginScreen extends React.Component<
     this.state = {
       unableToParticipate: false,
       disableLoginButton: false,
+      loadingText: null,
       errorText: null,
     };
   }
 
   handleUrl(url: Linking.ParsedURL) {
     if (url.hostname === "stanfordsocialneurosciencelab.github.io") {
-      if (url.path === "wellping/login") {
-        this.setState({ formData: JSON.stringify(url) });
+      if (
+        url.path === "wellping/login" &&
+        url.queryParams &&
+        url.queryParams["code"]
+      ) {
+        const loginCode = decodeURIComponent(url.queryParams["code"]);
+
+        this.setState({ formData: loginCode });
         Alert.alert(
-          "Welcome to Well Ping!",
+          "Hi there!",
           `We have pre-filled your login information. Please click "OK" to log in.`,
           [
             {
@@ -83,8 +95,13 @@ export default class LoginScreen extends React.Component<
 
   async componentDidMount() {
     // If LoginScreen is loaded, it means that the user haven't logged in yet.
-    // So can addEventListener
-    this.handleUrl(await Linking.parseInitialURLAsync());
+    // So we can parse initial url and addEventListener.
+    if (firstTimeLoadingLoginScreen) {
+      // We have to check this, or else when the user log in and then
+      // immediately log out, they will be presented with this again.
+      this.handleUrl(await Linking.parseInitialURLAsync());
+      firstTimeLoadingLoginScreen = false;
+    }
     Linking.addEventListener("url", this.listenToUrlWhenForegroundHandler);
   }
 
@@ -120,6 +137,8 @@ export default class LoginScreen extends React.Component<
 
   loginAsync = async () => {
     this.setState({
+      errorText: null,
+      loadingText: null,
       disableLoginButton: true,
     });
 
@@ -133,23 +152,29 @@ export default class LoginScreen extends React.Component<
     }
 
     this.setState({
-      errorText: "Magical things happening... 🧙‍♂️",
+      loadingText: "Magical things happening...",
     });
 
     let user!: User;
     let studyFileJsonUrl!: string;
     try {
-      const base64EncodedString = this.state.formData?.trim();
-      if (!base64EncodedString) {
-        throw new Error("You have not entered your magic login code.");
+      const loginCode = this.state.formData?.trim();
+      if (!loginCode) {
+        throw new Error("You have not entered your login code.");
       }
 
-      const Buffer = require("buffer").Buffer;
-      const loginJsonString = new Buffer(
-        base64EncodedString,
-        "base64",
-      ).toString();
-      const loginInfo = LoginSchema.parse(JSON.parse(loginJsonString));
+      const parsedLoginCode = loginCode.split(" ");
+      if (parsedLoginCode.length > 3) {
+        throw new Error(
+          "Your login code is not formatted correctly " +
+            "(`parsedLoginCode.length > 3`).",
+        );
+      }
+      const loginInfo = LoginSchema.parse({
+        username: parsedLoginCode[0] || "",
+        password: parsedLoginCode[1] || "",
+        studyFileJsonUrl: parsedLoginCode[2] || "",
+      });
       user = {
         patientId: loginInfo.username,
         password: loginInfo.password,
@@ -158,16 +183,13 @@ export default class LoginScreen extends React.Component<
     } catch (e) {
       this.setState({
         disableLoginButton: false,
-        errorText:
-          "Your magic login code is invalid 😕. Please screenshot " +
-          "the current page and contact the research staff.\n\n" +
-          `${e}`,
+        errorText: `**Your login code is invalid**\n${e}`,
       });
       return;
     }
 
     this.setState({
-      errorText: "Loading study data... ☁️",
+      loadingText: "Loading study data...",
     });
 
     if (
@@ -190,11 +212,15 @@ export default class LoginScreen extends React.Component<
     const survey = await getStudyFileAsync();
 
     this.setState({
-      errorText: "Authenticating... 🤖",
+      loadingText: "Authenticating...",
     });
 
     const error = await registerUserAsync(user);
     if (!error) {
+      this.setState({
+        loadingText: "Logged in!",
+      });
+
       Alert.alert(
         "Welcome to Well Ping!",
         `Please review the consent form.`,
@@ -219,6 +245,7 @@ export default class LoginScreen extends React.Component<
 
               this.setState(
                 {
+                  loadingText: null,
                   errorText: null,
                   disableLoginButton: false,
                 },
@@ -241,7 +268,7 @@ export default class LoginScreen extends React.Component<
   };
 
   render() {
-    const { errorText, unableToParticipate } = this.state;
+    const { loadingText, errorText, unableToParticipate } = this.state;
 
     if (unableToParticipate) {
       return (
@@ -264,7 +291,7 @@ export default class LoginScreen extends React.Component<
             Welcome to Well Ping!
           </Text>
           <Text style={{ fontSize: 20 }}>
-            Please log in using the magic login code sent to your email. 🧙‍♀️
+            Please log in using the login code sent to your email.
           </Text>
         </View>
         <TextInput
@@ -273,7 +300,7 @@ export default class LoginScreen extends React.Component<
           autoCorrect={false}
           autoCapitalize="none"
           autoCompleteType="off"
-          placeholder="Paste your magic login code here..."
+          placeholder="Paste your login code here..."
           multiline
           editable={!this.state.disableLoginButton}
           style={{
@@ -282,24 +309,48 @@ export default class LoginScreen extends React.Component<
             borderColor: "#ccc",
             borderRadius: 5,
             marginBottom: 10,
-            height: 150,
+            height: 75,
           }}
         />
         <Button
-          title="Log in"
+          title="Log In"
           disabled={this.state.disableLoginButton}
           onPress={this.loginAsync}
         />
         {errorText ? (
-          <View style={{ marginTop: 10, marginBottom: 30 }}>
-            <Text style={{ fontWeight: "bold" }}>{errorText}</Text>
+          <View
+            style={{
+              marginVertical: 5,
+              padding: 10,
+              borderColor: "lightcoral",
+              borderWidth: 1,
+            }}
+          >
+            <Text style={{ fontWeight: "bold" }}>
+              {`A problem occurred! Please review the error log below. ` +
+                `If necessary, please press the "Share Error" button at the ` +
+                `bottom and send the error log to the research staff.`}
+            </Text>
+            <Text style={{ marginTop: 20 }}>{errorText}</Text>
             <Button
               onPress={() => {
                 shareDebugText(errorText);
               }}
-              color="red"
-              title="Share the error message with the research staff"
+              title="Share Error"
             />
+          </View>
+        ) : undefined}
+        {loadingText && !errorText ? (
+          <View style={{ marginTop: 10 }}>
+            <Text
+              style={{
+                fontWeight: "bold",
+                textAlign: "center",
+                fontSize: 20,
+              }}
+            >
+              {loadingText}
+            </Text>
           </View>
         ) : undefined}
         <TouchableWithoutFeedback
@@ -316,7 +367,7 @@ export default class LoginScreen extends React.Component<
           <Text
             style={{
               textAlign: "center",
-              marginTop: 10,
+              marginTop: 50,
               color: "lightgray",
             }}
           >
