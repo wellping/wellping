@@ -147,6 +147,29 @@ export default class RootScreen extends React.Component<
     return results;
   }
 
+  handleUrl(url: Linking.ParsedURL) {
+    if (url.hostname === "stanfordsocialneurosciencelab.github.io") {
+      if (url.path === "wellping/login") {
+        this.setState({ formData: JSON.stringify(url) });
+        Alert.alert(
+          "Welcome to Well Ping!",
+          `We have pre-filled your login information. Please click "OK" to log in.`,
+          [
+            {
+              text: "OK",
+              style: "cancel",
+              onPress: this.loginAsync,
+            },
+          ],
+        );
+      }
+    }
+  }
+
+  listenToUrlWhenForegroundHandler = (event: Linking.EventType) => {
+    this.handleUrl(Linking.parse(event.url));
+  };
+
   async componentDidMount() {
     if (await studyFileExistsAsync()) {
       if (!(await this.loadTempStudyFileAsync())) {
@@ -175,26 +198,147 @@ export default class RootScreen extends React.Component<
       this.setState({ userInfo: user, survey });
     } else {
       // New user.
+      this.handleUrl(await Linking.parseInitialURLAsync());
+      Linking.addEventListener("url", this.listenToUrlWhenForegroundHandler);
+    }
+
+    this.setState({ isLoading: false });
+  }
+
+  removeUrlEventListener() {
+    Linking.removeEventListener("url", this.listenToUrlWhenForegroundHandler);
+  }
+
+  componentWillUnmount() {
+    this.removeUrlEventListener();
+  }
+
+  async confirmAgeAsync(): Promise<boolean> {
+    return new Promise((resolve, reject) => {
+      // TODO: ALLOW CUSTOMIZE IT
       Alert.alert(
         "Confirm",
         `Are you at least 18 years of age?`,
         [
           {
             text: "Yes",
+            onPress: () => {
+              resolve(true);
+            },
           },
           {
             text: "No",
             onPress: () => {
+              this.removeUrlEventListener();
               this.setState({ unableToParticipate: true });
+              resolve(false);
             },
           },
         ],
         { cancelable: false },
       );
+    });
+  }
+
+  loginAsync = async () => {
+    this.setState({
+      disableLoginButton: true,
+    });
+
+    Keyboard.dismiss();
+
+    if (!(await this.confirmAgeAsync())) {
+      this.setState({
+        disableLoginButton: false,
+      });
+      return;
     }
 
-    this.setState({ isLoading: false });
-  }
+    this.setState({
+      errorText: "Magical things happening... 🧙‍♂️",
+    });
+
+    let user!: User;
+    let studyFileJsonUrl!: string;
+    try {
+      const base64EncodedString = this.state.formData?.trim();
+      if (!base64EncodedString) {
+        throw new Error("You have not entered your magic login code.");
+      }
+
+      const Buffer = require("buffer").Buffer;
+      const loginJsonString = new Buffer(
+        base64EncodedString,
+        "base64",
+      ).toString();
+      const loginInfo = LoginSchema.parse(JSON.parse(loginJsonString));
+      user = {
+        patientId: loginInfo.username,
+        password: loginInfo.password,
+      };
+      studyFileJsonUrl = loginInfo.studyFileJsonUrl;
+    } catch (e) {
+      this.setState({
+        disableLoginButton: false,
+        errorText:
+          "Your magic login code is invalid 😕. Please screenshot " +
+          "the current page and contact the research staff.\n\n" +
+          `${e}`,
+      });
+      return;
+    }
+
+    this.setState({
+      errorText: "Loading study data... ☁️",
+    });
+
+    if (!(await this.downloadAndParseStudyFileAsync(studyFileJsonUrl))) {
+      this.setState({ disableLoginButton: false });
+      return;
+    }
+
+    const survey = await getStudyFileAsync();
+
+    this.setState({
+      errorText: "Authenticating... 🤖",
+    });
+
+    const error = await registerUserAsync(user);
+    if (!error) {
+      Alert.alert(
+        "Welcome to Well Ping!",
+        `Please review the consent form.`,
+        [
+          {
+            text: "Review",
+            onPress: async () => {
+              await WebBrowser.openBrowserAsync(
+                survey.studyInfo.consentFormUrl,
+              );
+
+              // Because database was not previously connected.
+              await connectDatabaseAsync(survey.studyInfo.id);
+
+              this.removeUrlEventListener();
+
+              this.setState({
+                userInfo: user,
+                survey,
+                errorText: null,
+                disableLoginButton: false,
+              });
+            },
+          },
+        ],
+        { cancelable: false },
+      );
+    } else {
+      this.setState({
+        errorText: error,
+        disableLoginButton: false,
+      });
+    }
+  };
 
   async logoutAsync() {
     await clearUserAsync();
@@ -289,6 +433,7 @@ export default class RootScreen extends React.Component<
           </View>
           <TextInput
             onChangeText={(text) => this.setState({ formData: text })}
+            value={this.state.formData}
             autoCorrect={false}
             autoCapitalize="none"
             autoCompleteType="off"
@@ -307,99 +452,7 @@ export default class RootScreen extends React.Component<
           <Button
             title="Log in"
             disabled={this.state.disableLoginButton}
-            onPress={async () => {
-              this.setState({
-                disableLoginButton: true,
-                errorText: "Magical things happening... 🧙‍♂️",
-              });
-
-              Keyboard.dismiss();
-
-              let user!: User;
-              let studyFileJsonUrl!: string;
-              try {
-                const base64EncodedString = this.state.formData?.trim();
-                if (!base64EncodedString) {
-                  throw new Error(
-                    "You have not entered your magic login code.",
-                  );
-                }
-
-                const Buffer = require("buffer").Buffer;
-                const loginJsonString = new Buffer(
-                  base64EncodedString,
-                  "base64",
-                ).toString();
-                const loginInfo = LoginSchema.parse(
-                  JSON.parse(loginJsonString),
-                );
-                user = {
-                  patientId: loginInfo.username,
-                  password: loginInfo.password,
-                };
-                studyFileJsonUrl = loginInfo.studyFileJsonUrl;
-              } catch (e) {
-                this.setState({
-                  disableLoginButton: false,
-                  errorText:
-                    "Your magic login code is invalid 😕. Please screenshot " +
-                    "the current page and contact the research staff.\n\n" +
-                    `${e}`,
-                });
-                return;
-              }
-
-              this.setState({
-                errorText: "Loading study data... ☁️",
-              });
-
-              if (
-                !(await this.downloadAndParseStudyFileAsync(studyFileJsonUrl))
-              ) {
-                this.setState({ disableLoginButton: false });
-                return;
-              }
-
-              const survey = await getStudyFileAsync();
-
-              this.setState({
-                errorText: "Authenticating... 🤖",
-              });
-
-              const error = await registerUserAsync(user);
-              if (!error) {
-                Alert.alert(
-                  "Welcome to Well Ping!",
-                  `Please review the consent form.`,
-                  [
-                    {
-                      text: "Review",
-                      onPress: async () => {
-                        await WebBrowser.openBrowserAsync(
-                          survey.studyInfo.consentFormUrl,
-                        );
-
-                        // Because database was not previously connected.
-                        await connectDatabaseAsync(survey.studyInfo.id);
-
-                        this.setState({
-                          userInfo: user,
-                          survey,
-                          errorText: null,
-                          disableLoginButton: false,
-                        });
-                      },
-                    },
-                  ],
-                  { cancelable: false },
-                );
-              } else {
-                this.setState({
-                  errorText: error,
-                  disableLoginButton: false,
-                });
-              }
-            }}
+            onPress={this.loginAsync}
           />
           {errorText ? (
             <Text style={{ fontWeight: "bold", marginTop: 10 }}>
