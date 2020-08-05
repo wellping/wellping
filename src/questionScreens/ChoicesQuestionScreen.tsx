@@ -43,20 +43,6 @@ interface ChoicesQuestionScreenProps extends QuestionScreenProps {
   question: ChoicesQuestion | YesNoQuestion;
 }
 
-function initAnswerData(
-  choices: Choice[],
-): ChoicesWithMultipleAnswersAnswerChoices {
-  // https://stackoverflow.com/a/26265095/2603230
-  const defaultAnswers: ChoicesWithMultipleAnswersAnswerChoices = choices.reduce(
-    (map, choice) => {
-      map[choice] = false;
-      return map;
-    },
-    {} as ChoicesWithMultipleAnswersAnswerChoices,
-  );
-  return defaultAnswers;
-}
-
 enum ChoicesAnswerType {
   SINGLE_SELECTION, // ChoicesWithMultipleAnswersAnswerChoices
   MULTIPLE_SELECTION, // string
@@ -105,13 +91,25 @@ const ChoicesQuestionScreen: React.ElementType<ChoicesQuestionScreenProps> = ({
 
   const [selected, setSelected] = React.useState<
     ChoicesWithMultipleAnswersAnswerChoices
-  >(initAnswerData(choices));
+  >([]);
 
   type FlatListData = {
     id: string;
     title: string;
   }[];
   const [flatListData, setFlatListData] = React.useState<FlatListData>([]);
+
+  const initAnswerDataWithFlatListData = (
+    inputFlatListData: FlatListData = flatListData,
+  ) => {
+    // Unlike `choices`, `flatListDataChoices` will be in the actual order of
+    // the choices displayed on the screen.
+    const flatListDataChoices = inputFlatListData.map((data) => data.title);
+    return flatListDataChoices.map((choice) => [
+      choice,
+      false,
+    ]) as ChoicesWithMultipleAnswersAnswerChoices;
+  };
 
   React.useEffect(() => {
     // We have to use `useEffect(..., [])` here to ensure this only runs once.
@@ -141,17 +139,22 @@ const ChoicesQuestionScreen: React.ElementType<ChoicesQuestionScreenProps> = ({
       }
     }
     setFlatListData(tempFlatListData);
+
+    // We have to specify `tempFlatListData` variable here (instead of using
+    // the `flatListData` variable) because `flatListData` might still not be
+    // updated here.
+    setSelected(initAnswerDataWithFlatListData(tempFlatListData));
   }, []);
 
   return (
     <View style={{ paddingTop: 20 }}>
       <FlatList
         data={flatListData}
-        renderItem={({ item }) => (
+        renderItem={({ item, index }) => (
           <ChoiceItem
             id={item.id}
             title={item.title}
-            selected={selected[item.title]}
+            selected={(selected[index] && selected[index][1]) || false}
             onSelect={() => {
               const value = item.title;
 
@@ -160,9 +163,9 @@ const ChoicesQuestionScreen: React.ElementType<ChoicesQuestionScreenProps> = ({
                 newSelected = cloneDeep(selected);
               } else {
                 // Reset everything to `false` if it is a single-selection question.
-                newSelected = initAnswerData(choices);
+                newSelected = initAnswerDataWithFlatListData();
               }
-              newSelected[value] = !newSelected[value];
+              newSelected[index][1] = !newSelected[index][1];
               setSelected(newSelected);
 
               switch (answerType) {

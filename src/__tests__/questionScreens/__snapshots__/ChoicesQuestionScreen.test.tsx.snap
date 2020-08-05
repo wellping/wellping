@@ -1,15 +1,36 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`ChoicesWithMultipleAnswers question with input sequence ["Coyote", "Coyote", "Wolf", "Wolf", "Coyote"] (randomize order true except for ["I don't know", "Other"]): data 1`] = `
-Object {
-  "Coyote": true,
-  "Fox": false,
-  "I don't know": false,
-  "Lynx": false,
-  "Other": false,
-  "Panda": false,
-  "Wolf": false,
-}
+Array [
+  Array [
+    "Lynx",
+    false,
+  ],
+  Array [
+    "Coyote",
+    true,
+  ],
+  Array [
+    "Wolf",
+    false,
+  ],
+  Array [
+    "Panda",
+    false,
+  ],
+  Array [
+    "Fox",
+    false,
+  ],
+  Array [
+    "Other",
+    false,
+  ],
+  Array [
+    "I don't know",
+    false,
+  ],
+]
 `;
 
 exports[`ChoicesWithMultipleAnswers question with input sequence ["Coyote", "Coyote", "Wolf", "Wolf", "Coyote"] (randomize order true except for ["I don't know", "Other"]): displayed list 1`] = `
@@ -25,15 +46,36 @@ Array [
 `;
 
 exports[`ChoicesWithMultipleAnswers question with input sequence ["Coyote", "Lynx", "Wolf", "Fox", "Coyote", "I don't know"] (randomize order true except for ["Wolf", "Fox", "Other", "I don't know"]): data 1`] = `
-Object {
-  "Coyote": false,
-  "Fox": true,
-  "I don't know": true,
-  "Lynx": true,
-  "Other": false,
-  "Panda": false,
-  "Wolf": true,
-}
+Array [
+  Array [
+    "Lynx",
+    true,
+  ],
+  Array [
+    "Panda",
+    false,
+  ],
+  Array [
+    "Coyote",
+    false,
+  ],
+  Array [
+    "Wolf",
+    true,
+  ],
+  Array [
+    "Fox",
+    true,
+  ],
+  Array [
+    "Other",
+    false,
+  ],
+  Array [
+    "I don't know",
+    true,
+  ],
+]
 `;
 
 exports[`ChoicesWithMultipleAnswers question with input sequence ["Coyote", "Lynx", "Wolf", "Fox", "Coyote", "I don't know"] (randomize order true except for ["Wolf", "Fox", "Other", "I don't know"]): displayed list 1`] = `
@@ -49,15 +91,36 @@ Array [
 `;
 
 exports[`ChoicesWithMultipleAnswers question with input sequence ["Coyote", "Wolf", "Fox", "Lynx", "Panda", "Other", "Coyote", "Wolf", "Fox", "Lynx", "Panda", "Other", "I don't know"] (randomize order true except for undefined): data 1`] = `
-Object {
-  "Coyote": false,
-  "Fox": false,
-  "I don't know": true,
-  "Lynx": false,
-  "Other": false,
-  "Panda": false,
-  "Wolf": false,
-}
+Array [
+  Array [
+    "Lynx",
+    false,
+  ],
+  Array [
+    "I don't know",
+    true,
+  ],
+  Array [
+    "Wolf",
+    false,
+  ],
+  Array [
+    "Panda",
+    false,
+  ],
+  Array [
+    "Other",
+    false,
+  ],
+  Array [
+    "Fox",
+    false,
+  ],
+  Array [
+    "Coyote",
+    false,
+  ],
+]
 `;
 
 exports[`ChoicesWithMultipleAnswers question with input sequence ["Coyote", "Wolf", "Fox", "Lynx", "Panda", "Other", "Coyote", "Wolf", "Fox", "Lynx", "Panda", "Other", "I don't know"] (randomize order true except for undefined): displayed list 1`] = `
@@ -73,15 +136,36 @@ Array [
 `;
 
 exports[`ChoicesWithMultipleAnswers question with input sequence ["Fox"] (randomize order true except for ["Other", "I don't know"]): data 1`] = `
-Object {
-  "Coyote": false,
-  "Fox": true,
-  "I don't know": false,
-  "Lynx": false,
-  "Other": false,
-  "Panda": false,
-  "Wolf": false,
-}
+Array [
+  Array [
+    "Lynx",
+    false,
+  ],
+  Array [
+    "Coyote",
+    false,
+  ],
+  Array [
+    "Wolf",
+    false,
+  ],
+  Array [
+    "Panda",
+    false,
+  ],
+  Array [
+    "Fox",
+    true,
+  ],
+  Array [
+    "Other",
+    false,
+  ],
+  Array [
+    "I don't know",
+    false,
+  ],
+]
 `;
 
 exports[`ChoicesWithMultipleAnswers question with input sequence ["Fox"] (randomize order true except for ["Other", "I don't know"]): displayed list 1`] = `
@@ -97,15 +181,36 @@ Array [
 `;
 
 exports[`ChoicesWithMultipleAnswers question with input sequence ["Lynx", "Panda", "Other"] (randomize order true except for ["Other"]): data 1`] = `
-Object {
-  "Coyote": false,
-  "Fox": false,
-  "I don't know": false,
-  "Lynx": true,
-  "Other": true,
-  "Panda": true,
-  "Wolf": false,
-}
+Array [
+  Array [
+    "Lynx",
+    true,
+  ],
+  Array [
+    "Coyote",
+    false,
+  ],
+  Array [
+    "Wolf",
+    false,
+  ],
+  Array [
+    "Panda",
+    true,
+  ],
+  Array [
+    "I don't know",
+    false,
+  ],
+  Array [
+    "Fox",
+    false,
+  ],
+  Array [
+    "Other",
+    true,
+  ],
+]
 `;
 
 exports[`ChoicesWithMultipleAnswers question with input sequence ["Lynx", "Panda", "Other"] (randomize order true except for ["Other"]): displayed list 1`] = `
@@ -121,15 +226,36 @@ Array [
 `;
 
 exports[`ChoicesWithMultipleAnswers question with input sequence ["Wolf", "Coyote"] (randomize order false except for undefined): data 1`] = `
-Object {
-  "Coyote": true,
-  "Fox": false,
-  "I don't know": false,
-  "Lynx": false,
-  "Other": false,
-  "Panda": false,
-  "Wolf": true,
-}
+Array [
+  Array [
+    "Wolf",
+    true,
+  ],
+  Array [
+    "Fox",
+    false,
+  ],
+  Array [
+    "Coyote",
+    true,
+  ],
+  Array [
+    "Lynx",
+    false,
+  ],
+  Array [
+    "Panda",
+    false,
+  ],
+  Array [
+    "Other",
+    false,
+  ],
+  Array [
+    "I don't know",
+    false,
+  ],
+]
 `;
 
 exports[`ChoicesWithMultipleAnswers question with input sequence ["Wolf", "Coyote"] (randomize order false except for undefined): displayed list 1`] = `
@@ -145,15 +271,36 @@ Array [
 `;
 
 exports[`ChoicesWithMultipleAnswers question with input sequence [] (randomize order false except for undefined): data 1`] = `
-Object {
-  "Coyote": false,
-  "Fox": false,
-  "I don't know": false,
-  "Lynx": false,
-  "Other": false,
-  "Panda": false,
-  "Wolf": false,
-}
+Array [
+  Array [
+    "Wolf",
+    false,
+  ],
+  Array [
+    "Fox",
+    false,
+  ],
+  Array [
+    "Coyote",
+    false,
+  ],
+  Array [
+    "Lynx",
+    false,
+  ],
+  Array [
+    "Panda",
+    false,
+  ],
+  Array [
+    "Other",
+    false,
+  ],
+  Array [
+    "I don't know",
+    false,
+  ],
+]
 `;
 
 exports[`ChoicesWithMultipleAnswers question with input sequence [] (randomize order false except for undefined): displayed list 1`] = `

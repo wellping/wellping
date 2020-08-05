@@ -13,10 +13,11 @@ export type ChoicesWithSingleAnswerAnswerData = {
   value: Choice;
 };
 
-// TODO: use [Choice, boolean][] so that the order shown on the screen is kept in the results.
-export type ChoicesWithMultipleAnswersAnswerChoices = {
-  [key: string /* actually Choice */]: boolean;
-};
+// We use an array of tuples here (instead of `{ [key: string]: boolean }`)
+// because the order shown on the screen can be kept in the results.
+// This is potentially helpful for analysis later if the order is randomized
+// as now we know the order the user saw the choices in.
+export type ChoicesWithMultipleAnswersAnswerChoices = [Choice, boolean][];
 export type ChoicesWithMultipleAnswersAnswerData = {
   value: ChoicesWithMultipleAnswersAnswerChoices;
 };

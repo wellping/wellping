@@ -14,6 +14,7 @@ import {
   YesNoAnswerData,
   ChoicesWithSingleAnswerAnswerData,
   ChoicesWithMultipleAnswersAnswerData,
+  ChoicesWithMultipleAnswersAnswerChoices,
 } from "../../helpers/answerTypes";
 import { QuestionType } from "../../helpers/helpers";
 import {
@@ -145,7 +146,7 @@ const basicTestForChoicesQuestionScreenAsync = async (
 
   expect(displayedList).toMatchSnapshot("displayed list");
 
-  return { renderResults, mockOnDataChangeFn };
+  return { displayedList, renderResults, mockOnDataChangeFn };
 };
 
 const inputTestForChoicesWithSingleAnswerQuestionAsync = async (
@@ -181,6 +182,7 @@ const inputTestForChoicesWithSingleAnswerQuestionAsync = async (
 };
 
 const inputTestForChoicesWithMultipleAnswersQuestionAsync = async (
+  displayedList: string[],
   renderResults: RenderAPI,
   mockOnDataChangeFn: jest.Mock<any, any>,
   question: ChoicesWithMultipleAnswersQuestion,
@@ -188,10 +190,10 @@ const inputTestForChoicesWithMultipleAnswersQuestionAsync = async (
 ) => {
   const { getAllByA11yLabel } = renderResults;
 
-  const expectedResults = question.choices.reduce((map, choice) => {
-    map[choice] = false;
-    return map;
-  }, {} as { [key: string]: boolean });
+  const expectedResults = displayedList.map((choice) => [
+    choice,
+    false,
+  ]) as ChoicesWithMultipleAnswersAnswerChoices;
 
   let calledTimes = 0;
   for (let i = 0; i < inputValueSequence.length; i++) {
@@ -199,8 +201,8 @@ const inputTestForChoicesWithMultipleAnswersQuestionAsync = async (
     const selection = getSelection(inputValue, getAllByA11yLabel);
     fireEvent.press(selection);
 
-    const key = inputValue;
-    expectedResults[key] = !expectedResults[key];
+    const key = expectedResults.findIndex((value) => value[0] === inputValue);
+    expectedResults[key][1] = !expectedResults[key][1];
 
     calledTimes += 1;
     expect(mockOnDataChangeFn).toHaveBeenNthCalledWith(calledTimes, {
@@ -307,11 +309,13 @@ test.each(CHOICES_TEST_TABLE)(
     } as ChoicesWithMultipleAnswersQuestion;
 
     const {
+      displayedList,
       renderResults,
       mockOnDataChangeFn,
     } = await basicTestForChoicesQuestionScreenAsync(question);
 
     await inputTestForChoicesWithMultipleAnswersQuestionAsync(
+      displayedList,
       renderResults,
       mockOnDataChangeFn,
       question,
