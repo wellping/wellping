@@ -399,6 +399,8 @@ Array [
 ]
 `;
 
+exports[`ChoicesWithSingleAnswer question with input sequence [] (randomize order false except for undefined): data 1`] = `null`;
+
 exports[`ChoicesWithSingleAnswer question with input sequence [] (randomize order false except for undefined): displayed list 1`] = `
 Array [
   "Wolf",

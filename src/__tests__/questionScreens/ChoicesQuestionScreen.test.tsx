@@ -174,9 +174,7 @@ const inputTestForChoicesWithSingleAnswerQuestionAsync = async (
     expect(mockOnDataChangeFn).toHaveBeenCalledTimes(calledTimes);
   }
 
-  if (expectedResults != null) {
-    expect(expectedResults).toMatchSnapshot("data");
-  }
+  expect(expectedResults).toMatchSnapshot("data");
 
   return renderResults;
 };
