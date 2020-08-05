@@ -54,8 +54,9 @@ const basicTestForQuestionAsync = async (
   );
   const { getAllByA11yLabel, getAllByA11yHint } = renderResults;
 
-  // Because there isn't a need to pipe in any data.
-  expect(mockPipeInExtraMetaData).not.toHaveBeenCalled();
+  expect(mockPipeInExtraMetaData).toHaveBeenCalledTimes(
+    question.choices?.length || 0,
+  ); // For each choices
 
   expect(mockSetDataValidationFunction).toHaveBeenCalledTimes(1);
   expect(typeof codeDataValidationFunction).toBe("function");

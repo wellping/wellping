@@ -20,6 +20,7 @@ const MultipleTextQuestionScreen: React.ElementType<MultipleTextQuestionScreenPr
   question,
   onDataChange,
   allAnswers,
+  pipeInExtraMetaData,
   setDataValidationFunction,
 }) => {
   let numberOfTextFields = question.max;
@@ -77,7 +78,7 @@ const MultipleTextQuestionScreen: React.ElementType<MultipleTextQuestionScreenPr
   } else if (question.choices) {
     textFieldsDropdownItems = question.choices.map((choice) => ({
       id: choice,
-      name: choice,
+      name: pipeInExtraMetaData(choice),
     }));
   }
   const textFieldsDropdownNames = textFieldsDropdownItems.map(
