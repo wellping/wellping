@@ -14,6 +14,7 @@ import {
   BranchQuestionSchema,
   BranchWithRelativeComparisonQuestionSchema,
   QuestionTypeSchema,
+  ChoicesListSchema,
 } from "./schemas/Question";
 import { StreamsSchema } from "./schemas/Stream";
 import { StudyFileSchema, StudyInfoSchema } from "./schemas/StudyFile";
@@ -22,6 +23,9 @@ import {
   StreamNameSchema,
   StudyIdSchema,
 } from "./schemas/common";
+
+export type Choice = z.infer<typeof ChoiceSchema>;
+export type ChoicesList = z.infer<typeof ChoicesListSchema>;
 
 export type StreamName = z.infer<typeof StreamNameSchema>;
 
@@ -33,7 +37,6 @@ export type Question = z.infer<typeof QuestionSchema>;
 
 export type SliderQuestion = z.infer<typeof SliderQuestionSchema>;
 
-export type Choice = z.infer<typeof ChoiceSchema>;
 export type ChoicesQuestion = z.infer<typeof ChoicesQuestionSchema>;
 
 export type ChoicesWithSingleAnswerQuestion = z.infer<

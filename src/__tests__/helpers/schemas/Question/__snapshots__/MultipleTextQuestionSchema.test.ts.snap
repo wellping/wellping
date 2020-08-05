@@ -16,11 +16,35 @@ exports[`MultipleTextQuestionSchema choices TODO: should not be string other tha
 "
 `;
 
-exports[`MultipleTextQuestionSchema choices should not be an array of string 1`] = `
+exports[`MultipleTextQuestionSchema choices choices should not be duplicated 1`] = `
 "1 validation issue(s)
 
-  Issue #0: invalid_literal_value at choices
-  Input must be \\"NAMES\\"
+  Issue #0: invalid_union at choices
+  Invalid input
+"
+`;
+
+exports[`MultipleTextQuestionSchema choices choices should not be duplicated 2`] = `
+"1 validation issue(s)
+
+  Issue #0: invalid_union at choices
+  Invalid input
+"
+`;
+
+exports[`MultipleTextQuestionSchema choices choices string cannot be empty 1`] = `
+"1 validation issue(s)
+
+  Issue #0: invalid_union at choices
+  Invalid input
+"
+`;
+
+exports[`MultipleTextQuestionSchema choices choices string cannot be empty 2`] = `
+"1 validation issue(s)
+
+  Issue #0: invalid_union at choices
+  Invalid input
 "
 `;
 

@@ -54,8 +54,9 @@ const basicTestForQuestionAsync = async (
   );
   const { getAllByA11yLabel, getAllByA11yHint } = renderResults;
 
-  // Because there isn't a need to pipe in any data.
-  expect(mockPipeInExtraMetaData).not.toHaveBeenCalled();
+  expect(mockPipeInExtraMetaData).toHaveBeenCalledTimes(
+    question.choices?.length || 0,
+  ); // For each choices
 
   expect(mockSetDataValidationFunction).toHaveBeenCalledTimes(1);
   expect(typeof codeDataValidationFunction).toBe("function");
@@ -104,8 +105,7 @@ const basicTestForQuestionAsync = async (
       if (typeof question.choices === "string") {
         // TODO: DO THIS
       } else {
-        isInputInChoice =
-          question.choices?.some((e) => e.value === inputValue) || false;
+        isInputInChoice = question.choices?.includes(inputValue) || false;
       }
 
       if (!isInputInChoice) {
@@ -263,13 +263,13 @@ test.each([
 );
 
 const CHOICES = [
-  { key: "friend", value: "Friend" },
-  { key: "coworker", value: "Co-worker" },
-  { key: "parent", value: "Parent" },
-  { key: "relative", value: "Sibling / other relative" },
-  { key: "partner", value: "Significant other" },
-  { key: "stranger", value: "Stranger" },
-  { key: "other", value: "Other" },
+  "Friend",
+  "Co-worker",
+  "Parent",
+  "Sibling / other relative",
+  "Significant other",
+  "Stranger",
+  "Other",
 ];
 test.each([
   [generateTypingInput(2), 2, true, "Enter a relation..."],

@@ -1,5 +1,5 @@
 import { AnswerEntity } from "../entities/AnswerEntity";
-import { Question, QuestionsList } from "./types";
+import { Question, QuestionsList, Choice } from "./types";
 
 // We use `{ value: ... }` because it seems that `"simple-json"`
 // does not support simply mixing normal values.
@@ -10,12 +10,14 @@ export type SliderAnswerData = {
 };
 
 export type ChoicesWithSingleAnswerAnswerData = {
-  value: string;
+  value: Choice;
 };
 
-export type ChoicesWithMultipleAnswersAnswerChoices = {
-  [key: string]: boolean;
-};
+// We use an array of tuples here (instead of `{ [key: string]: boolean }`)
+// because the order shown on the screen can be kept in the results.
+// This is potentially helpful for analysis later if the order is randomized
+// as now we know the order the user saw the choices in.
+export type ChoicesWithMultipleAnswersAnswerChoices = [Choice, boolean][];
 export type ChoicesWithMultipleAnswersAnswerData = {
   value: ChoicesWithMultipleAnswersAnswerChoices;
 };

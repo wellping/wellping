@@ -142,16 +142,14 @@ export default class SurveyScreen extends React.Component<
               );
             }
 
-            const csaAnswerChoice = csaQuestion.choices.find(
-              (choice) => choice.key === csaAnswer.data?.value,
-            );
-            if (csaAnswerChoice == null) {
+            const csaAnswerChoiceValue = csaAnswer.data?.value;
+            if (csaAnswerChoiceValue == null) {
               return getNonCriticalProblemTextForUser(
-                `csaAnswerChoice (from ${csaQuestion.id}) == null`,
+                `csaAnswerChoiceValue (from ${csaQuestion.id}) == null`,
               );
             }
 
-            return decapitalizeFirstCharacter(csaAnswerChoice.value);
+            return decapitalizeFirstCharacter(csaAnswerChoiceValue);
           }
 
           default:

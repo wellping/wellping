@@ -284,11 +284,57 @@ describe("MultipleTextQuestionSchema", () => {
       }).toThrowErrorMatchingSnapshot();
     });
 
-    test("should not be an array of string", () => {
+    test("should be an array of strings", () => {
       expect(() => {
         MultipleTextQuestionSchema.parse({
           ...question,
           choices: ["hello", "world"],
+        });
+      }).not.toThrowError();
+
+      expect(() => {
+        MultipleTextQuestionSchema.parse({
+          ...question,
+          choices: ["Hello world!"],
+        });
+      }).not.toThrowError();
+
+      expect(() => {
+        MultipleTextQuestionSchema.parse({
+          ...question,
+          choices: ["黄河远上白云间", "昔人已乘黄鹤去"],
+        });
+      }).not.toThrowError();
+    });
+
+    test("choices string cannot be empty", () => {
+      expect(() => {
+        MultipleTextQuestionSchema.parse({
+          ...question,
+          choices: ["", "world"],
+        });
+      }).toThrowErrorMatchingSnapshot();
+
+      expect(() => {
+        MultipleTextQuestionSchema.parse({
+          ...question,
+          choices: [""],
+        });
+      }).toThrowErrorMatchingSnapshot();
+    });
+
+    test("choices should not be duplicated", () => {
+      expect(() => {
+        MultipleTextQuestionSchema.parse({
+          ...question,
+          choices: ["world", "world"],
+        });
+      }).toThrowErrorMatchingSnapshot();
+
+      expect(() => {
+        MultipleTextQuestionSchema.parse({
+          ...question,
+          choices: ["行路难", "行路难"],
         });
       }).toThrowErrorMatchingSnapshot();
     });
@@ -316,40 +362,6 @@ describe("MultipleTextQuestionSchema", () => {
         });
       }).toThrowErrorMatchingSnapshot("url");
     });
-
-    test("can be any Choice array", () => {
-      expect(() => {
-        MultipleTextQuestionSchema.parse({
-          ...question,
-          choices: [
-            {
-              key: "hello",
-              value: "HELLO WORLD!",
-            },
-          ],
-        });
-      }).not.toThrowError();
-
-      expect(() => {
-        MultipleTextQuestionSchema.parse({
-          ...question,
-          choices: [
-            {
-              key: "hello",
-              value: "HELLO!",
-            },
-            {
-              key: "arefly",
-              value: "arefly.com!",
-            },
-            {
-              key: "world",
-              value: "WORLD!",
-            },
-          ],
-        });
-      }).not.toThrowError();
-    });
   });
 
   describe("forceChoice", () => {
@@ -360,20 +372,7 @@ describe("MultipleTextQuestionSchema", () => {
       variableName: "TARGET_NAME",
       indexName: "INDEX",
       max: 3,
-      choices: [
-        {
-          key: "hello",
-          value: "HELLO!",
-        },
-        {
-          key: "arefly",
-          value: "arefly.com!",
-        },
-        {
-          key: "world",
-          value: "WORLD!",
-        },
-      ],
+      choices: ["HELLO!", "arefly.com!", "WORLD!"],
       next: "Next_Question",
     };
 
