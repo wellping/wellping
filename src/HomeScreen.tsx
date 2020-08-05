@@ -575,41 +575,54 @@ export default class HomeScreen extends React.Component<
       );
     };
 
-    if (new Date() >= studyInfo.endDate) {
-      return (
-        <View style={{ height: "100%" }}>
-          {ExtraView}
-          <DebugView />
-          <Text style={styles.onlyTextStyle}>
-            Thank you for your participation!
-          </Text>
-          <Text
-            style={{ marginTop: 10, marginHorizontal: 10, textAlign: "center" }}
-          >
-            The study has concluded on {format(studyInfo.endDate, "PPP")}.{"\n"}
-            You may now uninstall Well Ping from your phone.
-          </Text>
-        </View>
-      );
-    }
-
-    if (new Date() <= studyInfo.startDate) {
-      return (
-        <View style={{ height: "100%" }}>
-          {ExtraView}
-          <DebugView />
-          <Text style={styles.onlyTextStyle}>Welcome to Well Ping!</Text>
-          <Text
-            style={{ marginTop: 10, marginHorizontal: 10, textAlign: "center" }}
-          >
-            You will receive your first ping on{" "}
-            {format(studyInfo.startDate, "PPP")}.
-          </Text>
-        </View>
-      );
-    }
-
     if (currentNotificationTime == null) {
+      // We include `> endDate` and `< startDate` inside
+      // `currentNotificationTime == null` so that the user can normally finish
+      // their last ping even if it's after the end date.
+
+      if (new Date() > studyInfo.endDate) {
+        return (
+          <View style={{ height: "100%" }}>
+            {ExtraView}
+            <DebugView />
+            <Text style={styles.onlyTextStyle}>
+              Thank you for your participation!
+            </Text>
+            <Text
+              style={{
+                marginTop: 10,
+                marginHorizontal: 10,
+                textAlign: "center",
+              }}
+            >
+              The study has concluded on {format(studyInfo.endDate, "PPP")}.
+              {"\n"}
+              You may now uninstall Well Ping from your phone.
+            </Text>
+          </View>
+        );
+      }
+
+      if (new Date() < studyInfo.startDate) {
+        return (
+          <View style={{ height: "100%" }}>
+            {ExtraView}
+            <DebugView />
+            <Text style={styles.onlyTextStyle}>Welcome to Well Ping!</Text>
+            <Text
+              style={{
+                marginTop: 10,
+                marginHorizontal: 10,
+                textAlign: "center",
+              }}
+            >
+              You will receive your first ping on{" "}
+              {format(studyInfo.startDate, "PPP")}.
+            </Text>
+          </View>
+        );
+      }
+
       return (
         <View style={{ height: "100%" }}>
           {ExtraView}
