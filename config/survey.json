@@ -62,16 +62,16 @@
         "type": "ChoicesWithSingleAnswer",
         "question": "Which of the following best categorizes the PRIMARY stress you are experiencing?",
         "choices": [
-          { "key": "academic", "value": "Academic" },
-          { "key": "social", "value": "Social/relationship" },
-          { "key": "mental", "value": "Mental health" },
-          { "key": "physical", "value": "Physical health" },
-          { "key": "financial", "value": "Financial" },
-          { "key": "noStress", "value": "Not experiencing stress" },
-          { "key": "other", "value": "Other" }
+          "Academic",
+          "Social/relationship",
+          "Mental health",
+          "Physical health",
+          "Financial",
+          "Not experiencing stress",
+          "Other"
         ],
         "randomizeChoicesOrder": true,
-        "randomizeExceptForChoiceIds": ["noStress", "other"],
+        "randomizeExceptForChoiceIds": ["Not experiencing stress", "Other"],
         "next": "StressDurationNum"
       },
       "StressDurationNum": {
@@ -85,14 +85,14 @@
         "type": "ChoicesWithMultipleAnswers",
         "question": "Which of the following have you done in response your {PREV:Stressor} stress? Please select all that apply.",
         "choices": [
-          { "key": "think", "value": "I thought extensively about the causes / consequences" },
-          { "key": "noThink", "value": "I tried not to think about it" },
-          { "key": "brightSide", "value": "I thought about the bright side" },
-          { "key": "improve", "value": "I thought about how to improve the situation" },
-          { "key": "other", "value": "Other" }
+          "I thought extensively about the causes / consequences",
+          "I tried not to think about it",
+          "I thought about the bright side",
+          "I thought about how to improve the situation",
+          "Other"
         ],
         "randomizeChoicesOrder": true,
-        "randomizeExceptForChoiceIds": ["other"],
+        "randomizeExceptForChoiceIds": ["Other"],
         "next": "SocInteraction"
       },
       "SocInteraction": {
@@ -122,13 +122,13 @@
         "question": "How would you best describe your relationship to the people you had an interaction with?",
         "placeholder": "Select a category...",
         "choices": [
-          { "key": "friend", "value": "Friend" },
-          { "key": "coworker", "value": "Co-worker" },
-          { "key": "parent", "value": "Parent" },
-          { "key": "relative", "value": "Sibling / other relative" },
-          { "key": "partner", "value": "Significant other" },
-          { "key": "stranger", "value": "Stranger" },
-          { "key": "other", "value": "Other" }
+          "Friend",
+          "Co-worker",
+          "Parent",
+          "Sibling / other relative",
+          "Significant other",
+          "Stranger",
+          "Other"
         ],
         "forceChoice": true,
         "max": 3,
