@@ -1,3 +1,4 @@
+import uniq from "lodash/uniq";
 import * as z from "zod";
 
 import {
@@ -31,17 +32,27 @@ export const SliderQuestionSchema = BaseQuestionSchema.extend({
   defaultValueFromQuestionId: QuestionIdSchema.optional(),
 });
 
-export const ChoiceSchema = z.object({
-  key: z.string(),
-  value: z.string(),
-});
+export const ChoiceSchema = z.string().nonempty();
+
+export const ChoicesListSchema = z
+  .array(ChoiceSchema)
+  .nonempty()
+  .refine(
+    (choices) => {
+      // Check if there is any duplicate items.
+      return choices.length === uniq(choices).length;
+    },
+    {
+      message: "There should not be duplicate elements in the choices list.",
+    },
+  );
 
 export const ChoicesQuestionSchema = BaseQuestionSchema.extend({
   type: z.union([
     z.literal(QuestionTypeSchema.enum.ChoicesWithSingleAnswer),
     z.literal(QuestionTypeSchema.enum.ChoicesWithMultipleAnswers),
   ]),
-  choices: z.array(ChoiceSchema).nonempty(),
+  choices: ChoicesListSchema,
   specialCasesStartId: z
     .union([
       // TODO: https://github.com/vriad/zod/issues/104
@@ -57,9 +68,8 @@ export const ChoicesQuestionSchema = BaseQuestionSchema.extend({
   .refine(
     (question) => {
       if (question.specialCasesStartId && question.choices) {
-        const choicesKeys = question.choices.map((choice) => choice.key);
         for (const key of Object.keys(question.specialCasesStartId)) {
-          if (key !== "_pna" && !choicesKeys.includes(key)) {
+          if (key !== "_pna" && !question.choices.includes(key)) {
             return false;
           }
         }
@@ -96,9 +106,8 @@ export const ChoicesQuestionSchema = BaseQuestionSchema.extend({
         question.randomizeExceptForChoiceIds &&
         question.randomizeChoicesOrder
       ) {
-        const choicesKeys = question.choices.map((choice) => choice.key);
         for (const exceptKey of question.randomizeExceptForChoiceIds) {
-          if (!choicesKeys.includes(exceptKey)) {
+          if (!question.choices.includes(exceptKey)) {
             return false;
           }
         }
@@ -149,9 +158,7 @@ export const MultipleTextQuestionSchema = BaseQuestionSchema.extend({
   indexName: z.string().nonempty(),
   variableName: z.string().nonempty(),
   placeholder: z.string().optional(),
-  choices: z
-    .union([z.literal("NAMES"), z.array(ChoiceSchema).nonempty()])
-    .optional(),
+  choices: z.union([z.literal("NAMES"), ChoicesListSchema]).optional(),
   forceChoice: z.boolean().optional(),
   max: z.number().int().positive(),
   // The max number of text field will be `max` minus the number of text the

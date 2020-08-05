@@ -75,10 +75,7 @@ const basicTestForChoicesQuestionScreenAsync = async (
 ) => {
   let choices: Choice[];
   if (question.type === QuestionType.YesNo) {
-    choices = [
-      { key: "yes", value: "Yes" },
-      { key: "no", value: "No" },
-    ];
+    choices = ["Yes", "No"];
   } else {
     choices = question.choices;
   }
@@ -119,13 +116,13 @@ const basicTestForChoicesQuestionScreenAsync = async (
   );
   if (question.type !== QuestionType.YesNo) {
     if (question.randomizeChoicesOrder) {
-      expect(displayedList).not.toStrictEqual(FLATTENED_CHOICES_VALUES);
+      expect(displayedList).not.toStrictEqual(CHOICES);
       if (question.randomizeExceptForChoiceIds) {
         // Sort the `randomizeExceptForChoiceIds` by the order of `choices`.
         const sortedRandomizeExceptForChoiceIds = [];
         for (const choice of choices) {
-          if (question.randomizeExceptForChoiceIds.includes(choice.key)) {
-            sortedRandomizeExceptForChoiceIds.push(choice.key);
+          if (question.randomizeExceptForChoiceIds.includes(choice)) {
+            sortedRandomizeExceptForChoiceIds.push(choice);
           }
         }
         // Just a sanity check to make sure the items are the same.
@@ -134,17 +131,15 @@ const basicTestForChoicesQuestionScreenAsync = async (
         );
 
         for (let i = sortedRandomizeExceptForChoiceIds.length; i > 0; i--) {
-          const key =
+          const value =
             sortedRandomizeExceptForChoiceIds[
               sortedRandomizeExceptForChoiceIds.length - i
             ];
-          const value = question.choices.find((choice) => choice.key === key)
-            ?.value;
           expect(displayedList[displayedList.length - i]).toBe(value);
         }
       }
     } else {
-      expect(displayedList).toStrictEqual(FLATTENED_CHOICES_VALUES);
+      expect(displayedList).toStrictEqual(CHOICES);
     }
   }
 
@@ -169,9 +164,7 @@ const inputTestForChoicesWithSingleAnswerQuestionAsync = async (
     const selection = getSelection(inputValue, getAllByA11yLabel);
     fireEvent.press(selection);
 
-    expectedResults = question.choices.find(
-      (choice) => choice.value === inputValue,
-    )?.key!;
+    expectedResults = inputValue;
 
     calledTimes += 1;
     expect(mockOnDataChangeFn).toHaveBeenNthCalledWith(calledTimes, {
@@ -196,7 +189,7 @@ const inputTestForChoicesWithMultipleAnswersQuestionAsync = async (
   const { getAllByA11yLabel } = renderResults;
 
   const expectedResults = question.choices.reduce((map, choice) => {
-    map[choice.key] = false;
+    map[choice] = false;
     return map;
   }, {} as { [key: string]: boolean });
 
@@ -206,8 +199,7 @@ const inputTestForChoicesWithMultipleAnswersQuestionAsync = async (
     const selection = getSelection(inputValue, getAllByA11yLabel);
     fireEvent.press(selection);
 
-    const key = question.choices.find((choice) => choice.value === inputValue)
-      ?.key!;
+    const key = inputValue;
     expectedResults[key] = !expectedResults[key];
 
     calledTimes += 1;
@@ -223,28 +215,27 @@ const inputTestForChoicesWithMultipleAnswersQuestionAsync = async (
 };
 
 const CHOICES = [
-  { key: "wolf", value: "Wolf" },
-  { key: "fox", value: "Fox" },
-  { key: "coyote", value: "Coyote" },
-  { key: "lynx", value: "Lynx" },
-  { key: "panda", value: "Panda" },
-  { key: "other", value: "Other" },
-  { key: "idk", value: "I don't know" },
+  "Wolf",
+  "Fox",
+  "Coyote",
+  "Lynx",
+  "Panda",
+  "Other",
+  "I don't know",
 ];
-const FLATTENED_CHOICES_VALUES = CHOICES.map((choice) => choice.value);
 const CHOICES_TEST_TABLE = [
   [["Wolf", "Coyote"], false, undefined],
-  [["Lynx", "Panda", "Other"], true, ["other"]],
-  [["Fox"], true, ["other", "idk"]],
+  [["Lynx", "Panda", "Other"], true, ["Other"]],
+  [["Fox"], true, ["Other", "I don't know"]],
   [
     ["Coyote", "Lynx", "Wolf", "Fox", "Coyote", "I don't know"],
     true,
-    ["wolf", "fox", "other", "idk"],
+    ["Wolf", "Fox", "Other", "I don't know"],
   ],
   [
     ["Coyote", "Coyote", "Wolf", "Wolf", "Coyote"],
     true,
-    ["idk", "other"], // The order should follow `choices`, not here.
+    ["I don't know", "Other"], // The order should follow `choices`, not here.
   ],
   [
     [

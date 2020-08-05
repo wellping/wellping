@@ -11,10 +11,7 @@ describe("ChoicesQuestionSchema", () => {
       id: "Feel_Ideal",
       question: "Choice question",
       next: "Next_Question",
-      choices: [
-        { key: "hello", value: "Hello" },
-        { key: "world", value: "World" },
-      ],
+      choices: ["Hello?", "World!"],
     };
 
     expect(() => {
@@ -64,30 +61,59 @@ describe("ChoicesQuestionSchema", () => {
       }).toThrowErrorMatchingSnapshot();
     });
 
-    test("should be ChoiceSchema objects", () => {
+    test("should be an array of strings", () => {
       expect(() => {
         ChoicesQuestionSchema.parse({
           ...question,
-          choices: [
-            { key: "hello", value: "Hello" },
-            { key: "world", value: "World" },
-          ],
+          choices: ["Hello", "World"],
         });
       }).not.toThrowError();
 
       expect(() => {
         ChoicesQuestionSchema.parse({
           ...question,
-          choices: ["hello", "world"],
+          choices: ["人之初", "性本善"],
         });
-      }).toThrowErrorMatchingSnapshot("strings");
+      }).not.toThrowError();
 
       expect(() => {
         ChoicesQuestionSchema.parse({
           ...question,
           choices: [2, 3, 5],
         });
-      }).toThrowErrorMatchingSnapshot("numbers");
+      }).toThrowErrorMatchingSnapshot();
+    });
+
+    test("choices string cannot be empty", () => {
+      expect(() => {
+        ChoicesQuestionSchema.parse({
+          ...question,
+          choices: ["", "world"],
+        });
+      }).toThrowErrorMatchingSnapshot();
+
+      expect(() => {
+        ChoicesQuestionSchema.parse({
+          ...question,
+          choices: [""],
+        });
+      }).toThrowErrorMatchingSnapshot();
+    });
+
+    test("choices should not be duplicated", () => {
+      expect(() => {
+        ChoicesQuestionSchema.parse({
+          ...question,
+          choices: ["world", "world"],
+        });
+      }).toThrowErrorMatchingSnapshot();
+
+      expect(() => {
+        ChoicesQuestionSchema.parse({
+          ...question,
+          choices: ["行路难", "行路难"],
+        });
+      }).toThrowErrorMatchingSnapshot();
     });
   });
 
@@ -96,10 +122,7 @@ describe("ChoicesQuestionSchema", () => {
       id: "Feel_Ideal",
       type: QuestionType.ChoicesWithSingleAnswer,
       question: "Choice question",
-      choices: [
-        { key: "hello", value: "Hello" },
-        { key: "world", value: "World" },
-      ],
+      choices: ["Hello?", "World!"],
       next: "Next_Question",
     };
 
@@ -145,7 +168,7 @@ describe("ChoicesQuestionSchema", () => {
         ChoicesQuestionSchema.parse({
           ...question,
           specialCasesStartId: {
-            hello: "hello_world",
+            "Hello?": "hello_world",
           },
         });
       }).not.toThrowError();
@@ -156,7 +179,7 @@ describe("ChoicesQuestionSchema", () => {
         ChoicesQuestionSchema.parse({
           ...question,
           specialCasesStartId: {
-            hello: "hello_world",
+            "Hello?": "hello_world",
             _pna: "goodbye",
           },
         });
@@ -178,7 +201,7 @@ describe("ChoicesQuestionSchema", () => {
           ...question,
           specialCasesStartId: {
             notakey: "nonono",
-            world: "stillno",
+            "World!": "stillno",
           },
         });
       }).toThrowErrorMatchingSnapshot("non-choices key with choice key");
@@ -199,7 +222,7 @@ describe("ChoicesQuestionSchema", () => {
         ChoicesQuestionSchema.parse({
           ...question,
           specialCasesStartId: {
-            hello: "new_world",
+            "Hello?": "new_world",
             _pna: null,
           },
         });
@@ -209,7 +232,7 @@ describe("ChoicesQuestionSchema", () => {
         ChoicesQuestionSchema.parse({
           ...question,
           specialCasesStartId: {
-            world: null,
+            "World!": null,
           },
         });
       }).not.toThrowError();
@@ -230,10 +253,7 @@ describe("ChoicesQuestionSchema", () => {
       id: "Feel_Ideal",
       type: QuestionType.ChoicesWithSingleAnswer,
       question: "Choice question",
-      choices: [
-        { key: "hello", value: "Hello" },
-        { key: "world", value: "World" },
-      ],
+      choices: ["Hello?", "World!"],
       next: "Next_Question",
     };
 
@@ -276,10 +296,7 @@ describe("ChoicesQuestionSchema", () => {
       id: "Feel_Ideal",
       type: QuestionType.ChoicesWithSingleAnswer,
       question: "Choice question",
-      choices: [
-        { key: "hello", value: "Hello" },
-        { key: "world", value: "World" },
-      ],
+      choices: ["Hello?", "World!"],
       randomizeChoicesOrder: true,
       next: "Next_Question",
     };
@@ -306,7 +323,7 @@ describe("ChoicesQuestionSchema", () => {
         ChoicesQuestionSchema.parse({
           ...question,
           randomizeChoicesOrder: false,
-          randomizeExceptForChoiceIds: ["hello"],
+          randomizeExceptForChoiceIds: ["Hello?"],
         });
       }).toThrowErrorMatchingSnapshot();
     });
@@ -324,14 +341,14 @@ describe("ChoicesQuestionSchema", () => {
       expect(() => {
         ChoicesQuestionSchema.parse({
           ...question,
-          randomizeExceptForChoiceIds: ["hello", "world"],
+          randomizeExceptForChoiceIds: ["Hello?", "World!"],
         });
       }).not.toThrowError();
 
       expect(() => {
         ChoicesQuestionSchema.parse({
           ...question,
-          randomizeExceptForChoiceIds: ["world"],
+          randomizeExceptForChoiceIds: ["World!"],
         });
       }).not.toThrowError();
     });
@@ -340,7 +357,7 @@ describe("ChoicesQuestionSchema", () => {
       expect(() => {
         ChoicesQuestionSchema.parse({
           ...question,
-          randomizeExceptForChoiceIds: ["nono", "world"],
+          randomizeExceptForChoiceIds: ["nono", "World!"],
         });
       }).toThrowErrorMatchingSnapshot("with choice keys");
 
@@ -360,10 +377,7 @@ describe("ChoicesWithSingleAnswerQuestionSchema", () => {
       id: "Feel_Ideal",
       question: "Choice question",
       next: "Next_Question",
-      choices: [
-        { key: "hello", value: "Hello" },
-        { key: "world", value: "World" },
-      ],
+      choices: ["Hello?", "World!"],
     };
 
     expect(() => {
@@ -395,10 +409,7 @@ describe("ChoicesWithMultipleAnswersQuestionSchema", () => {
       id: "Feel_Ideal",
       question: "Choice question",
       next: "Next_Question",
-      choices: [
-        { key: "hello", value: "Hello" },
-        { key: "world", value: "World" },
-      ],
+      choices: ["Hello?", "World!"],
     };
 
     expect(() => {

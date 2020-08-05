@@ -1,13 +1,11 @@
 import React from "react";
-import { View, Text, TouchableOpacity, FlatList } from "react-native";
+import { View, FlatList } from "react-native";
 
 import {
   QuestionScreenProps,
-  ChoicesWithMultipleAnswersAnswerChoices,
   HowLongAgoAnswerData,
   HowLongAgoAnswerDataType,
 } from "../helpers/answerTypes";
-import { QuestionType } from "../helpers/helpers";
 import { HowLongAgoQuestion } from "../helpers/types";
 import { ChoiceItem } from "./ChoicesQuestionScreen";
 
@@ -63,8 +61,11 @@ const HowLongAgoQuestionScreen: React.ElementType<HowLongAgoQuestionScreenProps>
             id={item.id}
             title={item.title}
             selected={item.id === `${data[0]}`}
-            onSelect={(id) => {
-              const newData: HowLongAgoAnswerDataType = [Number(id), data[1]];
+            onSelect={() => {
+              const newData: HowLongAgoAnswerDataType = [
+                Number(item.id),
+                data[1],
+              ];
               setData(newData);
               onDataChange({ value: newData } as HowLongAgoAnswerData);
             }}
@@ -81,8 +82,8 @@ const HowLongAgoQuestionScreen: React.ElementType<HowLongAgoQuestionScreenProps>
             id={item.id}
             title={item.title}
             selected={item.id === data[1]}
-            onSelect={(id) => {
-              const newData: HowLongAgoAnswerDataType = [data[0], id];
+            onSelect={() => {
+              const newData: HowLongAgoAnswerDataType = [data[0], item.id];
               setData(newData);
               onDataChange({ value: newData } as HowLongAgoAnswerData);
             }}

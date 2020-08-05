@@ -1,5 +1,5 @@
 import { AnswerEntity } from "../entities/AnswerEntity";
-import { Question, QuestionsList } from "./types";
+import { Question, QuestionsList, Choice } from "./types";
 
 // We use `{ value: ... }` because it seems that `"simple-json"`
 // does not support simply mixing normal values.
@@ -10,11 +10,12 @@ export type SliderAnswerData = {
 };
 
 export type ChoicesWithSingleAnswerAnswerData = {
-  value: string;
+  value: Choice;
 };
 
+// TODO: use [Choice, boolean][] so that the order shown on the screen is kept in the results.
 export type ChoicesWithMultipleAnswersAnswerChoices = {
-  [key: string]: boolean;
+  [key: string /* actually Choice */]: boolean;
 };
 export type ChoicesWithMultipleAnswersAnswerData = {
   value: ChoicesWithMultipleAnswersAnswerChoices;

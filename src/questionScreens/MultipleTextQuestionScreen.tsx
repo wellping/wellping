@@ -76,8 +76,8 @@ const MultipleTextQuestionScreen: React.ElementType<MultipleTextQuestionScreenPr
     textFieldsDropdownItems = prestoredChoicesListItems;
   } else if (question.choices) {
     textFieldsDropdownItems = question.choices.map((choice) => ({
-      id: choice.key,
-      name: choice.value,
+      id: choice,
+      name: choice,
     }));
   }
   const textFieldsDropdownNames = textFieldsDropdownItems.map(

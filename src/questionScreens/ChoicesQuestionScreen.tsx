@@ -22,12 +22,12 @@ export interface ChoiceItemProps {
   id: string;
   title: string;
   selected: boolean;
-  onSelect: (id: string) => void;
+  onSelect: () => void;
 }
-export function ChoiceItem({ id, title, selected, onSelect }: ChoiceItemProps) {
+export function ChoiceItem({ title, selected, onSelect }: ChoiceItemProps) {
   return (
     <TouchableOpacity
-      onPress={() => onSelect(id)}
+      onPress={() => onSelect()}
       style={[
         styles.item,
         { backgroundColor: selected ? "#b3995d" : "#F9F6EF" },
@@ -49,7 +49,7 @@ function initAnswerData(
   // https://stackoverflow.com/a/26265095/2603230
   const defaultAnswers: ChoicesWithMultipleAnswersAnswerChoices = choices.reduce(
     (map, choice) => {
-      map[choice.key] = false;
+      map[choice] = false;
       return map;
     },
     {} as ChoicesWithMultipleAnswersAnswerChoices,
@@ -63,11 +63,11 @@ enum ChoicesAnswerType {
   YESNO, // boolean
 }
 
-const YESNO_CHOICES_YES_KEY = "yes";
-const YESNO_CHOICES_NO_KEY = "no";
+const YESNO_CHOICES_YES_VALUE = "Yes";
+const YESNO_CHOICES_NO_VALUE = "No";
 const YESNO_CHOICES: Choice[] = [
-  { key: YESNO_CHOICES_YES_KEY, value: "Yes" },
-  { key: YESNO_CHOICES_NO_KEY, value: "No" },
+  YESNO_CHOICES_YES_VALUE,
+  YESNO_CHOICES_NO_VALUE,
 ];
 
 const ChoicesQuestionScreen: React.ElementType<ChoicesQuestionScreenProps> = ({
@@ -116,10 +116,12 @@ const ChoicesQuestionScreen: React.ElementType<ChoicesQuestionScreenProps> = ({
   React.useEffect(() => {
     // We have to use `useEffect(..., [])` here to ensure this only runs once.
     // If we don't use `useEffect`, each time the user update the state, the choices will be re-shuffled.
-    let tempFlatListData = choices.map((choice) => ({
-      id: choice.key,
-      title: pipeInExtraMetaData(choice.value),
-    }));
+    let tempFlatListData = choices.map((choice) => {
+      return {
+        id: choice,
+        title: pipeInExtraMetaData(choice),
+      };
+    });
     if (answerType !== ChoicesAnswerType.YESNO) {
       const cQ = question as ChoicesQuestion;
       if (cQ.randomizeChoicesOrder) {
@@ -149,8 +151,10 @@ const ChoicesQuestionScreen: React.ElementType<ChoicesQuestionScreenProps> = ({
           <ChoiceItem
             id={item.id}
             title={item.title}
-            selected={selected[item.id]}
-            onSelect={(id: string) => {
+            selected={selected[item.title]}
+            onSelect={() => {
+              const value = item.title;
+
               let newSelected: ChoicesWithMultipleAnswersAnswerChoices;
               if (answerType === ChoicesAnswerType.MULTIPLE_SELECTION) {
                 newSelected = cloneDeep(selected);
@@ -158,7 +162,7 @@ const ChoicesQuestionScreen: React.ElementType<ChoicesQuestionScreenProps> = ({
                 // Reset everything to `false` if it is a single-selection question.
                 newSelected = initAnswerData(choices);
               }
-              newSelected[id] = !newSelected[id];
+              newSelected[value] = !newSelected[value];
               setSelected(newSelected);
 
               switch (answerType) {
@@ -171,13 +175,13 @@ const ChoicesQuestionScreen: React.ElementType<ChoicesQuestionScreenProps> = ({
                 case ChoicesAnswerType.SINGLE_SELECTION:
                   // Single-selection question only need the selected key as the data.
                   onDataChange({
-                    value: id,
+                    value,
                   } as ChoicesWithSingleAnswerAnswerData);
                   break;
 
                 case ChoicesAnswerType.YESNO:
                   onDataChange({
-                    value: id === YESNO_CHOICES_YES_KEY,
+                    value: value === YESNO_CHOICES_YES_VALUE,
                   } as YesNoAnswerData);
                   break;
               }
