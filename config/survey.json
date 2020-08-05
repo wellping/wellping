@@ -25,7 +25,7 @@
       "5": ["myStream", "myStream", "myStream", "myStream"],
       "6": ["myStream", "myStream", "myStream", "myStream"]
     },
-    "streamInCaseOfError": "errorStream",
+    "streamInCaseOfError": "myStream",
     "streamsNotReplacedByFollowupStream": ["myStream"],
     "notificationContent": {
       "default": {
