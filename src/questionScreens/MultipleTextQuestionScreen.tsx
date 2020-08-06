@@ -7,7 +7,7 @@ import {
   QuestionScreenProps,
   MultipleTextAnswerData,
 } from "../helpers/answerTypes";
-import { getReusableChoicesAsync } from "../helpers/studyFile";
+import { getReusableChoicesIncludeErrorAsync } from "../helpers/studyFile";
 import { MultipleTextQuestion, ChoicesList } from "../helpers/types";
 // @ts-ignore
 import SearchableDropdown from "../inc/react-native-searchable-dropdown";
@@ -61,14 +61,9 @@ const MultipleTextQuestionScreen: React.ElementType<MultipleTextQuestionScreenPr
     async function setupTextFieldsDropdownItemsAsync() {
       let tempChoices!: ChoicesList;
       if (typeof question.choices === "string") {
-        const reusableChoices = await getReusableChoicesAsync(question.choices);
-        if (reusableChoices === null) {
-          tempChoices = [
-            `ERROR: getReusableChoices("${question.choices}") = null`,
-          ];
-        } else {
-          tempChoices = reusableChoices;
-        }
+        tempChoices = await getReusableChoicesIncludeErrorAsync(
+          question.choices,
+        );
       } else if (question.choices) {
         tempChoices = question.choices;
       }

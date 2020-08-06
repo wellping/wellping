@@ -37,7 +37,7 @@ export const ChoicesQuestionSchema = BaseQuestionSchema.extend({
     z.literal(QuestionTypeSchema.enum.ChoicesWithSingleAnswer),
     z.literal(QuestionTypeSchema.enum.ChoicesWithMultipleAnswers),
   ]),
-  choices: ChoicesListSchema,
+  choices: z.union([z.string(), ChoicesListSchema]),
   specialCasesStartId: z
     .union([
       // TODO: https://github.com/vriad/zod/issues/104
@@ -53,6 +53,10 @@ export const ChoicesQuestionSchema = BaseQuestionSchema.extend({
   .refine(
     (question) => {
       if (question.specialCasesStartId && question.choices) {
+        if (typeof question.choices === "string") {
+          // Can't check if it is using reusable choices.
+          return true;
+        }
         for (const key of Object.keys(question.specialCasesStartId)) {
           if (key !== "_pna" && !question.choices.includes(key)) {
             return false;
@@ -91,6 +95,10 @@ export const ChoicesQuestionSchema = BaseQuestionSchema.extend({
         question.randomizeExceptForChoiceIds &&
         question.randomizeChoicesOrder
       ) {
+        if (typeof question.choices === "string") {
+          // Can't check if it is using reusable choices.
+          return true;
+        }
         for (const exceptKey of question.randomizeExceptForChoiceIds) {
           if (!question.choices.includes(exceptKey)) {
             return false;

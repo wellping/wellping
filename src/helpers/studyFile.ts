@@ -169,6 +169,22 @@ export async function getReusableChoicesAsync(
   return null;
 }
 
+/**
+ * Returns a choices list keyed `key` in `reusableChoices` in `extraData`.
+ * If no such choices list is found, returns an array containing a single
+ * string explaining the error.
+ */
+export async function getReusableChoicesIncludeErrorAsync(
+  key: string,
+): Promise<ChoicesList> {
+  const reusableChoices = await getReusableChoicesAsync(key);
+  if (reusableChoices === null) {
+    return [`ERROR: reusable choices with key "${key}" is not found.`];
+  } else {
+    return reusableChoices;
+  }
+}
+
 export function getAllStreamNames(studyInfo: StudyInfo): StreamName[] {
   return Object.keys(studyInfo.streamsStartingQuestionIds) as StreamName[];
 }
