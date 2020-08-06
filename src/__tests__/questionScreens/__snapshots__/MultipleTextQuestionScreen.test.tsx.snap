@@ -12,6 +12,16 @@ Object {
 
 exports[`input \`["Co-worker", "", "Co-worker", ":)", "Co-worker"]\` with max 5 and forceChoice true with a choices object: text inputs length 1`] = `5`;
 
+exports[`input \`["ERROR: reusable choices with key \\"invalid-reusable-choice\\" is not found."]\` with invalid string choices 1`] = `
+Object {
+  "value": Array [
+    "ERROR: reusable choices with key \\"invalid-reusable-choice\\" is not found.",
+  ],
+}
+`;
+
+exports[`input \`["ERROR: reusable choices with key \\"invalid-reusable-choice\\" is not found."]\` with invalid string choices: text inputs length 1`] = `3`;
+
 exports[`input \`["Friend", "RANDOM INPUT", "Other"]\` with max 5 and forceChoice true with a choices object 1`] = `
 Object {
   "value": Array [
@@ -179,6 +189,22 @@ Object {
 
 exports[`input \`["Stranger", "Stranger", "Stranger", "Stranger", "RANDOM"]\` with max 5 and forceChoice false with a choices object: text inputs length 1`] = `5`;
 
+exports[`input \`["hello world"]\` with invalid string choices 1`] = `
+Object {
+  "value": Array [],
+}
+`;
+
+exports[`input \`["hello world"]\` with invalid string choices: text inputs length 1`] = `3`;
+
+exports[`input \`["yep", "yep", "yep"]\` with invalid string choices 1`] = `
+Object {
+  "value": Array [],
+}
+`;
+
+exports[`input \`["yep", "yep", "yep"]\` with invalid string choices: text inputs length 1`] = `3`;
+
 exports[`input \`["🤪", "", "🤪", ":)", "🤪"]\` with max 5 and forceChoice true with a choices string 1`] = `
 Object {
   "value": Array [
@@ -215,6 +241,14 @@ Object {
 `;
 
 exports[`input \`["🧐", "🧐", "🧐", "🧐", "RANDOM"]\` with max 5 and forceChoice false with a choices string: text inputs length 1`] = `5`;
+
+exports[`input \`[]\` with invalid string choices 1`] = `
+Object {
+  "value": Array [],
+}
+`;
+
+exports[`input \`[]\` with invalid string choices: text inputs length 1`] = `3`;
 
 exports[`input \`[]\` with max 4 and maxMinus "PrevQuestionId" without choices 1`] = `
 Object {

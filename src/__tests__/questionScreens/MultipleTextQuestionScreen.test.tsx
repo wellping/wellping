@@ -367,3 +367,35 @@ test.each([
     await basicTestForQuestionAsync(question, {}, inputValues);
   },
 );
+
+// Should not have been able enter anything except "ERROR: ...".
+test.each([
+  [[]],
+  [["hello world"]],
+  [["yep", "yep", "yep"]],
+  [
+    [
+      `ERROR: reusable choices with key "invalid-reusable-choice" is not found.`,
+    ],
+  ],
+])("input `%p` with invalid string choices", async (inputValues) => {
+  mockCurrentExtraData({
+    reusableChoices: {
+      [MOCK_EMOJI_CHOICES_KEY]: MOCK_EMOJI_CHOICES_LIST,
+    },
+  });
+
+  const question = {
+    id: "WithChoicesDict",
+    type: QuestionType.MultipleText,
+    question: "A question",
+    choices: "invalid-reusable-choice",
+    forceChoice: true,
+    max: 3,
+    variableName: "TARGET_CATEGORY",
+    indexName: "INDEX",
+    next: null,
+  } as MultipleTextQuestion;
+
+  await basicTestForQuestionAsync(question, {}, inputValues);
+});
