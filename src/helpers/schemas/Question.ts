@@ -22,6 +22,7 @@ const BaseQuestionSchema = z.object({
   id: QuestionIdSchema,
   type: QuestionTypeSchema,
   question: z.string(),
+  // TODO: ADD A OPTIOANL FALLBACK NEXT ID.
   next: QuestionIdSchemaNullable(["next"]),
 });
 
