@@ -276,14 +276,6 @@ export default class SurveyScreen extends React.Component<
       }
     };
 
-    /**
-     * **Notes on non-`next` question ID being `null`**
-     * If a question ID in any fields besides the `next` field is intentionally
-     * set to (and is allowed to set to) `null`, it means that we should treat
-     * it as if `next` is set to `null` when that field is used. In other words,
-     * the original `next` is ignored.
-     */
-
     this.setState((prevState) => {
       const {
         currentQuestionData: {
@@ -321,6 +313,29 @@ export default class SurveyScreen extends React.Component<
         extraData: prevExtraData,
       };
 
+      /**
+       * Does appropriate actions for a conditional question ID.
+       */
+      function considerConditionalQuestionId(
+        conditionalQuestionId: QuestionId | null | undefined,
+      ) {
+        if (conditionalQuestionId === undefined) {
+          // Do nothing, because we will continue to this question's `next`
+          // as before.
+        } else if (conditionalQuestionId === null) {
+          // If a question ID in any fields besides the `next` field is
+          // intentionally set to (and is allowed to set to) `null`, it means
+          // that we should treat it as if `next` is set to `null` when that
+          // field is used. In other words, the original `next` is ignored.
+          nextQuestionData.questionId = null;
+        } else {
+          jumpQuestionsDataStack.push({
+            questionId: conditionalQuestionId,
+            extraData: prevExtraData,
+          });
+        }
+      }
+
       switch (prevQuestion.type) {
         case QuestionType.YesNo: {
           const ynQ = prevQuestion as YesNoQuestion;
@@ -331,18 +346,7 @@ export default class SurveyScreen extends React.Component<
               const jumpQuestionId = ynA.data.value
                 ? ynQ.branchStartId.yes
                 : ynQ.branchStartId.no;
-              if (jumpQuestionId === undefined) {
-                // Do nothing, because we will continue to this question's `next`
-                // as before.
-              } else if (jumpQuestionId === null) {
-                // Read **Notes on non-`next` question ID being `null`**.
-                nextQuestionData.questionId = null;
-              } else {
-                jumpQuestionsDataStack.push({
-                  questionId: jumpQuestionId,
-                  extraData: prevExtraData,
-                });
-              }
+              considerConditionalQuestionId(jumpQuestionId);
             }
 
             // Set up follow-up streams.
@@ -379,19 +383,7 @@ export default class SurveyScreen extends React.Component<
             valuesLength === 0 ||
             mtQ.repeatedItemStartId === undefined
           ) {
-            if (mtQ.fallbackItemStartId !== undefined) {
-              if (mtQ.fallbackItemStartId === null) {
-                // Read **Notes on non-`next` question ID being `null`**.
-                nextQuestionData.questionId = null;
-              } else {
-                jumpQuestionsDataStack.push({
-                  questionId: mtQ.fallbackItemStartId,
-                  extraData: prevExtraData,
-                });
-              }
-            } else {
-              // Do nothing. Uses the default `next`.
-            }
+            considerConditionalQuestionId(mtQ.fallbackItemStartId);
             break;
           }
 
@@ -442,18 +434,7 @@ export default class SurveyScreen extends React.Component<
             }
           }
 
-          if (selectedBranchId === undefined) {
-            // Do nothing, because we will continue to this question's `next`
-            // as before.
-          } else if (selectedBranchId === null) {
-            // Read **Notes on non-`next` question ID being `null`**.
-            nextQuestionData.questionId = null;
-          } else {
-            jumpQuestionsDataStack.push({
-              questionId: selectedBranchId,
-              extraData: prevExtraData,
-            });
-          }
+          considerConditionalQuestionId(selectedBranchId);
           break;
         }
 
@@ -484,18 +465,7 @@ export default class SurveyScreen extends React.Component<
             }
           }
 
-          if (nextQuestionId === undefined) {
-            // Do nothing, because we will continue to this question's `next`
-            // as before.
-          } else if (nextQuestionId === null) {
-            // Read **Notes on non-`next` question ID being `null`**.
-            nextQuestionData.questionId = null;
-          } else {
-            jumpQuestionsDataStack.push({
-              questionId: nextQuestionId,
-              extraData: prevExtraData,
-            });
-          }
+          considerConditionalQuestionId(nextQuestionId);
           break;
         }
 
@@ -546,15 +516,7 @@ export default class SurveyScreen extends React.Component<
             }
 
             if (fallbackNext) {
-              if (fallbackNext === null) {
-                // Read **Notes on non-`next` question ID being `null`**.
-                nextQuestionData.questionId = null;
-              } else {
-                jumpQuestionsDataStack.push({
-                  questionId: fallbackNext,
-                  extraData: prevExtraData,
-                });
-              }
+              considerConditionalQuestionId(fallbackNext);
               break;
             }
           }
