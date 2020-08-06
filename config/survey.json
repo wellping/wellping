@@ -147,5 +147,10 @@
         "next": null
       }
     }
+  },
+  "extraData": {
+    "reusableChoices": {
+      "NAMES": ["REDACTED:", "a list", "of names", "here"]
+    }
   }
 }

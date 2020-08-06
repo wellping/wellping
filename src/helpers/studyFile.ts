@@ -6,9 +6,17 @@ import {
   clearCurrentStudyFileAsync,
   getCurrentStudyInfoAsync,
   getCurrentStreamsAsync,
+  getCurrentExtraDataAsync,
 } from "./asyncStorage/studyFile";
 import { parseJsonToStudyFile } from "./schemas/StudyFile";
-import { StudyFile, Names, StudyInfo, StreamName, Streams } from "./types";
+import {
+  StudyFile,
+  StudyInfo,
+  StreamName,
+  Streams,
+  ExtraData,
+  ChoicesList,
+} from "./types";
 
 export const WELLPING_LOCAL_DEBUG_URL =
   "https://wellping_local__.ssnl.stanford.edu/debug.json";
@@ -118,6 +126,19 @@ export async function getStreamsAsync(): Promise<Streams> {
 }
 
 /**
+ * Returns the stored extra data.
+ * Throws an error if there isn't any current study file stored.
+ */
+export async function getExtraDataAsync(): Promise<ExtraData> {
+  const currentExtraData = await getCurrentExtraDataAsync();
+  if (currentExtraData === null) {
+    throw new Error("getCurrentExtraDataAsync = null");
+  }
+
+  return currentExtraData;
+}
+
+/**
  * *** Use the more specific `getStudyInfoAsync()` or `getStreamsAsync()` if
  * possible. ***
  *
@@ -127,15 +148,25 @@ export async function getStreamsAsync(): Promise<Streams> {
 export async function getStudyFileAsync(): Promise<StudyFile> {
   const studyInfo = await getStudyInfoAsync();
   const streams = await getStreamsAsync();
+  const extraData = await getExtraDataAsync();
 
-  return { studyInfo, streams };
+  return { studyInfo, streams, extraData };
 }
 
-// TODO: DECOUPLE FUNCTIONS LIKE THIS
-// MAYBE AN EXTRA FIELD IN StudyFile to be { studyInfo, extra: { choices: { key: [...] } }, streams }
-export async function getNamesFileAsync(): Promise<Names> {
-  const names: Names = require("../../config/names.json");
-  return names;
+/**
+ * Returns a choices list keyed `key` in `reusableChoices` in `extraData`.
+ * Returns `null` if no such choices list is found.
+ */
+export async function getReusableChoicesAsync(
+  key: string,
+): Promise<ChoicesList | null> {
+  const extraData = await getExtraDataAsync();
+  if (extraData.reusableChoices) {
+    if (extraData.reusableChoices[key]) {
+      return extraData.reusableChoices[key];
+    }
+  }
+  return null;
 }
 
 export function getAllStreamNames(studyInfo: StudyInfo): StreamName[] {

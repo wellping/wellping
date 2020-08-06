@@ -2,6 +2,7 @@
  * These are common schemas that are used by other schemas.
  * It is moved here to avoid circular dependency.
  */
+import uniq from "lodash/uniq";
 import * as z from "zod";
 
 import { idRegexCheck, idRegexErrorMessage } from "./helper";
@@ -50,3 +51,18 @@ export const CustomNullable = (Schema: z.ZodType<any, any>, path: string[]) =>
 
 export const QuestionIdSchemaNullable = (path: string[]) =>
   CustomNullable(QuestionIdSchema, path);
+
+export const ChoiceSchema = z.string().nonempty();
+
+export const ChoicesListSchema = z
+  .array(ChoiceSchema)
+  .nonempty()
+  .refine(
+    (choices) => {
+      // Check if there is any duplicate items.
+      return choices.length === uniq(choices).length;
+    },
+    {
+      message: "There should not be duplicate elements in the choices list.",
+    },
+  );

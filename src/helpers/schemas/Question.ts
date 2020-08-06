@@ -1,10 +1,10 @@
-import uniq from "lodash/uniq";
 import * as z from "zod";
 
 import {
   StreamNameSchema,
   QuestionIdSchema,
   QuestionIdSchemaNullable,
+  ChoicesListSchema,
 } from "./common";
 
 export const QuestionTypeSchema = z.enum([
@@ -31,21 +31,6 @@ export const SliderQuestionSchema = BaseQuestionSchema.extend({
   defaultValue: z.number().int().nonnegative().max(100).optional(),
   defaultValueFromQuestionId: QuestionIdSchema.optional(),
 });
-
-export const ChoiceSchema = z.string().nonempty();
-
-export const ChoicesListSchema = z
-  .array(ChoiceSchema)
-  .nonempty()
-  .refine(
-    (choices) => {
-      // Check if there is any duplicate items.
-      return choices.length === uniq(choices).length;
-    },
-    {
-      message: "There should not be duplicate elements in the choices list.",
-    },
-  );
 
 export const ChoicesQuestionSchema = BaseQuestionSchema.extend({
   type: z.union([
