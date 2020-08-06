@@ -7,8 +7,8 @@ import {
   QuestionScreenProps,
   MultipleTextAnswerData,
 } from "../helpers/answerTypes";
-import { getNamesFileAsync } from "../helpers/studyFile";
-import { MultipleTextQuestion, Names } from "../helpers/types";
+import { getReusableChoicesIncludeErrorAsync } from "../helpers/studyFile";
+import { MultipleTextQuestion, ChoicesList } from "../helpers/types";
 // @ts-ignore
 import SearchableDropdown from "../inc/react-native-searchable-dropdown";
 
@@ -23,6 +23,11 @@ const MultipleTextQuestionScreen: React.ElementType<MultipleTextQuestionScreenPr
   pipeInExtraMetaData,
   setDataValidationFunction,
 }) => {
+  type DropdownItem = {
+    id: string;
+    name: string;
+  };
+
   let numberOfTextFields = question.max;
   if (question.maxMinus) {
     const prevQuestionAnswer = allAnswers[
@@ -40,14 +45,37 @@ const MultipleTextQuestionScreen: React.ElementType<MultipleTextQuestionScreenPr
 
   const [textValues, setTextValues] = React.useState<string[]>(initTextValues);
 
+  const [textFieldsDropdownItems, setTextFieldsDropdownItems] = React.useState<
+    DropdownItem[]
+  >([]);
+  const textFieldsDropdownNames = textFieldsDropdownItems.map(
+    (item) => item.name,
+  );
+
   React.useEffect(() => {
-    // Re-fetch stored choices list (once) if necessary
-    // TODO: ALLOW TO FIND LIST FROM DIFF. SOURCE STORED
-    if (typeof question.choices == "string") {
-      getNamesFileAsync().then((list) => {
-        setPrestoredChoicesList(list);
-      });
+    // Should only be called once.
+    setDataValidationFunction(() => {
+      return dataValidationFunction(true);
+    });
+
+    async function setupTextFieldsDropdownItemsAsync() {
+      let tempChoices!: ChoicesList;
+      if (typeof question.choices === "string") {
+        tempChoices = await getReusableChoicesIncludeErrorAsync(
+          question.choices,
+        );
+      } else if (question.choices) {
+        tempChoices = question.choices;
+      }
+      setTextFieldsDropdownItems(
+        tempChoices.map((choice) => ({
+          id: choice,
+          name: pipeInExtraMetaData(choice),
+        })),
+      );
     }
+    // So that async can be used in `setupTextFieldsDropdownItemsAsync`.
+    setupTextFieldsDropdownItemsAsync();
   }, []);
 
   const updateTextValue = (text: string, index: number) => {
@@ -59,31 +87,6 @@ const MultipleTextQuestionScreen: React.ElementType<MultipleTextQuestionScreenPr
     const data: MultipleTextAnswerData = { value: nonEmptyFields };
     onDataChange(data);
   };
-
-  const [prestoredChoicesList, setPrestoredChoicesList] = React.useState<
-    string[]
-  >([]);
-  const prestoredChoicesListItems = prestoredChoicesList.map((name, index) => ({
-    id: `${index}`,
-    name,
-  }));
-
-  type DropdownItem = {
-    id: string;
-    name: string;
-  };
-  let textFieldsDropdownItems: DropdownItem[] = [];
-  if (question.choices === "NAMES") {
-    textFieldsDropdownItems = prestoredChoicesListItems;
-  } else if (question.choices) {
-    textFieldsDropdownItems = question.choices.map((choice) => ({
-      id: choice,
-      name: pipeInExtraMetaData(choice),
-    }));
-  }
-  const textFieldsDropdownNames = textFieldsDropdownItems.map(
-    (item) => item.name,
-  );
 
   const textFields: SearchableDropdown[] = [];
   const textFieldsRef: React.RefObject<TextInput>[] = [];
@@ -204,9 +207,6 @@ const MultipleTextQuestionScreen: React.ElementType<MultipleTextQuestionScreenPr
     }
     return false;
   };
-  setDataValidationFunction(() => {
-    return dataValidationFunction(true);
-  });
 
   return <View style={{ paddingTop: 10 }}>{textFields}</View>;
 };

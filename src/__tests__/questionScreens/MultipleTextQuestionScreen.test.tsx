@@ -12,9 +12,9 @@ import { ReactTestInstance } from "react-test-renderer";
 import { MultipleTextAnswerEntity } from "../../entities/AnswerEntity";
 import { AnswersList, MultipleTextAnswerData } from "../../helpers/answerTypes";
 import { QuestionType } from "../../helpers/helpers";
-import { MultipleTextQuestion } from "../../helpers/types";
+import { MultipleTextQuestion, ChoicesList } from "../../helpers/types";
 import MultipleTextQuestionScreen from "../../questionScreens/MultipleTextQuestionScreen";
-import { simplePipeInExtraMetaData } from "../helper";
+import { simplePipeInExtraMetaData, mockCurrentExtraData } from "../helper";
 
 const A11Y_HINT = "Enter your answer here";
 const getTextInputA11YLabel = (index: number) => `text input ${index}`;
@@ -28,6 +28,11 @@ const getTextInput = (
   return textInput;
 };
 
+const MOCK_EMOJI_CHOICES_KEY = "emojis";
+const MOCK_EMOJI_CHOICES_LIST = ["😀", "🤪", "🧐", "😎"] as [
+  string,
+  ...string[]
+];
 const basicTestForQuestionAsync = async (
   question: MultipleTextQuestion,
   allAnswers: AnswersList,
@@ -54,9 +59,26 @@ const basicTestForQuestionAsync = async (
   );
   const { getAllByA11yLabel, getAllByA11yHint } = renderResults;
 
-  expect(mockPipeInExtraMetaData).toHaveBeenCalledTimes(
-    question.choices?.length || 0,
-  ); // For each choices
+  // Wait for the text fields to be loaded.
+  await waitFor(() => {
+    return getAllByA11yLabel(/^text input /).length > 0;
+  });
+
+  let choices!: ChoicesList | undefined;
+  if (typeof question.choices === "string") {
+    if (question.choices === MOCK_EMOJI_CHOICES_KEY) {
+      choices = MOCK_EMOJI_CHOICES_LIST;
+    } else {
+      choices = [
+        `ERROR: reusable choices with key "${question.choices}" is not found.`,
+      ]; // For that error string
+    }
+  } else {
+    choices = question.choices;
+  }
+
+  // For each choices
+  expect(mockPipeInExtraMetaData).toHaveBeenCalledTimes(choices?.length || 0);
 
   expect(mockSetDataValidationFunction).toHaveBeenCalledTimes(1);
   expect(typeof codeDataValidationFunction).toBe("function");
@@ -101,12 +123,7 @@ const basicTestForQuestionAsync = async (
 
     let isInputValid = true;
     if (question.choices && question.forceChoice && inputValue.length > 0) {
-      let isInputInChoice = false;
-      if (typeof question.choices === "string") {
-        // TODO: DO THIS
-      } else {
-        isInputInChoice = question.choices?.includes(inputValue) || false;
-      }
+      const isInputInChoice = choices?.includes(inputValue);
 
       if (!isInputInChoice) {
         let buttonPressed = false;
@@ -313,4 +330,72 @@ test.each([
   },
 );
 
-// TODO: TEST CHOICES WITH EXTERNAL JSON
+test.each([
+  [generateTypingInput(2), 2, true, "Enter a emoji..."],
+  [
+    [...generateTypingInput(1), "😀", ...generateTypingInput(2), "🤪"],
+    5,
+    true,
+    "Enter a emoji...",
+  ],
+  [generateTypingInput(4), 4, false, undefined],
+  [["🧐", "RANDOM INPUT", "😎"], 5, true, "Enter a relation..."],
+  [["🧐", "🧐", "🧐", "🧐", "RANDOM"], 5, false, undefined],
+  [["🤪", "", "🤪", ":)", "🤪"], 5, true, "Emoji..."],
+])(
+  "input `%p` with max %d and forceChoice %p with a choices string",
+  async (inputValues, max, forceChoice, placeholder) => {
+    mockCurrentExtraData({
+      reusableChoices: {
+        [MOCK_EMOJI_CHOICES_KEY]: MOCK_EMOJI_CHOICES_LIST,
+      },
+    });
+
+    const question = {
+      id: "WithChoicesDict",
+      type: QuestionType.MultipleText,
+      question: "A question",
+      placeholder,
+      choices: MOCK_EMOJI_CHOICES_KEY,
+      forceChoice,
+      max,
+      variableName: "TARGET_CATEGORY",
+      indexName: "INDEX",
+      next: null,
+    } as MultipleTextQuestion;
+
+    await basicTestForQuestionAsync(question, {}, inputValues);
+  },
+);
+
+// Should not have been able enter anything except "ERROR: ...".
+test.each([
+  [[]],
+  [["hello world"]],
+  [["yep", "yep", "yep"]],
+  [
+    [
+      `ERROR: reusable choices with key "invalid-reusable-choice" is not found.`,
+    ],
+  ],
+])("input `%p` with invalid string choices", async (inputValues) => {
+  mockCurrentExtraData({
+    reusableChoices: {
+      [MOCK_EMOJI_CHOICES_KEY]: MOCK_EMOJI_CHOICES_LIST,
+    },
+  });
+
+  const question = {
+    id: "WithChoicesDict",
+    type: QuestionType.MultipleText,
+    question: "A question",
+    choices: "invalid-reusable-choice",
+    forceChoice: true,
+    max: 3,
+    variableName: "TARGET_CATEGORY",
+    indexName: "INDEX",
+    next: null,
+  } as MultipleTextQuestion;
+
+  await basicTestForQuestionAsync(question, {}, inputValues);
+});

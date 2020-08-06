@@ -50,8 +50,8 @@ exports[`QuestionSchema mismatch type 1`] = `
   Issue #0: unrecognized_keys at 
   Unrecognized key(s) in object: 'defaultValueFromQuestionId', 'slider'
 
-  Issue #1: invalid_type at choices
-  Required
+  Issue #1: invalid_union at choices
+  Invalid input
 "
 `;
 

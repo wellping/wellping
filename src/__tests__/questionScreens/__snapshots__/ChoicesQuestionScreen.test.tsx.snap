@@ -1,5 +1,65 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`ChoicesWithMultipleAnswers (choices string) (randomize order false except for undefined): displayed list 1`] = `
+Array [
+  "😀",
+  "🤪",
+  "🧐",
+  "😎",
+]
+`;
+
+exports[`ChoicesWithMultipleAnswers (choices string) (randomize order true except for ["😀", "🤪", "🧐"]): displayed list 1`] = `
+Array [
+  "😎",
+  "😀",
+  "🤪",
+  "🧐",
+]
+`;
+
+exports[`ChoicesWithMultipleAnswers (choices string) (randomize order true except for ["😀", "🤪"]): displayed list 1`] = `
+Array [
+  "😎",
+  "🧐",
+  "😀",
+  "🤪",
+]
+`;
+
+exports[`ChoicesWithMultipleAnswers (choices string) (randomize order true except for ["😎"]): displayed list 1`] = `
+Array [
+  "🤪",
+  "🧐",
+  "😀",
+  "😎",
+]
+`;
+
+exports[`ChoicesWithMultipleAnswers (choices string) (randomize order true except for ["🧐", "😀"]): displayed list 1`] = `
+Array [
+  "😎",
+  "🤪",
+  "😀",
+  "🧐",
+]
+`;
+
+exports[`ChoicesWithMultipleAnswers (choices string) (randomize order true except for undefined): displayed list 1`] = `
+Array [
+  "😎",
+  "🧐",
+  "😀",
+  "🤪",
+]
+`;
+
+exports[`ChoicesWithMultipleAnswers (invalid choices string): displayed list 1`] = `
+Array [
+  "ERROR: reusable choices with key \\"non-existent\\" is not found.",
+]
+`;
+
 exports[`ChoicesWithMultipleAnswers question with input sequence ["Coyote", "Coyote", "Wolf", "Wolf", "Coyote"] (randomize order true except for ["I don't know", "Other"]): data 1`] = `
 Array [
   Array [
@@ -312,6 +372,66 @@ Array [
   "Panda",
   "Other",
   "I don't know",
+]
+`;
+
+exports[`ChoicesWithSingleAnswer (invalid choices string): displayed list 1`] = `
+Array [
+  "ERROR: reusable choices with key \\"non-existent\\" is not found.",
+]
+`;
+
+exports[`ChoicesWithSingleAnswer question (choices string) (randomize order false except for undefined): displayed list 1`] = `
+Array [
+  "😀",
+  "🤪",
+  "🧐",
+  "😎",
+]
+`;
+
+exports[`ChoicesWithSingleAnswer question (choices string) (randomize order true except for ["😀", "🤪", "🧐"]): displayed list 1`] = `
+Array [
+  "😎",
+  "😀",
+  "🤪",
+  "🧐",
+]
+`;
+
+exports[`ChoicesWithSingleAnswer question (choices string) (randomize order true except for ["😀", "🤪"]): displayed list 1`] = `
+Array [
+  "😎",
+  "🧐",
+  "😀",
+  "🤪",
+]
+`;
+
+exports[`ChoicesWithSingleAnswer question (choices string) (randomize order true except for ["😎"]): displayed list 1`] = `
+Array [
+  "🤪",
+  "🧐",
+  "😀",
+  "😎",
+]
+`;
+
+exports[`ChoicesWithSingleAnswer question (choices string) (randomize order true except for ["🧐", "😀"]): displayed list 1`] = `
+Array [
+  "😎",
+  "🤪",
+  "😀",
+  "🧐",
+]
+`;
+
+exports[`ChoicesWithSingleAnswer question (choices string) (randomize order true except for undefined): displayed list 1`] = `
+Array [
+  "😎",
+  "🧐",
+  "😀",
+  "🤪",
 ]
 `;
 

@@ -35,8 +35,8 @@ exports[`QuestionsListSchema should not accept non-existent next: single 1`] = `
 exports[`QuestionsListSchema should show individual question error: multiple 1`] = `
 "5 validation issue(s)
 
-  Issue #0: invalid_type at choices
-  Required
+  Issue #0: invalid_union at choices
+  Invalid input
 
   Issue #1: invalid_type at slider
   Required

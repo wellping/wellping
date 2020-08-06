@@ -3,7 +3,6 @@ import * as z from "zod";
 import {
   QuestionSchema,
   SliderQuestionSchema,
-  ChoiceSchema,
   ChoicesQuestionSchema,
   ChoicesWithSingleAnswerQuestionSchema,
   ChoicesWithMultipleAnswersQuestionSchema,
@@ -14,14 +13,19 @@ import {
   BranchQuestionSchema,
   BranchWithRelativeComparisonQuestionSchema,
   QuestionTypeSchema,
-  ChoicesListSchema,
 } from "./schemas/Question";
 import { StreamsSchema } from "./schemas/Stream";
-import { StudyFileSchema, StudyInfoSchema } from "./schemas/StudyFile";
+import {
+  StudyFileSchema,
+  StudyInfoSchema,
+  ExtraDataSchema,
+} from "./schemas/StudyFile";
 import {
   QuestionIdSchema,
   StreamNameSchema,
   StudyIdSchema,
+  ChoiceSchema,
+  ChoicesListSchema,
 } from "./schemas/common";
 
 export type Choice = z.infer<typeof ChoiceSchema>;
@@ -67,7 +71,6 @@ export type StudyID = z.infer<typeof StudyIdSchema>;
 
 export type StudyInfo = z.infer<typeof StudyInfoSchema>;
 
-export type StudyFile = z.infer<typeof StudyFileSchema>;
+export type ExtraData = z.infer<typeof ExtraDataSchema>;
 
-// TODO: REMOVE THIS
-export type Names = string[];
+export type StudyFile = z.infer<typeof StudyFileSchema>;

@@ -1,9 +1,9 @@
 import { parseJSON } from "date-fns";
 import * as z from "zod";
 
-import { StudyFile, StudyInfo } from "../types";
+import { StudyFile, StudyInfo, ExtraData } from "../types";
 import { StreamsSchema, StreamsStartingQuestionIdsSchema } from "./Stream";
-import { StudyIdSchema, StreamNameSchema } from "./common";
+import { StudyIdSchema, StreamNameSchema, ChoicesListSchema } from "./common";
 
 export const WeekStartsOnSchema = z.union([
   z.literal(0),
@@ -218,9 +218,14 @@ export const StudyInfoSchema = z
     },
   );
 
+export const ExtraDataSchema = z.object({
+  reusableChoices: z.record(ChoicesListSchema).optional(),
+});
+
 export const StudyFileSchema = z.object({
   studyInfo: StudyInfoSchema,
   streams: StreamsSchema,
+  extraData: ExtraDataSchema,
 });
 
 // https://stackoverflow.com/a/13104500/2603230
@@ -237,6 +242,10 @@ const convertSpecialTypesInStudyInfo = (studyInfoRawJson: any) => {
 export function parseJsonToStudyInfo(rawJson: any): StudyInfo {
   convertSpecialTypesInStudyInfo(rawJson);
   return StudyInfoSchema.parse(rawJson);
+}
+
+export function parseJsonToExtraData(rawJson: any): ExtraData {
+  return ExtraDataSchema.parse(rawJson);
 }
 
 export function parseJsonToStudyFile(rawJson: any): StudyFile {

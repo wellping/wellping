@@ -16,6 +16,7 @@ import {
   ChoicesWithMultipleAnswersAnswerData,
 } from "../helpers/answerTypes";
 import { QuestionType, shuffle } from "../helpers/helpers";
+import { getReusableChoicesIncludeErrorAsync } from "../helpers/studyFile";
 import { ChoicesQuestion, YesNoQuestion, Choice } from "../helpers/types";
 
 export interface ChoiceItemProps {
@@ -79,14 +80,6 @@ const ChoicesQuestionScreen: React.ElementType<ChoicesQuestionScreenProps> = ({
       throw new Error("Wrong QuestionType in ChoicesQuestionScreen");
   }
 
-  let choices: Choice[];
-  if (answerType === ChoicesAnswerType.YESNO) {
-    choices = YESNO_CHOICES;
-  } else {
-    const cQ = question as ChoicesQuestion;
-    choices = cQ.choices;
-  }
-
   const listRef = React.useRef<FlatList<{ id: string; title: string }>>(null);
 
   const [selected, setSelected] = React.useState<
@@ -114,36 +107,52 @@ const ChoicesQuestionScreen: React.ElementType<ChoicesQuestionScreenProps> = ({
   React.useEffect(() => {
     // We have to use `useEffect(..., [])` here to ensure this only runs once.
     // If we don't use `useEffect`, each time the user update the state, the choices will be re-shuffled.
-    let tempFlatListData = choices.map((choice) => {
-      return {
-        id: choice,
-        title: pipeInExtraMetaData(choice),
-      };
-    });
-    if (answerType !== ChoicesAnswerType.YESNO) {
-      const cQ = question as ChoicesQuestion;
-      if (cQ.randomizeChoicesOrder) {
-        const randomizeExceptForChoiceIds =
-          cQ.randomizeExceptForChoiceIds || [];
 
-        const flatListShuffleableData = tempFlatListData.filter(
-          (value) => !randomizeExceptForChoiceIds.includes(value.id),
-        );
-        const flatListFixedDataAtLast = tempFlatListData.filter((value) =>
-          randomizeExceptForChoiceIds.includes(value.id),
-        );
-        tempFlatListData = [
-          ...shuffle(flatListShuffleableData),
-          ...flatListFixedDataAtLast,
-        ];
+    async function setupAsync() {
+      let choices: Choice[];
+      if (answerType === ChoicesAnswerType.YESNO) {
+        choices = YESNO_CHOICES;
+      } else {
+        const cQ = question as ChoicesQuestion;
+        if (typeof cQ.choices === "string") {
+          choices = await getReusableChoicesIncludeErrorAsync(cQ.choices);
+        } else {
+          choices = cQ.choices;
+        }
       }
-    }
-    setFlatListData(tempFlatListData);
 
-    // We have to specify `tempFlatListData` variable here (instead of using
-    // the `flatListData` variable) because `flatListData` might still not be
-    // updated here.
-    setSelected(initAnswerDataWithFlatListData(tempFlatListData));
+      let tempFlatListData = choices.map((choice) => {
+        return {
+          id: choice,
+          title: pipeInExtraMetaData(choice),
+        };
+      });
+      if (answerType !== ChoicesAnswerType.YESNO) {
+        const cQ = question as ChoicesQuestion;
+        if (cQ.randomizeChoicesOrder) {
+          const randomizeExceptForChoiceIds =
+            cQ.randomizeExceptForChoiceIds || [];
+
+          const flatListShuffleableData = tempFlatListData.filter(
+            (value) => !randomizeExceptForChoiceIds.includes(value.id),
+          );
+          const flatListFixedDataAtLast = tempFlatListData.filter((value) =>
+            randomizeExceptForChoiceIds.includes(value.id),
+          );
+          tempFlatListData = [
+            ...shuffle(flatListShuffleableData),
+            ...flatListFixedDataAtLast,
+          ];
+        }
+      }
+      setFlatListData(tempFlatListData);
+
+      // We have to specify `tempFlatListData` variable here (instead of using
+      // the `flatListData` variable) because `flatListData` might still not be
+      // updated here.
+      setSelected(initAnswerDataWithFlatListData(tempFlatListData));
+    }
+    setupAsync();
   }, []);
 
   return (

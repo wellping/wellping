@@ -1,70 +1,46 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`MultipleTextQuestionSchema choices TODO: should not be string other than \`NAMES\`: string 1`] = `
-"1 validation issue(s)
-
-  Issue #0: invalid_literal_value at choices
-  Input must be \\"NAMES\\"
-"
-`;
-
-exports[`MultipleTextQuestionSchema choices TODO: should not be string other than \`NAMES\`: url 1`] = `
-"1 validation issue(s)
-
-  Issue #0: invalid_literal_value at choices
-  Input must be \\"NAMES\\"
-"
-`;
-
 exports[`MultipleTextQuestionSchema choices choices should not be duplicated 1`] = `
 "1 validation issue(s)
 
-  Issue #0: invalid_union at choices
-  Invalid input
+  Issue #0: custom_error at choices
+  There should not be duplicate elements in the choices list.
 "
 `;
 
 exports[`MultipleTextQuestionSchema choices choices should not be duplicated 2`] = `
 "1 validation issue(s)
 
-  Issue #0: invalid_union at choices
-  Invalid input
+  Issue #0: custom_error at choices
+  There should not be duplicate elements in the choices list.
 "
 `;
 
 exports[`MultipleTextQuestionSchema choices choices string cannot be empty 1`] = `
 "1 validation issue(s)
 
-  Issue #0: invalid_union at choices
-  Invalid input
+  Issue #0: too_small at choices.0
+  Should be at least 1 characters
 "
 `;
 
 exports[`MultipleTextQuestionSchema choices choices string cannot be empty 2`] = `
 "1 validation issue(s)
 
-  Issue #0: invalid_union at choices
-  Invalid input
+  Issue #0: too_small at choices.0
+  Should be at least 1 characters
 "
 `;
 
 exports[`MultipleTextQuestionSchema choices should not be anything besides array and string: number 1`] = `
 "1 validation issue(s)
 
-  Issue #0: invalid_literal_value at choices
-  Input must be \\"NAMES\\"
+  Issue #0: invalid_union at choices
+  Invalid input
 "
 `;
 
 exports[`MultipleTextQuestionSchema choices should not be anything besides array and string: object 1`] = `
-"1 validation issue(s)
-
-  Issue #0: invalid_literal_value at choices
-  Input must be \\"NAMES\\"
-"
-`;
-
-exports[`MultipleTextQuestionSchema choices should not be empty array 1`] = `
 "1 validation issue(s)
 
   Issue #0: invalid_union at choices
@@ -72,11 +48,19 @@ exports[`MultipleTextQuestionSchema choices should not be empty array 1`] = `
 "
 `;
 
+exports[`MultipleTextQuestionSchema choices should not be empty array 1`] = `
+"1 validation issue(s)
+
+  Issue #0: nonempty_array_is_empty at choices
+  List must contain at least one item
+"
+`;
+
 exports[`MultipleTextQuestionSchema choices should not be null 1`] = `
 "1 validation issue(s)
 
-  Issue #0: invalid_literal_value at choices
-  Input must be \\"NAMES\\"
+  Issue #0: invalid_union at choices
+  Invalid input
 "
 `;
 

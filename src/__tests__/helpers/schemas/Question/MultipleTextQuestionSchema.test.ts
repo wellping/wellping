@@ -339,8 +339,7 @@ describe("MultipleTextQuestionSchema", () => {
       }).toThrowErrorMatchingSnapshot();
     });
 
-    // TODO: WILL ONLY ACCEPT URL / ARRAY IN THE FUTURE
-    test("TODO: should not be string other than `NAMES`", () => {
+    test("can be string", () => {
       expect(() => {
         MultipleTextQuestionSchema.parse({
           ...question,
@@ -353,14 +352,7 @@ describe("MultipleTextQuestionSchema", () => {
           ...question,
           choices: "helloworld",
         });
-      }).toThrowErrorMatchingSnapshot("string");
-
-      expect(() => {
-        MultipleTextQuestionSchema.parse({
-          ...question,
-          choices: "https://example.com/choices.json",
-        });
-      }).toThrowErrorMatchingSnapshot("url");
+      }).not.toThrowError();
     });
   });
 
