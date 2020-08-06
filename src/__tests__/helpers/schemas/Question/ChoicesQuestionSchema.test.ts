@@ -61,7 +61,7 @@ describe("ChoicesQuestionSchema", () => {
       }).toThrowErrorMatchingSnapshot();
     });
 
-    test("should be an array of strings", () => {
+    test("can be an array of strings", () => {
       expect(() => {
         ChoicesQuestionSchema.parse({
           ...question,
@@ -80,6 +80,29 @@ describe("ChoicesQuestionSchema", () => {
         ChoicesQuestionSchema.parse({
           ...question,
           choices: [2, 3, 5],
+        });
+      }).toThrowErrorMatchingSnapshot();
+    });
+
+    test("can be a string", () => {
+      expect(() => {
+        ChoicesQuestionSchema.parse({
+          ...question,
+          choices: "helloworld",
+        });
+      }).not.toThrowError();
+
+      expect(() => {
+        ChoicesQuestionSchema.parse({
+          ...question,
+          choices: "NAMES",
+        });
+      }).not.toThrowError();
+
+      expect(() => {
+        ChoicesQuestionSchema.parse({
+          ...question,
+          choices: 5,
         });
       }).toThrowErrorMatchingSnapshot();
     });

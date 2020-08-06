@@ -1,5 +1,21 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`ChoicesQuestionSchema choices can be a string 1`] = `
+"1 validation issue(s)
+
+  Issue #0: invalid_union at choices
+  Invalid input
+"
+`;
+
+exports[`ChoicesQuestionSchema choices can be an array of strings 1`] = `
+"1 validation issue(s)
+
+  Issue #0: invalid_union at choices
+  Invalid input
+"
+`;
+
 exports[`ChoicesQuestionSchema choices choices should not be duplicated 1`] = `
 "1 validation issue(s)
 
@@ -29,14 +45,6 @@ exports[`ChoicesQuestionSchema choices choices string cannot be empty 2`] = `
 
   Issue #0: too_small at choices.0
   Should be at least 1 characters
-"
-`;
-
-exports[`ChoicesQuestionSchema choices should be an array of strings 1`] = `
-"1 validation issue(s)
-
-  Issue #0: invalid_union at choices
-  Invalid input
 "
 `;
 
