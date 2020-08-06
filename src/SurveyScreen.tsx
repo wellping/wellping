@@ -4,7 +4,6 @@ import { Button, Text, View, ScrollView, Dimensions } from "react-native";
 
 import { _DEBUG_CONFIGS } from "../config/debug";
 import {
-  AnswerEntity,
   getAnswerEntity,
   ChoicesWithSingleAnswerAnswerEntity,
   YesNoAnswerEntity,
@@ -35,9 +34,7 @@ import {
 import { addEndTimeToPingAsync } from "./helpers/pings";
 import {
   Question,
-  SliderQuestion,
   ChoicesWithSingleAnswerQuestion,
-  ChoicesWithMultipleAnswersQuestion,
   YesNoQuestion,
   MultipleTextQuestion,
   QuestionsList,
@@ -52,26 +49,90 @@ import HowLongAgoQuestionScreen from "./questionScreens/HowLongAgoQuestion";
 import MultipleTextQuestionScreen from "./questionScreens/MultipleTextQuestionScreen";
 import SliderQuestionScreen from "./questionScreens/SliderQuestionScreen";
 
-type ExtraMetaData = { [key: string]: any };
+/**
+ * Any data that is associated with the question.
+ * It is used by `pipeInExtraMetaData`.
+ */
+type ExtraData = { [key: string]: any };
 
-type NextData = {
+type CurrentQuestionData = {
+  /**
+   * The question ID.
+   * If `null`, it means that there is no current question.
+   */
   questionId: QuestionId | null;
-  extraMetaData?: ExtraMetaData;
+
+  /**
+   * The extra data associated with this question.
+   */
+  extraData: ExtraData;
+};
+
+type NextQuestionData = CurrentQuestionData & {
+  /**
+   * Unlike `CurrentData`, it cannot be `null` because in that case this
+   * `NextData` should not exist at all.
+   */
+  questionId: QuestionId;
 };
 
 interface SurveyScreenProps {
-  survey: QuestionsList;
-  surveyStartingQuestionId: QuestionId;
+  /**
+   * The questions in this ping.
+   */
+  questions: QuestionsList;
+
+  /**
+   * The question ID of the first question in `questions`.
+   */
+  startingQuestionId: QuestionId;
+
+  /**
+   * The current ping.
+   */
   ping: PingEntity;
+
+  /**
+   * The previously stored state.
+   * It is used to automatically put the user back to where they left when they
+   * leave the app in the middle of the ping and come back later.
+   */
   previousState: SurveyScreenState | null;
+
+  /**
+   * The function to call when the current ping is completed.
+   */
   onFinish: (finishedPing: PingEntity) => Promise<void>;
 }
 
 export interface SurveyScreenState {
-  currentQuestionId: QuestionId | null;
-  extraMetaData: ExtraMetaData;
-  nextStack: NextData[];
-  currentQuestionAnswers: AnswersList;
+  /**
+   * The question data of the current question that the user is answering.
+   */
+  currentQuestionData: CurrentQuestionData;
+
+  /**
+   * A stack of questions (and extra data for each of those questions) that
+   * will be popped once the current question's next is `null`.
+   *
+   * When `nextQuestionsDataStack` is empty and the current question's `next`
+   * is `null`, the current ping ends.
+   *
+   * For example, if `[a, b, c]` is in `nextStack` and the current question's
+   * `next` is `null`, then the next question will be `c`.
+   * If `[]` is in `nextStack` and the current question's `next` is `null`,
+   * then the current ping ends.
+   */
+  nextQuestionsDataStack: NextQuestionData[];
+
+  /**
+   * All current answers.
+   */
+  answers: AnswersList;
+
+  /**
+   * The last upload time.
+   */
   lastUploadDate: Date | null;
 }
 
@@ -85,13 +146,13 @@ export default class SurveyScreen extends React.Component<
     if (props.previousState) {
       this.state = props.previousState;
     } else {
-      // Pop `nextStack` and go to that question when the current question's `next` is `null`.
-      // When `nextStack` is empty and the current question's `next` is `null`, end the test.
       this.state = {
-        currentQuestionId: props.surveyStartingQuestionId,
-        nextStack: [],
-        extraMetaData: {},
-        currentQuestionAnswers: {},
+        currentQuestionData: {
+          questionId: props.startingQuestionId,
+          extraData: {},
+        },
+        nextQuestionsDataStack: [],
+        answers: {},
         lastUploadDate: null,
       };
     }
@@ -101,22 +162,33 @@ export default class SurveyScreen extends React.Component<
     storePingStateAsync(this.props.ping.id, this.state);
   }
 
-  pipeInExtraMetaData(input: string): string {
-    if (!this.state.extraMetaData) {
-      return input;
-    }
+  /**
+   * Returns a string where all placeholders in `input` are replaced with
+   * actual data.
+   * A warning text will replace a placeholder if that piece of data does
+   * not exists.
+   *
+   * Supports:
+   * - Replacing variable placeholders with variables in `extraData`.
+   * - Replacing answer placeholders with actual answers.
+   */
+  replacePlaceholders(input: string): string {
+    const { questions } = this.props;
+    const { currentQuestionData, answers } = this.state;
 
     let output = input;
-    for (const [key, value] of Object.entries(this.state.extraMetaData)) {
+    for (const [key, value] of Object.entries(currentQuestionData.extraData)) {
       let newValue = value;
+
+      // TODO: MAKE THIS CUSTOMIZABLE
       if (key === "TARGET_CATEGORY") {
         let capValue = value;
         if (capValue !== "PHE") {
-          // TODO: MAKE THIS CUSTOMIZABLE
           capValue = decapitalizeFirstCharacter(capValue);
         }
         newValue = `your ${capValue}`;
       }
+
       // https://stackoverflow.com/a/56136657/2603230
       output = output.split(withVariable(key)).join(newValue);
     }
@@ -124,21 +196,21 @@ export default class SurveyScreen extends React.Component<
     output = replacePreviousAnswerPlaceholdersWithActualContent(
       output,
       (questionId) => {
-        const prevQuestion = this.props.survey[questionId];
-        const prevAnswer = this.state.currentQuestionAnswers[questionId];
-        if (!prevQuestion) {
+        const question = questions[questionId];
+        const answer = answers[questionId];
+        if (!question) {
           return null;
         }
-        switch (prevQuestion.type) {
+        switch (question.type) {
           case QuestionType.ChoicesWithSingleAnswer: {
-            const csaQuestion = this.props.survey[
+            const csaQuestion = questions[
               questionId
             ] as ChoicesWithSingleAnswerQuestion;
 
-            const csaAnswer = prevAnswer as ChoicesWithSingleAnswerAnswerEntity;
+            const csaAnswer = answer as ChoicesWithSingleAnswerAnswerEntity;
             if (csaAnswer == null) {
               return getNonCriticalProblemTextForUser(
-                `csaAnswer.data (from ${prevQuestion.id}) == null`,
+                `csaAnswer.data (from ${question.id}) == null`,
               );
             }
 
@@ -161,11 +233,14 @@ export default class SurveyScreen extends React.Component<
     return output;
   }
 
+  /**
+   * Goes to the next question.
+   */
   onNextSelect() {
-    // Reset this so that the new QuestionScreen can set it.
+    // Reset this so that the new `QuestionScreen` can set it.
     this.dataValidationFunction = null;
 
-    const { survey, ping } = this.props;
+    const { questions, ping } = this.props;
 
     const setStateCallback = () => {
       storePingStateAsync(ping.id, this.state).then(() => {
@@ -181,50 +256,98 @@ export default class SurveyScreen extends React.Component<
         }
       });
 
+      const {
+        currentQuestionData: { questionId: currentQuestionid },
+      } = this.state;
+
       if (
-        this.state.currentQuestionId &&
-        (survey[this.state.currentQuestionId].type === QuestionType.Branch ||
-          survey[this.state.currentQuestionId].type ===
+        currentQuestionid &&
+        (questions[currentQuestionid].type === QuestionType.Branch ||
+          questions[currentQuestionid].type ===
             QuestionType.BranchWithRelativeComparison)
       ) {
         this.onNextSelect();
       }
 
-      if (this.state.currentQuestionId == null) {
+      if (currentQuestionid == null) {
         addEndTimeToPingAsync(ping.id, new Date()).then((newPing) => {
           this.props.onFinish(newPing);
         });
       }
     };
 
-    const filterNextStack = (value: NextData) => {
-      if (value.questionId) {
-        return true;
-      } else {
-        return false;
-      }
-    };
+    /**
+     * **Notes on non-`next` question ID being `null`**
+     * If a question ID in any fields besides the `next` field is intentionally
+     * set to (and is allowed to set to) `null`, it means that we should treat
+     * it as if `next` is set to `null` when that field is used. In other words,
+     * the original `next` is ignored.
+     */
 
-    switch (survey[this.state.currentQuestionId!].type) {
-      case QuestionType.YesNo:
-        this.setState((prevState) => {
-          const currentQuestion = survey[
-            prevState.currentQuestionId!
-          ] as YesNoQuestion;
-          const currentQuestionAnswer = prevState.currentQuestionAnswers[
-            prevState.currentQuestionId!
-          ] as YesNoAnswerEntity;
-          let selectedBranchId = currentQuestion.branchStartId?.no;
+    this.setState((prevState) => {
+      const {
+        currentQuestionData: {
+          questionId: prevQuestionId,
+          extraData: prevExtraData,
+        },
+        answers,
+        nextQuestionsDataStack: prevNextQuestionsDataStack,
+      } = prevState;
 
-          if (currentQuestionAnswer.data) {
-            selectedBranchId = currentQuestion.branchStartId?.yes;
+      const prevQuestion = questions[prevQuestionId!];
+      const prevAnswer = answers[prevQuestionId!];
 
-            if (
-              currentQuestion.addFollowupStream &&
-              currentQuestion.addFollowupStream.yes
-            ) {
-              const futureStreamName: StreamName =
-                currentQuestion.addFollowupStream.yes;
+      /**
+       * The question(s) that the user will "jump" to (and follow through until
+       * a question's `next` is null) before going to `nextQuestionData`.
+       *
+       * If it is non-empty, the user will go to the first element. The rest of
+       * the elements as well as `nextQuestionData` will be pushed to the
+       * original `nextQuestionsDataStack`.
+       */
+      const jumpQuestionsDataStack: NextQuestionData[] = [];
+
+      /**
+       * The next question that the user will go to after the `jumpQuestionData`
+       * sequence is done.
+       *
+       * If `questionId` is `undefined`, `nextQuestionsDataStack` will be popped
+       * and we will go to that question.
+       *
+       * If `questionId` is `null`, the ping will end.
+       */
+      let nextQuestionData: CurrentQuestionData = {
+        questionId: prevQuestion.next,
+        extraData: prevExtraData,
+      };
+
+      switch (prevQuestion.type) {
+        case QuestionType.YesNo: {
+          const ynQ = prevQuestion as YesNoQuestion;
+          const ynA = prevAnswer as YesNoAnswerEntity;
+
+          if (ynA.data) {
+            if (ynQ.branchStartId) {
+              const jumpQuestionId = ynA.data.value
+                ? ynQ.branchStartId.yes
+                : ynQ.branchStartId.no;
+              if (jumpQuestionId === undefined) {
+                // Do nothing, because we will continue to this question's `next`
+                // as before.
+              } else if (jumpQuestionId === null) {
+                // Read **Notes on non-`next` question ID being `null`**.
+                nextQuestionData.questionId = null;
+              } else {
+                jumpQuestionsDataStack.push({
+                  questionId: jumpQuestionId,
+                  extraData: prevExtraData,
+                });
+              }
+            }
+
+            // Set up follow-up streams.
+            if (ynQ.addFollowupStream && ynQ.addFollowupStream.yes) {
+              const futureStreamName: StreamName = ynQ.addFollowupStream.yes;
 
               // TODO: ADD SUPPORT TO CUSTOMIZE DATE AFTER
               getFuturePingsQueue().then((futurePings) => {
@@ -242,162 +365,113 @@ export default class SurveyScreen extends React.Component<
               });
             }
           }
-          if (selectedBranchId) {
-            return {
-              currentQuestionId: selectedBranchId,
-              nextStack: [
-                ...prevState.nextStack,
-                { questionId: currentQuestion.next },
-              ].filter(filterNextStack),
-            };
-          } else {
-            return {
-              currentQuestionId: currentQuestion.next,
-              nextStack: prevState.nextStack,
-            };
-          }
-        }, setStateCallback);
-        break;
+          break;
+        }
 
-      case QuestionType.MultipleText:
-        this.setState((prevState) => {
-          const currentQuestion = survey[
-            prevState.currentQuestionId!
-          ] as MultipleTextQuestion;
-          const currentQuestionAnswer = prevState.currentQuestionAnswers[
-            prevState.currentQuestionId!
-          ] as MultipleTextAnswerEntity;
+        case QuestionType.MultipleText: {
+          const mtQ = prevQuestion as MultipleTextQuestion;
+          const mtA = prevAnswer as MultipleTextAnswerEntity;
 
-          const valuesLength = (currentQuestionAnswer.data
-            ? currentQuestionAnswer.data.value
-            : []
-          ).length;
+          const valuesLength = (mtA.data ? mtA.data.value : []).length;
 
           if (
-            !currentQuestionAnswer.data ||
+            !mtA.data ||
             valuesLength === 0 ||
-            currentQuestion.repeatedItemStartId == null
+            mtQ.repeatedItemStartId === undefined
           ) {
-            if (currentQuestion.fallbackItemStartId) {
-              return {
-                currentQuestionId: currentQuestion.fallbackItemStartId,
-                nextStack: [
-                  ...prevState.nextStack,
-                  { questionId: currentQuestion.next },
-                ].filter(filterNextStack),
-                extraMetaData: {},
-              };
+            if (mtQ.fallbackItemStartId !== undefined) {
+              if (mtQ.fallbackItemStartId === null) {
+                // Read **Notes on non-`next` question ID being `null`**.
+                nextQuestionData.questionId = null;
+              } else {
+                jumpQuestionsDataStack.push({
+                  questionId: mtQ.fallbackItemStartId,
+                  extraData: prevExtraData,
+                });
+              }
             } else {
-              return {
-                currentQuestionId: currentQuestion.next,
-                nextStack: prevState.nextStack,
-                extraMetaData: {},
-              };
+              // Do nothing. Uses the default `next`.
             }
+            break;
           }
 
-          const repeatedStartInfo: NextData[] = [];
-          for (let i = 1; i <= valuesLength; i++) {
-            repeatedStartInfo.push({
-              questionId: currentQuestion.repeatedItemStartId,
-              extraMetaData: {
-                [currentQuestion.variableName]:
-                  currentQuestionAnswer.data.value[i - 1],
-                [currentQuestion.indexName]: i,
+          // Reversed for because we want to go to the `0`th first, then `1`st,
+          // etc.
+          for (let i = valuesLength - 1; i >= 0; i--) {
+            jumpQuestionsDataStack.push({
+              questionId: mtQ.repeatedItemStartId,
+              extraData: {
+                [mtQ.variableName]: mtA.data.value[i],
+                [mtQ.indexName]: i + 1,
               },
             });
           }
+          break;
+        }
 
-          const immediateNext = repeatedStartInfo.shift();
+        case QuestionType.Branch: {
+          const bQ = prevQuestion as BranchQuestion;
 
-          return {
-            currentQuestionId: immediateNext!.questionId,
-            nextStack: [
-              ...prevState.nextStack,
-              { questionId: currentQuestion.next },
-              ...repeatedStartInfo.reverse(),
-            ].filter(filterNextStack),
-            extraMetaData: immediateNext!.extraMetaData || {},
-          };
-        }, setStateCallback);
-        break;
+          let selectedBranchId = bQ.branchStartId.false;
 
-      case QuestionType.Branch:
-        this.setState((prevState) => {
-          const currentQuestion = survey[
-            prevState.currentQuestionId!
-          ] as BranchQuestion;
-
-          let selectedBranchId = currentQuestion.branchStartId.false;
-
-          switch (currentQuestion.condition.questionType) {
+          switch (bQ.condition.questionType) {
             case QuestionType.MultipleText: {
-              const targetQuestionAnswer = prevState.currentQuestionAnswers[
-                this.pipeInExtraMetaData(currentQuestion.condition.questionId)
+              const targetQuestionAnswer = answers[
+                this.replacePlaceholders(bQ.condition.questionId)
               ] as MultipleTextAnswerEntity;
               if (targetQuestionAnswer && targetQuestionAnswer.data) {
                 if (
-                  targetQuestionAnswer.data.value.length ===
-                  currentQuestion.condition.target
+                  targetQuestionAnswer.data.value.length === bQ.condition.target
                 ) {
-                  selectedBranchId = currentQuestion.branchStartId.true;
+                  selectedBranchId = bQ.branchStartId.true;
                 }
               }
               break;
             }
 
             case QuestionType.ChoicesWithSingleAnswer: {
-              const csaQuestionAnswer = prevState.currentQuestionAnswers[
-                this.pipeInExtraMetaData(currentQuestion.condition.questionId)
+              const csaQuestionAnswer = answers[
+                this.replacePlaceholders(bQ.condition.questionId)
               ] as ChoicesWithSingleAnswerAnswerEntity;
               if (csaQuestionAnswer && csaQuestionAnswer.data) {
-                if (
-                  csaQuestionAnswer.data?.value ===
-                  currentQuestion.condition.target
-                ) {
-                  selectedBranchId = currentQuestion.branchStartId.true;
+                if (csaQuestionAnswer.data?.value === bQ.condition.target) {
+                  selectedBranchId = bQ.branchStartId.true;
                 }
               }
               break;
             }
           }
 
-          if (selectedBranchId) {
-            return {
-              currentQuestionId: selectedBranchId,
-              nextStack: [
-                ...prevState.nextStack,
-                { questionId: currentQuestion.next },
-              ].filter(filterNextStack),
-            };
+          if (selectedBranchId === undefined) {
+            // Do nothing, because we will continue to this question's `next`
+            // as before.
+          } else if (selectedBranchId === null) {
+            // Read **Notes on non-`next` question ID being `null`**.
+            nextQuestionData.questionId = null;
           } else {
-            return {
-              currentQuestionId: currentQuestion.next,
-              nextStack: prevState.nextStack,
-            };
+            jumpQuestionsDataStack.push({
+              questionId: selectedBranchId,
+              extraData: prevExtraData,
+            });
           }
-        }, setStateCallback);
-        break;
+          break;
+        }
 
-      case QuestionType.BranchWithRelativeComparison:
-        this.setState((prevState) => {
-          const currentQuestion = survey[
-            prevState.currentQuestionId!
-          ] as BranchWithRelativeComparisonQuestion;
+        case QuestionType.BranchWithRelativeComparison: {
+          const bwrcQuestion = prevQuestion as BranchWithRelativeComparisonQuestion;
 
           const values: {
             nextQuestionId: QuestionId | null;
             value: number;
           }[] = [];
           for (const prevQuestionId of Object.keys(
-            currentQuestion.branchStartId,
+            bwrcQuestion.branchStartId,
           )) {
             values.push({
-              nextQuestionId: currentQuestion.branchStartId[prevQuestionId],
+              nextQuestionId: bwrcQuestion.branchStartId[prevQuestionId],
               value:
-                (prevState.currentQuestionAnswers[
-                  prevQuestionId
-                ] as SliderAnswerEntity).data?.value || -1,
+                (answers[prevQuestionId] as SliderAnswerEntity).data?.value ||
+                -1,
             });
           }
 
@@ -410,118 +484,117 @@ export default class SurveyScreen extends React.Component<
             }
           }
 
-          if (nextQuestionId) {
-            return {
-              currentQuestionId: nextQuestionId,
-              nextStack: [
-                ...prevState.nextStack,
-                { questionId: currentQuestion.next },
-              ].filter(filterNextStack),
-            };
+          if (nextQuestionId === undefined) {
+            // Do nothing, because we will continue to this question's `next`
+            // as before.
+          } else if (nextQuestionId === null) {
+            // Read **Notes on non-`next` question ID being `null`**.
+            nextQuestionData.questionId = null;
           } else {
-            return {
-              currentQuestionId: currentQuestion.next,
-              nextStack: prevState.nextStack,
-            };
+            jumpQuestionsDataStack.push({
+              questionId: nextQuestionId,
+              extraData: prevExtraData,
+            });
           }
-        }, setStateCallback);
-        break;
+          break;
+        }
 
-      case QuestionType.ChoicesWithMultipleAnswers:
-      case QuestionType.ChoicesWithSingleAnswer: {
-        const currentQuestion = survey[
-          this.state.currentQuestionId!
-        ] as ChoicesQuestion;
-        const currentAnswer = this.state.currentQuestionAnswers[
-          this.state.currentQuestionId!
-        ] as
-          | ChoicesWithSingleAnswerAnswerEntity
-          | ChoicesWithMultipleAnswersAnswerEntity;
-        if (currentQuestion.specialCasesStartId) {
-          let fallbackNext: QuestionId | null = null;
-          if (
-            // TODO: ALLOW THE VALUE TO BE NULL (ONLY CHECK FOR !== undefined)
-            currentQuestion.specialCasesStartId._pna &&
-            (currentAnswer.nextWithoutOption || currentAnswer.preferNotToAnswer)
-          ) {
-            fallbackNext = currentQuestion.specialCasesStartId["_pna"];
-          } else {
-            if (currentQuestion.type === QuestionType.ChoicesWithSingleAnswer) {
-              const csaAnswer = currentAnswer as ChoicesWithSingleAnswerAnswerEntity;
-              if (
-                csaAnswer.data &&
-                currentQuestion.specialCasesStartId[csaAnswer.data.value]
-              ) {
-                fallbackNext = currentQuestion.specialCasesStartId[
-                  csaAnswer.data.value
-                ]!;
-              }
+        case QuestionType.ChoicesWithMultipleAnswers:
+        case QuestionType.ChoicesWithSingleAnswer: {
+          const cQ = prevQuestion as ChoicesQuestion;
+          const cA = prevAnswer as
+            | ChoicesWithSingleAnswerAnswerEntity
+            | ChoicesWithMultipleAnswersAnswerEntity;
+          if (cQ.specialCasesStartId) {
+            let fallbackNext: QuestionId | null = null;
+            if (
+              // TODO: ALLOW THE VALUE TO BE NULL (ONLY CHECK FOR !== undefined)
+              cQ.specialCasesStartId._pna &&
+              (cA.nextWithoutOption || cA.preferNotToAnswer)
+            ) {
+              fallbackNext = cQ.specialCasesStartId["_pna"];
             } else {
-              if (
-                currentQuestion.type === QuestionType.ChoicesWithMultipleAnswers
-              ) {
-                const cmaAnswer = currentAnswer as ChoicesWithMultipleAnswersAnswerEntity;
-                Object.entries(cmaAnswer.data?.value || {}).some(
-                  ([eachAnswer, selected]) => {
-                    if (selected) {
-                      if (
-                        selected &&
-                        currentQuestion.specialCasesStartId &&
-                        currentQuestion.specialCasesStartId[eachAnswer]
-                      ) {
-                        fallbackNext = currentQuestion.specialCasesStartId[
-                          eachAnswer
-                        ]!;
+              if (cQ.type === QuestionType.ChoicesWithSingleAnswer) {
+                const csaAnswer = cA as ChoicesWithSingleAnswerAnswerEntity;
+                if (
+                  csaAnswer.data &&
+                  cQ.specialCasesStartId[csaAnswer.data.value]
+                ) {
+                  fallbackNext = cQ.specialCasesStartId[csaAnswer.data.value]!;
+                }
+              } else {
+                if (cQ.type === QuestionType.ChoicesWithMultipleAnswers) {
+                  const cmaAnswer = cA as ChoicesWithMultipleAnswersAnswerEntity;
+                  Object.entries(cmaAnswer.data?.value || {}).some(
+                    ([eachAnswer, selected]) => {
+                      if (selected) {
+                        if (
+                          selected &&
+                          cQ.specialCasesStartId &&
+                          cQ.specialCasesStartId[eachAnswer]
+                        ) {
+                          fallbackNext = cQ.specialCasesStartId[eachAnswer]!;
+                        }
+                        // we return `true` here instead of inside so that it will also stop when any other choices are selected.
+                        return true;
                       }
-                      // we return `true` here instead of inside so that it will also stop when any other choices are selected.
-                      return true;
-                    }
-                    return false;
-                  },
-                );
+                      return false;
+                    },
+                  );
+                }
               }
             }
-          }
 
-          if (fallbackNext) {
-            this.setState((prevState) => {
-              return {
-                currentQuestionId: fallbackNext,
-              };
-            }, setStateCallback);
-            break;
+            if (fallbackNext) {
+              if (fallbackNext === null) {
+                // Read **Notes on non-`next` question ID being `null`**.
+                nextQuestionData.questionId = null;
+              } else {
+                jumpQuestionsDataStack.push({
+                  questionId: fallbackNext,
+                  extraData: prevExtraData,
+                });
+              }
+              break;
+            }
+          }
+          break;
+        }
+        default: {
+          break;
+        }
+      }
+
+      if (jumpQuestionsDataStack.length === 0) {
+        if (nextQuestionData.questionId === null) {
+          if (prevNextQuestionsDataStack.length > 0) {
+            nextQuestionData = prevNextQuestionsDataStack.pop()!;
           }
         }
-        // If it is not the case, we go to default. So no break here.
+
+        return {
+          currentQuestionData: nextQuestionData,
+          nextQuestionsDataStack: prevNextQuestionsDataStack,
+        };
+      } else {
+        if (nextQuestionData.questionId !== null) {
+          prevNextQuestionsDataStack.push(nextQuestionData as NextQuestionData);
+        }
+
+        const immediateNext = jumpQuestionsDataStack.pop()!;
+        return {
+          currentQuestionData: immediateNext,
+          nextQuestionsDataStack: [
+            ...prevNextQuestionsDataStack,
+            ...jumpQuestionsDataStack,
+          ],
+        };
       }
-      default:
-        this.setState((prevState) => {
-          const currentQuestion: Question =
-            survey[prevState.currentQuestionId!];
-          let next: QuestionId | null = currentQuestion.next;
-          let extraState = {};
-          if (next === null) {
-            if (prevState.nextStack.length > 0) {
-              const nextData = prevState.nextStack.pop()!;
-              next = nextData.questionId;
-              extraState = {
-                extraMetaData:
-                  nextData.extraMetaData || prevState.extraMetaData,
-              };
-            }
-          }
-          return {
-            currentQuestionId: next,
-            nextStack: prevState.nextStack,
-            ...extraState,
-          };
-        }, setStateCallback);
-        break;
-    }
+    }, setStateCallback);
   }
 
   getRealQuestionId(question: Question): string {
-    return this.pipeInExtraMetaData(question.id);
+    return this.replacePlaceholders(question.id);
   }
 
   async addAnswerToAnswersListAsync(
@@ -556,8 +629,8 @@ export default class SurveyScreen extends React.Component<
     await new Promise((resolve, reject) => {
       this.setState(
         (prevState) => ({
-          currentQuestionAnswers: {
-            ...prevState.currentQuestionAnswers,
+          answers: {
+            ...prevState.answers,
             [realQuestionId]: answer,
           },
         }),
@@ -579,15 +652,18 @@ export default class SurveyScreen extends React.Component<
         <Text style={styles.scores}>{contents}</Text>
       </View>
     );*/
-    const { currentQuestionId, currentQuestionAnswers } = this.state;
+    const {
+      currentQuestionData: { questionId: currentQuestionId },
+      answers,
+    } = this.state;
     if (currentQuestionId == null) {
       // This is just here until `onFinish` is called.
       return <></>;
     }
 
-    const { survey } = this.props;
+    const { questions } = this.props;
 
-    const question = survey[currentQuestionId] as Question;
+    const question = questions[currentQuestionId] as Question;
     const realQuestionId = this.getRealQuestionId(question);
 
     type QuestionScreenType = React.ElementType<QuestionScreenProps>;
@@ -618,7 +694,7 @@ export default class SurveyScreen extends React.Component<
 
     const smallScreen = Dimensions.get("window").height < 600;
 
-    const currentQuestion = survey[this.state.currentQuestionId!];
+    const currentQuestion = questions[currentQuestionId];
 
     return (
       <View
@@ -635,7 +711,7 @@ export default class SurveyScreen extends React.Component<
             flex: 0,
           }}
         >
-          {this.pipeInExtraMetaData(question.question)}
+          {this.replacePlaceholders(question.question)}
         </Text>
         <View
           style={{
@@ -652,9 +728,9 @@ export default class SurveyScreen extends React.Component<
                 data,
               });
             }}
-            allAnswers={currentQuestionAnswers}
-            allQuestions={survey}
-            pipeInExtraMetaData={(input) => this.pipeInExtraMetaData(input)}
+            allAnswers={answers}
+            allQuestions={questions}
+            pipeInExtraMetaData={(input) => this.replacePlaceholders(input)}
             setDataValidationFunction={(func) => {
               this.dataValidationFunction = func;
             }}
@@ -686,7 +762,7 @@ export default class SurveyScreen extends React.Component<
                 return;
               }
 
-              if (this.state.currentQuestionAnswers[realQuestionId] == null) {
+              if (answers[realQuestionId] == null) {
                 await this.addAnswerToAnswersListAsync(question, {
                   nextWithoutOption: true,
                 });
@@ -705,15 +781,13 @@ export default class SurveyScreen extends React.Component<
             }}
           >
             <Text>
-              {JSON.stringify(this.state.currentQuestionId)}
+              {JSON.stringify(this.state.currentQuestionData)}
               {JSON.stringify(currentQuestion)}
-              {JSON.stringify(this.state.extraMetaData)}
             </Text>
+            <Text>Current answer: {JSON.stringify(answers)}</Text>
             <Text>
-              Current answer:{" "}
-              {JSON.stringify(this.state.currentQuestionAnswers)}
+              Next stack: {JSON.stringify(this.state.nextQuestionsDataStack)}
             </Text>
-            <Text>Next stack: {JSON.stringify(this.state.nextStack)}</Text>
           </ScrollView>
         )}
       </View>
