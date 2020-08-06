@@ -79,14 +79,6 @@ const ChoicesQuestionScreen: React.ElementType<ChoicesQuestionScreenProps> = ({
       throw new Error("Wrong QuestionType in ChoicesQuestionScreen");
   }
 
-  let choices: Choice[];
-  if (answerType === ChoicesAnswerType.YESNO) {
-    choices = YESNO_CHOICES;
-  } else {
-    const cQ = question as ChoicesQuestion;
-    choices = cQ.choices;
-  }
-
   const listRef = React.useRef<FlatList<{ id: string; title: string }>>(null);
 
   const [selected, setSelected] = React.useState<
@@ -114,6 +106,14 @@ const ChoicesQuestionScreen: React.ElementType<ChoicesQuestionScreenProps> = ({
   React.useEffect(() => {
     // We have to use `useEffect(..., [])` here to ensure this only runs once.
     // If we don't use `useEffect`, each time the user update the state, the choices will be re-shuffled.
+    let choices: Choice[];
+    if (answerType === ChoicesAnswerType.YESNO) {
+      choices = YESNO_CHOICES;
+    } else {
+      const cQ = question as ChoicesQuestion;
+      choices = cQ.choices;
+    }
+
     let tempFlatListData = choices.map((choice) => {
       return {
         id: choice,
