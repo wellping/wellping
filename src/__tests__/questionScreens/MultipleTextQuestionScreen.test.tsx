@@ -12,7 +12,7 @@ import { ReactTestInstance } from "react-test-renderer";
 import { MultipleTextAnswerEntity } from "../../entities/AnswerEntity";
 import { AnswersList, MultipleTextAnswerData } from "../../helpers/answerTypes";
 import { QuestionType } from "../../helpers/helpers";
-import { MultipleTextQuestion } from "../../helpers/types";
+import { MultipleTextQuestion, ChoicesList } from "../../helpers/types";
 import MultipleTextQuestionScreen from "../../questionScreens/MultipleTextQuestionScreen";
 import { simplePipeInExtraMetaData, mockCurrentExtraData } from "../helper";
 
@@ -61,20 +61,24 @@ const basicTestForQuestionAsync = async (
 
   // Wait for the text fields to be loaded.
   await waitFor(() => {
-    const newTextInput = getTextInput(0, getAllByA11yLabel);
-    return newTextInput;
+    return getAllByA11yLabel(/^text input /).length > 0;
   });
 
-  // For each choices
-  let mockPipeInExtraMetaDataCalledTimes = question.choices?.length || 0;
+  let choices!: ChoicesList | undefined;
   if (typeof question.choices === "string") {
     if (question.choices === MOCK_EMOJI_CHOICES_KEY) {
-      mockPipeInExtraMetaDataCalledTimes = MOCK_EMOJI_CHOICES_LIST.length;
+      choices = MOCK_EMOJI_CHOICES_LIST;
+    } else {
+      choices = [
+        `ERROR: reusable choices with key "${question.choices}" is not found.`,
+      ]; // For that error string
     }
+  } else {
+    choices = question.choices;
   }
-  expect(mockPipeInExtraMetaData).toHaveBeenCalledTimes(
-    mockPipeInExtraMetaDataCalledTimes,
-  );
+
+  // For each choices
+  expect(mockPipeInExtraMetaData).toHaveBeenCalledTimes(choices?.length || 0);
 
   expect(mockSetDataValidationFunction).toHaveBeenCalledTimes(1);
   expect(typeof codeDataValidationFunction).toBe("function");
@@ -119,14 +123,7 @@ const basicTestForQuestionAsync = async (
 
     let isInputValid = true;
     if (question.choices && question.forceChoice && inputValue.length > 0) {
-      let isInputInChoice = false;
-      if (typeof question.choices === "string") {
-        if (question.choices === MOCK_EMOJI_CHOICES_KEY) {
-          isInputInChoice = MOCK_EMOJI_CHOICES_LIST.includes(inputValue);
-        }
-      } else {
-        isInputInChoice = question.choices?.includes(inputValue) || false;
-      }
+      const isInputInChoice = choices?.includes(inputValue);
 
       if (!isInputInChoice) {
         let buttonPressed = false;
