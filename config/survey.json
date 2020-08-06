@@ -55,21 +55,22 @@
         "question": "The current value on the slider bar is your previous response about how you currently feel. Please use the slider bar to indicate how you WOULD LIKE to feel.",
         "slider": ["extremely negative", "extremely positive"],
         "defaultValueFromQuestionId": "Feel_Current",
+        "next": "Anxiety"
+      },
+      "Anxiety": {
+        "id": "Anxiety",
+        "type": "ChoicesWithSingleAnswer",
+        "question": "Which of the following best categorizes the PRIMARY anxiety you are experiencing?",
+        "choices": "WELLBEING_CATEGORY",
+        "randomizeChoicesOrder": true,
+        "randomizeExceptForChoiceIds": ["Not experiencing stress", "Other"],
         "next": "Stressor"
       },
       "Stressor": {
         "id": "Stressor",
         "type": "ChoicesWithSingleAnswer",
         "question": "Which of the following best categorizes the PRIMARY stress you are experiencing?",
-        "choices": [
-          "Academic",
-          "Social/relationship",
-          "Mental health",
-          "Physical health",
-          "Financial",
-          "Not experiencing stress",
-          "Other"
-        ],
+        "choices": "WELLBEING_CATEGORY",
         "randomizeChoicesOrder": true,
         "randomizeExceptForChoiceIds": ["Not experiencing stress", "Other"],
         "next": "StressDurationNum"
@@ -142,6 +143,15 @@
   },
   "extraData": {
     "reusableChoices": {
+      "WELLBEING_CATEGORY": [
+        "Academic",
+        "Social/relationship",
+        "Mental health",
+        "Physical health",
+        "Financial",
+        "Not experiencing it",
+        "Other"
+      ],
       "NAMES": ["REDACTED:", "a list", "of names", "here"],
       "RELATIONSHIPS": [
         "Friend",
