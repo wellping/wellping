@@ -36,6 +36,19 @@ Object {
 
 exports[`input \`["I am typing 1", "I am typing 2", "I am typing 3", "I am typing 4"]\` with max 4 and forceChoice false with a choices object: text inputs length 1`] = `4`;
 
+exports[`input \`["I am typing 1", "I am typing 2", "I am typing 3", "I am typing 4"]\` with max 4 and forceChoice false with a choices string 1`] = `
+Object {
+  "value": Array [
+    "I am typing 1",
+    "I am typing 2",
+    "I am typing 3",
+    "I am typing 4",
+  ],
+}
+`;
+
+exports[`input \`["I am typing 1", "I am typing 2", "I am typing 3", "I am typing 4"]\` with max 4 and forceChoice false with a choices string: text inputs length 1`] = `4`;
+
 exports[`input \`["I am typing 1", "I am typing 2", "I am typing 3", "I am typing 4"]\` with max 4 without choices 1`] = `
 Object {
   "value": Array [
@@ -57,6 +70,14 @@ Object {
 
 exports[`input \`["I am typing 1", "I am typing 2"]\` with max 2 and forceChoice true with a choices object: text inputs length 1`] = `2`;
 
+exports[`input \`["I am typing 1", "I am typing 2"]\` with max 2 and forceChoice true with a choices string 1`] = `
+Object {
+  "value": Array [],
+}
+`;
+
+exports[`input \`["I am typing 1", "I am typing 2"]\` with max 2 and forceChoice true with a choices string: text inputs length 1`] = `2`;
+
 exports[`input \`["I am typing 1", "Sibling / other relative", "I am typing 1", "I am typing 2", "Parent"]\` with max 5 and forceChoice true with a choices object 1`] = `
 Object {
   "value": Array [
@@ -67,6 +88,17 @@ Object {
 `;
 
 exports[`input \`["I am typing 1", "Sibling / other relative", "I am typing 1", "I am typing 2", "Parent"]\` with max 5 and forceChoice true with a choices object: text inputs length 1`] = `5`;
+
+exports[`input \`["I am typing 1", "😀", "I am typing 1", "I am typing 2", "🤪"]\` with max 5 and forceChoice true with a choices string 1`] = `
+Object {
+  "value": Array [
+    "😀",
+    "🤪",
+  ],
+}
+`;
+
+exports[`input \`["I am typing 1", "😀", "I am typing 1", "I am typing 2", "🤪"]\` with max 5 and forceChoice true with a choices string: text inputs length 1`] = `5`;
 
 exports[`input \`["I am typing 1"]\` with max 3 and maxMinus "PrevQuestionId" without choices 1`] = `
 Object {
@@ -146,6 +178,43 @@ Object {
 `;
 
 exports[`input \`["Stranger", "Stranger", "Stranger", "Stranger", "RANDOM"]\` with max 5 and forceChoice false with a choices object: text inputs length 1`] = `5`;
+
+exports[`input \`["🤪", "", "🤪", ":)", "🤪"]\` with max 5 and forceChoice true with a choices string 1`] = `
+Object {
+  "value": Array [
+    "🤪",
+    "🤪",
+    "🤪",
+  ],
+}
+`;
+
+exports[`input \`["🤪", "", "🤪", ":)", "🤪"]\` with max 5 and forceChoice true with a choices string: text inputs length 1`] = `5`;
+
+exports[`input \`["🧐", "RANDOM INPUT", "😎"]\` with max 5 and forceChoice true with a choices string 1`] = `
+Object {
+  "value": Array [
+    "🧐",
+    "😎",
+  ],
+}
+`;
+
+exports[`input \`["🧐", "RANDOM INPUT", "😎"]\` with max 5 and forceChoice true with a choices string: text inputs length 1`] = `5`;
+
+exports[`input \`["🧐", "🧐", "🧐", "🧐", "RANDOM"]\` with max 5 and forceChoice false with a choices string 1`] = `
+Object {
+  "value": Array [
+    "🧐",
+    "🧐",
+    "🧐",
+    "🧐",
+    "RANDOM",
+  ],
+}
+`;
+
+exports[`input \`["🧐", "🧐", "🧐", "🧐", "RANDOM"]\` with max 5 and forceChoice false with a choices string: text inputs length 1`] = `5`;
 
 exports[`input \`[]\` with max 4 and maxMinus "PrevQuestionId" without choices 1`] = `
 Object {
