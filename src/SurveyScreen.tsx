@@ -290,8 +290,9 @@ export default class SurveyScreen extends React.Component<
       const prevAnswer = answers[prevQuestionId!];
 
       /**
-       * The question(s) that the user will "jump" to (and follow through until
-       * a question's `next` is null) before going to `nextQuestionData`.
+       * The question(s) that cuts in line and shows before the actual `next`.
+       * The user will "jump" to (and follow through until a question's `next`
+       * is null) before going to `nextQuestionData`.
        *
        * If it is non-empty, the user will go to the first element. The rest of
        * the elements as well as `nextQuestionData` will be pushed to the
@@ -303,10 +304,9 @@ export default class SurveyScreen extends React.Component<
        * The next question that the user will go to after the `jumpQuestionData`
        * sequence is done.
        *
-       * If `questionId` is `undefined`, `nextQuestionsDataStack` will be popped
-       * and we will go to that question.
-       *
-       * If `questionId` is `null`, the ping will end.
+       * If `questionId` is `null`, `nextQuestionsDataStack` will be popped and
+       * we will go to that question. If `nextQuestionsDataStack` is empty, the
+       * ping has ended.
        */
       let nextQuestionData: CurrentQuestionData = {
         questionId: prevQuestion.next,
@@ -314,7 +314,8 @@ export default class SurveyScreen extends React.Component<
       };
 
       /**
-       * Does appropriate actions for a conditional question ID.
+       * Does appropriate actions when facing a conditional question ID.
+       * See inline comments for more explanations.
        */
       function considerConditionalQuestionId(
         conditionalQuestionId: QuestionId | null | undefined,
@@ -523,14 +524,24 @@ export default class SurveyScreen extends React.Component<
           break;
         }
         default: {
+          // For other question types, there isn't anything special we need to
+          // handle.
           break;
         }
       }
 
       if (jumpQuestionsDataStack.length === 0) {
+        // If there isn't any question that will cut in line, we can just
+        // proceed to `nextQuestionData` as normal.
+
         if (nextQuestionData.questionId === null) {
+          // If the current next is `null`, we want to pop from the stack if
+          // there is something left in the stack.
           if (prevNextQuestionsDataStack.length > 0) {
             nextQuestionData = prevNextQuestionsDataStack.pop()!;
+          } else {
+            // If there isn't anything left in stack, `questionId` will still
+            // be `null`, indicating that the ping has ended.
           }
         }
 
@@ -539,14 +550,20 @@ export default class SurveyScreen extends React.Component<
           nextQuestionsDataStack: prevNextQuestionsDataStack,
         };
       } else {
+        // If there are question(s) that will cut in line, we first push our
+        // current next to the stack (if the current next is not `null`).
         if (nextQuestionData.questionId !== null) {
           prevNextQuestionsDataStack.push(nextQuestionData as NextQuestionData);
         }
 
+        // Then we pop the `jumpQuestionsDataStack` to find what question we
+        // should immediately go.
         const immediateNext = jumpQuestionsDataStack.pop()!;
         return {
           currentQuestionData: immediateNext,
           nextQuestionsDataStack: [
+            // Then we add any additional `jumpQuestionsDataStack` on top of the
+            // existing stack.
             ...prevNextQuestionsDataStack,
             ...jumpQuestionsDataStack,
           ],
