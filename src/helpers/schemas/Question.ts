@@ -6,6 +6,7 @@ import {
   QuestionIdSchemaNullable,
   ChoicesListSchema,
 } from "./common";
+import { idRegexCheck, idRegexErrorMessage } from "./helper";
 
 export const QuestionTypeSchema = z.enum([
   "Slider",
@@ -149,8 +150,20 @@ export const YesNoQuestionSchema = BaseQuestionSchema.extend({
 export const MultipleTextQuestionSchema = BaseQuestionSchema.extend({
   // `id` will store the number of text fields answered.
   type: z.literal(QuestionTypeSchema.enum.MultipleText),
-  indexName: z.string().nonempty(),
-  variableName: z.string().nonempty(),
+  indexName: z
+    .string()
+    .nonempty()
+    .refine(idRegexCheck, {
+      // Because `indexName` might be used in Question ID.
+      message: idRegexErrorMessage("index name"),
+    }),
+  variableName: z
+    .string()
+    .nonempty()
+    .refine(idRegexCheck, {
+      // Because `variableName` might be used in Question ID.
+      message: idRegexErrorMessage("variable name"),
+    }),
   placeholder: z.string().optional(),
   choices: z.union([z.string(), ChoicesListSchema]).optional(),
   forceChoice: z.boolean().optional(),

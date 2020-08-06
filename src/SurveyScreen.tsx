@@ -743,12 +743,18 @@ export default class SurveyScreen extends React.Component<
             }}
           >
             <Text>
+              currentQuestionData:{" "}
               {JSON.stringify(this.state.currentQuestionData)}
-              {JSON.stringify(currentQuestion)}
             </Text>
-            <Text>Current answer: {JSON.stringify(answers)}</Text>
-            <Text>
-              Next stack: {JSON.stringify(this.state.nextQuestionsDataStack)}
+            <Text style={{ marginTop: 20 }}>
+              nextQuestionsDataStack:{" "}
+              {JSON.stringify(this.state.nextQuestionsDataStack)}
+            </Text>
+            <Text style={{ marginTop: 20 }}>
+              currentQuestion: {JSON.stringify(currentQuestion)}
+            </Text>
+            <Text style={{ marginTop: 20 }}>
+              Current answer: {JSON.stringify(answers)}
             </Text>
           </ScrollView>
         )}

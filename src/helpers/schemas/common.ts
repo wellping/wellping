@@ -24,8 +24,9 @@ export const StreamNameSchema = z
 export const QuestionIdSchema = z
   .string()
   .nonempty()
-  .refine(idRegexCheck, {
-    message: idRegexErrorMessage("Question ID"),
+  // We allow `[\]` because `withVariable` uses "[__something__]".
+  .refine((val) => /^[\w[\]]+$/.test(val), {
+    message: `Question ID can only include letters, numbers, "_", "[", and "]".`,
   });
 
 /**
