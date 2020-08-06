@@ -21,7 +21,7 @@ import {
   YesNoQuestion,
   ChoicesWithSingleAnswerQuestion,
   ChoicesWithMultipleAnswersQuestion,
-  Choice,
+  ChoicesList,
 } from "../../helpers/types";
 import ChoicesQuestionScreen from "../../questionScreens/ChoicesQuestionScreen";
 import { simplePipeInExtraMetaData, mockCurrentExtraData } from "../helper";
@@ -79,7 +79,7 @@ const basicTestForChoicesQuestionScreenAsync = async (
     | ChoicesWithSingleAnswerQuestion
     | ChoicesWithMultipleAnswersQuestion,
 ) => {
-  let choices: Choice[];
+  let choices: ChoicesList;
   if (question.type === QuestionType.YesNo) {
     choices = ["Yes", "No"];
   } else {
