@@ -68,6 +68,11 @@ test.each([true, false])("YesNo question with input %p", async (inputValue) => {
   }
 });
 
+const MOCK_EMOJI_CHOICES_KEY = "emojis";
+const MOCK_EMOJI_CHOICES_LIST = ["😀", "🤪", "🧐", "😎"] as [
+  string,
+  ...string[]
+];
 const basicTestForChoicesQuestionScreenAsync = async (
   question:
     | YesNoQuestion
@@ -78,7 +83,16 @@ const basicTestForChoicesQuestionScreenAsync = async (
   if (question.type === QuestionType.YesNo) {
     choices = ["Yes", "No"];
   } else {
-    choices = question.choices;
+    if (typeof question.choices === "string") {
+      if (question.choices === MOCK_EMOJI_CHOICES_KEY) {
+        choices = MOCK_EMOJI_CHOICES_LIST;
+      } else {
+        // TODO: CONSIDER THIS
+        choices = [];
+      }
+    } else {
+      choices = question.choices;
+    }
   }
 
   // To make sure we can deterministically confirm the randomness.
@@ -102,7 +116,13 @@ const basicTestForChoicesQuestionScreenAsync = async (
       setDataValidationFunction={mockSetDataValidationFunction}
     />,
   );
-  const { findAllByA11yLabel } = renderResults;
+  const { findAllByA11yLabel, getAllByA11yLabel } = renderResults;
+
+  // Wait for the selections to be loaded.
+  await waitFor(() => {
+    const newTextInput = getSelection(choices[0], getAllByA11yLabel);
+    return newTextInput;
+  });
 
   expect(mockPipeInExtraMetaData).toHaveBeenCalledTimes(choices.length); // For each choices
 
@@ -321,6 +341,8 @@ test.each(CHOICES_TEST_TABLE)(
     );
   },
 );
+
+// TODO: TEST CHOICES STRING
 
 test("wrong QuestionType", async () => {
   const question = {
