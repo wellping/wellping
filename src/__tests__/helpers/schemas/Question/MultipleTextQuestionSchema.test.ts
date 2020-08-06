@@ -63,7 +63,7 @@ describe("MultipleTextQuestionSchema", () => {
       }).toThrowErrorMatchingSnapshot();
     });
 
-    test("can be any string", () => {
+    test("should be question ID-compatible string", () => {
       expect(() => {
         MultipleTextQuestionSchema.parse({
           ...question,
@@ -83,14 +83,14 @@ describe("MultipleTextQuestionSchema", () => {
           ...question,
           indexName: "HELLO WORLD",
         });
-      }).not.toThrowError();
+      }).toThrowErrorMatchingSnapshot("space");
 
       expect(() => {
         MultipleTextQuestionSchema.parse({
           ...question,
           indexName: "__+O+__",
         });
-      }).not.toThrowError();
+      }).toThrowErrorMatchingSnapshot("special characters");
     });
   });
 
@@ -130,7 +130,7 @@ describe("MultipleTextQuestionSchema", () => {
       }).toThrowErrorMatchingSnapshot();
     });
 
-    test("can be any string", () => {
+    test("should be question ID-compatible string", () => {
       expect(() => {
         MultipleTextQuestionSchema.parse({
           ...question,
@@ -150,14 +150,14 @@ describe("MultipleTextQuestionSchema", () => {
           ...question,
           variableName: "HELLO WORLD",
         });
-      }).not.toThrowError();
+      }).toThrowErrorMatchingSnapshot("space");
 
       expect(() => {
         MultipleTextQuestionSchema.parse({
           ...question,
           variableName: "__+O+__",
         });
-      }).not.toThrowError();
+      }).toThrowErrorMatchingSnapshot("special characters");
     });
   });
 
@@ -202,28 +202,28 @@ describe("MultipleTextQuestionSchema", () => {
       expect(() => {
         MultipleTextQuestionSchema.parse({
           ...question,
-          variableName: "Enter a name...",
+          placeholder: "Enter a name...",
         });
       }).not.toThrowError();
 
       expect(() => {
         MultipleTextQuestionSchema.parse({
           ...question,
-          variableName: "Do something!",
+          placeholder: "Do something!",
         });
       }).not.toThrowError();
 
       expect(() => {
         MultipleTextQuestionSchema.parse({
           ...question,
-          variableName: "千里之行始于足下",
+          placeholder: "千里之行始于足下",
         });
       }).not.toThrowError();
 
       expect(() => {
         MultipleTextQuestionSchema.parse({
           ...question,
-          variableName: "???***!!!---",
+          placeholder: "???***!!!---",
         });
       }).not.toThrowError();
     });

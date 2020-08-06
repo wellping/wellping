@@ -68,7 +68,7 @@ exports[`MultipleTextQuestionSchema fallbackItemStartId can be question ID 1`] =
 "1 validation issue(s)
 
   Issue #0: custom_error at fallbackItemStartId
-  Question ID can only include letters, numbers, and \\"_\\".
+  Question ID can only include letters, numbers, \\"_\\", \\"[\\", and \\"]\\".
 "
 `;
 
@@ -112,11 +112,30 @@ exports[`MultipleTextQuestionSchema forceChoice should not be set if choices is 
 "
 `;
 
-exports[`MultipleTextQuestionSchema indexName should not be empty 1`] = `
+exports[`MultipleTextQuestionSchema indexName should be question ID-compatible string: space 1`] = `
 "1 validation issue(s)
+
+  Issue #0: custom_error at indexName
+  index name can only include letters, numbers, and \\"_\\".
+"
+`;
+
+exports[`MultipleTextQuestionSchema indexName should be question ID-compatible string: special characters 1`] = `
+"1 validation issue(s)
+
+  Issue #0: custom_error at indexName
+  index name can only include letters, numbers, and \\"_\\".
+"
+`;
+
+exports[`MultipleTextQuestionSchema indexName should not be empty 1`] = `
+"2 validation issue(s)
 
   Issue #0: too_small at indexName
   Should be at least 1 characters
+
+  Issue #1: custom_error at indexName
+  index name can only include letters, numbers, and \\"_\\".
 "
 `;
 
@@ -191,7 +210,7 @@ exports[`MultipleTextQuestionSchema maxMinus should be question ID 1`] = `
 "1 validation issue(s)
 
   Issue #0: custom_error at maxMinus
-  Question ID can only include letters, numbers, and \\"_\\".
+  Question ID can only include letters, numbers, \\"_\\", \\"[\\", and \\"]\\".
 "
 `;
 
@@ -215,7 +234,7 @@ exports[`MultipleTextQuestionSchema repeatedItemStartId should be question ID 1`
 "1 validation issue(s)
 
   Issue #0: custom_error at repeatedItemStartId
-  Question ID can only include letters, numbers, and \\"_\\".
+  Question ID can only include letters, numbers, \\"_\\", \\"[\\", and \\"]\\".
 "
 `;
 
@@ -235,11 +254,30 @@ exports[`MultipleTextQuestionSchema type 1`] = `
 "
 `;
 
-exports[`MultipleTextQuestionSchema variableName should not be empty 1`] = `
+exports[`MultipleTextQuestionSchema variableName should be question ID-compatible string: space 1`] = `
 "1 validation issue(s)
+
+  Issue #0: custom_error at variableName
+  variable name can only include letters, numbers, and \\"_\\".
+"
+`;
+
+exports[`MultipleTextQuestionSchema variableName should be question ID-compatible string: special characters 1`] = `
+"1 validation issue(s)
+
+  Issue #0: custom_error at variableName
+  variable name can only include letters, numbers, and \\"_\\".
+"
+`;
+
+exports[`MultipleTextQuestionSchema variableName should not be empty 1`] = `
+"2 validation issue(s)
 
   Issue #0: too_small at variableName
   Should be at least 1 characters
+
+  Issue #1: custom_error at variableName
+  variable name can only include letters, numbers, and \\"_\\".
 "
 `;
 

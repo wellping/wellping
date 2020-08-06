@@ -24,7 +24,7 @@ exports[`QuestionSchema id should not be empty 1`] = `
   Should be at least 1 characters
 
   Issue #1: custom_error at id
-  Question ID can only include letters, numbers, and \\"_\\".
+  Question ID can only include letters, numbers, \\"_\\", \\"[\\", and \\"]\\".
 "
 `;
 

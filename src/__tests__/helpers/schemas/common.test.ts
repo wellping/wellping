@@ -22,7 +22,7 @@ describe("QuestionIdSchema", () => {
     }).toThrowErrorMatchingSnapshot();
   });
 
-  test("doesn't allow special characters", () => {
+  test("doesn't allow special characters except _, [, and ]", () => {
     expect(() => {
       QuestionIdSchema.parse("HELLO WORLD");
     }).toThrowErrorMatchingSnapshot();

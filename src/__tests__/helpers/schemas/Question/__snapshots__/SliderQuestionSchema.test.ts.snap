@@ -31,7 +31,7 @@ exports[`SliderQuestionSchema defaultValueFromQuestionId is question ID: empty i
   Should be at least 1 characters
 
   Issue #1: custom_error at defaultValueFromQuestionId
-  Question ID can only include letters, numbers, and \\"_\\".
+  Question ID can only include letters, numbers, \\"_\\", \\"[\\", and \\"]\\".
 "
 `;
 
@@ -39,7 +39,7 @@ exports[`SliderQuestionSchema defaultValueFromQuestionId is question ID: invalid
 "1 validation issue(s)
 
   Issue #0: custom_error at defaultValueFromQuestionId
-  Question ID can only include letters, numbers, and \\"_\\".
+  Question ID can only include letters, numbers, \\"_\\", \\"[\\", and \\"]\\".
 "
 `;
 
