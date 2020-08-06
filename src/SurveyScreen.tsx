@@ -266,10 +266,13 @@ export default class SurveyScreen extends React.Component<
           questions[currentQuestionid].type ===
             QuestionType.BranchWithRelativeComparison)
       ) {
+        // Directly calculates and goes to next if it's a branching question as
+        // they are not actually a user question.
         this.onNextSelect();
       }
 
       if (currentQuestionid == null) {
+        // There is no more question to answer.
         addEndTimeToPingAsync(ping.id, new Date()).then((newPing) => {
           this.props.onFinish(newPing);
         });
