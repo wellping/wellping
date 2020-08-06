@@ -24,7 +24,7 @@ import {
   Choice,
 } from "../../helpers/types";
 import ChoicesQuestionScreen from "../../questionScreens/ChoicesQuestionScreen";
-import { simplePipeInExtraMetaData } from "../helper";
+import { simplePipeInExtraMetaData, mockCurrentExtraData } from "../helper";
 
 export const getSelectionA11YLabel = (option: string) => `select ${option}`;
 export const getSelection = (
@@ -87,8 +87,9 @@ const basicTestForChoicesQuestionScreenAsync = async (
       if (question.choices === MOCK_EMOJI_CHOICES_KEY) {
         choices = MOCK_EMOJI_CHOICES_LIST;
       } else {
-        // TODO: CONSIDER THIS
-        choices = [];
+        choices = [
+          `ERROR: reusable choices with key "${question.choices}" is not found.`,
+        ];
       }
     } else {
       choices = question.choices;
@@ -120,8 +121,7 @@ const basicTestForChoicesQuestionScreenAsync = async (
 
   // Wait for the selections to be loaded.
   await waitFor(() => {
-    const newTextInput = getSelection(choices[0], getAllByA11yLabel);
-    return newTextInput;
+    return getAllByA11yLabel(/^select /).length > 0;
   });
 
   expect(mockPipeInExtraMetaData).toHaveBeenCalledTimes(choices.length); // For each choices
@@ -137,7 +137,7 @@ const basicTestForChoicesQuestionScreenAsync = async (
   );
   if (question.type !== QuestionType.YesNo) {
     if (question.randomizeChoicesOrder) {
-      expect(displayedList).not.toStrictEqual(CHOICES);
+      expect(displayedList).not.toStrictEqual(choices);
       if (question.randomizeExceptForChoiceIds) {
         // Sort the `randomizeExceptForChoiceIds` by the order of `choices`.
         const sortedRandomizeExceptForChoiceIds = [];
@@ -160,7 +160,7 @@ const basicTestForChoicesQuestionScreenAsync = async (
         }
       }
     } else {
-      expect(displayedList).toStrictEqual(CHOICES);
+      expect(displayedList).toStrictEqual(choices);
     }
   }
 
@@ -342,7 +342,98 @@ test.each(CHOICES_TEST_TABLE)(
   },
 );
 
-// TODO: TEST CHOICES STRING
+const EMOJI_CHOICES_TEST_TABLE = [
+  [true, ["😎"]],
+  [true, ["😀", "🤪"]],
+  [
+    true,
+    ["🧐", "😀"], // The order should follow `choices`, not here.
+  ],
+  [true, ["😀", "🤪", "🧐"]],
+  [true, undefined],
+  [false, undefined],
+] as [boolean, string[] | undefined][];
+test.each(EMOJI_CHOICES_TEST_TABLE)(
+  "ChoicesWithSingleAnswer question (choices string) (randomize order %p except for %p)",
+  async (randomizeChoicesOrder, randomizeExceptForChoiceIds) => {
+    mockCurrentExtraData({
+      reusableChoices: {
+        [MOCK_EMOJI_CHOICES_KEY]: MOCK_EMOJI_CHOICES_LIST,
+      },
+    });
+
+    const question = {
+      id: "AnimalTest",
+      type: QuestionType.ChoicesWithSingleAnswer,
+      question: "What emoji are you?",
+      randomizeChoicesOrder,
+      randomizeExceptForChoiceIds,
+      choices: MOCK_EMOJI_CHOICES_KEY,
+      next: null,
+    } as ChoicesWithSingleAnswerQuestion;
+
+    await basicTestForChoicesQuestionScreenAsync(question);
+  },
+);
+
+test.each(EMOJI_CHOICES_TEST_TABLE)(
+  "ChoicesWithMultipleAnswers (choices string) (randomize order %p except for %p)",
+  async (randomizeChoicesOrder, randomizeExceptForChoiceIds) => {
+    mockCurrentExtraData({
+      reusableChoices: {
+        [MOCK_EMOJI_CHOICES_KEY]: MOCK_EMOJI_CHOICES_LIST,
+      },
+    });
+
+    const question = {
+      id: "AnimalTest",
+      type: QuestionType.ChoicesWithMultipleAnswers,
+      question: "What emojis do you love?",
+      randomizeChoicesOrder,
+      randomizeExceptForChoiceIds,
+      choices: MOCK_EMOJI_CHOICES_KEY,
+      next: null,
+    } as ChoicesWithMultipleAnswersQuestion;
+
+    await basicTestForChoicesQuestionScreenAsync(question);
+  },
+);
+
+test("ChoicesWithSingleAnswer (invalid choices string)", async () => {
+  mockCurrentExtraData({
+    reusableChoices: {
+      [MOCK_EMOJI_CHOICES_KEY]: MOCK_EMOJI_CHOICES_LIST,
+    },
+  });
+
+  const question = {
+    id: "AnimalTest",
+    type: QuestionType.ChoicesWithSingleAnswer,
+    question: "Which emojis do you love?",
+    choices: "non-existent",
+    next: null,
+  } as ChoicesWithSingleAnswerQuestion;
+
+  await basicTestForChoicesQuestionScreenAsync(question);
+});
+
+test("ChoicesWithMultipleAnswers (invalid choices string)", async () => {
+  mockCurrentExtraData({
+    reusableChoices: {
+      [MOCK_EMOJI_CHOICES_KEY]: MOCK_EMOJI_CHOICES_LIST,
+    },
+  });
+
+  const question = {
+    id: "AnimalTest",
+    type: QuestionType.ChoicesWithMultipleAnswers,
+    question: "What emojis do you love?",
+    choices: "non-existent",
+    next: null,
+  } as ChoicesWithMultipleAnswersQuestion;
+
+  await basicTestForChoicesQuestionScreenAsync(question);
+});
 
 test("wrong QuestionType", async () => {
   const question = {
