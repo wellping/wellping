@@ -186,6 +186,18 @@ describe("ChoicesQuestionSchema", () => {
       }).not.toThrowError();
     });
 
+    test(`will not be tested if choices is string`, () => {
+      expect(() => {
+        ChoicesQuestionSchema.parse({
+          ...question,
+          choices: "NAMES",
+          specialCasesStartId: {
+            一尊还酹江月: "dream",
+          },
+        });
+      }).not.toThrowError();
+    });
+
     test(`can include only choices keys`, () => {
       expect(() => {
         ChoicesQuestionSchema.parse({
@@ -356,6 +368,16 @@ describe("ChoicesQuestionSchema", () => {
         ChoicesQuestionSchema.parse({
           ...question,
           randomizeExceptForChoiceIds: [],
+        });
+      }).not.toThrowError();
+    });
+
+    test(`will not be tested if choices is string`, () => {
+      expect(() => {
+        ChoicesQuestionSchema.parse({
+          ...question,
+          choices: "NAMES",
+          randomizeExceptForChoiceIds: ["花间一壶酒", "独酌无相亲"],
         });
       }).not.toThrowError();
     });
