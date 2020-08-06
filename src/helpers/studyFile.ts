@@ -42,6 +42,11 @@ export async function studyFileExistsAsync() {
     return false;
   }
 
+  const extraData = await getCurrentExtraDataAsync();
+  if (extraData === null) {
+    return false;
+  }
+
   return true;
 }
 
