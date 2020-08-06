@@ -121,15 +121,7 @@
         "type": "MultipleText",
         "question": "How would you best describe your relationship to the people you had an interaction with?",
         "placeholder": "Select a category...",
-        "choices": [
-          "Friend",
-          "Co-worker",
-          "Parent",
-          "Sibling / other relative",
-          "Significant other",
-          "Stranger",
-          "Other"
-        ],
+        "choices": "RELATIONSHIPS",
         "forceChoice": true,
         "max": 3,
         "maxMinus": "SocInteraction_Names",
@@ -150,7 +142,16 @@
   },
   "extraData": {
     "reusableChoices": {
-      "NAMES": ["REDACTED:", "a list", "of names", "here"]
+      "NAMES": ["REDACTED:", "a list", "of names", "here"],
+      "RELATIONSHIPS": [
+        "Friend",
+        "Co-worker",
+        "Parent",
+        "Sibling / other relative",
+        "Significant other",
+        "Stranger",
+        "Other"
+      ]
     }
   }
 }
