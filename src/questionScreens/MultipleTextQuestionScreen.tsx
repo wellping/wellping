@@ -1,6 +1,6 @@
 import cloneDeep from "lodash/cloneDeep";
 import React from "react";
-import { View, TextInput, Alert } from "react-native";
+import { View, Text, TextInput, Alert } from "react-native";
 
 import { MultipleTextAnswerEntity } from "../entities/AnswerEntity";
 import {
@@ -39,6 +39,17 @@ const MultipleTextQuestionScreen: React.ElementType<MultipleTextQuestionScreenPr
         numberOfTextFields -= length;
       }
     }
+  }
+
+  if (numberOfTextFields === 0) {
+    return (
+      <View style={{ marginTop: 30 }}>
+        <Text style={{ textAlign: "center" }}>
+          (No text field available. Please contact the research staff if you
+          believe this is an error.)
+        </Text>
+      </View>
+    );
   }
 
   const initTextValues = Array(numberOfTextFields).fill("");
