@@ -302,6 +302,7 @@ export default class LoginScreen extends React.Component<
           autoCompleteType="off"
           placeholder="Paste your login code here..."
           multiline
+          textAlignVertical="top" // https://reactnative.dev/docs/textinput#multiline
           editable={!this.state.disableLoginButton}
           style={{
             padding: 8,
