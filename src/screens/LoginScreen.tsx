@@ -369,6 +369,7 @@ export default class LoginScreen extends React.Component<
             style={{
               textAlign: "center",
               marginTop: 50,
+              marginBottom: 30,
               color: "lightgray",
             }}
           >
