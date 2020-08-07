@@ -16,7 +16,6 @@ import {
   AnswersList,
   QuestionScreenProps,
   AnswerData,
-  ChoicesWithSingleAnswerAnswerData,
 } from "./helpers/answerTypes";
 import { uploadDataAsync } from "./helpers/apiManager";
 import {
