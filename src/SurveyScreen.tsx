@@ -471,7 +471,7 @@ export default class SurveyScreen extends React.Component<
             | ChoicesWithMultipleAnswersAnswerEntity;
           const specialCasesStartId = cQ.specialCasesStartId;
           if (specialCasesStartId) {
-            let specialNextQuestionId: QuestionId | null = null;
+            let specialNextQuestionId: QuestionId | null | undefined;
             if (
               specialCasesStartId._pna !== undefined &&
               (cA.nextWithoutOption || cA.preferNotToAnswer)
@@ -512,9 +512,7 @@ export default class SurveyScreen extends React.Component<
               }
             }
 
-            if (specialNextQuestionId !== undefined) {
-              considerConditionalQuestionId(specialNextQuestionId);
-            }
+            considerConditionalQuestionId(specialNextQuestionId);
           }
           break;
         }
