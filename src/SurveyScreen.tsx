@@ -470,22 +470,28 @@ export default class SurveyScreen extends React.Component<
           const cA = prevAnswer as
             | ChoicesWithSingleAnswerAnswerEntity
             | ChoicesWithMultipleAnswersAnswerEntity;
-          if (cQ.specialCasesStartId) {
-            let fallbackNext: QuestionId | null = null;
+          const specialCasesStartId = cQ.specialCasesStartId;
+          if (specialCasesStartId) {
+            let specialNextQuestionId: QuestionId | null = null;
             if (
-              // TODO: ALLOW THE VALUE TO BE NULL (ONLY CHECK FOR !== undefined)
-              cQ.specialCasesStartId._pna &&
+              specialCasesStartId._pna !== undefined &&
               (cA.nextWithoutOption || cA.preferNotToAnswer)
             ) {
-              fallbackNext = cQ.specialCasesStartId["_pna"];
+              specialNextQuestionId = specialCasesStartId._pna;
             } else {
+              // `specialCasesStartIdExceptPNA` is created to avoid being
+              // complained by TypeScript.
+              const specialCasesStartIdExceptPNA = specialCasesStartId as Record<
+                string,
+                string | null
+              >;
+
               if (cQ.type === QuestionType.ChoicesWithSingleAnswer) {
                 const csaAnswer = cA as ChoicesWithSingleAnswerAnswerEntity;
-                if (
-                  csaAnswer.data &&
-                  cQ.specialCasesStartId[csaAnswer.data.value]
-                ) {
-                  fallbackNext = cQ.specialCasesStartId[csaAnswer.data.value]!;
+                if (csaAnswer.data) {
+                  const dataValue =
+                    specialCasesStartIdExceptPNA[csaAnswer.data.value];
+                  specialNextQuestionId = dataValue;
                 }
               } else {
                 if (cQ.type === QuestionType.ChoicesWithMultipleAnswers) {
@@ -493,12 +499,9 @@ export default class SurveyScreen extends React.Component<
                   Object.entries(cmaAnswer.data?.value || {}).some(
                     ([eachAnswer, selected]) => {
                       if (selected) {
-                        if (
-                          selected &&
-                          cQ.specialCasesStartId &&
-                          cQ.specialCasesStartId[eachAnswer]
-                        ) {
-                          fallbackNext = cQ.specialCasesStartId[eachAnswer]!;
+                        if (selected && specialCasesStartIdExceptPNA) {
+                          specialNextQuestionId =
+                            specialCasesStartIdExceptPNA[eachAnswer];
                         }
                         // we return `true` here instead of inside so that it will also stop when any other choices are selected.
                         return true;
@@ -510,9 +513,8 @@ export default class SurveyScreen extends React.Component<
               }
             }
 
-            if (fallbackNext) {
-              considerConditionalQuestionId(fallbackNext);
-              break;
+            if (specialNextQuestionId !== undefined) {
+              considerConditionalQuestionId(specialNextQuestionId);
             }
           }
           break;
