@@ -10,6 +10,7 @@ import {
   MultipleTextAnswerEntity,
   SliderAnswerEntity,
   ChoicesWithMultipleAnswersAnswerEntity,
+  AnswerEntity,
 } from "./entities/AnswerEntity";
 import { PingEntity } from "./entities/PingEntity";
 import {
@@ -233,6 +234,271 @@ export default class SurveyScreen extends React.Component<
   }
 
   /**
+   * Returns a new stack of questions based on the previous question, its answer,
+   * its extra data, and all current answers.
+   *
+   * The last element (i.e. `pop()`) of the returned array is the immediate next
+   * question, while the rest should be added to the `nextQuestionsDataStack`.
+   *
+   * If the returned array is empty, it means that no question directly follows
+   * this question, and we should pop a question from `nextQuestionsDataStack`.
+   */
+  getNewNextQuestionsDataStack({
+    prevQuestion,
+    prevAnswer,
+    prevExtraData,
+    answers,
+  }: {
+    prevQuestion: Question;
+    prevAnswer: AnswerEntity;
+    prevExtraData: ExtraData;
+    answers: AnswersList;
+  }): NextQuestionData[] {
+    /**
+     * The question(s) that cuts in line and shows before the actual `next`.
+     * The user will "jump" to (and follow through until a question's `next`
+     * is null) before going to `nextQuestionData`.
+     *
+     * If it is non-empty, the user will go to the first element. The rest of
+     * the elements as well as `nextQuestionData` will be pushed to the
+     * original `nextQuestionsDataStack`.
+     */
+    const jumpQuestionsDataStack: NextQuestionData[] = [];
+
+    /**
+     * The next question that the user will go to after the `jumpQuestionData`
+     * sequence is done.
+     *
+     * If `questionId` is `null`, `nextQuestionsDataStack` will be popped and
+     * we will go to that question. If `nextQuestionsDataStack` is empty, the
+     * ping has ended.
+     */
+    const nextQuestionData: CurrentQuestionData = {
+      questionId: prevQuestion.next,
+      extraData: prevExtraData,
+    };
+
+    /**
+     * Does appropriate actions when facing a conditional question ID.
+     * See inline comments for more explanations.
+     */
+    function considerConditionalQuestionId(
+      conditionalQuestionId: QuestionId | null | undefined,
+    ) {
+      if (conditionalQuestionId === undefined) {
+        // Do nothing, because we will continue to this question's `next`
+        // as before.
+      } else if (conditionalQuestionId === null) {
+        // If a question ID in any fields besides the `next` field is
+        // intentionally set to (and is allowed to set to) `null`, it means
+        // that we should treat it as if `next` is set to `null` when that
+        // field is used. In other words, the original `next` is ignored.
+        nextQuestionData.questionId = null;
+      } else {
+        jumpQuestionsDataStack.push({
+          questionId: conditionalQuestionId,
+          extraData: prevExtraData,
+        });
+      }
+    }
+
+    switch (prevQuestion.type) {
+      case QuestionType.YesNo: {
+        const ynQ = prevQuestion as YesNoQuestion;
+        const ynA = prevAnswer as YesNoAnswerEntity;
+
+        if (ynA.data) {
+          if (ynQ.branchStartId) {
+            const jumpQuestionId = ynA.data.value
+              ? ynQ.branchStartId.yes
+              : ynQ.branchStartId.no;
+            considerConditionalQuestionId(jumpQuestionId);
+          }
+
+          // Set up follow-up streams.
+          if (ynQ.addFollowupStream && ynQ.addFollowupStream.yes) {
+            const futureStreamName: StreamName = ynQ.addFollowupStream.yes;
+
+            // TODO: ADD SUPPORT TO CUSTOMIZE DATE AFTER
+            getFuturePingsQueue().then((futurePings) => {
+              if (futurePings.length === 0) {
+                enqueueToFuturePingQueue({
+                  afterDate: addDays(new Date(), 3),
+                  streamName: futureStreamName,
+                }).then(() => {
+                  enqueueToFuturePingQueue({
+                    afterDate: addDays(new Date(), 7),
+                    streamName: futureStreamName,
+                  });
+                });
+              }
+            });
+          }
+        }
+        break;
+      }
+
+      case QuestionType.MultipleText: {
+        const mtQ = prevQuestion as MultipleTextQuestion;
+        const mtA = prevAnswer as MultipleTextAnswerEntity;
+
+        const valuesLength = (mtA.data ? mtA.data.value : []).length;
+
+        if (
+          !mtA.data ||
+          valuesLength === 0 ||
+          mtQ.repeatedItemStartId === undefined
+        ) {
+          considerConditionalQuestionId(mtQ.fallbackItemStartId);
+          break;
+        }
+
+        // Reversed for because we want to go to the `0`th first, then `1`st,
+        // etc.
+        for (let i = valuesLength - 1; i >= 0; i--) {
+          jumpQuestionsDataStack.push({
+            questionId: mtQ.repeatedItemStartId,
+            extraData: {
+              [mtQ.variableName]: mtA.data.value[i],
+              [mtQ.indexName]: i + 1,
+            },
+          });
+        }
+        break;
+      }
+
+      case QuestionType.Branch: {
+        const bQ = prevQuestion as BranchQuestion;
+
+        let selectedBranchId = bQ.branchStartId.false;
+
+        switch (bQ.condition.questionType) {
+          case QuestionType.MultipleText: {
+            const targetQuestionAnswer = answers[
+              this.replacePlaceholders(bQ.condition.questionId)
+            ] as MultipleTextAnswerEntity;
+            if (targetQuestionAnswer && targetQuestionAnswer.data) {
+              if (
+                targetQuestionAnswer.data.value.length === bQ.condition.target
+              ) {
+                selectedBranchId = bQ.branchStartId.true;
+              }
+            }
+            break;
+          }
+
+          case QuestionType.ChoicesWithSingleAnswer: {
+            const csaQuestionAnswer = answers[
+              this.replacePlaceholders(bQ.condition.questionId)
+            ] as ChoicesWithSingleAnswerAnswerEntity;
+            if (csaQuestionAnswer && csaQuestionAnswer.data) {
+              if (csaQuestionAnswer.data?.value === bQ.condition.target) {
+                selectedBranchId = bQ.branchStartId.true;
+              }
+            }
+            break;
+          }
+        }
+
+        considerConditionalQuestionId(selectedBranchId);
+        break;
+      }
+
+      case QuestionType.BranchWithRelativeComparison: {
+        const bwrcQuestion = prevQuestion as BranchWithRelativeComparisonQuestion;
+
+        let nextQuestionId = null;
+        let curMaxValue = -999;
+        for (const comparingQuestionId of Object.keys(
+          bwrcQuestion.branchStartId,
+        )) {
+          // TODO: SUPPORT OTHER QUSTION TYPES.
+          const comparingQuestionAnswer =
+            (answers[comparingQuestionId] as SliderAnswerEntity).data?.value ||
+            -1;
+          if (comparingQuestionAnswer > curMaxValue) {
+            nextQuestionId = bwrcQuestion.branchStartId[comparingQuestionId];
+            curMaxValue = comparingQuestionAnswer;
+          }
+        }
+
+        considerConditionalQuestionId(nextQuestionId);
+        break;
+      }
+
+      case QuestionType.ChoicesWithMultipleAnswers:
+      case QuestionType.ChoicesWithSingleAnswer: {
+        const cQ = prevQuestion as ChoicesQuestion;
+        const cA = prevAnswer as
+          | ChoicesWithSingleAnswerAnswerEntity
+          | ChoicesWithMultipleAnswersAnswerEntity;
+        const specialCasesStartId = cQ.specialCasesStartId;
+        if (specialCasesStartId) {
+          let specialNextQuestionId: QuestionId | null | undefined;
+          if (
+            specialCasesStartId._pna !== undefined &&
+            (cA.nextWithoutOption || cA.preferNotToAnswer)
+          ) {
+            specialNextQuestionId = specialCasesStartId._pna;
+          } else {
+            // `specialCasesStartIdExceptPNA` is created to avoid being
+            // complained by TypeScript.
+            const specialCasesStartIdExceptPNA = specialCasesStartId as Record<
+              string,
+              string | null
+            >;
+
+            if (cQ.type === QuestionType.ChoicesWithSingleAnswer) {
+              const csaAnswer = cA as ChoicesWithSingleAnswerAnswerEntity;
+              if (csaAnswer.data) {
+                const dataValue =
+                  specialCasesStartIdExceptPNA[csaAnswer.data.value];
+                specialNextQuestionId = dataValue;
+              }
+            } else {
+              if (cQ.type === QuestionType.ChoicesWithMultipleAnswers) {
+                const cmaAnswer = cA as ChoicesWithMultipleAnswersAnswerEntity;
+                Object.entries(cmaAnswer.data?.value || {}).some(
+                  ([eachAnswer, selected]) => {
+                    if (selected) {
+                      if (selected && specialCasesStartIdExceptPNA) {
+                        specialNextQuestionId =
+                          specialCasesStartIdExceptPNA[eachAnswer];
+                      }
+                      // we return `true` here instead of inside so that it will also stop when any other choices are selected.
+                      return true;
+                    }
+                    return false;
+                  },
+                );
+              }
+            }
+          }
+
+          considerConditionalQuestionId(specialNextQuestionId);
+        }
+        break;
+      }
+      default: {
+        // For other question types, there isn't anything special we need to
+        // handle.
+        break;
+      }
+    }
+
+    const newNextQuestionsStack: NextQuestionData[] = jumpQuestionsDataStack;
+    if (nextQuestionData.questionId !== null) {
+      // We insert `nextQuestionData` at the start of the array because it
+      // should be the last thing that gets popped from this stack.
+      newNextQuestionsStack.unshift(nextQuestionData as NextQuestionData);
+    } else {
+      // If nextQuestionData.questionId is `null`, it doesn't need to be in this
+      // stack.
+    }
+    return newNextQuestionsStack;
+  }
+
+  /**
    * Goes to the next question.
    */
   onNextSelect() {
@@ -291,274 +557,42 @@ export default class SurveyScreen extends React.Component<
       const prevQuestion = questions[prevQuestionId!];
       const prevAnswer = answers[prevQuestionId!];
 
-      /**
-       * The question(s) that cuts in line and shows before the actual `next`.
-       * The user will "jump" to (and follow through until a question's `next`
-       * is null) before going to `nextQuestionData`.
-       *
-       * If it is non-empty, the user will go to the first element. The rest of
-       * the elements as well as `nextQuestionData` will be pushed to the
-       * original `nextQuestionsDataStack`.
-       */
-      const jumpQuestionsDataStack: NextQuestionData[] = [];
+      const newNextQuestionsStack = this.getNewNextQuestionsDataStack({
+        prevQuestion,
+        prevAnswer,
+        prevExtraData,
+        answers,
+      });
 
-      /**
-       * The next question that the user will go to after the `jumpQuestionData`
-       * sequence is done.
-       *
-       * If `questionId` is `null`, `nextQuestionsDataStack` will be popped and
-       * we will go to that question. If `nextQuestionsDataStack` is empty, the
-       * ping has ended.
-       */
-      let nextQuestionData: CurrentQuestionData = {
-        questionId: prevQuestion.next,
-        extraData: prevExtraData,
-      };
-
-      /**
-       * Does appropriate actions when facing a conditional question ID.
-       * See inline comments for more explanations.
-       */
-      function considerConditionalQuestionId(
-        conditionalQuestionId: QuestionId | null | undefined,
-      ) {
-        if (conditionalQuestionId === undefined) {
-          // Do nothing, because we will continue to this question's `next`
-          // as before.
-        } else if (conditionalQuestionId === null) {
-          // If a question ID in any fields besides the `next` field is
-          // intentionally set to (and is allowed to set to) `null`, it means
-          // that we should treat it as if `next` is set to `null` when that
-          // field is used. In other words, the original `next` is ignored.
-          nextQuestionData.questionId = null;
+      if (newNextQuestionsStack.length === 0) {
+        // There isn't any question following the previous question, so we want
+        // to pop from the stack if there is something left in the stack.
+        let nextQuestionData!: CurrentQuestionData;
+        if (prevNextQuestionsDataStack.length > 0) {
+          nextQuestionData = prevNextQuestionsDataStack.pop()!;
         } else {
-          jumpQuestionsDataStack.push({
-            questionId: conditionalQuestionId,
-            extraData: prevExtraData,
-          });
+          // If there isn't anything left in stack, `questionId` will be `null`,
+          // indicating that the ping has ended.
+          nextQuestionData = {
+            questionId: null,
+            extraData: {},
+          };
         }
-      }
-
-      switch (prevQuestion.type) {
-        case QuestionType.YesNo: {
-          const ynQ = prevQuestion as YesNoQuestion;
-          const ynA = prevAnswer as YesNoAnswerEntity;
-
-          if (ynA.data) {
-            if (ynQ.branchStartId) {
-              const jumpQuestionId = ynA.data.value
-                ? ynQ.branchStartId.yes
-                : ynQ.branchStartId.no;
-              considerConditionalQuestionId(jumpQuestionId);
-            }
-
-            // Set up follow-up streams.
-            if (ynQ.addFollowupStream && ynQ.addFollowupStream.yes) {
-              const futureStreamName: StreamName = ynQ.addFollowupStream.yes;
-
-              // TODO: ADD SUPPORT TO CUSTOMIZE DATE AFTER
-              getFuturePingsQueue().then((futurePings) => {
-                if (futurePings.length === 0) {
-                  enqueueToFuturePingQueue({
-                    afterDate: addDays(new Date(), 3),
-                    streamName: futureStreamName,
-                  }).then(() => {
-                    enqueueToFuturePingQueue({
-                      afterDate: addDays(new Date(), 7),
-                      streamName: futureStreamName,
-                    });
-                  });
-                }
-              });
-            }
-          }
-          break;
-        }
-
-        case QuestionType.MultipleText: {
-          const mtQ = prevQuestion as MultipleTextQuestion;
-          const mtA = prevAnswer as MultipleTextAnswerEntity;
-
-          const valuesLength = (mtA.data ? mtA.data.value : []).length;
-
-          if (
-            !mtA.data ||
-            valuesLength === 0 ||
-            mtQ.repeatedItemStartId === undefined
-          ) {
-            considerConditionalQuestionId(mtQ.fallbackItemStartId);
-            break;
-          }
-
-          // Reversed for because we want to go to the `0`th first, then `1`st,
-          // etc.
-          for (let i = valuesLength - 1; i >= 0; i--) {
-            jumpQuestionsDataStack.push({
-              questionId: mtQ.repeatedItemStartId,
-              extraData: {
-                [mtQ.variableName]: mtA.data.value[i],
-                [mtQ.indexName]: i + 1,
-              },
-            });
-          }
-          break;
-        }
-
-        case QuestionType.Branch: {
-          const bQ = prevQuestion as BranchQuestion;
-
-          let selectedBranchId = bQ.branchStartId.false;
-
-          switch (bQ.condition.questionType) {
-            case QuestionType.MultipleText: {
-              const targetQuestionAnswer = answers[
-                this.replacePlaceholders(bQ.condition.questionId)
-              ] as MultipleTextAnswerEntity;
-              if (targetQuestionAnswer && targetQuestionAnswer.data) {
-                if (
-                  targetQuestionAnswer.data.value.length === bQ.condition.target
-                ) {
-                  selectedBranchId = bQ.branchStartId.true;
-                }
-              }
-              break;
-            }
-
-            case QuestionType.ChoicesWithSingleAnswer: {
-              const csaQuestionAnswer = answers[
-                this.replacePlaceholders(bQ.condition.questionId)
-              ] as ChoicesWithSingleAnswerAnswerEntity;
-              if (csaQuestionAnswer && csaQuestionAnswer.data) {
-                if (csaQuestionAnswer.data?.value === bQ.condition.target) {
-                  selectedBranchId = bQ.branchStartId.true;
-                }
-              }
-              break;
-            }
-          }
-
-          considerConditionalQuestionId(selectedBranchId);
-          break;
-        }
-
-        case QuestionType.BranchWithRelativeComparison: {
-          const bwrcQuestion = prevQuestion as BranchWithRelativeComparisonQuestion;
-
-          let nextQuestionId = null;
-          let curMaxValue = -999;
-          for (const comparingQuestionId of Object.keys(
-            bwrcQuestion.branchStartId,
-          )) {
-            // TODO: SUPPORT OTHER QUSTION TYPES.
-            const comparingQuestionAnswer =
-              (answers[comparingQuestionId] as SliderAnswerEntity).data
-                ?.value || -1;
-            if (comparingQuestionAnswer > curMaxValue) {
-              nextQuestionId = bwrcQuestion.branchStartId[comparingQuestionId];
-              curMaxValue = comparingQuestionAnswer;
-            }
-          }
-
-          considerConditionalQuestionId(nextQuestionId);
-          break;
-        }
-
-        case QuestionType.ChoicesWithMultipleAnswers:
-        case QuestionType.ChoicesWithSingleAnswer: {
-          const cQ = prevQuestion as ChoicesQuestion;
-          const cA = prevAnswer as
-            | ChoicesWithSingleAnswerAnswerEntity
-            | ChoicesWithMultipleAnswersAnswerEntity;
-          const specialCasesStartId = cQ.specialCasesStartId;
-          if (specialCasesStartId) {
-            let specialNextQuestionId: QuestionId | null | undefined;
-            if (
-              specialCasesStartId._pna !== undefined &&
-              (cA.nextWithoutOption || cA.preferNotToAnswer)
-            ) {
-              specialNextQuestionId = specialCasesStartId._pna;
-            } else {
-              // `specialCasesStartIdExceptPNA` is created to avoid being
-              // complained by TypeScript.
-              const specialCasesStartIdExceptPNA = specialCasesStartId as Record<
-                string,
-                string | null
-              >;
-
-              if (cQ.type === QuestionType.ChoicesWithSingleAnswer) {
-                const csaAnswer = cA as ChoicesWithSingleAnswerAnswerEntity;
-                if (csaAnswer.data) {
-                  const dataValue =
-                    specialCasesStartIdExceptPNA[csaAnswer.data.value];
-                  specialNextQuestionId = dataValue;
-                }
-              } else {
-                if (cQ.type === QuestionType.ChoicesWithMultipleAnswers) {
-                  const cmaAnswer = cA as ChoicesWithMultipleAnswersAnswerEntity;
-                  Object.entries(cmaAnswer.data?.value || {}).some(
-                    ([eachAnswer, selected]) => {
-                      if (selected) {
-                        if (selected && specialCasesStartIdExceptPNA) {
-                          specialNextQuestionId =
-                            specialCasesStartIdExceptPNA[eachAnswer];
-                        }
-                        // we return `true` here instead of inside so that it will also stop when any other choices are selected.
-                        return true;
-                      }
-                      return false;
-                    },
-                  );
-                }
-              }
-            }
-
-            considerConditionalQuestionId(specialNextQuestionId);
-          }
-          break;
-        }
-        default: {
-          // For other question types, there isn't anything special we need to
-          // handle.
-          break;
-        }
-      }
-
-      if (jumpQuestionsDataStack.length === 0) {
-        // If there isn't any question that will cut in line, we can just
-        // proceed to `nextQuestionData` as normal.
-
-        if (nextQuestionData.questionId === null) {
-          // If the current next is `null`, we want to pop from the stack if
-          // there is something left in the stack.
-          if (prevNextQuestionsDataStack.length > 0) {
-            nextQuestionData = prevNextQuestionsDataStack.pop()!;
-          } else {
-            // If there isn't anything left in stack, `questionId` will still
-            // be `null`, indicating that the ping has ended.
-          }
-        }
-
         return {
           currentQuestionData: nextQuestionData,
           nextQuestionsDataStack: prevNextQuestionsDataStack,
         };
       } else {
-        // If there are question(s) that will cut in line, we first push our
-        // current next to the stack (if the current next is not `null`).
-        if (nextQuestionData.questionId !== null) {
-          prevNextQuestionsDataStack.push(nextQuestionData as NextQuestionData);
-        }
-
-        // Then we pop the `jumpQuestionsDataStack` to find what question we
-        // should immediately go.
-        const immediateNext = jumpQuestionsDataStack.pop()!;
+        // We pop the `jumpQuestionsDataStack` to find what question we should
+        // immediately go.
+        const immediateNext = newNextQuestionsStack.pop()!;
         return {
           currentQuestionData: immediateNext,
           nextQuestionsDataStack: [
-            // Then we add any additional `jumpQuestionsDataStack` on top of the
+            // We add any additional `jumpQuestionsDataStack` on top of the
             // existing stack.
             ...prevNextQuestionsDataStack,
-            ...jumpQuestionsDataStack,
+            ...newNextQuestionsStack,
           ],
         };
       }
