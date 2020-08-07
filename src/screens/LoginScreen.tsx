@@ -302,6 +302,9 @@ export default class LoginScreen extends React.Component<
           autoCompleteType="off"
           placeholder="Paste your login code here..."
           multiline
+          textAlignVertical="top" // https://reactnative.dev/docs/textinput#multiline
+          blurOnSubmit // https://stackoverflow.com/a/38988668/2603230
+          onSubmitEditing={this.loginAsync}
           editable={!this.state.disableLoginButton}
           style={{
             padding: 8,
@@ -368,6 +371,7 @@ export default class LoginScreen extends React.Component<
             style={{
               textAlign: "center",
               marginTop: 50,
+              marginBottom: 30,
               color: "lightgray",
             }}
           >

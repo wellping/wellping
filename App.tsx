@@ -1,5 +1,6 @@
+import { StatusBar } from "expo-status-bar";
 import React from "react";
-import { SafeAreaView, Platform, StatusBar } from "react-native";
+import { SafeAreaView, Platform } from "react-native";
 
 import RootScreen from "./src/RootScreen";
 
@@ -9,8 +10,9 @@ import RootScreen from "./src/RootScreen";
 export default function App() {
   return (
     <SafeAreaView style={{ paddingTop: Platform.OS === "android" ? 25 : 0 }}>
-      <StatusBar barStyle="dark-content" />
       <RootScreen />
+      {/* eslint-disable-next-line react/style-prop-object */}
+      <StatusBar style="auto" />
     </SafeAreaView>
   );
 }
