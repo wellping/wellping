@@ -445,27 +445,18 @@ export default class SurveyScreen extends React.Component<
         case QuestionType.BranchWithRelativeComparison: {
           const bwrcQuestion = prevQuestion as BranchWithRelativeComparisonQuestion;
 
-          const values: {
-            nextQuestionId: QuestionId | null;
-            value: number;
-          }[] = [];
-          for (const prevQuestionId of Object.keys(
+          let nextQuestionId = null;
+          let curMaxValue = -999;
+          for (const comparingQuestionId of Object.keys(
             bwrcQuestion.branchStartId,
           )) {
-            values.push({
-              nextQuestionId: bwrcQuestion.branchStartId[prevQuestionId],
-              value:
-                (answers[prevQuestionId] as SliderAnswerEntity).data?.value ||
-                -1,
-            });
-          }
-
-          let nextQuestionId = values[0].nextQuestionId;
-          let curMaxValue = -1;
-          for (const value of values) {
-            if (value.value && value.value > curMaxValue) {
-              nextQuestionId = value.nextQuestionId;
-              curMaxValue = value.value;
+            // TODO: SUPPORT OTHER QUSTION TYPES.
+            const comparingQuestionAnswer =
+              (answers[comparingQuestionId] as SliderAnswerEntity).data
+                ?.value || -1;
+            if (comparingQuestionAnswer > curMaxValue) {
+              nextQuestionId = bwrcQuestion.branchStartId[comparingQuestionId];
+              curMaxValue = comparingQuestionAnswer;
             }
           }
 
