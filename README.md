@@ -1,3 +1,7 @@
+<p align="center">
+  <img width="200" height="200" src="./assets/icon-android-foreground.png">
+</p>
+
 # Well Ping
 ![CI](https://github.com/StanfordSocialNeuroscienceLab/WellPing/workflows/CI/badge.svg) [![runs with expo](https://img.shields.io/badge/Runs%20with%20Expo-000.svg?style=flat-square&logo=EXPO&labelColor=f3f3f3&logoColor=000)](https://expo.io/)
 

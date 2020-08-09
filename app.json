@@ -2,7 +2,7 @@
   "expo": {
     "name": "Well Ping",
     "slug": "wellping",
-    "privacy": "unlisted",
+    "privacy": "public",
     "platforms": [
       "ios",
       "android"
@@ -27,12 +27,17 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "edu.stanford.ssnl.wellping",
-      "buildNumber": "11",
+      "buildNumber": "12",
       "associatedDomains": ["applinks:stanfordsocialneurosciencelab.github.io"]
     },
     "android": {
       "package": "edu.stanford.ssnl.wellping",
-      "versionCode": 11,
+      "versionCode": 12,
+      "icon": "./assets/icon.png",
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/icon-android-foreground.png",
+        "backgroundColor": "#FFFFFF"
+      },
       "permissions": [],
       "intentFilters": [
         {
