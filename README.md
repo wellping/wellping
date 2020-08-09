@@ -1,3 +1,6 @@
+<img src="./assets/icon.png"
+     style="display: block; float: none; margin-left: auto; margin-right: auto; width: 40%; border-radius: 22.37%;">
+
 # Well Ping
 ![CI](https://github.com/StanfordSocialNeuroscienceLab/WellPing/workflows/CI/badge.svg) [![runs with expo](https://img.shields.io/badge/Runs%20with%20Expo-000.svg?style=flat-square&logo=EXPO&labelColor=f3f3f3&logoColor=000)](https://expo.io/)
 
