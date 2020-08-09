@@ -29,7 +29,7 @@ const LoadingScreen: React.FunctionComponent = () => {
         }}
       />
       <Text style={{ textAlign: "center", marginTop: 50, color: "lightgray" }}>
-        v.{JS_VERSION_NUMBER}
+        {JS_VERSION_NUMBER}
       </Text>
     </View>
   );
