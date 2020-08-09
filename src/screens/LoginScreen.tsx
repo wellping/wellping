@@ -375,7 +375,7 @@ export default class LoginScreen extends React.Component<
               color: "lightgray",
             }}
           >
-            v.{JS_VERSION_NUMBER}
+            {JS_VERSION_NUMBER}
           </Text>
         </TouchableWithoutFeedback>
       </ScrollView>
