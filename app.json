@@ -2,7 +2,7 @@
   "expo": {
     "name": "Well Ping",
     "slug": "wellping",
-    "privacy": "unlisted",
+    "privacy": "public",
     "platforms": [
       "ios",
       "android"
