@@ -47,19 +47,6 @@ const BaseQuestionSchema = z.object({
       preferNotToAnswer: QuestionIdSchema.nullable().optional(),
 
       /**
-       * If not `undefined`, this will replace `next` when the answer to the
-       * question is empty. Note that this only applies to certain question
-       * types, namely `ChoicesWithSingleAnswer`, `ChoicesWithMultipleAnswers`,
-       * `YesNo`, `HowLongAgo`, and `MultipleText`, as it is impossible for
-       * `Slider`, `Branch` and `BranchWithRelativeComparison` to be empty.
-       *
-       * If both `emptyAnswer` and `nextWithoutAnswering` are not `undefined`,
-       * and the user presses the "Next" button directly, `emptyAnswer` takes
-       * precedent.
-       */
-      emptyAnswer: QuestionIdSchema.nullable().optional(),
-
-      /**
        * If not `undefined`, this will replace `next` when the user presses the
        * "Next" button without interacting with the question UI (the slider,
        * the selection buttons, etc.).
