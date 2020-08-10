@@ -135,6 +135,39 @@ async function testCurrentQuestionAsync({
   }
 }
 
+async function testQuestionsSequenceAsync({
+  renderResults,
+  onFinishFn,
+  sequence,
+}: {
+  renderResults: RenderAPI;
+  onFinishFn: jest.Mock;
+  sequence: {
+    expectCurrentQuestionAsync: (
+      getCurrentQuestionTitle: () => string,
+    ) => Promise<void>;
+    nextButton?: "next" | "pna";
+  }[];
+}) {
+  for (let i = 0; i < sequence.length - 1; i++) {
+    const currentQuestion = sequence[i];
+    await testCurrentQuestionAsync({
+      renderResults,
+      expectCurrentQuestionAsync: currentQuestion.expectCurrentQuestionAsync,
+      nextButton: currentQuestion.nextButton,
+    });
+  }
+
+  const lastQuestion = sequence[sequence.length - 1];
+  await testCurrentQuestionAsync({
+    renderResults,
+    expectCurrentQuestionAsync: lastQuestion.expectCurrentQuestionAsync,
+    nextButton: lastQuestion.nextButton,
+    waitForAndTestEndPage: true,
+    onFinishFn,
+  });
+}
+
 describe("questions flow", () => {
   beforeEach(() => {
     mockDatabaseRelatedFunction();
@@ -178,13 +211,16 @@ describe("questions flow", () => {
     };
     const renderResults = render(<SurveyScreen {...props} />);
 
-    await testCurrentQuestionAsync({
+    await testQuestionsSequenceAsync({
       renderResults,
-      expectCurrentQuestionAsync: async (getCurrentQuestionTitle) => {
-        expect(getCurrentQuestionTitle()).toBe("How long ago is it?");
-      },
-      waitForAndTestEndPage: true,
       onFinishFn,
+      sequence: [
+        {
+          expectCurrentQuestionAsync: async (getCurrentQuestionTitle) => {
+            expect(getCurrentQuestionTitle()).toBe("How long ago is it?");
+          },
+        },
+      ],
     });
   });
 
@@ -214,20 +250,21 @@ describe("questions flow", () => {
     };
     const renderResults = render(<SurveyScreen {...props} />);
 
-    await testCurrentQuestionAsync({
+    await testQuestionsSequenceAsync({
       renderResults,
-      expectCurrentQuestionAsync: async (getCurrentQuestionTitle) => {
-        expect(getCurrentQuestionTitle()).toBe("Question 1");
-      },
-    });
-
-    await testCurrentQuestionAsync({
-      renderResults,
-      expectCurrentQuestionAsync: async (getCurrentQuestionTitle) => {
-        expect(getCurrentQuestionTitle()).toBe("Question 2");
-      },
-      waitForAndTestEndPage: true,
       onFinishFn,
+      sequence: [
+        {
+          expectCurrentQuestionAsync: async (getCurrentQuestionTitle) => {
+            expect(getCurrentQuestionTitle()).toBe("Question 1");
+          },
+        },
+        {
+          expectCurrentQuestionAsync: async (getCurrentQuestionTitle) => {
+            expect(getCurrentQuestionTitle()).toBe("Question 2");
+          },
+        },
+      ],
     });
   });
 
@@ -253,10 +290,13 @@ describe("questions flow", () => {
     };
     const renderResults = render(<SurveyScreen {...props} />);
 
-    for (let i = 1; i <= 49; i++) {
-      await testCurrentQuestionAsync({
-        renderResults,
-        expectCurrentQuestionAsync: async (getCurrentQuestionTitle) => {
+    const sequence = [];
+
+    for (let i = 1; i <= 50; i++) {
+      sequence.push({
+        expectCurrentQuestionAsync: async (
+          getCurrentQuestionTitle: () => string,
+        ) => {
           expect(getCurrentQuestionTitle()).toBe(
             `This is the ${i}th question.`,
           );
@@ -264,13 +304,10 @@ describe("questions flow", () => {
       });
     }
 
-    await testCurrentQuestionAsync({
+    await testQuestionsSequenceAsync({
       renderResults,
-      expectCurrentQuestionAsync: async (getCurrentQuestionTitle) => {
-        expect(getCurrentQuestionTitle()).toBe(`This is the 50th question.`);
-      },
-      waitForAndTestEndPage: true,
       onFinishFn,
+      sequence,
     });
   });
 
@@ -333,29 +370,30 @@ describe("questions flow", () => {
           <SurveyScreen {...props} onFinish={onFinishFn} />,
         );
 
-        await testCurrentQuestionAsync({
+        await testQuestionsSequenceAsync({
           renderResults,
-          expectCurrentQuestionAsync: async (getCurrentQuestionTitle) => {
-            await clickOptionAsync("Yes", renderResults);
-
-            expect(getCurrentQuestionTitle()).toBe("Question 1");
-          },
-        });
-
-        await testCurrentQuestionAsync({
-          renderResults,
-          expectCurrentQuestionAsync: async (getCurrentQuestionTitle) => {
-            expect(getCurrentQuestionTitle()).toBe("Question 1 - yes branch");
-          },
-        });
-
-        await testCurrentQuestionAsync({
-          renderResults,
-          expectCurrentQuestionAsync: async (getCurrentQuestionTitle) => {
-            expect(getCurrentQuestionTitle()).toBe("Question 2");
-          },
-          waitForAndTestEndPage: true,
           onFinishFn,
+          sequence: [
+            {
+              expectCurrentQuestionAsync: async (getCurrentQuestionTitle) => {
+                await clickOptionAsync("Yes", renderResults);
+
+                expect(getCurrentQuestionTitle()).toBe("Question 1");
+              },
+            },
+            {
+              expectCurrentQuestionAsync: async (getCurrentQuestionTitle) => {
+                expect(getCurrentQuestionTitle()).toBe(
+                  "Question 1 - yes branch",
+                );
+              },
+            },
+            {
+              expectCurrentQuestionAsync: async (getCurrentQuestionTitle) => {
+                expect(getCurrentQuestionTitle()).toBe("Question 2");
+              },
+            },
+          ],
         });
       });
 
@@ -366,29 +404,30 @@ describe("questions flow", () => {
           <SurveyScreen {...props} onFinish={onFinishFn} />,
         );
 
-        await testCurrentQuestionAsync({
+        await testQuestionsSequenceAsync({
           renderResults,
-          expectCurrentQuestionAsync: async (getCurrentQuestionTitle) => {
-            await clickOptionAsync("No", renderResults);
-
-            expect(getCurrentQuestionTitle()).toBe("Question 1");
-          },
-        });
-
-        await testCurrentQuestionAsync({
-          renderResults,
-          expectCurrentQuestionAsync: async (getCurrentQuestionTitle) => {
-            expect(getCurrentQuestionTitle()).toBe("Question 1 - no branch");
-          },
-        });
-
-        await testCurrentQuestionAsync({
-          renderResults,
-          expectCurrentQuestionAsync: async (getCurrentQuestionTitle) => {
-            expect(getCurrentQuestionTitle()).toBe("Question 2");
-          },
-          waitForAndTestEndPage: true,
           onFinishFn,
+          sequence: [
+            {
+              expectCurrentQuestionAsync: async (getCurrentQuestionTitle) => {
+                await clickOptionAsync("No", renderResults);
+
+                expect(getCurrentQuestionTitle()).toBe("Question 1");
+              },
+            },
+            {
+              expectCurrentQuestionAsync: async (getCurrentQuestionTitle) => {
+                expect(getCurrentQuestionTitle()).toBe(
+                  "Question 1 - no branch",
+                );
+              },
+            },
+            {
+              expectCurrentQuestionAsync: async (getCurrentQuestionTitle) => {
+                expect(getCurrentQuestionTitle()).toBe("Question 2");
+              },
+            },
+          ],
         });
       });
 
@@ -399,20 +438,21 @@ describe("questions flow", () => {
           <SurveyScreen {...props} onFinish={onFinishFn} />,
         );
 
-        await testCurrentQuestionAsync({
+        await testQuestionsSequenceAsync({
           renderResults,
-          expectCurrentQuestionAsync: async (getCurrentQuestionTitle) => {
-            expect(getCurrentQuestionTitle()).toBe("Question 1");
-          },
-        });
-
-        await testCurrentQuestionAsync({
-          renderResults,
-          expectCurrentQuestionAsync: async (getCurrentQuestionTitle) => {
-            expect(getCurrentQuestionTitle()).toBe("Question 2");
-          },
-          waitForAndTestEndPage: true,
           onFinishFn,
+          sequence: [
+            {
+              expectCurrentQuestionAsync: async (getCurrentQuestionTitle) => {
+                expect(getCurrentQuestionTitle()).toBe("Question 1");
+              },
+            },
+            {
+              expectCurrentQuestionAsync: async (getCurrentQuestionTitle) => {
+                expect(getCurrentQuestionTitle()).toBe("Question 2");
+              },
+            },
+          ],
         });
       });
 
@@ -423,21 +463,22 @@ describe("questions flow", () => {
           <SurveyScreen {...props} onFinish={onFinishFn} />,
         );
 
-        await testCurrentQuestionAsync({
+        await testQuestionsSequenceAsync({
           renderResults,
-          nextButton: "pna",
-          expectCurrentQuestionAsync: async (getCurrentQuestionTitle) => {
-            expect(getCurrentQuestionTitle()).toBe("Question 1");
-          },
-        });
-
-        await testCurrentQuestionAsync({
-          renderResults,
-          expectCurrentQuestionAsync: async (getCurrentQuestionTitle) => {
-            expect(getCurrentQuestionTitle()).toBe("Question 2");
-          },
-          waitForAndTestEndPage: true,
           onFinishFn,
+          sequence: [
+            {
+              expectCurrentQuestionAsync: async (getCurrentQuestionTitle) => {
+                expect(getCurrentQuestionTitle()).toBe("Question 1");
+              },
+              nextButton: "pna",
+            },
+            {
+              expectCurrentQuestionAsync: async (getCurrentQuestionTitle) => {
+                expect(getCurrentQuestionTitle()).toBe("Question 2");
+              },
+            },
+          ],
         });
       });
     });
