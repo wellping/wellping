@@ -175,9 +175,12 @@ export default class SurveyScreen extends React.Component<
    * - Replacing variable placeholders with variables in `extraData`.
    * - Replacing answer placeholders with actual answers.
    */
-  replacePlaceholders(input: string): string {
+  replacePlaceholders(
+    input: string,
+    state: SurveyScreenState = this.state,
+  ): string {
     const { questions } = this.props;
-    const { currentQuestionData, answers } = this.state;
+    const { currentQuestionData, answers } = state;
 
     let output = input;
     for (const [key, value] of Object.entries(currentQuestionData.extraData)) {
@@ -553,8 +556,13 @@ export default class SurveyScreen extends React.Component<
         nextQuestionsDataStack: prevNextQuestionsDataStack,
       } = prevState;
 
-      const prevQuestion = questions[prevQuestionId!];
-      const prevAnswer = answers[prevQuestionId!];
+      if (prevQuestionId === null) {
+        throw new Error("prevQuestionId === null");
+      }
+
+      const prevQuestion = questions[prevQuestionId];
+      const prevAnswer =
+        answers[this.getRealQuestionId(prevQuestionId, prevState)];
 
       const newNextQuestionsStack = this.getNewNextQuestionsDataStack({
         prevQuestion,
@@ -598,8 +606,11 @@ export default class SurveyScreen extends React.Component<
     }, setStateCallback);
   }
 
-  getRealQuestionId(question: Question): string {
-    return this.replacePlaceholders(question.id);
+  getRealQuestionId(
+    questionId: QuestionId,
+    state: SurveyScreenState = this.state,
+  ): string {
+    return this.replacePlaceholders(questionId, state);
   }
 
   async addAnswerToAnswersListAsync(
@@ -616,7 +627,7 @@ export default class SurveyScreen extends React.Component<
       lastUpdateDate?: Date;
     },
   ): Promise<void> {
-    const realQuestionId = this.getRealQuestionId(question);
+    const realQuestionId = this.getRealQuestionId(question.id);
 
     const answer = await insertAnswerAsync({
       ping: this.props.ping,
@@ -664,7 +675,7 @@ export default class SurveyScreen extends React.Component<
         </Text>
       );
     }
-    const realQuestionId = this.getRealQuestionId(question);
+    const realQuestionId = this.getRealQuestionId(question.id);
 
     type QuestionScreenType = React.ElementType<QuestionScreenProps>;
     let QuestionScreen: QuestionScreenType;
