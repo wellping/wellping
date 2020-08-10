@@ -43,6 +43,8 @@ const TEST_PING_RAW = {
 };
 const TEST_PING = getPingEntity(TEST_PING_RAW);
 
+const QUESTION_TITLE_TESTID = "questionTitle";
+
 /**
  * If we are not testing database here, we can mock all database-related
  * function.
@@ -112,17 +114,17 @@ describe("questions flow", () => {
 
     // Wait for the question to be loaded.
     await waitFor(() => {
-      return getAllByTestId("questionTitle").length > 0;
+      return getAllByTestId(QUESTION_TITLE_TESTID).length > 0;
     });
 
-    expect(getByTestId("questionTitle").props.children).toMatchSnapshot(
+    expect(getByTestId(QUESTION_TITLE_TESTID).props.children).toMatchSnapshot(
       "screen 1",
     );
 
     const nextButton = getByA11yLabel("Next question");
     fireEvent.press(nextButton);
 
-    await waitForElementToBeRemoved(() => getByTestId("questionTitle"));
+    await waitForElementToBeRemoved(() => getByTestId(QUESTION_TITLE_TESTID));
 
     expect(toJSON()).toMatchSnapshot("screen 2");
 
@@ -161,10 +163,11 @@ describe("questions flow", () => {
 
     // Wait for the question to be loaded.
     await waitFor(() => {
-      return getAllByTestId("questionTitle").length > 0;
+      return getAllByTestId(QUESTION_TITLE_TESTID).length > 0;
     });
 
-    let currentQuestionTitle = getByTestId("questionTitle").props.children;
+    let currentQuestionTitle = getByTestId(QUESTION_TITLE_TESTID).props
+      .children;
     expect(currentQuestionTitle).toMatchSnapshot("screen 1");
 
     const nextButton = getByA11yLabel("Next question");
@@ -172,16 +175,17 @@ describe("questions flow", () => {
 
     await waitFor(() => {
       return (
-        getByTestId("questionTitle").props.children !== currentQuestionTitle
+        getByTestId(QUESTION_TITLE_TESTID).props.children !==
+        currentQuestionTitle
       );
     });
 
-    currentQuestionTitle = getByTestId("questionTitle").props.children;
+    currentQuestionTitle = getByTestId(QUESTION_TITLE_TESTID).props.children;
     expect(currentQuestionTitle).toMatchSnapshot("screen 2");
 
     fireEvent.press(nextButton);
 
-    await waitForElementToBeRemoved(() => getByTestId("questionTitle"));
+    await waitForElementToBeRemoved(() => getByTestId(QUESTION_TITLE_TESTID));
 
     expect(toJSON()).toMatchSnapshot("end screen");
 
