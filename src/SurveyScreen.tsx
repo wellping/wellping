@@ -79,7 +79,7 @@ type NextQuestionData = CurrentQuestionData & {
   questionId: QuestionId;
 };
 
-interface SurveyScreenProps {
+export interface SurveyScreenProps {
   /**
    * The questions in this ping.
    */
@@ -654,7 +654,7 @@ export default class SurveyScreen extends React.Component<
       currentQuestionData: { questionId },
       answers,
     } = this.state;
-    if (questionId == null) {
+    if (questionId === null) {
       // This is just here until `onFinish` is called.
       return <></>;
     }
@@ -756,6 +756,7 @@ export default class SurveyScreen extends React.Component<
               });
               this.onNextSelect();
             }}
+            accessibilityLabel="Prefer not to answer the current question"
             title="Prefer not to answer"
           />
           <Button
@@ -774,6 +775,7 @@ export default class SurveyScreen extends React.Component<
               }
               this.onNextSelect();
             }}
+            accessibilityLabel="Next question"
             title="Next"
           />
         </View>
