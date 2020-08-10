@@ -48,6 +48,7 @@ const TEST_PING = getPingEntity(TEST_PING_RAW);
 
 const QUESTION_TITLE_TESTID = "questionTitle";
 const NEXT_BUTTON_A11YLABEL = "Next question";
+const PNA_BUTTON_A11YLABEL = "Prefer not to answer the current question";
 
 /**
  * If we are not testing database here, we can mock all database-related
@@ -79,14 +80,21 @@ function mockDatabaseRelatedFunction() {
  * passed to the function). Otherwise, we will wait for the next question title
  * to be loaded.
  */
-async function testCurrentQuestionAsync(
-  { getByA11yLabel, getAllByTestId, getByTestId, toJSON }: RenderAPI,
+async function testCurrentQuestionAsync({
+  renderResults: { getByA11yLabel, getAllByTestId, getByTestId, toJSON },
+  expectCurrentQuestionAsync,
+  nextButton = "next",
+  waitForAndTestEndPage = false,
+  onFinishFn,
+}: {
+  renderResults: RenderAPI;
   expectCurrentQuestionAsync: (
     getCurrentQuestionTitle: () => string,
-  ) => Promise<void>,
-  waitForAndTestEndPage: boolean = false,
-  onFinishFn?: jest.Mock,
-): Promise<void> {
+  ) => Promise<void>;
+  nextButton?: "next" | "pna";
+  waitForAndTestEndPage?: boolean;
+  onFinishFn?: jest.Mock;
+}): Promise<void> {
   const getCurrentQuestionTitle = () =>
     getByTestId(QUESTION_TITLE_TESTID).props.children;
 
@@ -105,7 +113,11 @@ async function testCurrentQuestionAsync(
     }, 0);
   });
 
-  fireEvent.press(getByA11yLabel(NEXT_BUTTON_A11YLABEL));
+  if (nextButton === "next") {
+    fireEvent.press(getByA11yLabel(NEXT_BUTTON_A11YLABEL));
+  } else if (nextButton === "pna") {
+    fireEvent.press(getByA11yLabel(PNA_BUTTON_A11YLABEL));
+  }
 
   if (waitForAndTestEndPage) {
     await waitForElementToBeRemoved(() => getByTestId(QUESTION_TITLE_TESTID));
@@ -166,14 +178,14 @@ describe("questions flow", () => {
     };
     const renderResults = render(<SurveyScreen {...props} />);
 
-    await testCurrentQuestionAsync(
+    await testCurrentQuestionAsync({
       renderResults,
-      async (getCurrentQuestionTitle) => {
+      expectCurrentQuestionAsync: async (getCurrentQuestionTitle) => {
         expect(getCurrentQuestionTitle()).toBe("How long ago is it?");
       },
-      true,
+      waitForAndTestEndPage: true,
       onFinishFn,
-    );
+    });
   });
 
   test("2 questions", async () => {
@@ -202,21 +214,21 @@ describe("questions flow", () => {
     };
     const renderResults = render(<SurveyScreen {...props} />);
 
-    await testCurrentQuestionAsync(
+    await testCurrentQuestionAsync({
       renderResults,
-      async (getCurrentQuestionTitle) => {
+      expectCurrentQuestionAsync: async (getCurrentQuestionTitle) => {
         expect(getCurrentQuestionTitle()).toBe("Question 1");
       },
-    );
+    });
 
-    await testCurrentQuestionAsync(
+    await testCurrentQuestionAsync({
       renderResults,
-      async (getCurrentQuestionTitle) => {
+      expectCurrentQuestionAsync: async (getCurrentQuestionTitle) => {
         expect(getCurrentQuestionTitle()).toBe("Question 2");
       },
-      true,
+      waitForAndTestEndPage: true,
       onFinishFn,
-    );
+    });
   });
 
   test("50 questions", async () => {
@@ -242,24 +254,24 @@ describe("questions flow", () => {
     const renderResults = render(<SurveyScreen {...props} />);
 
     for (let i = 1; i <= 49; i++) {
-      await testCurrentQuestionAsync(
+      await testCurrentQuestionAsync({
         renderResults,
-        async (getCurrentQuestionTitle) => {
+        expectCurrentQuestionAsync: async (getCurrentQuestionTitle) => {
           expect(getCurrentQuestionTitle()).toBe(
             `This is the ${i}th question.`,
           );
         },
-      );
+      });
     }
 
-    await testCurrentQuestionAsync(
+    await testCurrentQuestionAsync({
       renderResults,
-      async (getCurrentQuestionTitle) => {
+      expectCurrentQuestionAsync: async (getCurrentQuestionTitle) => {
         expect(getCurrentQuestionTitle()).toBe(`This is the 50th question.`);
       },
-      true,
+      waitForAndTestEndPage: true,
       onFinishFn,
-    );
+    });
   });
 
   describe("yes no question", () => {
@@ -310,9 +322,9 @@ describe("questions flow", () => {
         );
         const { getAllByA11yLabel, getByA11yLabel } = renderResults;
 
-        await testCurrentQuestionAsync(
+        await testCurrentQuestionAsync({
           renderResults,
-          async (getCurrentQuestionTitle) => {
+          expectCurrentQuestionAsync: async (getCurrentQuestionTitle) => {
             // Wait for the choices to be loaded.
             await waitFor(() => {
               return getAllByA11yLabel("select Yes").length > 0;
@@ -322,23 +334,23 @@ describe("questions flow", () => {
 
             fireEvent.press(getByA11yLabel("select Yes"));
           },
-        );
+        });
 
-        await testCurrentQuestionAsync(
+        await testCurrentQuestionAsync({
           renderResults,
-          async (getCurrentQuestionTitle) => {
+          expectCurrentQuestionAsync: async (getCurrentQuestionTitle) => {
             expect(getCurrentQuestionTitle()).toBe("Question 1 - yes branch");
           },
-        );
+        });
 
-        await testCurrentQuestionAsync(
+        await testCurrentQuestionAsync({
           renderResults,
-          async (getCurrentQuestionTitle) => {
+          expectCurrentQuestionAsync: async (getCurrentQuestionTitle) => {
             expect(getCurrentQuestionTitle()).toBe("Question 2");
           },
-          true,
+          waitForAndTestEndPage: true,
           onFinishFn,
-        );
+        });
       });
 
       test("`no` branch", async () => {
@@ -349,9 +361,9 @@ describe("questions flow", () => {
         );
         const { getAllByA11yLabel, getByA11yLabel } = renderResults;
 
-        await testCurrentQuestionAsync(
+        await testCurrentQuestionAsync({
           renderResults,
-          async (getCurrentQuestionTitle) => {
+          expectCurrentQuestionAsync: async (getCurrentQuestionTitle) => {
             // Wait for the choices to be loaded.
             await waitFor(() => {
               return getAllByA11yLabel("select No").length > 0;
@@ -361,23 +373,23 @@ describe("questions flow", () => {
 
             fireEvent.press(getByA11yLabel("select No"));
           },
-        );
+        });
 
-        await testCurrentQuestionAsync(
+        await testCurrentQuestionAsync({
           renderResults,
-          async (getCurrentQuestionTitle) => {
+          expectCurrentQuestionAsync: async (getCurrentQuestionTitle) => {
             expect(getCurrentQuestionTitle()).toBe("Question 1 - no branch");
           },
-        );
+        });
 
-        await testCurrentQuestionAsync(
+        await testCurrentQuestionAsync({
           renderResults,
-          async (getCurrentQuestionTitle) => {
+          expectCurrentQuestionAsync: async (getCurrentQuestionTitle) => {
             expect(getCurrentQuestionTitle()).toBe("Question 2");
           },
-          true,
+          waitForAndTestEndPage: true,
           onFinishFn,
-        );
+        });
       });
 
       test("click next without answering", async () => {
@@ -387,21 +399,21 @@ describe("questions flow", () => {
           <SurveyScreen {...props} onFinish={onFinishFn} />,
         );
 
-        await testCurrentQuestionAsync(
+        await testCurrentQuestionAsync({
           renderResults,
-          async (getCurrentQuestionTitle) => {
+          expectCurrentQuestionAsync: async (getCurrentQuestionTitle) => {
             expect(getCurrentQuestionTitle()).toBe("Question 1");
           },
-        );
+        });
 
-        await testCurrentQuestionAsync(
+        await testCurrentQuestionAsync({
           renderResults,
-          async (getCurrentQuestionTitle) => {
+          expectCurrentQuestionAsync: async (getCurrentQuestionTitle) => {
             expect(getCurrentQuestionTitle()).toBe("Question 2");
           },
-          true,
+          waitForAndTestEndPage: true,
           onFinishFn,
-        );
+        });
       });
     });
   });
