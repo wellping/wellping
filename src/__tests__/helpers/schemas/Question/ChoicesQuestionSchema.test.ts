@@ -175,17 +175,6 @@ describe("ChoicesQuestionSchema", () => {
       }).not.toThrowError();
     });
 
-    test(`can include only "_pna"`, () => {
-      expect(() => {
-        ChoicesQuestionSchema.parse({
-          ...question,
-          specialCasesStartId: {
-            _pna: "hello_world",
-          },
-        });
-      }).not.toThrowError();
-    });
-
     test(`will not be tested if choices is string`, () => {
       expect(() => {
         ChoicesQuestionSchema.parse({
@@ -198,24 +187,12 @@ describe("ChoicesQuestionSchema", () => {
       }).not.toThrowError();
     });
 
-    test(`can include only choices keys`, () => {
+    test(`can include choices keys`, () => {
       expect(() => {
         ChoicesQuestionSchema.parse({
           ...question,
           specialCasesStartId: {
             "Hello?": "hello_world",
-          },
-        });
-      }).not.toThrowError();
-    });
-
-    test(`can include both "_pna" and choices keys`, () => {
-      expect(() => {
-        ChoicesQuestionSchema.parse({
-          ...question,
-          specialCasesStartId: {
-            "Hello?": "hello_world",
-            _pna: "goodbye",
           },
         });
       }).not.toThrowError();
@@ -240,16 +217,6 @@ describe("ChoicesQuestionSchema", () => {
           },
         });
       }).toThrowErrorMatchingSnapshot("non-choices key with choice key");
-
-      expect(() => {
-        ChoicesQuestionSchema.parse({
-          ...question,
-          specialCasesStartId: {
-            notakey: "nonono",
-            _pna: "goodbye",
-          },
-        });
-      }).toThrowErrorMatchingSnapshot(`non-choices key with "_pna"`);
     });
 
     test(`question id can be null`, () => {
@@ -258,15 +225,6 @@ describe("ChoicesQuestionSchema", () => {
           ...question,
           specialCasesStartId: {
             "Hello?": "new_world",
-            _pna: null,
-          },
-        });
-      }).not.toThrowError();
-
-      expect(() => {
-        ChoicesQuestionSchema.parse({
-          ...question,
-          specialCasesStartId: {
             "World!": null,
           },
         });
@@ -276,7 +234,7 @@ describe("ChoicesQuestionSchema", () => {
         ChoicesQuestionSchema.parse({
           ...question,
           specialCasesStartId: {
-            _pna: null,
+            "World!": null,
           },
         });
       }).not.toThrowError();

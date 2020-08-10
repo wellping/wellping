@@ -108,15 +108,7 @@ exports[`ChoicesQuestionSchema specialCasesStartId cannot include non-choices ke
 "1 validation issue(s)
 
   Issue #0: custom_error at specialCasesStartId
-  Keys in \`specialCasesStartId\` must also be in \`choices\` or be \\"_pna\\".
-"
-`;
-
-exports[`ChoicesQuestionSchema specialCasesStartId cannot include non-choices key: non-choices key with "_pna" 1`] = `
-"1 validation issue(s)
-
-  Issue #0: custom_error at specialCasesStartId
-  Keys in \`specialCasesStartId\` must also be in \`choices\` or be \\"_pna\\".
+  Keys in \`specialCasesStartId\` must also be in \`choices\`.
 "
 `;
 
@@ -124,7 +116,7 @@ exports[`ChoicesQuestionSchema specialCasesStartId cannot include non-choices ke
 "1 validation issue(s)
 
   Issue #0: custom_error at specialCasesStartId
-  Keys in \`specialCasesStartId\` must also be in \`choices\` or be \\"_pna\\".
+  Keys in \`specialCasesStartId\` must also be in \`choices\`.
 "
 `;
 
