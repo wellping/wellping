@@ -44,6 +44,7 @@ const TEST_PING_RAW = {
 const TEST_PING = getPingEntity(TEST_PING_RAW);
 
 const QUESTION_TITLE_TESTID = "questionTitle";
+const NEXT_BUTTON_A11YLABEL = "Next question";
 
 /**
  * If we are not testing database here, we can mock all database-related
@@ -121,7 +122,7 @@ describe("questions flow", () => {
       "screen 1",
     );
 
-    const nextButton = getByA11yLabel("Next question");
+    const nextButton = getByA11yLabel(NEXT_BUTTON_A11YLABEL);
     fireEvent.press(nextButton);
 
     await waitForElementToBeRemoved(() => getByTestId(QUESTION_TITLE_TESTID));
@@ -170,7 +171,7 @@ describe("questions flow", () => {
       .children;
     expect(currentQuestionTitle).toMatchSnapshot("screen 1");
 
-    const nextButton = getByA11yLabel("Next question");
+    const nextButton = getByA11yLabel(NEXT_BUTTON_A11YLABEL);
     fireEvent.press(nextButton);
 
     await waitFor(() => {
