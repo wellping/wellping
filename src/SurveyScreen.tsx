@@ -4,7 +4,6 @@ import { Button, Text, View, ScrollView, Dimensions } from "react-native";
 
 import { _DEBUG_CONFIGS } from "../config/debug";
 import {
-  getAnswerEntity,
   ChoicesWithSingleAnswerAnswerEntity,
   YesNoAnswerEntity,
   MultipleTextAnswerEntity,
