@@ -5,10 +5,8 @@ import { Button, Text, View, ScrollView, Dimensions } from "react-native";
 import { _DEBUG_CONFIGS } from "../config/debug";
 import {
   ChoicesWithSingleAnswerAnswerEntity,
-  YesNoAnswerEntity,
   MultipleTextAnswerEntity,
   SliderAnswerEntity,
-  ChoicesWithMultipleAnswersAnswerEntity,
   AnswerEntity,
 } from "./entities/AnswerEntity";
 import { PingEntity } from "./entities/PingEntity";
@@ -16,6 +14,10 @@ import {
   AnswersList,
   QuestionScreenProps,
   AnswerData,
+  YesNoAnswerData,
+  MultipleTextAnswerData,
+  ChoicesWithSingleAnswerAnswerData,
+  ChoicesWithMultipleAnswersAnswerData,
 } from "./helpers/answerTypes";
 import { insertAnswerAsync } from "./helpers/answers";
 import { uploadDataAsync } from "./helpers/apiManager";
@@ -33,6 +35,7 @@ import {
   withVariable,
   replacePreviousAnswerPlaceholdersWithActualContent,
   decapitalizeFirstCharacter,
+  NON_USER_QUESTION_TYPES,
 } from "./helpers/helpers";
 import { addEndTimeToPingAsync } from "./helpers/pings";
 import {
@@ -254,11 +257,14 @@ export default class SurveyScreen extends React.Component<
     prevAnswer,
     prevExtraData,
     answers,
+    prevState,
   }: {
     prevQuestion: Question;
-    prevAnswer: AnswerEntity;
+    // When the question is a branching question, `prevAnswer` can be undefined.
+    prevAnswer?: AnswerEntity;
     prevExtraData: ExtraData;
     answers: AnswersList;
+    prevState: SurveyScreenState;
   }): NextQuestionData[] {
     /**
      * The question(s) that cuts in line and shows before the actual `next`.
@@ -283,26 +289,14 @@ export default class SurveyScreen extends React.Component<
       questionId: prevQuestion.next,
       extraData: prevExtraData,
     };
-    if (
-      prevAnswer.preferNotToAnswer &&
-      prevQuestion.fallbackNext?.preferNotToAnswer !== undefined
-    ) {
-      nextQuestionData.questionId = prevQuestion.fallbackNext.preferNotToAnswer;
-    } else if (
-      prevAnswer.nextWithoutOption &&
-      prevQuestion.fallbackNext?.nextWithoutAnswering !== undefined
-    ) {
-      nextQuestionData.questionId =
-        prevQuestion.fallbackNext.nextWithoutAnswering;
-    }
 
     /**
      * Does appropriate actions when facing a conditional question ID.
      * See inline comments for more explanations.
      */
-    function considerConditionalQuestionId(
+    const considerConditionalQuestionId = (
       conditionalQuestionId: QuestionId | null | undefined,
-    ) {
+    ) => {
       if (conditionalQuestionId === undefined) {
         // Do nothing, because we will continue to this question's `next`
         // as before.
@@ -318,173 +312,216 @@ export default class SurveyScreen extends React.Component<
           extraData: prevExtraData,
         });
       }
-    }
+    };
 
-    switch (prevQuestion.type) {
-      case QuestionType.YesNo: {
-        const ynQ = prevQuestion as YesNoQuestion;
-        const ynA = prevAnswer as YesNoAnswerEntity;
-
-        if (ynA.data) {
-          if (ynQ.branchStartId) {
-            const jumpQuestionId = ynA.data.value
-              ? ynQ.branchStartId.yes
-              : ynQ.branchStartId.no;
-            considerConditionalQuestionId(jumpQuestionId);
-          }
-
-          // Set up follow-up streams.
-          if (ynQ.addFollowupStream && ynQ.addFollowupStream.yes) {
-            const futureStreamName: StreamName = ynQ.addFollowupStream.yes;
-
-            // TODO: ADD SUPPORT TO CUSTOMIZE DATE AFTER
-            getFuturePingsQueue().then((futurePings) => {
-              if (futurePings.length === 0) {
-                enqueueToFuturePingQueue({
-                  afterDate: addDays(new Date(), 3),
-                  streamName: futureStreamName,
-                }).then(() => {
-                  enqueueToFuturePingQueue({
-                    afterDate: addDays(new Date(), 7),
-                    streamName: futureStreamName,
-                  });
-                });
-              }
-            });
-          }
-        }
-        break;
+    const handleYesNoQuestion = (ynQ: YesNoQuestion, ynD: YesNoAnswerData) => {
+      if (ynQ.branchStartId) {
+        const jumpQuestionId = ynD.value
+          ? ynQ.branchStartId.yes
+          : ynQ.branchStartId.no;
+        considerConditionalQuestionId(jumpQuestionId);
       }
 
-      case QuestionType.MultipleText: {
-        const mtQ = prevQuestion as MultipleTextQuestion;
-        const mtA = prevAnswer as MultipleTextAnswerEntity;
+      // Set up follow-up streams.
+      if (ynQ.addFollowupStream && ynQ.addFollowupStream.yes) {
+        const futureStreamName: StreamName = ynQ.addFollowupStream.yes;
 
-        const valuesLength = (mtA.data ? mtA.data.value : []).length;
+        // TODO: ADD SUPPORT TO CUSTOMIZE DATE AFTER
+        getFuturePingsQueue().then((futurePings) => {
+          if (futurePings.length === 0) {
+            enqueueToFuturePingQueue({
+              afterDate: addDays(new Date(), 3),
+              streamName: futureStreamName,
+            }).then(() => {
+              enqueueToFuturePingQueue({
+                afterDate: addDays(new Date(), 7),
+                streamName: futureStreamName,
+              });
+            });
+          }
+        });
+      }
+    };
 
-        if (
-          !mtA.data ||
-          valuesLength === 0 ||
-          mtQ.repeatedItemStartId === undefined
-        ) {
+    const handleMultipleTextQuestion = (
+      mtQ: MultipleTextQuestion,
+      mtD: MultipleTextAnswerData,
+    ) => {
+      const valuesLength = mtD.value.length;
+
+      if (valuesLength === 0 || mtQ.repeatedItemStartId === undefined) {
+        return;
+      }
+
+      // Reversed for because we want to go to the `0`th first, then `1`st,
+      // etc.
+      for (let i = valuesLength - 1; i >= 0; i--) {
+        jumpQuestionsDataStack.push({
+          questionId: mtQ.repeatedItemStartId,
+          extraData: {
+            [mtQ.variableName]: mtD.value[i],
+            [mtQ.indexName]: i + 1,
+          },
+        });
+      }
+    };
+
+    const handleChoicesQuestions = (
+      cQ: ChoicesQuestion,
+      cD:
+        | ChoicesWithSingleAnswerAnswerData
+        | ChoicesWithMultipleAnswersAnswerData,
+    ) => {
+      const specialCasesStartId = cQ.specialCasesStartId;
+      if (!specialCasesStartId) {
+        return;
+      }
+      let specialNextQuestionId: QuestionId | null | undefined;
+
+      if (cQ.type === QuestionType.ChoicesWithSingleAnswer) {
+        const csaAnswerData = cD as ChoicesWithSingleAnswerAnswerData;
+        const dataValue = specialCasesStartId[csaAnswerData.value];
+        specialNextQuestionId = dataValue;
+      } else {
+        if (cQ.type === QuestionType.ChoicesWithMultipleAnswers) {
+          const cmaAnswerData = cD as ChoicesWithMultipleAnswersAnswerData;
+          Object.entries(cmaAnswerData.value).some(([eachAnswer, selected]) => {
+            if (selected) {
+              if (selected && specialCasesStartId) {
+                specialNextQuestionId = specialCasesStartId[eachAnswer];
+              }
+              // we return `true` here instead of inside so that it will also stop when any other choices are selected.
+              return true;
+            }
+            return false;
+          });
+        }
+      }
+
+      considerConditionalQuestionId(specialNextQuestionId);
+    };
+
+    const handleBranchQuestion = (bQ: BranchQuestion) => {
+      let selectedBranchId = bQ.branchStartId.false;
+
+      switch (bQ.condition.questionType) {
+        case QuestionType.MultipleText: {
+          const targetQuestionAnswer = answers[
+            this.replacePlaceholders(bQ.condition.questionId, prevState)
+          ] as MultipleTextAnswerEntity;
+          if (targetQuestionAnswer && targetQuestionAnswer.data) {
+            if (
+              targetQuestionAnswer.data.value.length === bQ.condition.target
+            ) {
+              selectedBranchId = bQ.branchStartId.true;
+            }
+          }
           break;
         }
 
-        // Reversed for because we want to go to the `0`th first, then `1`st,
-        // etc.
-        for (let i = valuesLength - 1; i >= 0; i--) {
-          jumpQuestionsDataStack.push({
-            questionId: mtQ.repeatedItemStartId,
-            extraData: {
-              [mtQ.variableName]: mtA.data.value[i],
-              [mtQ.indexName]: i + 1,
-            },
-          });
+        case QuestionType.ChoicesWithSingleAnswer: {
+          const csaQuestionAnswer = answers[
+            this.replacePlaceholders(bQ.condition.questionId, prevState)
+          ] as ChoicesWithSingleAnswerAnswerEntity;
+          if (csaQuestionAnswer && csaQuestionAnswer.data) {
+            if (csaQuestionAnswer.data?.value === bQ.condition.target) {
+              selectedBranchId = bQ.branchStartId.true;
+            }
+          }
+          break;
         }
-        break;
       }
 
-      case QuestionType.Branch: {
-        const bQ = prevQuestion as BranchQuestion;
+      considerConditionalQuestionId(selectedBranchId);
+    };
 
-        let selectedBranchId = bQ.branchStartId.false;
+    const handleBranchWithRelativeComparison = (
+      bwrcQuestion: BranchWithRelativeComparisonQuestion,
+    ) => {
+      let nextQuestionId = null;
+      let curMaxValue = -999;
+      for (const comparingQuestionId of Object.keys(
+        bwrcQuestion.branchStartId,
+      )) {
+        // TODO: SUPPORT OTHER QUSTION TYPES.
+        const comparingQuestionAnswer =
+          (answers[comparingQuestionId] as SliderAnswerEntity).data?.value ||
+          -1;
+        if (comparingQuestionAnswer > curMaxValue) {
+          nextQuestionId = bwrcQuestion.branchStartId[comparingQuestionId];
+          curMaxValue = comparingQuestionAnswer;
+        }
+      }
 
-        switch (bQ.condition.questionType) {
-          case QuestionType.MultipleText: {
-            const targetQuestionAnswer = answers[
-              this.replacePlaceholders(bQ.condition.questionId)
-            ] as MultipleTextAnswerEntity;
-            if (targetQuestionAnswer && targetQuestionAnswer.data) {
-              if (
-                targetQuestionAnswer.data.value.length === bQ.condition.target
-              ) {
-                selectedBranchId = bQ.branchStartId.true;
-              }
-            }
+      considerConditionalQuestionId(nextQuestionId);
+    };
+
+    if (NON_USER_QUESTION_TYPES.includes(prevQuestion.type)) {
+      // Handle branching questions.
+      switch (prevQuestion.type) {
+        case QuestionType.Branch:
+          handleBranchQuestion(prevQuestion as BranchQuestion);
+          break;
+
+        case QuestionType.BranchWithRelativeComparison:
+          handleBranchWithRelativeComparison(
+            prevQuestion as BranchWithRelativeComparisonQuestion,
+          );
+          break;
+
+        default:
+          break;
+      }
+    } else {
+      if (prevAnswer === undefined) {
+        throw new Error("prevAnswer !== undefined but it is a user question!");
+      }
+
+      if (
+        prevAnswer.preferNotToAnswer &&
+        prevQuestion.fallbackNext?.preferNotToAnswer !== undefined
+      ) {
+        nextQuestionData.questionId =
+          prevQuestion.fallbackNext.preferNotToAnswer;
+      } else if (
+        prevAnswer.nextWithoutOption &&
+        prevQuestion.fallbackNext?.nextWithoutAnswering !== undefined
+      ) {
+        nextQuestionData.questionId =
+          prevQuestion.fallbackNext.nextWithoutAnswering;
+      }
+
+      if (prevAnswer.data !== null) {
+        switch (prevQuestion.type) {
+          case QuestionType.YesNo:
+            handleYesNoQuestion(
+              prevQuestion as YesNoQuestion,
+              prevAnswer.data as YesNoAnswerData,
+            );
             break;
-          }
 
-          case QuestionType.ChoicesWithSingleAnswer: {
-            const csaQuestionAnswer = answers[
-              this.replacePlaceholders(bQ.condition.questionId)
-            ] as ChoicesWithSingleAnswerAnswerEntity;
-            if (csaQuestionAnswer && csaQuestionAnswer.data) {
-              if (csaQuestionAnswer.data?.value === bQ.condition.target) {
-                selectedBranchId = bQ.branchStartId.true;
-              }
-            }
+          case QuestionType.MultipleText:
+            handleMultipleTextQuestion(
+              prevQuestion as MultipleTextQuestion,
+              prevAnswer.data as MultipleTextAnswerData,
+            );
             break;
-          }
+
+          case QuestionType.ChoicesWithMultipleAnswers:
+          case QuestionType.ChoicesWithSingleAnswer:
+            handleChoicesQuestions(
+              prevQuestion as ChoicesQuestion,
+              prevAnswer.data as
+                | ChoicesWithSingleAnswerAnswerData
+                | ChoicesWithMultipleAnswersAnswerData,
+            );
+            break;
+
+          default:
+            // For other question types, there isn't anything special we need to
+            // handle.
+            break;
         }
-
-        considerConditionalQuestionId(selectedBranchId);
-        break;
-      }
-
-      case QuestionType.BranchWithRelativeComparison: {
-        const bwrcQuestion = prevQuestion as BranchWithRelativeComparisonQuestion;
-
-        let nextQuestionId = null;
-        let curMaxValue = -999;
-        for (const comparingQuestionId of Object.keys(
-          bwrcQuestion.branchStartId,
-        )) {
-          // TODO: SUPPORT OTHER QUSTION TYPES.
-          const comparingQuestionAnswer =
-            (answers[comparingQuestionId] as SliderAnswerEntity).data?.value ||
-            -1;
-          if (comparingQuestionAnswer > curMaxValue) {
-            nextQuestionId = bwrcQuestion.branchStartId[comparingQuestionId];
-            curMaxValue = comparingQuestionAnswer;
-          }
-        }
-
-        considerConditionalQuestionId(nextQuestionId);
-        break;
-      }
-
-      case QuestionType.ChoicesWithMultipleAnswers:
-      case QuestionType.ChoicesWithSingleAnswer: {
-        const cQ = prevQuestion as ChoicesQuestion;
-        const cA = prevAnswer as
-          | ChoicesWithSingleAnswerAnswerEntity
-          | ChoicesWithMultipleAnswersAnswerEntity;
-        const specialCasesStartId = cQ.specialCasesStartId;
-        if (specialCasesStartId) {
-          let specialNextQuestionId: QuestionId | null | undefined;
-
-          if (cQ.type === QuestionType.ChoicesWithSingleAnswer) {
-            const csaAnswer = cA as ChoicesWithSingleAnswerAnswerEntity;
-            if (csaAnswer.data) {
-              const dataValue = specialCasesStartId[csaAnswer.data.value];
-              specialNextQuestionId = dataValue;
-            }
-          } else {
-            if (cQ.type === QuestionType.ChoicesWithMultipleAnswers) {
-              const cmaAnswer = cA as ChoicesWithMultipleAnswersAnswerEntity;
-              Object.entries(cmaAnswer.data?.value || {}).some(
-                ([eachAnswer, selected]) => {
-                  if (selected) {
-                    if (selected && specialCasesStartId) {
-                      specialNextQuestionId = specialCasesStartId[eachAnswer];
-                    }
-                    // we return `true` here instead of inside so that it will also stop when any other choices are selected.
-                    return true;
-                  }
-                  return false;
-                },
-              );
-            }
-          }
-
-          considerConditionalQuestionId(specialNextQuestionId);
-        }
-        break;
-      }
-      default: {
-        // For other question types, there isn't anything special we need to
-        // handle.
-        break;
       }
     }
 
@@ -569,6 +606,7 @@ export default class SurveyScreen extends React.Component<
         prevAnswer,
         prevExtraData,
         answers,
+        prevState,
       });
 
       if (newNextQuestionsStack.length === 0) {

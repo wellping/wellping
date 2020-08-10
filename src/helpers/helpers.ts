@@ -1,7 +1,12 @@
 import { QuestionTypeSchema } from "./schemas/Question";
-import { QuestionId } from "./types";
+import { QuestionId, QuestionTypeType } from "./types";
 
 export const QuestionType = QuestionTypeSchema.enum;
+
+export const NON_USER_QUESTION_TYPES: QuestionTypeType[] = [
+  QuestionType.Branch,
+  QuestionType.BranchWithRelativeComparison,
+];
 
 export const decapitalizeFirstCharacter = (s: string): string => {
   return s.charAt(0).toLowerCase() + s.slice(1);
