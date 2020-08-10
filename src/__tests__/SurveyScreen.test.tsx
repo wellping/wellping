@@ -130,4 +130,63 @@ describe("questions flow", () => {
       expect(onFinishFn).toHaveBeenCalledTimes(1);
     });
   });
+
+  test("2 questions", async () => {
+    const onFinishFn = jest.fn();
+
+    const props: SurveyScreenProps = {
+      questions: {
+        q1: {
+          id: "q1",
+          type: QuestionType.HowLongAgo,
+          question: "Question 1",
+          next: "q2",
+        },
+        q2: {
+          id: "q2",
+          type: QuestionType.Slider,
+          question: "Question 2",
+          slider: ["left", "right"],
+          next: null,
+        },
+      },
+      startingQuestionId: "q1",
+      ping: TEST_PING,
+      previousState: null,
+      onFinish: onFinishFn,
+    };
+    const { getAllByTestId, getByTestId, getByA11yLabel, toJSON } = render(
+      <SurveyScreen {...props} />,
+    );
+
+    // Wait for the question to be loaded.
+    await waitFor(() => {
+      return getAllByTestId("questionTitle").length > 0;
+    });
+
+    let currentQuestionTitle = getByTestId("questionTitle").props.children;
+    expect(currentQuestionTitle).toMatchSnapshot("screen 1");
+
+    const nextButton = getByA11yLabel("Next question");
+    fireEvent.press(nextButton);
+
+    await waitFor(() => {
+      return (
+        getByTestId("questionTitle").props.children !== currentQuestionTitle
+      );
+    });
+
+    currentQuestionTitle = getByTestId("questionTitle").props.children;
+    expect(currentQuestionTitle).toMatchSnapshot("screen 2");
+
+    fireEvent.press(nextButton);
+
+    await waitForElementToBeRemoved(() => getByTestId("questionTitle"));
+
+    expect(toJSON()).toMatchSnapshot("end screen");
+
+    await waitForExpect(() => {
+      expect(onFinishFn).toHaveBeenCalledTimes(1);
+    });
+  });
 });
