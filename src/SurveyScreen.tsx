@@ -18,6 +18,7 @@ import {
   QuestionScreenProps,
   AnswerData,
 } from "./helpers/answerTypes";
+import { insertAnswerAsync } from "./helpers/answers";
 import { uploadDataAsync } from "./helpers/apiManager";
 import {
   getFuturePingsQueue,
@@ -622,18 +623,15 @@ export default class SurveyScreen extends React.Component<
   ): Promise<void> {
     const realQuestionId = this.getRealQuestionId(question);
 
-    const answer = getAnswerEntity(question.type);
-    answer.ping = this.props.ping;
-    answer.questionId = realQuestionId;
-    answer.preferNotToAnswer = preferNotToAnswer;
-    answer.nextWithoutOption = nextWithoutOption;
-    answer.data = data;
-    answer.lastUpdateDate = lastUpdateDate;
-    await answer.save();
-
-    // So that the `ping` object will not be stored in state.
-    // Also so that we can make sure state and database are consistent.
-    await answer.reload();
+    const answer = await insertAnswerAsync({
+      ping: this.props.ping,
+      question,
+      realQuestionId,
+      preferNotToAnswer,
+      nextWithoutOption,
+      data,
+      lastUpdateDate,
+    });
 
     await new Promise((resolve, reject) => {
       this.setState(
