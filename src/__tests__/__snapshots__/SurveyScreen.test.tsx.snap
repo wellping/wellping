@@ -1,17 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`questions flow 2 questions: end screen 1`] = `null`;
-
-exports[`questions flow 2 questions: screen 1 1`] = `"Question 1"`;
-
-exports[`questions flow 2 questions: screen 2 1`] = `"Question 2"`;
-
 exports[`questions flow non-existent startingQuestionId 1`] = `
 <Text>
   [CRITICAL ERROR (Please screenshot this page and send it to the study staff as soon as possible): questions["na"] === undefined]
 </Text>
 `;
-
-exports[`questions flow single question: screen 1 1`] = `"How long ago is it?"`;
-
-exports[`questions flow single question: screen 2 1`] = `null`;

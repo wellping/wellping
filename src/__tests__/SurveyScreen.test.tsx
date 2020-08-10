@@ -4,6 +4,7 @@ import {
   fireEvent,
   waitFor,
   waitForElementToBeRemoved,
+  RenderAPI,
 } from "react-native-testing-library";
 import { BaseEntity } from "typeorm";
 import waitForExpect from "wait-for-expect";
@@ -70,6 +71,58 @@ function mockDatabaseRelatedFunction() {
     });
 }
 
+/**
+ * Tests the current question.
+ *
+ * If `waitForAndTestEndPage` is true, we will wait for the question title to
+ * be removed and test if it is indeed the end page (onFinishFn should be
+ * passed to the function). Otherwise, we will wait for the next question title
+ * to be loaded.
+ */
+async function testCurrentQuestionAsync(
+  { getByA11yLabel, getAllByTestId, getByTestId, toJSON }: RenderAPI,
+  expectCurrentQuestionAsync: (
+    getCurrentQuestionTitle: () => string,
+  ) => Promise<void>,
+  waitForAndTestEndPage: boolean = false,
+  onFinishFn?: jest.Mock,
+): Promise<void> {
+  const getCurrentQuestionTitle = () =>
+    getByTestId(QUESTION_TITLE_TESTID).props.children;
+
+  // Wait for the question to be loaded.
+  await waitFor(() => {
+    return getAllByTestId(QUESTION_TITLE_TESTID).length > 0;
+  });
+
+  await expectCurrentQuestionAsync(getCurrentQuestionTitle);
+
+  // For some reason we have to do this to ensure `fireEvent` works in
+  // `expectCurrentQuestionAsync`.
+  await new Promise((resolve, reject) => {
+    setTimeout(() => {
+      resolve();
+    }, 0);
+  });
+
+  fireEvent.press(getByA11yLabel(NEXT_BUTTON_A11YLABEL));
+
+  if (waitForAndTestEndPage) {
+    await waitForElementToBeRemoved(() => getByTestId(QUESTION_TITLE_TESTID));
+
+    expect(toJSON()).toBe(null);
+
+    await waitForExpect(() => {
+      expect(onFinishFn).toHaveBeenCalledTimes(1);
+    });
+  } else {
+    const currentQuestionTitle = getCurrentQuestionTitle();
+    await waitFor(() => {
+      return getCurrentQuestionTitle() !== currentQuestionTitle;
+    });
+  }
+}
+
 describe("questions flow", () => {
   beforeEach(() => {
     mockDatabaseRelatedFunction();
@@ -111,29 +164,16 @@ describe("questions flow", () => {
       previousState: null,
       onFinish: onFinishFn,
     };
-    const { getAllByTestId, getByTestId, getByA11yLabel, toJSON } = render(
-      <SurveyScreen {...props} />,
+    const renderResults = render(<SurveyScreen {...props} />);
+
+    await testCurrentQuestionAsync(
+      renderResults,
+      async (getCurrentQuestionTitle) => {
+        expect(getCurrentQuestionTitle()).toBe("How long ago is it?");
+      },
+      true,
+      onFinishFn,
     );
-
-    // Wait for the question to be loaded.
-    await waitFor(() => {
-      return getAllByTestId(QUESTION_TITLE_TESTID).length > 0;
-    });
-
-    expect(getByTestId(QUESTION_TITLE_TESTID).props.children).toMatchSnapshot(
-      "screen 1",
-    );
-
-    const nextButton = getByA11yLabel(NEXT_BUTTON_A11YLABEL);
-    fireEvent.press(nextButton);
-
-    await waitForElementToBeRemoved(() => getByTestId(QUESTION_TITLE_TESTID));
-
-    expect(toJSON()).toMatchSnapshot("screen 2");
-
-    await waitForExpect(() => {
-      expect(onFinishFn).toHaveBeenCalledTimes(1);
-    });
   });
 
   test("2 questions", async () => {
@@ -160,41 +200,23 @@ describe("questions flow", () => {
       previousState: null,
       onFinish: onFinishFn,
     };
-    const { getAllByTestId, getByTestId, getByA11yLabel, toJSON } = render(
-      <SurveyScreen {...props} />,
+    const renderResults = render(<SurveyScreen {...props} />);
+
+    await testCurrentQuestionAsync(
+      renderResults,
+      async (getCurrentQuestionTitle) => {
+        expect(getCurrentQuestionTitle()).toBe("Question 1");
+      },
     );
 
-    // Wait for the question to be loaded.
-    await waitFor(() => {
-      return getAllByTestId(QUESTION_TITLE_TESTID).length > 0;
-    });
-
-    let currentQuestionTitle = getByTestId(QUESTION_TITLE_TESTID).props
-      .children;
-    expect(currentQuestionTitle).toMatchSnapshot("screen 1");
-
-    const nextButton = getByA11yLabel(NEXT_BUTTON_A11YLABEL);
-    fireEvent.press(nextButton);
-
-    await waitFor(() => {
-      return (
-        getByTestId(QUESTION_TITLE_TESTID).props.children !==
-        currentQuestionTitle
-      );
-    });
-
-    currentQuestionTitle = getByTestId(QUESTION_TITLE_TESTID).props.children;
-    expect(currentQuestionTitle).toMatchSnapshot("screen 2");
-
-    fireEvent.press(nextButton);
-
-    await waitForElementToBeRemoved(() => getByTestId(QUESTION_TITLE_TESTID));
-
-    expect(toJSON()).toMatchSnapshot("end screen");
-
-    await waitForExpect(() => {
-      expect(onFinishFn).toHaveBeenCalledTimes(1);
-    });
+    await testCurrentQuestionAsync(
+      renderResults,
+      async (getCurrentQuestionTitle) => {
+        expect(getCurrentQuestionTitle()).toBe("Question 2");
+      },
+      true,
+      onFinishFn,
+    );
   });
 
   test("50 questions", async () => {
@@ -217,39 +239,105 @@ describe("questions flow", () => {
       previousState: null,
       onFinish: onFinishFn,
     };
-    const { getAllByTestId, getByTestId, getByA11yLabel, toJSON } = render(
-      <SurveyScreen {...props} />,
-    );
+    const renderResults = render(<SurveyScreen {...props} />);
 
-    // Wait for the question to be loaded.
-    await waitFor(() => {
-      return getAllByTestId(QUESTION_TITLE_TESTID).length > 0;
-    });
-
-    let currentQuestionTitle = "";
-    for (let i = 1; i <= 50; i++) {
-      currentQuestionTitle = getByTestId(QUESTION_TITLE_TESTID).props.children;
-      expect(currentQuestionTitle).toBe(`This is the ${i}th question.`);
-
-      const nextButton = getByA11yLabel(NEXT_BUTTON_A11YLABEL);
-      fireEvent.press(nextButton);
-
-      if (i === 50) {
-        break;
-      }
-
-      await waitFor(() => {
-        return (
-          getByTestId(QUESTION_TITLE_TESTID).props.children !==
-          currentQuestionTitle
-        );
-      });
+    for (let i = 1; i <= 49; i++) {
+      await testCurrentQuestionAsync(
+        renderResults,
+        async (getCurrentQuestionTitle) => {
+          expect(getCurrentQuestionTitle()).toBe(
+            `This is the ${i}th question.`,
+          );
+        },
+      );
     }
 
-    await waitForElementToBeRemoved(() => getByTestId(QUESTION_TITLE_TESTID));
+    await testCurrentQuestionAsync(
+      renderResults,
+      async (getCurrentQuestionTitle) => {
+        expect(getCurrentQuestionTitle()).toBe(`This is the 50th question.`);
+      },
+      true,
+      onFinishFn,
+    );
+  });
 
-    await waitForExpect(() => {
-      expect(onFinishFn).toHaveBeenCalledTimes(1);
+  describe("yes no question", () => {
+    const props: SurveyScreenProps = {
+      questions: {
+        q1: {
+          id: "q1",
+          type: QuestionType.YesNo,
+          question: "Question 1",
+          branchStartId: {
+            yes: "q1.yes",
+            no: "q1.no",
+          },
+          next: "q2",
+        },
+        "q1.yes": {
+          id: "q1.yes",
+          type: QuestionType.YesNo,
+          question: "Question 1 - yes branch",
+          next: null,
+        },
+        "q1.no": {
+          id: "q1.no",
+          type: QuestionType.YesNo,
+          question: "Question 1 - no branch",
+          next: null,
+        },
+        q2: {
+          id: "q2",
+          type: QuestionType.Slider,
+          question: "Question 2",
+          slider: ["left", "right"],
+          next: null,
+        },
+      },
+      startingQuestionId: "q1",
+      ping: TEST_PING,
+      previousState: null,
+      onFinish: async () => {},
+    };
+
+    test("yes branch", async () => {
+      const onFinishFn = jest.fn();
+
+      const renderResults = render(
+        <SurveyScreen {...props} onFinish={onFinishFn} />,
+      );
+      const { getAllByA11yLabel, getByA11yLabel } = renderResults;
+
+      await testCurrentQuestionAsync(
+        renderResults,
+        async (getCurrentQuestionTitle) => {
+          // Wait for the choices to be loaded.
+          await waitFor(() => {
+            return getAllByA11yLabel("select Yes").length > 0;
+          });
+
+          expect(getCurrentQuestionTitle()).toBe("Question 1");
+
+          fireEvent.press(getByA11yLabel("select Yes"));
+        },
+      );
+
+      await testCurrentQuestionAsync(
+        renderResults,
+        async (getCurrentQuestionTitle) => {
+          expect(getCurrentQuestionTitle()).toBe("Question 1 - yes branch");
+        },
+      );
+
+      await testCurrentQuestionAsync(
+        renderResults,
+        async (getCurrentQuestionTitle) => {
+          expect(getCurrentQuestionTitle()).toBe("Question 2");
+        },
+        true,
+        onFinishFn,
+      );
     });
   });
 });
