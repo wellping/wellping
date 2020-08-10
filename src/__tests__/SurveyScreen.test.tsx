@@ -275,6 +275,18 @@ describe("questions flow", () => {
   });
 
   describe("yes no question", () => {
+    async function clickOptionAsync(
+      yesNo: "Yes" | "No",
+      { getAllByA11yLabel, getByA11yLabel }: RenderAPI,
+    ) {
+      // Wait for the choices to be loaded.
+      await waitFor(() => {
+        return getAllByA11yLabel(`select ${yesNo}`).length > 0;
+      });
+
+      fireEvent.press(getByA11yLabel(`select ${yesNo}`));
+    }
+
     describe("with both branchStartId", () => {
       const props: SurveyScreenProps = {
         questions: {
@@ -320,19 +332,13 @@ describe("questions flow", () => {
         const renderResults = render(
           <SurveyScreen {...props} onFinish={onFinishFn} />,
         );
-        const { getAllByA11yLabel, getByA11yLabel } = renderResults;
 
         await testCurrentQuestionAsync({
           renderResults,
           expectCurrentQuestionAsync: async (getCurrentQuestionTitle) => {
-            // Wait for the choices to be loaded.
-            await waitFor(() => {
-              return getAllByA11yLabel("select Yes").length > 0;
-            });
+            await clickOptionAsync("Yes", renderResults);
 
             expect(getCurrentQuestionTitle()).toBe("Question 1");
-
-            fireEvent.press(getByA11yLabel("select Yes"));
           },
         });
 
@@ -359,19 +365,13 @@ describe("questions flow", () => {
         const renderResults = render(
           <SurveyScreen {...props} onFinish={onFinishFn} />,
         );
-        const { getAllByA11yLabel, getByA11yLabel } = renderResults;
 
         await testCurrentQuestionAsync({
           renderResults,
           expectCurrentQuestionAsync: async (getCurrentQuestionTitle) => {
-            // Wait for the choices to be loaded.
-            await waitFor(() => {
-              return getAllByA11yLabel("select No").length > 0;
-            });
+            await clickOptionAsync("No", renderResults);
 
             expect(getCurrentQuestionTitle()).toBe("Question 1");
-
-            fireEvent.press(getByA11yLabel("select No"));
           },
         });
 
