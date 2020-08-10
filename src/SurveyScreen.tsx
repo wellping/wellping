@@ -323,7 +323,11 @@ export default class SurveyScreen extends React.Component<
       }
 
       // Set up follow-up streams.
-      if (ynQ.addFollowupStream && ynQ.addFollowupStream.yes) {
+      if (
+        ynD.value === true &&
+        ynQ.addFollowupStream &&
+        ynQ.addFollowupStream.yes
+      ) {
         const futureStreamName: StreamName = ynQ.addFollowupStream.yes;
 
         // TODO: ADD SUPPORT TO CUSTOMIZE DATE AFTER
