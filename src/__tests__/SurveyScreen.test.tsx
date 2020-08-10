@@ -339,5 +339,44 @@ describe("questions flow", () => {
         onFinishFn,
       );
     });
+
+    test("no branch", async () => {
+      const onFinishFn = jest.fn();
+
+      const renderResults = render(
+        <SurveyScreen {...props} onFinish={onFinishFn} />,
+      );
+      const { getAllByA11yLabel, getByA11yLabel } = renderResults;
+
+      await testCurrentQuestionAsync(
+        renderResults,
+        async (getCurrentQuestionTitle) => {
+          // Wait for the choices to be loaded.
+          await waitFor(() => {
+            return getAllByA11yLabel("select No").length > 0;
+          });
+
+          expect(getCurrentQuestionTitle()).toBe("Question 1");
+
+          fireEvent.press(getByA11yLabel("select No"));
+        },
+      );
+
+      await testCurrentQuestionAsync(
+        renderResults,
+        async (getCurrentQuestionTitle) => {
+          expect(getCurrentQuestionTitle()).toBe("Question 1 - no branch");
+        },
+      );
+
+      await testCurrentQuestionAsync(
+        renderResults,
+        async (getCurrentQuestionTitle) => {
+          expect(getCurrentQuestionTitle()).toBe("Question 2");
+        },
+        true,
+        onFinishFn,
+      );
+    });
   });
 });
