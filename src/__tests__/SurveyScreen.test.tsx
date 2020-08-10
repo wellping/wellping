@@ -415,6 +415,31 @@ describe("questions flow", () => {
           onFinishFn,
         });
       });
+
+      test("prefer not to answer", async () => {
+        const onFinishFn = jest.fn();
+
+        const renderResults = render(
+          <SurveyScreen {...props} onFinish={onFinishFn} />,
+        );
+
+        await testCurrentQuestionAsync({
+          renderResults,
+          nextButton: "pna",
+          expectCurrentQuestionAsync: async (getCurrentQuestionTitle) => {
+            expect(getCurrentQuestionTitle()).toBe("Question 1");
+          },
+        });
+
+        await testCurrentQuestionAsync({
+          renderResults,
+          expectCurrentQuestionAsync: async (getCurrentQuestionTitle) => {
+            expect(getCurrentQuestionTitle()).toBe("Question 2");
+          },
+          waitForAndTestEndPage: true,
+          onFinishFn,
+        });
+      });
     });
   });
 });
