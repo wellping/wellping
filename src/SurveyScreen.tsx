@@ -317,15 +317,6 @@ export default class SurveyScreen extends React.Component<
       }
     }
 
-    function considerEmptyAnswerFallbackNext(
-      question: Question,
-      isEmpty: boolean,
-    ) {
-      if (isEmpty && question.fallbackNext?.emptyAnswer !== undefined) {
-        nextQuestionData.questionId = question.fallbackNext.emptyAnswer;
-      }
-    }
-
     switch (prevQuestion.type) {
       case QuestionType.YesNo: {
         const ynQ = prevQuestion as YesNoQuestion;
@@ -358,8 +349,6 @@ export default class SurveyScreen extends React.Component<
               }
             });
           }
-        } else {
-          considerEmptyAnswerFallbackNext(ynQ, true);
         }
         break;
       }
@@ -375,7 +364,6 @@ export default class SurveyScreen extends React.Component<
           valuesLength === 0 ||
           mtQ.repeatedItemStartId === undefined
         ) {
-          considerConditionalQuestionId(mtQ.fallbackItemStartId);
           break;
         }
 
@@ -461,43 +449,28 @@ export default class SurveyScreen extends React.Component<
         const specialCasesStartId = cQ.specialCasesStartId;
         if (specialCasesStartId) {
           let specialNextQuestionId: QuestionId | null | undefined;
-          if (
-            specialCasesStartId._pna !== undefined &&
-            (cA.nextWithoutOption || cA.preferNotToAnswer)
-          ) {
-            specialNextQuestionId = specialCasesStartId._pna;
-          } else {
-            // `specialCasesStartIdExceptPNA` is created to avoid being
-            // complained by TypeScript.
-            const specialCasesStartIdExceptPNA = specialCasesStartId as Record<
-              string,
-              string | null
-            >;
 
-            if (cQ.type === QuestionType.ChoicesWithSingleAnswer) {
-              const csaAnswer = cA as ChoicesWithSingleAnswerAnswerEntity;
-              if (csaAnswer.data) {
-                const dataValue =
-                  specialCasesStartIdExceptPNA[csaAnswer.data.value];
-                specialNextQuestionId = dataValue;
-              }
-            } else {
-              if (cQ.type === QuestionType.ChoicesWithMultipleAnswers) {
-                const cmaAnswer = cA as ChoicesWithMultipleAnswersAnswerEntity;
-                Object.entries(cmaAnswer.data?.value || {}).some(
-                  ([eachAnswer, selected]) => {
-                    if (selected) {
-                      if (selected && specialCasesStartIdExceptPNA) {
-                        specialNextQuestionId =
-                          specialCasesStartIdExceptPNA[eachAnswer];
-                      }
-                      // we return `true` here instead of inside so that it will also stop when any other choices are selected.
-                      return true;
+          if (cQ.type === QuestionType.ChoicesWithSingleAnswer) {
+            const csaAnswer = cA as ChoicesWithSingleAnswerAnswerEntity;
+            if (csaAnswer.data) {
+              const dataValue = specialCasesStartId[csaAnswer.data.value];
+              specialNextQuestionId = dataValue;
+            }
+          } else {
+            if (cQ.type === QuestionType.ChoicesWithMultipleAnswers) {
+              const cmaAnswer = cA as ChoicesWithMultipleAnswersAnswerEntity;
+              Object.entries(cmaAnswer.data?.value || {}).some(
+                ([eachAnswer, selected]) => {
+                  if (selected) {
+                    if (selected && specialCasesStartId) {
+                      specialNextQuestionId = specialCasesStartId[eachAnswer];
                     }
-                    return false;
-                  },
-                );
-              }
+                    // we return `true` here instead of inside so that it will also stop when any other choices are selected.
+                    return true;
+                  }
+                  return false;
+                },
+              );
             }
           }
 
