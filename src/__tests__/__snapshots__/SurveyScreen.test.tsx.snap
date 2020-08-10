@@ -1,11 +1,11 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`non-existent startingQuestionId 1`] = `
+exports[`questions flow non-existent startingQuestionId 1`] = `
 <Text>
   [CRITICAL ERROR (Please screenshot this page and send it to the study staff as soon as possible): questions["na"] === undefined]
 </Text>
 `;
 
-exports[`single question: screen 1 1`] = `"How long ago is it?"`;
+exports[`questions flow single question: screen 1 1`] = `"How long ago is it?"`;
 
-exports[`single question: screen 2 1`] = `null`;
+exports[`questions flow single question: screen 2 1`] = `null`;

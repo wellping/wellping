@@ -44,7 +44,7 @@ const TEST_PING_RAW = {
 const TEST_PING = getPingEntity(TEST_PING_RAW);
 
 /**
- * We are not testing database here, so we are mocking all database-related
+ * If we are not testing database here, we can mock all database-related
  * function.
  * If we don't do so, the code will be stuck on these functions.
  */
@@ -65,65 +65,67 @@ function mockDatabaseRelatedFunction() {
     });
 }
 
-beforeEach(() => {
-  mockDatabaseRelatedFunction();
-});
-
-test("non-existent startingQuestionId", async () => {
-  const onFinishFn = jest.fn();
-
-  const props: SurveyScreenProps = {
-    questions: {},
-    startingQuestionId: "na",
-    ping: TEST_PING,
-    previousState: null,
-    onFinish: onFinishFn,
-  };
-  const { toJSON } = render(<SurveyScreen {...props} />);
-
-  expect(JSON.stringify(toJSON())).toContain("CRITICAL ERROR");
-
-  expect(toJSON()).toMatchSnapshot();
-});
-
-test("single question", async () => {
-  const onFinishFn = jest.fn();
-
-  const props: SurveyScreenProps = {
-    questions: {
-      howLongAgoQuestion: {
-        id: "howLongAgoQuestion",
-        type: QuestionType.HowLongAgo,
-        question: "How long ago is it?",
-        next: null,
-      },
-    },
-    startingQuestionId: "howLongAgoQuestion",
-    ping: TEST_PING,
-    previousState: null,
-    onFinish: onFinishFn,
-  };
-  const { getAllByTestId, getByTestId, getByA11yLabel, toJSON } = render(
-    <SurveyScreen {...props} />,
-  );
-
-  // Wait for the question to be loaded.
-  await waitFor(() => {
-    return getAllByTestId("questionTitle").length > 0;
+describe("questions flow", () => {
+  beforeEach(() => {
+    mockDatabaseRelatedFunction();
   });
 
-  expect(getByTestId("questionTitle").props.children).toMatchSnapshot(
-    "screen 1",
-  );
+  test("non-existent startingQuestionId", async () => {
+    const onFinishFn = jest.fn();
 
-  const nextButton = getByA11yLabel("Next question");
-  fireEvent.press(nextButton);
+    const props: SurveyScreenProps = {
+      questions: {},
+      startingQuestionId: "na",
+      ping: TEST_PING,
+      previousState: null,
+      onFinish: onFinishFn,
+    };
+    const { toJSON } = render(<SurveyScreen {...props} />);
 
-  await waitForElementToBeRemoved(() => getByTestId("questionTitle"));
+    expect(JSON.stringify(toJSON())).toContain("CRITICAL ERROR");
 
-  expect(toJSON()).toMatchSnapshot("screen 2");
+    expect(toJSON()).toMatchSnapshot();
+  });
 
-  await waitForExpect(() => {
-    expect(onFinishFn).toHaveBeenCalledTimes(1);
+  test("single question", async () => {
+    const onFinishFn = jest.fn();
+
+    const props: SurveyScreenProps = {
+      questions: {
+        howLongAgoQuestion: {
+          id: "howLongAgoQuestion",
+          type: QuestionType.HowLongAgo,
+          question: "How long ago is it?",
+          next: null,
+        },
+      },
+      startingQuestionId: "howLongAgoQuestion",
+      ping: TEST_PING,
+      previousState: null,
+      onFinish: onFinishFn,
+    };
+    const { getAllByTestId, getByTestId, getByA11yLabel, toJSON } = render(
+      <SurveyScreen {...props} />,
+    );
+
+    // Wait for the question to be loaded.
+    await waitFor(() => {
+      return getAllByTestId("questionTitle").length > 0;
+    });
+
+    expect(getByTestId("questionTitle").props.children).toMatchSnapshot(
+      "screen 1",
+    );
+
+    const nextButton = getByA11yLabel("Next question");
+    fireEvent.press(nextButton);
+
+    await waitForElementToBeRemoved(() => getByTestId("questionTitle"));
+
+    expect(toJSON()).toMatchSnapshot("screen 2");
+
+    await waitForExpect(() => {
+      expect(onFinishFn).toHaveBeenCalledTimes(1);
+    });
   });
 });
