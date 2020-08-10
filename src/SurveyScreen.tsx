@@ -710,6 +710,7 @@ export default class SurveyScreen extends React.Component<
         }}
       >
         <Text
+          testID="questionTitle"
           style={{
             textAlign: "center",
             fontSize: smallScreen ? 15 : 20,
