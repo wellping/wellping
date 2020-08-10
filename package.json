@@ -50,7 +50,8 @@
     "react-native-testing-library": "^2.1.0",
     "react-test-renderer": "^16.13.1",
     "sqlite3": "^5.0.0",
-    "typescript": "~3.9.5"
+    "typescript": "~3.9.5",
+    "wait-for-expect": "^3.0.2"
   },
   "jest": {
     "verbose": true,
