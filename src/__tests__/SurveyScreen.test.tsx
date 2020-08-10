@@ -5,12 +5,11 @@ import {
   waitFor,
   waitForElementToBeRemoved,
 } from "react-native-testing-library";
+import { BaseEntity } from "typeorm";
 import waitForExpect from "wait-for-expect";
 
 import SurveyScreen, { SurveyScreenProps } from "../SurveyScreen";
-import { getAnswerEntity } from "../entities/AnswerEntity";
 import { PingEntity } from "../entities/PingEntity";
-import * as HelperAnswers from "../helpers/answers";
 import { QuestionType } from "../helpers/helpers";
 import * as HelperPings from "../helpers/pings";
 import { QuestionsList } from "../helpers/types";
@@ -56,29 +55,10 @@ const NEXT_BUTTON_A11YLABEL = "Next question";
  */
 function mockDatabaseRelatedFunction() {
   // https://stackoverflow.com/a/56565849/2603230
-  jest
-    .spyOn(HelperAnswers, "insertAnswerAsync")
-    .mockImplementation(
-      async ({
-        ping,
-        question,
-        realQuestionId,
-        preferNotToAnswer,
-        nextWithoutOption,
-        data,
-        lastUpdateDate,
-      }) => {
-        const answer = getAnswerEntity(question.type);
-        answer.ping = ping;
-        answer.questionId = realQuestionId;
-        answer.preferNotToAnswer = preferNotToAnswer;
-        answer.nextWithoutOption = nextWithoutOption;
-        answer.data = data;
-        answer.lastUpdateDate = lastUpdateDate;
-        return answer;
-      },
-    );
+  jest.spyOn(BaseEntity.prototype, "save").mockReturnThis();
+  jest.spyOn(BaseEntity.prototype, "reload").mockReturnThis();
 
+  // `addEndTimeToPingAsync` is tested in `pings.parttest.ts`.
   jest
     .spyOn(HelperPings, "addEndTimeToPingAsync")
     .mockImplementation(async () => {
