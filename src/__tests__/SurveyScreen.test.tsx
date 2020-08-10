@@ -11,6 +11,7 @@ import SurveyScreen, { SurveyScreenProps } from "../SurveyScreen";
 import { PingEntity } from "../entities/PingEntity";
 import { QuestionType } from "../helpers/helpers";
 import * as HelperPings from "../helpers/pings";
+import { QuestionsList } from "../helpers/types";
 
 const getPingEntity = ({
   id,
@@ -189,6 +190,62 @@ describe("questions flow", () => {
     await waitForElementToBeRemoved(() => getByTestId(QUESTION_TITLE_TESTID));
 
     expect(toJSON()).toMatchSnapshot("end screen");
+
+    await waitForExpect(() => {
+      expect(onFinishFn).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  test("50 questions", async () => {
+    const onFinishFn = jest.fn();
+
+    const questions: QuestionsList = {};
+    for (let i = 1; i <= 50; i++) {
+      questions[`question_${i}`] = {
+        id: `question_${i}`,
+        type: QuestionType.HowLongAgo,
+        question: `This is the ${i}th question.`,
+        next: i === 50 ? null : `question_${i + 1}`,
+      };
+    }
+
+    const props: SurveyScreenProps = {
+      questions,
+      startingQuestionId: "question_1",
+      ping: TEST_PING,
+      previousState: null,
+      onFinish: onFinishFn,
+    };
+    const { getAllByTestId, getByTestId, getByA11yLabel, toJSON } = render(
+      <SurveyScreen {...props} />,
+    );
+
+    // Wait for the question to be loaded.
+    await waitFor(() => {
+      return getAllByTestId(QUESTION_TITLE_TESTID).length > 0;
+    });
+
+    let currentQuestionTitle = "";
+    for (let i = 1; i <= 50; i++) {
+      currentQuestionTitle = getByTestId(QUESTION_TITLE_TESTID).props.children;
+      expect(currentQuestionTitle).toBe(`This is the ${i}th question.`);
+
+      const nextButton = getByA11yLabel(NEXT_BUTTON_A11YLABEL);
+      fireEvent.press(nextButton);
+
+      if (i === 50) {
+        break;
+      }
+
+      await waitFor(() => {
+        return (
+          getByTestId(QUESTION_TITLE_TESTID).props.children !==
+          currentQuestionTitle
+        );
+      });
+    }
+
+    await waitForElementToBeRemoved(() => getByTestId(QUESTION_TITLE_TESTID));
 
     await waitForExpect(() => {
       expect(onFinishFn).toHaveBeenCalledTimes(1);
