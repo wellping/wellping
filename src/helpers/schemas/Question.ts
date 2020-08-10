@@ -20,10 +20,57 @@ export const QuestionTypeSchema = z.enum([
 ]);
 
 const BaseQuestionSchema = z.object({
+  /**
+   * The question ID.
+   */
   id: QuestionIdSchema,
+
+  /**
+   * The question type.
+   */
   type: QuestionTypeSchema,
+
+  /**
+   * The question text.
+   */
   question: z.string(),
-  // TODO: ADD A OPTIOANL FALLBACK NEXT ID.
+
+  /**
+   * The optional fallback next IDs.
+   */
+  fallbackNext: z
+    .object({
+      /**
+       * If not `undefined`, this will replace `next` when the user prefers not
+       * to answer this question.
+       */
+      preferNotToAnswer: QuestionIdSchema.nullable().optional(),
+
+      /**
+       * If not `undefined`, this will replace `next` when the answer to the
+       * question is empty. Note that this only applies to certain question
+       * types, namely `ChoicesWithSingleAnswer`, `ChoicesWithMultipleAnswers`,
+       * `YesNo`, `HowLongAgo`, and `MultipleText`, as it is impossible for
+       * `Slider`, `Branch` and `BranchWithRelativeComparison` to be empty.
+       *
+       * If both `emptyAnswer` and `nextWithoutAnswering` are not `undefined`,
+       * and the user presses the "Next" button directly, `emptyAnswer` takes
+       * precedent.
+       */
+      emptyAnswer: QuestionIdSchema.nullable().optional(),
+
+      /**
+       * If not `undefined`, this will replace `next` when the user presses the
+       * "Next" button without interacting with the question UI (the slider,
+       * the selection buttons, etc.).
+       */
+      nextWithoutAnswering: QuestionIdSchema.nullable().optional(),
+    })
+    .optional(),
+
+  /**
+   * The question ID of the next question.
+   */
   next: QuestionIdSchemaNullable(["next"]),
 });
 
@@ -41,13 +88,7 @@ export const ChoicesQuestionSchema = BaseQuestionSchema.extend({
   ]),
   choices: z.union([z.string(), ChoicesListSchema]),
   specialCasesStartId: z
-    .union([
-      // TODO: https://github.com/vriad/zod/issues/104
-      // Record<choice key, question ID>
-      z.record(QuestionIdSchema.nullable()),
-      // For when the user click "Prefer not to answer" or next without option.
-      z.object({ _pna: QuestionIdSchema.nullable().optional() }),
-    ])
+    .record(QuestionIdSchema.nullable()) // Record<choice key, question ID>
     .optional(),
   randomizeChoicesOrder: z.boolean().optional(),
   randomizeExceptForChoiceIds: z.array(z.string()).optional(),
@@ -60,7 +101,7 @@ export const ChoicesQuestionSchema = BaseQuestionSchema.extend({
           return true;
         }
         for (const key of Object.keys(question.specialCasesStartId)) {
-          if (key !== "_pna" && !question.choices.includes(key)) {
+          if (!question.choices.includes(key)) {
             return false;
           }
         }
@@ -68,8 +109,7 @@ export const ChoicesQuestionSchema = BaseQuestionSchema.extend({
       return true;
     },
     {
-      message:
-        'Keys in `specialCasesStartId` must also be in `choices` or be "_pna".',
+      message: "Keys in `specialCasesStartId` must also be in `choices`.",
       path: ["specialCasesStartId"],
     },
   )
@@ -172,11 +212,6 @@ export const MultipleTextQuestionSchema = BaseQuestionSchema.extend({
   // participant entered in `maxMinus` question.
   maxMinus: QuestionIdSchema.optional(),
   repeatedItemStartId: QuestionIdSchema.optional(),
-  // This is used when the user does not enter any name or select prefer not to
-  // answer. Note that this has to exists somewhere else. If it is `null`, we
-  // will go to `next` directly.
-  // TODO: MAKE THIS null = stop HERE
-  fallbackItemStartId: QuestionIdSchema.nullable().optional(),
 }).refine(
   (question) => {
     if (question.forceChoice !== undefined) {

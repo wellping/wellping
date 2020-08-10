@@ -280,6 +280,18 @@ export default class SurveyScreen extends React.Component<
       questionId: prevQuestion.next,
       extraData: prevExtraData,
     };
+    if (
+      prevAnswer.preferNotToAnswer &&
+      prevQuestion.fallbackNext?.preferNotToAnswer !== undefined
+    ) {
+      nextQuestionData.questionId = prevQuestion.fallbackNext.preferNotToAnswer;
+    } else if (
+      prevAnswer.nextWithoutOption &&
+      prevQuestion.fallbackNext?.nextWithoutAnswering !== undefined
+    ) {
+      nextQuestionData.questionId =
+        prevQuestion.fallbackNext.nextWithoutAnswering;
+    }
 
     /**
      * Does appropriate actions when facing a conditional question ID.
@@ -302,6 +314,15 @@ export default class SurveyScreen extends React.Component<
           questionId: conditionalQuestionId,
           extraData: prevExtraData,
         });
+      }
+    }
+
+    function considerEmptyAnswerFallbackNext(
+      question: Question,
+      isEmpty: boolean,
+    ) {
+      if (isEmpty && question.fallbackNext?.emptyAnswer !== undefined) {
+        nextQuestionData.questionId = question.fallbackNext.emptyAnswer;
       }
     }
 
@@ -337,6 +358,8 @@ export default class SurveyScreen extends React.Component<
               }
             });
           }
+        } else {
+          considerEmptyAnswerFallbackNext(ynQ, true);
         }
         break;
       }
