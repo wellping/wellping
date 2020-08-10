@@ -647,17 +647,6 @@ export default class SurveyScreen extends React.Component<
 
   dataValidationFunction: (() => boolean) | null = null;
   render() {
-    /*var contents = this.props.screenProps.scores.map(score => (
-      <Text key={score.name}>
-        {score.name}:{score.value}
-      </Text>
-    ));
-    return (
-      <View style={styles.container}>
-        <Text style={styles.highScoresTitle}>2048 High Scores!</Text>
-        <Text style={styles.scores}>{contents}</Text>
-      </View>
-    );*/
     const {
       currentQuestionData: { questionId: currentQuestionId },
       answers,
