@@ -263,120 +263,146 @@ describe("questions flow", () => {
   });
 
   describe("yes no question", () => {
-    const props: SurveyScreenProps = {
-      questions: {
-        q1: {
-          id: "q1",
-          type: QuestionType.YesNo,
-          question: "Question 1",
-          branchStartId: {
-            yes: "q1.yes",
-            no: "q1.no",
+    describe("with both branchStartId", () => {
+      const props: SurveyScreenProps = {
+        questions: {
+          q1: {
+            id: "q1",
+            type: QuestionType.YesNo,
+            question: "Question 1",
+            branchStartId: {
+              yes: "q1.yes",
+              no: "q1.no",
+            },
+            next: "q2",
           },
-          next: "q2",
+          "q1.yes": {
+            id: "q1.yes",
+            type: QuestionType.YesNo,
+            question: "Question 1 - yes branch",
+            next: null,
+          },
+          "q1.no": {
+            id: "q1.no",
+            type: QuestionType.YesNo,
+            question: "Question 1 - no branch",
+            next: null,
+          },
+          q2: {
+            id: "q2",
+            type: QuestionType.Slider,
+            question: "Question 2",
+            slider: ["left", "right"],
+            next: null,
+          },
         },
-        "q1.yes": {
-          id: "q1.yes",
-          type: QuestionType.YesNo,
-          question: "Question 1 - yes branch",
-          next: null,
-        },
-        "q1.no": {
-          id: "q1.no",
-          type: QuestionType.YesNo,
-          question: "Question 1 - no branch",
-          next: null,
-        },
-        q2: {
-          id: "q2",
-          type: QuestionType.Slider,
-          question: "Question 2",
-          slider: ["left", "right"],
-          next: null,
-        },
-      },
-      startingQuestionId: "q1",
-      ping: TEST_PING,
-      previousState: null,
-      onFinish: async () => {},
-    };
+        startingQuestionId: "q1",
+        ping: TEST_PING,
+        previousState: null,
+        onFinish: async () => {},
+      };
 
-    test("yes branch", async () => {
-      const onFinishFn = jest.fn();
+      test("`yes` branch", async () => {
+        const onFinishFn = jest.fn();
 
-      const renderResults = render(
-        <SurveyScreen {...props} onFinish={onFinishFn} />,
-      );
-      const { getAllByA11yLabel, getByA11yLabel } = renderResults;
+        const renderResults = render(
+          <SurveyScreen {...props} onFinish={onFinishFn} />,
+        );
+        const { getAllByA11yLabel, getByA11yLabel } = renderResults;
 
-      await testCurrentQuestionAsync(
-        renderResults,
-        async (getCurrentQuestionTitle) => {
-          // Wait for the choices to be loaded.
-          await waitFor(() => {
-            return getAllByA11yLabel("select Yes").length > 0;
-          });
+        await testCurrentQuestionAsync(
+          renderResults,
+          async (getCurrentQuestionTitle) => {
+            // Wait for the choices to be loaded.
+            await waitFor(() => {
+              return getAllByA11yLabel("select Yes").length > 0;
+            });
 
-          expect(getCurrentQuestionTitle()).toBe("Question 1");
+            expect(getCurrentQuestionTitle()).toBe("Question 1");
 
-          fireEvent.press(getByA11yLabel("select Yes"));
-        },
-      );
+            fireEvent.press(getByA11yLabel("select Yes"));
+          },
+        );
 
-      await testCurrentQuestionAsync(
-        renderResults,
-        async (getCurrentQuestionTitle) => {
-          expect(getCurrentQuestionTitle()).toBe("Question 1 - yes branch");
-        },
-      );
+        await testCurrentQuestionAsync(
+          renderResults,
+          async (getCurrentQuestionTitle) => {
+            expect(getCurrentQuestionTitle()).toBe("Question 1 - yes branch");
+          },
+        );
 
-      await testCurrentQuestionAsync(
-        renderResults,
-        async (getCurrentQuestionTitle) => {
-          expect(getCurrentQuestionTitle()).toBe("Question 2");
-        },
-        true,
-        onFinishFn,
-      );
-    });
+        await testCurrentQuestionAsync(
+          renderResults,
+          async (getCurrentQuestionTitle) => {
+            expect(getCurrentQuestionTitle()).toBe("Question 2");
+          },
+          true,
+          onFinishFn,
+        );
+      });
 
-    test("no branch", async () => {
-      const onFinishFn = jest.fn();
+      test("`no` branch", async () => {
+        const onFinishFn = jest.fn();
 
-      const renderResults = render(
-        <SurveyScreen {...props} onFinish={onFinishFn} />,
-      );
-      const { getAllByA11yLabel, getByA11yLabel } = renderResults;
+        const renderResults = render(
+          <SurveyScreen {...props} onFinish={onFinishFn} />,
+        );
+        const { getAllByA11yLabel, getByA11yLabel } = renderResults;
 
-      await testCurrentQuestionAsync(
-        renderResults,
-        async (getCurrentQuestionTitle) => {
-          // Wait for the choices to be loaded.
-          await waitFor(() => {
-            return getAllByA11yLabel("select No").length > 0;
-          });
+        await testCurrentQuestionAsync(
+          renderResults,
+          async (getCurrentQuestionTitle) => {
+            // Wait for the choices to be loaded.
+            await waitFor(() => {
+              return getAllByA11yLabel("select No").length > 0;
+            });
 
-          expect(getCurrentQuestionTitle()).toBe("Question 1");
+            expect(getCurrentQuestionTitle()).toBe("Question 1");
 
-          fireEvent.press(getByA11yLabel("select No"));
-        },
-      );
+            fireEvent.press(getByA11yLabel("select No"));
+          },
+        );
 
-      await testCurrentQuestionAsync(
-        renderResults,
-        async (getCurrentQuestionTitle) => {
-          expect(getCurrentQuestionTitle()).toBe("Question 1 - no branch");
-        },
-      );
+        await testCurrentQuestionAsync(
+          renderResults,
+          async (getCurrentQuestionTitle) => {
+            expect(getCurrentQuestionTitle()).toBe("Question 1 - no branch");
+          },
+        );
 
-      await testCurrentQuestionAsync(
-        renderResults,
-        async (getCurrentQuestionTitle) => {
-          expect(getCurrentQuestionTitle()).toBe("Question 2");
-        },
-        true,
-        onFinishFn,
-      );
+        await testCurrentQuestionAsync(
+          renderResults,
+          async (getCurrentQuestionTitle) => {
+            expect(getCurrentQuestionTitle()).toBe("Question 2");
+          },
+          true,
+          onFinishFn,
+        );
+      });
+
+      test("click next without answering", async () => {
+        const onFinishFn = jest.fn();
+
+        const renderResults = render(
+          <SurveyScreen {...props} onFinish={onFinishFn} />,
+        );
+
+        await testCurrentQuestionAsync(
+          renderResults,
+          async (getCurrentQuestionTitle) => {
+            expect(getCurrentQuestionTitle()).toBe("Question 1");
+          },
+        );
+
+        await testCurrentQuestionAsync(
+          renderResults,
+          async (getCurrentQuestionTitle) => {
+            expect(getCurrentQuestionTitle()).toBe("Question 2");
+          },
+          true,
+          onFinishFn,
+        );
+      });
     });
   });
 });
