@@ -85,6 +85,8 @@ describe("questions flow", () => {
     expect(JSON.stringify(toJSON())).toContain("CRITICAL ERROR");
 
     expect(toJSON()).toMatchSnapshot();
+
+    expect(onFinishFn).toHaveBeenCalledTimes(0);
   });
 
   test("single question", async () => {
