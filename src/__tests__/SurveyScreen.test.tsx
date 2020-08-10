@@ -34,19 +34,48 @@ const getPingEntity = ({
   return ping;
 };
 
+const TEST_PING_RAW = {
+  id: "testPing",
+  notificationTime: new Date(),
+  startTime: new Date(),
+  tzOffset: 0,
+  streamName: "testStream",
+};
+const TEST_PING = getPingEntity(TEST_PING_RAW);
+
+/**
+ * We are not testing database here, so we are mocking all database-related
+ * function.
+ * If we don't do so, the code will be stuck on these functions.
+ */
+function mockDatabaseRelatedFunction() {
+  // https://stackoverflow.com/a/56565849/2603230
+  jest
+    .spyOn(SurveyScreen.prototype, "addAnswerToAnswersListAsync")
+    .mockImplementation(async () => {});
+
+  jest
+    .spyOn(HelperPings, "addEndTimeToPingAsync")
+    .mockImplementation(async () => {
+      const newPing = {
+        ...TEST_PING_RAW,
+        endDate: new Date(),
+      };
+      return getPingEntity(newPing);
+    });
+}
+
+beforeEach(() => {
+  mockDatabaseRelatedFunction();
+});
+
 test("non-existent startingQuestionId", async () => {
   const onFinishFn = jest.fn();
 
   const props: SurveyScreenProps = {
     questions: {},
     startingQuestionId: "na",
-    ping: getPingEntity({
-      id: "testPing",
-      notificationTime: new Date(),
-      startTime: new Date(),
-      tzOffset: 0,
-      streamName: "testStream",
-    }),
+    ping: TEST_PING,
     previousState: null,
     onFinish: onFinishFn,
   };
@@ -60,26 +89,6 @@ test("non-existent startingQuestionId", async () => {
 test("single question", async () => {
   const onFinishFn = jest.fn();
 
-  const ping = getPingEntity({
-    id: "testPing",
-    notificationTime: new Date(),
-    startTime: new Date(),
-    tzOffset: 0,
-    streamName: "testStream",
-  });
-
-  // https://stackoverflow.com/a/56565849/2603230
-  jest
-    .spyOn(SurveyScreen.prototype, "addAnswerToAnswersListAsync")
-    .mockImplementation(async (question, options) => {});
-
-  jest
-    .spyOn(HelperPings, "addEndTimeToPingAsync")
-    .mockImplementation(async () => {
-      ping.endTime = new Date();
-      return ping;
-    });
-
   const props: SurveyScreenProps = {
     questions: {
       howLongAgoQuestion: {
@@ -90,7 +99,7 @@ test("single question", async () => {
       },
     },
     startingQuestionId: "howLongAgoQuestion",
-    ping,
+    ping: TEST_PING,
     previousState: null,
     onFinish: onFinishFn,
   };
