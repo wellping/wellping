@@ -24,7 +24,10 @@ import {
   enqueueToFuturePingQueue,
 } from "./helpers/asyncStorage/futurePings";
 import { storePingStateAsync } from "./helpers/asyncStorage/pingState";
-import { getNonCriticalProblemTextForUser } from "./helpers/debug";
+import {
+  getNonCriticalProblemTextForUser,
+  getCriticalProblemTextForUser,
+} from "./helpers/debug";
 import {
   QuestionType,
   withVariable,
@@ -648,17 +651,26 @@ export default class SurveyScreen extends React.Component<
   dataValidationFunction: (() => boolean) | null = null;
   render() {
     const {
-      currentQuestionData: { questionId: currentQuestionId },
+      currentQuestionData: { questionId },
       answers,
     } = this.state;
-    if (currentQuestionId == null) {
+    if (questionId == null) {
       // This is just here until `onFinish` is called.
       return <></>;
     }
 
     const { questions } = this.props;
 
-    const question = questions[currentQuestionId] as Question;
+    const question = questions[questionId] as Question;
+    if (question === undefined) {
+      return (
+        <Text>
+          {getCriticalProblemTextForUser(
+            `questions["${questionId}"] === undefined`,
+          )}
+        </Text>
+      );
+    }
     const realQuestionId = this.getRealQuestionId(question);
 
     type QuestionScreenType = React.ElementType<QuestionScreenProps>;
@@ -689,8 +701,6 @@ export default class SurveyScreen extends React.Component<
 
     const smallScreen = Dimensions.get("window").height < 600;
 
-    const currentQuestion = questions[currentQuestionId];
-
     return (
       <View
         style={{
@@ -716,8 +726,8 @@ export default class SurveyScreen extends React.Component<
         >
           <QuestionScreen
             /* https://stackoverflow.com/a/21750576/2603230 */
-            key={currentQuestion.id}
-            question={currentQuestion}
+            key={question.id}
+            question={question}
             onDataChange={(data) => {
               this.addAnswerToAnswersListAsync(question, {
                 data,
@@ -784,7 +794,7 @@ export default class SurveyScreen extends React.Component<
               {JSON.stringify(this.state.nextQuestionsDataStack)}
             </Text>
             <Text style={{ marginTop: 20 }}>
-              currentQuestion: {JSON.stringify(currentQuestion)}
+              currentQuestion: {JSON.stringify(question)}
             </Text>
             <Text style={{ marginTop: 20 }}>
               Current answer: {JSON.stringify(answers)}
