@@ -5,10 +5,12 @@ import {
   waitFor,
   waitForElementToBeRemoved,
 } from "react-native-testing-library";
+import waitForExpect from "wait-for-expect";
 
 import SurveyScreen, { SurveyScreenProps } from "../SurveyScreen";
 import { PingEntity } from "../entities/PingEntity";
 import { QuestionType } from "../helpers/helpers";
+import * as HelperPings from "../helpers/pings";
 
 const getPingEntity = ({
   id,
@@ -58,10 +60,25 @@ test("non-existent startingQuestionId", async () => {
 test("single question", async () => {
   const onFinishFn = jest.fn();
 
+  const ping = getPingEntity({
+    id: "testPing",
+    notificationTime: new Date(),
+    startTime: new Date(),
+    tzOffset: 0,
+    streamName: "testStream",
+  });
+
   // https://stackoverflow.com/a/56565849/2603230
   jest
     .spyOn(SurveyScreen.prototype, "addAnswerToAnswersListAsync")
     .mockImplementation(async (question, options) => {});
+
+  jest
+    .spyOn(HelperPings, "addEndTimeToPingAsync")
+    .mockImplementation(async () => {
+      ping.endTime = new Date();
+      return ping;
+    });
 
   const props: SurveyScreenProps = {
     questions: {
@@ -73,19 +90,12 @@ test("single question", async () => {
       },
     },
     startingQuestionId: "howLongAgoQuestion",
-    ping: getPingEntity({
-      id: "testPing",
-      notificationTime: new Date(),
-      startTime: new Date(),
-      tzOffset: 0,
-      streamName: "testStream",
-    }),
+    ping,
     previousState: null,
     onFinish: onFinishFn,
   };
-  const surveyScreen = <SurveyScreen {...props} />;
   const { getAllByTestId, getByTestId, getByA11yLabel, toJSON } = render(
-    surveyScreen,
+    <SurveyScreen {...props} />,
   );
 
   // Wait for the question to be loaded.
@@ -103,4 +113,8 @@ test("single question", async () => {
   await waitForElementToBeRemoved(() => getByTestId("questionTitle"));
 
   expect(toJSON()).toMatchSnapshot("screen 2");
+
+  await waitForExpect(() => {
+    expect(onFinishFn).toHaveBeenCalledTimes(1);
+  });
 });
