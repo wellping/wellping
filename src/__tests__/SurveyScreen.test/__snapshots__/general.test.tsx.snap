@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`questions flow non-existent startingQuestionId 1`] = `
+exports[`non-existent startingQuestionId 1`] = `
 <Text>
   [CRITICAL ERROR (Please screenshot this page and send it to the study staff as soon as possible): questions["na"] === undefined]
 </Text>
