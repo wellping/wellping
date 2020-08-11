@@ -81,7 +81,7 @@ function mockDatabaseRelatedFunction() {
  * to be loaded.
  */
 async function testCurrentQuestionAsync({
-  renderResults: { getByA11yLabel, getAllByTestId, getByTestId, toJSON },
+  renderResults: { getByA11yLabel, queryByTestId, getByTestId, toJSON },
   expectCurrentQuestionAsync,
   nextButton = "next",
   waitForAndTestEndPage = false,
@@ -95,13 +95,12 @@ async function testCurrentQuestionAsync({
   waitForAndTestEndPage?: boolean;
   onFinishFn?: jest.Mock;
 }): Promise<void> {
+  // Wait for the question to be loaded.
+  await waitFor(() => getByTestId(QUESTION_TITLE_TESTID));
+  expect(queryByTestId(QUESTION_TITLE_TESTID)).not.toBeNull();
+
   const getCurrentQuestionTitle = () =>
     getByTestId(QUESTION_TITLE_TESTID).props.children;
-
-  // Wait for the question to be loaded.
-  await waitFor(() => {
-    return getAllByTestId(QUESTION_TITLE_TESTID).length > 0;
-  });
 
   await expectCurrentQuestionAsync(getCurrentQuestionTitle);
 
@@ -113,6 +112,8 @@ async function testCurrentQuestionAsync({
     }, 0);
   });
 
+  const currentQuestionTitle = getCurrentQuestionTitle();
+
   if (nextButton === "next") {
     fireEvent.press(getByA11yLabel(NEXT_BUTTON_A11YLABEL));
   } else if (nextButton === "pna") {
@@ -120,7 +121,11 @@ async function testCurrentQuestionAsync({
   }
 
   if (waitForAndTestEndPage) {
-    await waitForElementToBeRemoved(() => getByTestId(QUESTION_TITLE_TESTID));
+    if (queryByTestId(QUESTION_TITLE_TESTID)) {
+      await waitForElementToBeRemoved(() =>
+        queryByTestId(QUESTION_TITLE_TESTID),
+      );
+    }
 
     expect(toJSON()).toBe(null);
 
@@ -128,9 +133,8 @@ async function testCurrentQuestionAsync({
       expect(onFinishFn).toHaveBeenCalledTimes(1);
     });
   } else {
-    const currentQuestionTitle = getCurrentQuestionTitle();
-    await waitFor(() => {
-      return getCurrentQuestionTitle() !== currentQuestionTitle;
+    await waitForExpect(() => {
+      expect(getCurrentQuestionTitle()).not.toEqual(currentQuestionTitle);
     });
   }
 }
@@ -314,12 +318,10 @@ describe("questions flow", () => {
   describe("yes no question", () => {
     async function clickOptionAsync(
       yesNo: "Yes" | "No",
-      { getAllByA11yLabel, getByA11yLabel }: RenderAPI,
+      { getByA11yLabel }: RenderAPI,
     ) {
       // Wait for the choices to be loaded.
-      await waitFor(() => {
-        return getAllByA11yLabel(`select ${yesNo}`).length > 0;
-      });
+      await waitFor(() => getByA11yLabel(`select ${yesNo}`));
 
       fireEvent.press(getByA11yLabel(`select ${yesNo}`));
     }
