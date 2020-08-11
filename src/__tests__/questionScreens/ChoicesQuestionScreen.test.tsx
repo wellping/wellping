@@ -117,10 +117,10 @@ const basicTestForChoicesQuestionScreenAsync = async (
       setDataValidationFunction={mockSetDataValidationFunction}
     />,
   );
-  const { findAllByA11yLabel, getByA11yLabel } = renderResults;
+  const { findAllByA11yLabel, getAllByA11yLabel } = renderResults;
 
   // Wait for the selections to be loaded.
-  await waitFor(() => getByA11yLabel(/^select /));
+  await waitFor(() => getAllByA11yLabel(/^select /));
 
   expect(mockPipeInExtraMetaData).toHaveBeenCalledTimes(choices.length); // For each choices
 
