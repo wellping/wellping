@@ -4,10 +4,11 @@ import {
   render,
   fireEvent,
   A11yAPI,
-  FireEventAPI,
+  act,
   waitFor,
 } from "react-native-testing-library";
 import { ReactTestInstance } from "react-test-renderer";
+import waitForExpect from "wait-for-expect";
 
 import { MultipleTextAnswerEntity } from "../../entities/AnswerEntity";
 import { AnswersList, MultipleTextAnswerData } from "../../helpers/answerTypes";
@@ -60,9 +61,7 @@ const basicTestForQuestionAsync = async (
   const { getAllByA11yLabel, getAllByA11yHint } = renderResults;
 
   // Wait for the text fields to be loaded.
-  await waitFor(() => {
-    return getAllByA11yLabel(/^text input /).length > 0;
-  });
+  await waitFor(() => getAllByA11yLabel(/^text input /));
 
   let choices!: ChoicesList | undefined;
   if (typeof question.choices === "string") {
@@ -105,9 +104,10 @@ const basicTestForQuestionAsync = async (
     expect(textInput.props.placeholder).toBe(question.placeholder);
 
     fireEvent.changeText(textInput, inputValue);
-    await waitFor(() => {
+
+    await waitForExpect(() => {
       const newTextInput = getTextInput(i, getAllByA11yLabel);
-      return inputValue === newTextInput.props.value;
+      expect(inputValue).toStrictEqual(newTextInput.props.value);
     });
 
     if (inputValue.length > 0) {
@@ -130,11 +130,14 @@ const basicTestForQuestionAsync = async (
 
         const alertSpy = jest
           .spyOn(Alert, "alert")
-          .mockImplementation((title, message, buttons) => {
+          .mockImplementation(async (title, message, buttons) => {
             expect(message).toContain("You must select an item from the list");
 
-            // Press "OK"
-            buttons![0].onPress!();
+            // TODO: do we need act here?
+            act(() => {
+              // Press "OK"
+              buttons![0].onPress!();
+            });
 
             buttonPressed = true;
           });
@@ -142,7 +145,14 @@ const basicTestForQuestionAsync = async (
         isInputValid = false;
         expect(alertSpy).toHaveBeenCalledTimes(1);
 
-        await waitFor(() => buttonPressed);
+        await waitForExpect(() => {
+          expect(buttonPressed).toBe(true);
+        });
+
+        // TODO: doesn't work
+        /*await waitForExpect(() => {
+          expect(getTextInput(i, getAllByA11yLabel).props.value).toBe("");
+        });*/
 
         expectedAnswerData.value.pop();
         callCount += 1;
