@@ -166,11 +166,11 @@ const basicTestForQuestionAsync = async (
           expect(buttonPressed).toBe(true);
         });
 
-        // TODO: doesn't work (https://github.com/facebook/react/issues/7740)
-        // TODO: it doesn't seems to be testing whether the text field (UI) is cleared.
-        /*await waitForExpect(async () => {
-          expect((await findIthTextInputAsync()).props.value).toStrictEqual("");
-        });*/
+        // Note that we cannot test whether the text field (UI) is cleared, as
+        // we use `ref`s in the app.
+        // See
+        // - https://github.com/facebook/react/issues/7740
+        // - https://github.com/callstack/react-native-testing-library/issues/227
 
         expectedAnswerData.value.pop();
         callCount += 1;
