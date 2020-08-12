@@ -37,16 +37,6 @@ const basicTestForQuestionAsync = async (
   allAnswers: AnswersList,
   inputValues: string[],
 ) => {
-  jest
-    .spyOn(studyFileHelper, "getReusableChoicesAsync")
-    .mockImplementation(async (key) => {
-      if (key === MOCK_EMOJI_CHOICES_KEY) {
-        return MOCK_EMOJI_CHOICES_LIST;
-      } else {
-        return null;
-      }
-    });
-
   let codeDataValidationFunction: (() => boolean) | null = null;
 
   const mockLoadingCompleted = jest.fn();
