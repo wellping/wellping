@@ -382,6 +382,7 @@ export default class SurveyScreen extends React.Component<
       }
 
       const specialCase = specialCasesStartId.find((eachSpecialCase) => {
+        /* istanbul ignore else */
         if (cQ.type === QuestionType.ChoicesWithSingleAnswer) {
           const csaAnswerData = cD as ChoicesWithSingleAnswerAnswerData;
           return eachSpecialCase[0] === csaAnswerData.value;
