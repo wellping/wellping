@@ -3,9 +3,9 @@ import { Alert } from "react-native";
 import {
   render,
   fireEvent,
-  A11yAPI,
   act,
   waitFor,
+  RenderAPI,
 } from "react-native-testing-library";
 import { ReactTestInstance } from "react-test-renderer";
 import waitForExpect from "wait-for-expect";
@@ -19,11 +19,11 @@ import { simplePipeInExtraMetaData, mockCurrentExtraData } from "../helper";
 
 const A11Y_HINT = "Enter your answer here";
 const getTextInputA11YLabel = (index: number) => `text input ${index}`;
-const getTextInput = (
+const findTextInputAsync = async (
   index: number,
-  getAllByA11yLabel: A11yAPI["getAllByA11yLabel"],
+  { findAllByA11yLabel }: RenderAPI,
 ) => {
-  const textInputs = getAllByA11yLabel(getTextInputA11YLabel(index));
+  const textInputs = await findAllByA11yLabel(getTextInputA11YLabel(index));
   expect(textInputs).toHaveLength(1);
   const textInput = textInputs[0];
   return textInput;
@@ -98,15 +98,15 @@ const basicTestForQuestionAsync = async (
   const expectedAnswerData: MultipleTextAnswerData = { value: [] };
   let callCount = 0;
   for (let i = 0; i < textInputsLength; i++) {
-    const textInput = getTextInput(i, getAllByA11yLabel);
+    const textInput = await findTextInputAsync(i, renderResults);
     const inputValue = inputValues[i] || "";
 
     expect(textInput.props.placeholder).toBe(question.placeholder);
 
     fireEvent.changeText(textInput, inputValue);
 
-    await waitForExpect(() => {
-      const newTextInput = getTextInput(i, getAllByA11yLabel);
+    await waitForExpect(async () => {
+      const newTextInput = await findTextInputAsync(i, renderResults);
       expect(inputValue).toStrictEqual(newTextInput.props.value);
     });
 
@@ -150,8 +150,10 @@ const basicTestForQuestionAsync = async (
         });
 
         // TODO: doesn't work
-        /*await waitForExpect(() => {
-          expect(getTextInput(i, getAllByA11yLabel).props.value).toBe("");
+        /*await waitForExpect(async () => {
+          expect((await findTextInputAsync(i, renderResults)).props.value).toBe(
+            "",
+          );
         });*/
 
         expectedAnswerData.value.pop();
