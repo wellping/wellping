@@ -145,17 +145,19 @@ const basicTestForQuestionAsync = async (
           });
         fireEvent(await findIthTextInputAsync(), "onEndEditing", {});
         isInputValid = false;
-        expect(alertSpy).toHaveBeenCalledTimes(1);
+
+        await waitForExpect(async () => {
+          expect(alertSpy).toHaveBeenCalledTimes(1);
+        });
 
         await waitForExpect(() => {
           expect(buttonPressed).toBe(true);
         });
 
         // TODO: doesn't work
+        // TODO: it doesn't seems to be testing whether the text field (UI) is cleared.
         /*await waitForExpect(async () => {
-          expect((await findTextInputAsync(i, renderResults)).props.value).toBe(
-            "",
-          );
+          expect((await findIthTextInputAsync()).props.value).toStrictEqual("");
         });*/
 
         expectedAnswerData.value.pop();
@@ -178,8 +180,6 @@ const basicTestForQuestionAsync = async (
     }
 
     // TODO: test codeDataValidationFunction
-
-    // TODO: it doesn't seems to be testing whether the text field (UI) is cleared.
   }
 
   // Store the expected data object.
