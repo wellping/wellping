@@ -20,12 +20,10 @@ beforeEach(() => {
 
 async function clickOptionAsync(
   yesNo: "Yes" | "No",
-  { getByA11yLabel }: RenderAPI,
+  { findByA11yLabel }: RenderAPI,
 ) {
-  // Wait for the choices to be loaded.
-  await waitFor(() => getByA11yLabel(`select ${yesNo}`));
-
-  fireEvent.press(getByA11yLabel(`select ${yesNo}`));
+  // `findBy` does the `waitFor` for us.
+  fireEvent.press(await findByA11yLabel(`select ${yesNo}`));
 }
 
 describe("with both branchStartId", () => {
