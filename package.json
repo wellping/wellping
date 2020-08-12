@@ -29,7 +29,8 @@
     "zod": "^1.10.1"
   },
   "devDependencies": {
-    "@testing-library/jest-native": "^3.1.0",
+    "@testing-library/jest-native": "^3.3.0",
+    "@testing-library/react-native": "^7.0.1",
     "@types/jest": "^26.0.9",
     "@types/lodash": "^4.14.158",
     "@types/node": "^14.0.13",
