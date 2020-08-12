@@ -102,6 +102,7 @@ const basicTestForChoicesQuestionScreenAsync = async (
     .spyOn(global.Math, "random")
     .mockReturnValue(0.3141592653589793);
 
+  const mockLoadingCompleted = jest.fn();
   const mockOnDataChangeFn = jest.fn();
   const mockPipeInExtraMetaData = jest.fn(simplePipeInExtraMetaData);
   const mockSetDataValidationFunction = jest.fn();
@@ -110,6 +111,7 @@ const basicTestForChoicesQuestionScreenAsync = async (
     <ChoicesQuestionScreen
       key={question.id}
       question={question}
+      loadingCompleted={mockLoadingCompleted}
       onDataChange={mockOnDataChangeFn}
       allAnswers={{}}
       allQuestions={{ [question.id]: question }}
@@ -121,6 +123,8 @@ const basicTestForChoicesQuestionScreenAsync = async (
 
   // Wait for the selections to be loaded.
   await waitFor(() => getAllByA11yLabel(/^select /));
+
+  expect(mockLoadingCompleted).toHaveBeenCalledTimes(1);
 
   expect(mockPipeInExtraMetaData).toHaveBeenCalledTimes(choices.length); // For each choices
 
@@ -446,6 +450,7 @@ test("wrong QuestionType", async () => {
       <ChoicesQuestionScreen
         key={question.id}
         question={question}
+        loadingCompleted={jest.fn()}
         onDataChange={jest.fn()}
         allAnswers={{}}
         allQuestions={{ [question.id]: question }}

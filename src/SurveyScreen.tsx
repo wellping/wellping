@@ -140,6 +140,12 @@ export interface SurveyScreenState {
    * The last upload time.
    */
   lastUploadDate: Date | null;
+
+  /**
+   * Whether we are transitioning from two questions.
+   * If true, this sets the whole screen's opacity to 0.
+   */
+  isInTransition: boolean;
 }
 
 export default class SurveyScreen extends React.Component<
@@ -160,6 +166,7 @@ export default class SurveyScreen extends React.Component<
         nextQuestionsDataStack: [],
         answers: {},
         lastUploadDate: null,
+        isInTransition: false,
       };
     }
   }
@@ -584,6 +591,7 @@ export default class SurveyScreen extends React.Component<
       }
     };
 
+    this.setState({ isInTransition: true });
     this.setState((prevState) => {
       const {
         currentQuestionData: {
@@ -643,6 +651,7 @@ export default class SurveyScreen extends React.Component<
         };
       }
     }, setStateCallback);
+    // TODO: try setTimeout 250 /* wait for a little while to make the experience better */);
   }
 
   getRealQuestionId(
@@ -696,6 +705,7 @@ export default class SurveyScreen extends React.Component<
     const {
       currentQuestionData: { questionId },
       answers,
+      isInTransition,
     } = this.state;
     if (questionId === null) {
       // This is just here until `onFinish` is called.
@@ -750,6 +760,9 @@ export default class SurveyScreen extends React.Component<
           paddingHorizontal: 20,
           marginTop: smallScreen ? 0 : 20,
           flex: 1,
+          // We use `opacity` so that `QuestionScreen` still loads and are able
+          // to call `loadingCompleted` and set `isInTransition`.
+          opacity: isInTransition ? 0 : 1,
         }}
       >
         <Text
@@ -772,6 +785,9 @@ export default class SurveyScreen extends React.Component<
             /* https://stackoverflow.com/a/21750576/2603230 */
             key={question.id}
             question={question}
+            loadingCompleted={() => {
+              this.setState({ isInTransition: false });
+            }}
             onDataChange={(data) => {
               this.addAnswerToAnswersListAsync(question, {
                 data,

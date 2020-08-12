@@ -24,11 +24,16 @@ interface SliderQuestionScreenProps extends QuestionScreenProps {
 
 const SliderQuestionScreen: React.ElementType<SliderQuestionScreenProps> = ({
   question,
+  loadingCompleted,
   onDataChange,
   allAnswers,
   allQuestions,
   pipeInExtraMetaData,
 }) => {
+  React.useEffect(() => {
+    loadingCompleted();
+  }, []);
+
   let defaultSliderValue = getQuestionDefaultSliderValue(question);
   if (question.defaultValueFromQuestionId) {
     const prevQuestionAnswer = allAnswers[

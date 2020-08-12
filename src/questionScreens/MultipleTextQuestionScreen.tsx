@@ -18,6 +18,7 @@ interface MultipleTextQuestionScreenProps extends QuestionScreenProps {
 
 const MultipleTextQuestionScreen: React.ElementType<MultipleTextQuestionScreenProps> = ({
   question,
+  loadingCompleted,
   onDataChange,
   allAnswers,
   pipeInExtraMetaData,
@@ -84,6 +85,8 @@ const MultipleTextQuestionScreen: React.ElementType<MultipleTextQuestionScreenPr
           name: pipeInExtraMetaData(choice),
         })),
       );
+
+      loadingCompleted();
     }
     // So that async can be used in `setupTextFieldsDropdownItemsAsync`.
     setupTextFieldsDropdownItemsAsync();

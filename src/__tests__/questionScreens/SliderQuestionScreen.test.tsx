@@ -71,6 +71,7 @@ const moveSlider = (sliderInput: ReactTestInstance, value: number) => {
 };
 
 test("without default value", () => {
+  const mockLoadingCompleted = jest.fn();
   const mockOnDataChangeFn = jest.fn();
   const mockPipeInExtraMetaData = jest.fn(simplePipeInExtraMetaData);
   const mockSetDataValidationFunction = jest.fn();
@@ -79,6 +80,7 @@ test("without default value", () => {
     <SliderQuestionScreen
       key={WITHOUT_DEFAULT.id}
       question={WITHOUT_DEFAULT}
+      loadingCompleted={mockLoadingCompleted}
       onDataChange={mockOnDataChangeFn}
       allAnswers={{}}
       allQuestions={SLIDER_QUESTIONS}
@@ -86,6 +88,8 @@ test("without default value", () => {
       setDataValidationFunction={mockSetDataValidationFunction}
     />,
   );
+
+  expect(mockLoadingCompleted).toHaveBeenCalledTimes(1);
 
   // Because there isn't a need to pipe in any data.
   expect(mockPipeInExtraMetaData).not.toHaveBeenCalled();
@@ -100,6 +104,7 @@ test("without default value", () => {
 });
 
 test("with constant default value", () => {
+  const mockLoadingCompleted = jest.fn();
   const mockOnDataChangeFn = jest.fn();
   const mockPipeInExtraMetaData = jest.fn(simplePipeInExtraMetaData);
   const mockSetDataValidationFunction = jest.fn();
@@ -108,6 +113,7 @@ test("with constant default value", () => {
     <SliderQuestionScreen
       key={WITH_CONSTANT_DEFAULT.id}
       question={WITH_CONSTANT_DEFAULT}
+      loadingCompleted={mockLoadingCompleted}
       onDataChange={mockOnDataChangeFn}
       allAnswers={{}}
       allQuestions={SLIDER_QUESTIONS}
@@ -115,6 +121,8 @@ test("with constant default value", () => {
       setDataValidationFunction={mockSetDataValidationFunction}
     />,
   );
+
+  expect(mockLoadingCompleted).toHaveBeenCalledTimes(1);
 
   // Because there isn't a need to pipe in any data.
   expect(mockPipeInExtraMetaData).not.toHaveBeenCalled();
@@ -136,6 +144,7 @@ test.each([
 ] as [string, SliderAnswerData | null, SliderQuestion][])(
   "with default value from a question %s with data `%o`",
   (_, prevAnswerData, question) => {
+    const mockLoadingCompleted = jest.fn();
     const mockOnDataChangeFn = jest.fn();
     const mockPipeInExtraMetaData = jest.fn(simplePipeInExtraMetaData);
     const mockSetDataValidationFunction = jest.fn();
@@ -144,6 +153,7 @@ test.each([
       <SliderQuestionScreen
         key={question.id}
         question={question}
+        loadingCompleted={mockLoadingCompleted}
         onDataChange={mockOnDataChangeFn}
         allAnswers={{
           // @ts-ignore (we don't need to craft an entire AnswerEntity)
@@ -156,6 +166,8 @@ test.each([
         setDataValidationFunction={mockSetDataValidationFunction}
       />,
     );
+
+    expect(mockLoadingCompleted).toHaveBeenCalledTimes(1);
 
     // To pipe in `defaultValueFromQuestionId`.
     expect(mockPipeInExtraMetaData).toHaveBeenCalledTimes(1);
@@ -181,6 +193,7 @@ test.each([
 );
 
 test("update values", () => {
+  const mockLoadingCompleted = jest.fn();
   const mockOnDataChangeFn = jest.fn();
   const mockPipeInExtraMetaData = jest.fn(simplePipeInExtraMetaData);
   const mockSetDataValidationFunction = jest.fn();
@@ -189,6 +202,7 @@ test("update values", () => {
     <SliderQuestionScreen
       key={WITHOUT_DEFAULT.id}
       question={WITHOUT_DEFAULT}
+      loadingCompleted={mockLoadingCompleted}
       onDataChange={mockOnDataChangeFn}
       allAnswers={{}}
       allQuestions={SLIDER_QUESTIONS}
@@ -196,6 +210,8 @@ test("update values", () => {
       setDataValidationFunction={mockSetDataValidationFunction}
     />,
   );
+
+  expect(mockLoadingCompleted).toHaveBeenCalledTimes(1);
 
   const sliderInput = getSlider(getAllByA11yLabel);
 

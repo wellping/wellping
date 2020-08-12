@@ -41,6 +41,7 @@ const basicTestForQuestionAsync = async (
 ) => {
   let codeDataValidationFunction: (() => boolean) | null = null;
 
+  const mockLoadingCompleted = jest.fn();
   const mockOnDataChangeFn = jest.fn();
   const mockPipeInExtraMetaData = jest.fn(simplePipeInExtraMetaData);
   const mockSetDataValidationFunction = jest.fn((func) => {
@@ -51,6 +52,7 @@ const basicTestForQuestionAsync = async (
     <MultipleTextQuestionScreen
       key={question.id}
       question={question}
+      loadingCompleted={mockLoadingCompleted}
       onDataChange={mockOnDataChangeFn}
       allAnswers={allAnswers}
       allQuestions={{ [question.id]: question }}
@@ -62,6 +64,11 @@ const basicTestForQuestionAsync = async (
 
   // Wait for the text fields to be loaded.
   await waitFor(() => getAllByA11yLabel(/^text input /));
+
+  // TODO: NOT WORKING
+  /*await waitForExpect(() => {
+    expect(mockLoadingCompleted).toHaveBeenCalledTimes(1);
+  });*/
 
   let choices!: ChoicesList | undefined;
   if (typeof question.choices === "string") {
