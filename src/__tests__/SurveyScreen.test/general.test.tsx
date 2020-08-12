@@ -6,12 +6,12 @@ import { QuestionType } from "../../helpers/helpers";
 import { QuestionsList } from "../../helpers/types";
 import {
   TEST_PING,
-  mockDatabaseRelatedFunction,
+  mockNecessaryFunctionsToTestSurveyScreen,
   testQuestionsSequenceAsync,
 } from "./helper";
 
 beforeEach(() => {
-  mockDatabaseRelatedFunction();
+  mockNecessaryFunctionsToTestSurveyScreen();
 });
 
 test("non-existent startingQuestionId", async () => {

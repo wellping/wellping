@@ -14,13 +14,13 @@ import SurveyScreen, { SurveyScreenProps } from "../../SurveyScreen";
 import { QuestionType } from "../../helpers/helpers";
 import {
   TEST_PING,
-  mockDatabaseRelatedFunction,
+  mockNecessaryFunctionsToTestSurveyScreen,
   testQuestionsSequenceAsync,
   TestQuestionsSequence,
 } from "./helper";
 
 beforeEach(() => {
-  mockDatabaseRelatedFunction();
+  mockNecessaryFunctionsToTestSurveyScreen();
 });
 
 async function clickOptionAsync(

@@ -9,6 +9,8 @@ import waitForExpect from "wait-for-expect";
 
 import { PingEntity } from "../../entities/PingEntity";
 import * as HelperPings from "../../helpers/pings";
+import { PINGS_STUDY_INFO } from "../data/pings";
+import { mockCurrentStudyInfo } from "../helper";
 
 export const getPingEntity = ({
   id,
@@ -65,6 +67,13 @@ export function mockDatabaseRelatedFunction() {
       };
       return getPingEntity(newPing);
     });
+}
+
+export function mockNecessaryFunctionsToTestSurveyScreen() {
+  mockDatabaseRelatedFunction();
+
+  // Just use a study info - it's not important.
+  mockCurrentStudyInfo(PINGS_STUDY_INFO);
 }
 
 /**
