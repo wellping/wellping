@@ -12,6 +12,7 @@ import waitForExpect from "wait-for-expect";
 import { MultipleTextAnswerEntity } from "../../entities/AnswerEntity";
 import { AnswersList, MultipleTextAnswerData } from "../../helpers/answerTypes";
 import { QuestionType } from "../../helpers/helpers";
+import * as studyFileHelper from "../../helpers/studyFile";
 import { MultipleTextQuestion, ChoicesList } from "../../helpers/types";
 import MultipleTextQuestionScreen from "../../questionScreens/MultipleTextQuestionScreen";
 import { simplePipeInExtraMetaData, mockCurrentExtraData } from "../helper";
@@ -30,15 +31,22 @@ const findTextInputAsync = async (
 };
 
 const MOCK_EMOJI_CHOICES_KEY = "emojis";
-const MOCK_EMOJI_CHOICES_LIST = ["😀", "🤪", "🧐", "😎"] as [
-  string,
-  ...string[]
-];
+const MOCK_EMOJI_CHOICES_LIST = ["😀", "🤪", "🧐", "😎"] as ChoicesList;
 const basicTestForQuestionAsync = async (
   question: MultipleTextQuestion,
   allAnswers: AnswersList,
   inputValues: string[],
 ) => {
+  jest
+    .spyOn(studyFileHelper, "getReusableChoicesAsync")
+    .mockImplementation(async (key) => {
+      if (key === MOCK_EMOJI_CHOICES_KEY) {
+        return MOCK_EMOJI_CHOICES_LIST;
+      } else {
+        return null;
+      }
+    });
+
   let codeDataValidationFunction: (() => boolean) | null = null;
 
   const mockLoadingCompleted = jest.fn();
@@ -65,10 +73,7 @@ const basicTestForQuestionAsync = async (
   // Wait for the text fields to be loaded.
   await waitFor(() => getAllByA11yLabel(/^text input /));
 
-  // TODO: NOT WORKING
-  /*await waitForExpect(() => {
-    expect(mockLoadingCompleted).toHaveBeenCalledTimes(1);
-  });*/
+  expect(mockLoadingCompleted).toHaveBeenCalledTimes(1);
 
   let choices!: ChoicesList | undefined;
   if (typeof question.choices === "string") {
