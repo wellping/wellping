@@ -387,8 +387,13 @@ export default class SurveyScreen extends React.Component<
           return eachSpecialCase[0] === csaAnswerData.value;
         } else if (cQ.type === QuestionType.ChoicesWithMultipleAnswers) {
           const cmaAnswerData = cD as ChoicesWithMultipleAnswersAnswerData;
-          // If this special choice key is selected.
-          return cmaAnswerData.value.includes([eachSpecialCase[0], true]);
+          // (Notice that we cannot use `.includes` here because
+          //  `[ 'Choice 1', true ] != [ 'Choice 1', true ]`
+          //  and `.includes` checks equality.)
+          return cmaAnswerData.value.some(
+            // If this special choice key is selected.
+            (answer) => answer[0] === eachSpecialCase[0] && answer[1] === true,
+          );
         }
       });
 
