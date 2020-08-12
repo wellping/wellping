@@ -46,106 +46,114 @@ const TWO_TYPES: (
   QuestionType.ChoicesWithMultipleAnswers,
 ];
 
-describe.each(TWO_TYPES)("%s without specialCasesStartId", (type) => {
-  const props: SurveyScreenProps = {
-    ...propsBase,
-    questions: {
-      q1: {
-        id: "q1",
-        type,
-        question: "Question 1",
-        choices: ["Choice 1", "Choice 2", "Choice 3"],
-        next: "q2",
+describe.each(TWO_TYPES)("simple test - %s: ", (type) => {
+  // All these should not change the next question.
+  describe.each([
+    undefined,
+    [],
+    [["Non Existent Choice", "newId"]] as [string, string][],
+  ])("specialCasesStartId: %p", (specialCasesStartId) => {
+    const props: SurveyScreenProps = {
+      ...propsBase,
+      questions: {
+        q1: {
+          id: "q1",
+          type,
+          specialCasesStartId,
+          question: "Question 1",
+          choices: ["Choice 1", "Choice 2", "Choice 3"],
+          next: "q2",
+        },
+        q2: {
+          id: "q2",
+          type: QuestionType.Slider,
+          question: "Question 2",
+          slider: ["left", "right"],
+          next: null,
+        },
       },
-      q2: {
-        id: "q2",
-        type: QuestionType.Slider,
-        question: "Question 2",
-        slider: ["left", "right"],
-        next: null,
-      },
-    },
-  };
+    };
 
-  test("click a choice", async () => {
-    const onFinishFn = jest.fn();
+    test("click a choice", async () => {
+      const onFinishFn = jest.fn();
 
-    const renderResults = render(
-      <SurveyScreen {...props} onFinish={onFinishFn} />,
-    );
+      const renderResults = render(
+        <SurveyScreen {...props} onFinish={onFinishFn} />,
+      );
 
-    await testQuestionsSequenceAsync({
-      renderResults,
-      onFinishFn,
-      sequence: [
-        {
-          expectCurrentQuestionAsync: async (getCurrentQuestionTitle) => {
-            await clickOptionAsync("Choice 2", renderResults);
+      await testQuestionsSequenceAsync({
+        renderResults,
+        onFinishFn,
+        sequence: [
+          {
+            expectCurrentQuestionAsync: async (getCurrentQuestionTitle) => {
+              await clickOptionAsync("Choice 2", renderResults);
 
-            expect(getCurrentQuestionTitle()).toBe("Question 1");
+              expect(getCurrentQuestionTitle()).toBe("Question 1");
+            },
           },
-        },
-        {
-          expectCurrentQuestionAsync: async (getCurrentQuestionTitle) => {
-            expect(getCurrentQuestionTitle()).toBe("Question 2");
+          {
+            expectCurrentQuestionAsync: async (getCurrentQuestionTitle) => {
+              expect(getCurrentQuestionTitle()).toBe("Question 2");
+            },
           },
-        },
-      ],
+        ],
+      });
     });
-  });
 
-  test("click next without answering", async () => {
-    const onFinishFn = jest.fn();
+    test("click next without answering", async () => {
+      const onFinishFn = jest.fn();
 
-    const renderResults = render(
-      <SurveyScreen {...props} onFinish={onFinishFn} />,
-    );
+      const renderResults = render(
+        <SurveyScreen {...props} onFinish={onFinishFn} />,
+      );
 
-    await testQuestionsSequenceAsync({
-      renderResults,
-      onFinishFn,
-      sequence: [
-        {
-          expectCurrentQuestionAsync: async (getCurrentQuestionTitle) => {
-            expect(getCurrentQuestionTitle()).toBe("Question 1");
+      await testQuestionsSequenceAsync({
+        renderResults,
+        onFinishFn,
+        sequence: [
+          {
+            expectCurrentQuestionAsync: async (getCurrentQuestionTitle) => {
+              expect(getCurrentQuestionTitle()).toBe("Question 1");
+            },
           },
-        },
-        {
-          expectCurrentQuestionAsync: async (getCurrentQuestionTitle) => {
-            expect(getCurrentQuestionTitle()).toBe("Question 2");
+          {
+            expectCurrentQuestionAsync: async (getCurrentQuestionTitle) => {
+              expect(getCurrentQuestionTitle()).toBe("Question 2");
+            },
           },
-        },
-      ],
+        ],
+      });
     });
-  });
 
-  test("click prefer not to answer", async () => {
-    const onFinishFn = jest.fn();
+    test("click prefer not to answer", async () => {
+      const onFinishFn = jest.fn();
 
-    const renderResults = render(
-      <SurveyScreen {...props} onFinish={onFinishFn} />,
-    );
+      const renderResults = render(
+        <SurveyScreen {...props} onFinish={onFinishFn} />,
+      );
 
-    await testQuestionsSequenceAsync({
-      renderResults,
-      onFinishFn,
-      sequence: [
-        {
-          expectCurrentQuestionAsync: async (getCurrentQuestionTitle) => {
-            // Clicking a choice shouldn't matter here if we click prefer not
-            // to answer.
-            await clickOptionAsync("Choice 1", renderResults);
+      await testQuestionsSequenceAsync({
+        renderResults,
+        onFinishFn,
+        sequence: [
+          {
+            expectCurrentQuestionAsync: async (getCurrentQuestionTitle) => {
+              // Clicking a choice shouldn't matter here if we click prefer not
+              // to answer.
+              await clickOptionAsync("Choice 1", renderResults);
 
-            expect(getCurrentQuestionTitle()).toBe("Question 1");
+              expect(getCurrentQuestionTitle()).toBe("Question 1");
+            },
+            nextButton: "pna",
           },
-          nextButton: "pna",
-        },
-        {
-          expectCurrentQuestionAsync: async (getCurrentQuestionTitle) => {
-            expect(getCurrentQuestionTitle()).toBe("Question 2");
+          {
+            expectCurrentQuestionAsync: async (getCurrentQuestionTitle) => {
+              expect(getCurrentQuestionTitle()).toBe("Question 2");
+            },
           },
-        },
-      ],
+        ],
+      });
     });
   });
 });
