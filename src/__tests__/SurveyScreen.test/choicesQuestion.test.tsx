@@ -289,7 +289,8 @@ describe.each(TWO_TYPES)("with non-null specialCasesStartId - %s: ", (type) => {
             expect(getCurrentQuestionTitle()).toBe(
               type === QuestionType.ChoicesWithSingleAnswer
                 ? "Question 1 - branch Choice 3"
-                : "Question 1 - branch Choice 1",
+                : // Because choices with multiple answers checks the first match.
+                  "Question 1 - branch Choice 1",
             );
           },
         },
