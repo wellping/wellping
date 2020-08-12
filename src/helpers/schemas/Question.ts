@@ -5,6 +5,7 @@ import {
   QuestionIdSchema,
   QuestionIdSchemaNullable,
   ChoicesListSchema,
+  ChoiceSchema,
 } from "./common";
 import { idRegexCheck, idRegexErrorMessage } from "./helper";
 
@@ -75,20 +76,26 @@ export const ChoicesQuestionSchema = BaseQuestionSchema.extend({
   ]),
   choices: z.union([z.string(), ChoicesListSchema]),
   specialCasesStartId: z
-    .record(QuestionIdSchema.nullable()) // Record<choice key, question ID>
+    // We use an array of tuples here so that the special case next question is
+    // deterministic in the case of ChoicesWithMultipleAnswers.
+    .array(z.tuple([ChoiceSchema, QuestionIdSchema.nullable()]))
     .optional(),
   randomizeChoicesOrder: z.boolean().optional(),
   randomizeExceptForChoiceIds: z.array(z.string()).optional(),
 })
   .refine(
     (question) => {
-      if (question.specialCasesStartId && question.choices) {
+      if (
+        question.specialCasesStartId &&
+        Array.isArray(question.specialCasesStartId) &&
+        question.choices
+      ) {
         if (typeof question.choices === "string") {
           // Can't check if it is using reusable choices.
           return true;
         }
-        for (const key of Object.keys(question.specialCasesStartId)) {
-          if (!question.choices.includes(key)) {
+        for (const specialCase of question.specialCasesStartId) {
+          if (!question.choices.includes(specialCase[0])) {
             return false;
           }
         }
@@ -96,7 +103,8 @@ export const ChoicesQuestionSchema = BaseQuestionSchema.extend({
       return true;
     },
     {
-      message: "Keys in `specialCasesStartId` must also be in `choices`.",
+      message:
+        "Choices keys in `specialCasesStartId` must also be in `choices`.",
       path: ["specialCasesStartId"],
     },
   )

@@ -108,7 +108,7 @@ exports[`ChoicesQuestionSchema specialCasesStartId cannot include non-choices ke
 "1 validation issue(s)
 
   Issue #0: custom_error at specialCasesStartId
-  Keys in \`specialCasesStartId\` must also be in \`choices\`.
+  Choices keys in \`specialCasesStartId\` must also be in \`choices\`.
 "
 `;
 
@@ -116,7 +116,7 @@ exports[`ChoicesQuestionSchema specialCasesStartId cannot include non-choices ke
 "1 validation issue(s)
 
   Issue #0: custom_error at specialCasesStartId
-  Keys in \`specialCasesStartId\` must also be in \`choices\`.
+  Choices keys in \`specialCasesStartId\` must also be in \`choices\`.
 "
 `;
 

@@ -166,11 +166,11 @@ describe("ChoicesQuestionSchema", () => {
       }).toThrowErrorMatchingSnapshot();
     });
 
-    test("can be empty object", () => {
+    test("can be empty array", () => {
       expect(() => {
         ChoicesQuestionSchema.parse({
           ...question,
-          specialCasesStartId: {},
+          specialCasesStartId: [],
         });
       }).not.toThrowError();
     });
@@ -180,9 +180,7 @@ describe("ChoicesQuestionSchema", () => {
         ChoicesQuestionSchema.parse({
           ...question,
           choices: "NAMES",
-          specialCasesStartId: {
-            一尊还酹江月: "dream",
-          },
+          specialCasesStartId: [["一尊还酹江月", "dream"]],
         });
       }).not.toThrowError();
     });
@@ -191,9 +189,7 @@ describe("ChoicesQuestionSchema", () => {
       expect(() => {
         ChoicesQuestionSchema.parse({
           ...question,
-          specialCasesStartId: {
-            "Hello?": "hello_world",
-          },
+          specialCasesStartId: [["Hello?", "hello_world"]],
         });
       }).not.toThrowError();
     });
@@ -202,19 +198,17 @@ describe("ChoicesQuestionSchema", () => {
       expect(() => {
         ChoicesQuestionSchema.parse({
           ...question,
-          specialCasesStartId: {
-            notakey: "nonono",
-          },
+          specialCasesStartId: [["notakey", "nonono"]],
         });
       }).toThrowErrorMatchingSnapshot("non-choices key only");
 
       expect(() => {
         ChoicesQuestionSchema.parse({
           ...question,
-          specialCasesStartId: {
-            notakey: "nonono",
-            "World!": "stillno",
-          },
+          specialCasesStartId: [
+            ["notakey", "nonono"],
+            ["World!", "stillno"],
+          ],
         });
       }).toThrowErrorMatchingSnapshot("non-choices key with choice key");
     });
@@ -223,19 +217,17 @@ describe("ChoicesQuestionSchema", () => {
       expect(() => {
         ChoicesQuestionSchema.parse({
           ...question,
-          specialCasesStartId: {
-            "Hello?": "new_world",
-            "World!": null,
-          },
+          specialCasesStartId: [
+            ["Hello?", "new_world"],
+            ["World!", null],
+          ],
         });
       }).not.toThrowError();
 
       expect(() => {
         ChoicesQuestionSchema.parse({
           ...question,
-          specialCasesStartId: {
-            "World!": null,
-          },
+          specialCasesStartId: [["World!", null]],
         });
       }).not.toThrowError();
     });

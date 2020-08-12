@@ -380,28 +380,19 @@ export default class SurveyScreen extends React.Component<
       if (!specialCasesStartId) {
         return;
       }
-      let specialNextQuestionId: QuestionId | null | undefined;
 
-      if (cQ.type === QuestionType.ChoicesWithSingleAnswer) {
-        const csaAnswerData = cD as ChoicesWithSingleAnswerAnswerData;
-        const dataValue = specialCasesStartId[csaAnswerData.value];
-        specialNextQuestionId = dataValue;
-      } else {
-        if (cQ.type === QuestionType.ChoicesWithMultipleAnswers) {
+      const specialCase = specialCasesStartId.find((eachSpecialCase) => {
+        if (cQ.type === QuestionType.ChoicesWithSingleAnswer) {
+          const csaAnswerData = cD as ChoicesWithSingleAnswerAnswerData;
+          return eachSpecialCase[0] === csaAnswerData.value;
+        } else if (cQ.type === QuestionType.ChoicesWithMultipleAnswers) {
           const cmaAnswerData = cD as ChoicesWithMultipleAnswersAnswerData;
-          Object.entries(cmaAnswerData.value).some(([eachAnswer, selected]) => {
-            if (selected) {
-              if (selected && specialCasesStartId) {
-                specialNextQuestionId = specialCasesStartId[eachAnswer];
-              }
-              // we return `true` here instead of inside so that it will also stop when any other choices are selected.
-              return true;
-            }
-            return false;
-          });
+          // If this special choice key is selected.
+          return cmaAnswerData.value.includes([eachSpecialCase[0], true]);
         }
-      }
+      });
 
+      const specialNextQuestionId = specialCase ? specialCase[1] : undefined;
       considerConditionalQuestionId(specialNextQuestionId);
     };
 
