@@ -134,6 +134,13 @@ export async function testCurrentQuestionAsync({
   }
 }
 
+export type TestQuestionsSequence = {
+  expectCurrentQuestionAsync: (
+    getCurrentQuestionTitle: () => string,
+  ) => Promise<void>;
+  nextButton?: "next" | "pna";
+}[];
+
 export async function testQuestionsSequenceAsync({
   renderResults,
   onFinishFn,
@@ -141,12 +148,7 @@ export async function testQuestionsSequenceAsync({
 }: {
   renderResults: RenderAPI;
   onFinishFn: jest.Mock;
-  sequence: {
-    expectCurrentQuestionAsync: (
-      getCurrentQuestionTitle: () => string,
-    ) => Promise<void>;
-    nextButton?: "next" | "pna";
-  }[];
+  sequence: TestQuestionsSequence;
 }) {
   for (let i = 0; i < sequence.length - 1; i++) {
     const currentQuestion = sequence[i];
