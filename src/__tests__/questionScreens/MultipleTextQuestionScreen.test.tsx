@@ -166,7 +166,7 @@ const basicTestForQuestionAsync = async (
           expect(buttonPressed).toBe(true);
         });
 
-        // TODO: doesn't work
+        // TODO: doesn't work (https://github.com/facebook/react/issues/7740)
         // TODO: it doesn't seems to be testing whether the text field (UI) is cleared.
         /*await waitForExpect(async () => {
           expect((await findIthTextInputAsync()).props.value).toStrictEqual("");
