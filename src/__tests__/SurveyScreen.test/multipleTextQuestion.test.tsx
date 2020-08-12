@@ -3,10 +3,11 @@
  * MultipleTextQuestionScreen.test.tsx.
  */
 import React from "react";
-import { render, fireEvent, RenderAPI } from "react-native-testing-library";
+import { render, RenderAPI } from "react-native-testing-library";
 
 import SurveyScreen, { SurveyScreenProps } from "../../SurveyScreen";
 import { QuestionType } from "../../helpers/helpers";
+import { changeTextAndWaitForUpdateAsync } from "../reactNativeTestingLibraryHelper";
 import {
   TEST_PING,
   mockNecessaryFunctionsToTestSurveyScreen,
@@ -22,9 +23,9 @@ async function enterTextAsync(
   text: string,
   { findByA11yLabel }: RenderAPI,
 ) {
-  // `findBy` does the `waitFor` for us.
-  fireEvent.changeText(
-    await findByA11yLabel(`text input ${textFieldIndex}`),
+  await changeTextAndWaitForUpdateAsync(
+    // `findBy` does the `waitFor` for us.
+    async () => await findByA11yLabel(`text input ${textFieldIndex}`),
     text,
   );
 }

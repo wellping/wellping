@@ -7,7 +7,6 @@ import {
   waitFor,
   RenderAPI,
 } from "react-native-testing-library";
-import { ReactTestInstance } from "react-test-renderer";
 import waitForExpect from "wait-for-expect";
 
 import { MultipleTextAnswerEntity } from "../../entities/AnswerEntity";
@@ -16,6 +15,7 @@ import { QuestionType } from "../../helpers/helpers";
 import { MultipleTextQuestion, ChoicesList } from "../../helpers/types";
 import MultipleTextQuestionScreen from "../../questionScreens/MultipleTextQuestionScreen";
 import { simplePipeInExtraMetaData, mockCurrentExtraData } from "../helper";
+import { changeTextAndWaitForUpdateAsync } from "../reactNativeTestingLibraryHelper";
 
 const A11Y_HINT = "Enter your answer here";
 const getTextInputA11YLabel = (index: number) => `text input ${index}`;
@@ -98,17 +98,19 @@ const basicTestForQuestionAsync = async (
   const expectedAnswerData: MultipleTextAnswerData = { value: [] };
   let callCount = 0;
   for (let i = 0; i < textInputsLength; i++) {
-    const textInput = await findTextInputAsync(i, renderResults);
+    const findIthTextInputAsync = async () =>
+      // `findBy` does the `waitFor` for us.
+      await findTextInputAsync(i, renderResults);
+
+    expect((await findIthTextInputAsync()).props.placeholder).toBe(
+      question.placeholder,
+    );
+
     const inputValue = inputValues[i] || "";
-
-    expect(textInput.props.placeholder).toBe(question.placeholder);
-
-    fireEvent.changeText(textInput, inputValue);
-
-    await waitForExpect(async () => {
-      const newTextInput = await findTextInputAsync(i, renderResults);
-      expect(inputValue).toStrictEqual(newTextInput.props.value);
-    });
+    await changeTextAndWaitForUpdateAsync(
+      async () => await findIthTextInputAsync(),
+      inputValue,
+    );
 
     if (inputValue.length > 0) {
       expectedAnswerData.value[expectedAnswerData.value.length] = inputValue;
@@ -141,7 +143,7 @@ const basicTestForQuestionAsync = async (
 
             buttonPressed = true;
           });
-        fireEvent(textInput, "onEndEditing", {});
+        fireEvent(await findIthTextInputAsync(), "onEndEditing", {});
         isInputValid = false;
         expect(alertSpy).toHaveBeenCalledTimes(1);
 
@@ -167,7 +169,7 @@ const basicTestForQuestionAsync = async (
       }
     }
     if (isInputValid) {
-      fireEvent(textInput, "onEndEditing", {});
+      fireEvent(await findIthTextInputAsync(), "onEndEditing", {});
       // There should be no extra call.
       expect(mockOnDataChangeFn).toHaveBeenNthCalledWith(
         callCount,
