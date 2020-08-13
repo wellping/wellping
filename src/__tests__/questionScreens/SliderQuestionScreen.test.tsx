@@ -1,5 +1,5 @@
 import React from "react";
-import { render, fireEvent, A11yAPI } from "react-native-testing-library";
+import { render, fireEvent, RenderAPI } from "react-native-testing-library";
 import { ReactTestInstance } from "react-test-renderer";
 
 import { SliderAnswerData } from "../../helpers/answerTypes";
@@ -58,25 +58,25 @@ const WITH_DEFAULT_FROM_Q_WITH_DEFAULT =
   SLIDER_QUESTIONS["WithDefaultFromQWithDefault"];
 
 const SLIDER_A11Y_LABEL = "slider input";
-const getSlider = (getAllByA11yLabel: A11yAPI["getAllByA11yLabel"]) => {
-  const sliderInputs = getAllByA11yLabel(SLIDER_A11Y_LABEL);
+export const findSliderAsync = async ({ findAllByA11yLabel }: RenderAPI) => {
+  const sliderInputs = await findAllByA11yLabel(SLIDER_A11Y_LABEL);
   expect(sliderInputs).toHaveLength(1);
   const sliderInput = sliderInputs[0];
   return sliderInput;
 };
-const moveSlider = (sliderInput: ReactTestInstance, value: number) => {
+export const moveSlider = (sliderInput: ReactTestInstance, value: number) => {
   fireEvent(sliderInput, "onSlidingComplete", {
     nativeEvent: { value },
   });
 };
 
-test("without default value", () => {
+test("without default value", async () => {
   const mockLoadingCompleted = jest.fn();
   const mockOnDataChangeFn = jest.fn();
   const mockPipeInExtraMetaData = jest.fn(simplePipeInExtraMetaData);
   const mockSetDataValidationFunction = jest.fn();
 
-  const { getAllByA11yLabel, toJSON } = render(
+  const renderResults = render(
     <SliderQuestionScreen
       key={WITHOUT_DEFAULT.id}
       question={WITHOUT_DEFAULT}
@@ -88,6 +88,10 @@ test("without default value", () => {
       setDataValidationFunction={mockSetDataValidationFunction}
     />,
   );
+  const { toJSON } = renderResults;
+
+  const sliderInput = await findSliderAsync(renderResults);
+  expect(sliderInput.props.value).toBe(DEFAULT_SLIDER_VALUE);
 
   expect(mockLoadingCompleted).toHaveBeenCalledTimes(1);
 
@@ -97,19 +101,16 @@ test("without default value", () => {
   // Because there isn't any requirement to validate the data.
   expect(mockSetDataValidationFunction).not.toHaveBeenCalled();
 
-  const sliderInput = getSlider(getAllByA11yLabel);
-  expect(sliderInput.props.value).toBe(DEFAULT_SLIDER_VALUE);
-
   expect(toJSON()).toMatchSnapshot();
 });
 
-test("with constant default value", () => {
+test("with constant default value", async () => {
   const mockLoadingCompleted = jest.fn();
   const mockOnDataChangeFn = jest.fn();
   const mockPipeInExtraMetaData = jest.fn(simplePipeInExtraMetaData);
   const mockSetDataValidationFunction = jest.fn();
 
-  const { getAllByA11yLabel, toJSON } = render(
+  const renderResults = render(
     <SliderQuestionScreen
       key={WITH_CONSTANT_DEFAULT.id}
       question={WITH_CONSTANT_DEFAULT}
@@ -121,6 +122,10 @@ test("with constant default value", () => {
       setDataValidationFunction={mockSetDataValidationFunction}
     />,
   );
+  const { toJSON } = renderResults;
+
+  const sliderInput = await findSliderAsync(renderResults);
+  expect(sliderInput.props.value).toBe(WITH_CONSTANT_DEFAULT.defaultValue);
 
   expect(mockLoadingCompleted).toHaveBeenCalledTimes(1);
 
@@ -129,9 +134,6 @@ test("with constant default value", () => {
 
   // Because there isn't any requirement to validate the data.
   expect(mockSetDataValidationFunction).not.toHaveBeenCalled();
-
-  const sliderInput = getSlider(getAllByA11yLabel);
-  expect(sliderInput.props.value).toBe(WITH_CONSTANT_DEFAULT.defaultValue);
 
   expect(toJSON()).toMatchSnapshot();
 });
@@ -143,13 +145,13 @@ test.each([
   ["with default value", null, WITH_DEFAULT_FROM_Q_WITH_DEFAULT],
 ] as [string, SliderAnswerData | null, SliderQuestion][])(
   "with default value from a question %s with data `%o`",
-  (_, prevAnswerData, question) => {
+  async (_, prevAnswerData, question) => {
     const mockLoadingCompleted = jest.fn();
     const mockOnDataChangeFn = jest.fn();
     const mockPipeInExtraMetaData = jest.fn(simplePipeInExtraMetaData);
     const mockSetDataValidationFunction = jest.fn();
 
-    const { getAllByA11yLabel, toJSON } = render(
+    const renderResults = render(
       <SliderQuestionScreen
         key={question.id}
         question={question}
@@ -166,6 +168,11 @@ test.each([
         setDataValidationFunction={mockSetDataValidationFunction}
       />,
     );
+    const { toJSON } = renderResults;
+
+    const sliderInput = await findSliderAsync(renderResults);
+    // `defaultValue` should be ignored here.
+    expect(sliderInput.props.value).not.toBe(question.defaultValue);
 
     expect(mockLoadingCompleted).toHaveBeenCalledTimes(1);
 
@@ -174,10 +181,6 @@ test.each([
 
     // Because there isn't any requirement to validate the data.
     expect(mockSetDataValidationFunction).not.toHaveBeenCalled();
-
-    const sliderInput = getSlider(getAllByA11yLabel);
-    // `defaultValue` should be ignored here.
-    expect(sliderInput.props.value).not.toBe(question.defaultValue);
 
     expect(sliderInput.props.value).toBe(
       prevAnswerData
@@ -192,13 +195,13 @@ test.each([
   },
 );
 
-test("update values", () => {
+test("update values", async () => {
   const mockLoadingCompleted = jest.fn();
   const mockOnDataChangeFn = jest.fn();
   const mockPipeInExtraMetaData = jest.fn(simplePipeInExtraMetaData);
   const mockSetDataValidationFunction = jest.fn();
 
-  const { getAllByA11yLabel } = render(
+  const renderResults = render(
     <SliderQuestionScreen
       key={WITHOUT_DEFAULT.id}
       question={WITHOUT_DEFAULT}
@@ -211,9 +214,9 @@ test("update values", () => {
     />,
   );
 
-  expect(mockLoadingCompleted).toHaveBeenCalledTimes(1);
+  const sliderInput = await findSliderAsync(renderResults);
 
-  const sliderInput = getSlider(getAllByA11yLabel);
+  expect(mockLoadingCompleted).toHaveBeenCalledTimes(1);
 
   const NEW_VALUES = [88, 99, 66, 55];
   for (let i = 0; i < NEW_VALUES.length; i++) {
