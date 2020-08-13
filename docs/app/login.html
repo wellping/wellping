@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Login Code - Well Ping</title>
+
+    <link rel="stylesheet" href="css/styles.css?v=1.0" />
+  </head>
+
+  <body>
+    <div style="text-align: center; margin: 20px;">
+      <p>
+        Please copy your login code below and paste it in the Well Ping app to
+        log in.
+      </p>
+      <pre
+        id="login-code"
+        style="font-size: 125%; font-weight: bold; white-space: pre-wrap; word-wrap: anywhere;"
+      ></pre>
+
+      <button onclick="copyLoginCodeToClipboard();" style="font-size: 150%;">
+        Copy Login Code to Clipboard
+      </button>
+    </div>
+
+    <script>
+      const urlParams = new URLSearchParams(window.location.search);
+      const codeParam = urlParams.get("code");
+      document.getElementById("login-code").innerHTML = codeParam;
+
+      function copyLoginCodeToClipboard() {
+        var copyText = document.getElementById("login-code").innerHTML;
+
+        navigator.clipboard.writeText(copyText);
+
+        alert("Copied “" + copyText + "” to clipboard.");
+      }
+    </script>
+  </body>
+</html>
