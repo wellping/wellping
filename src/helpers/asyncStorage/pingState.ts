@@ -38,6 +38,7 @@ export async function getPingStateAsync(
         nextQuestionsDataStack: [],
         answers: {},
         lastUploadDate: new Date(0),
+        isInTransition: false,
       };
     }
     const state: SurveyScreenState = JSON.parse(value);
