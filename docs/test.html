@@ -1,11 +1,9 @@
 <!DOCTYPE html>
 <html>
   <body>
-    <div id="download"></div>
+    <div id="user-generations-download"></div>
 
-    <button
-      onclick="generateUsersCSV(10).then(csvFile => downloadCsv(csvFile, 'import_to_firebase_auth.csv'))"
-    >
+    <button onclick="generateButtonOnClick(10)">
       yep
     </button>
 

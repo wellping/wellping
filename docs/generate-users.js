@@ -32,7 +32,18 @@ function downloadCsv(csvText, filename) {
   }
 }
 
-async function generateUsersCSV(numberOfUsers) {
+function addButtonToDownloadDiv(csvText, filename, text) {
+  const downloadDiv = document.getElementById("user-generations-download");
+  const button = document.createElement("button");
+  button.onclick = function () {
+    downloadCsv(csvText, filename);
+    return false;
+  };
+  button.innerText = "Download " + text;
+  downloadDiv.appendChild(button);
+}
+
+async function generateUsersCSVs(numberOfUsers) {
   const userIds = [];
   for (let i = 0; i < numberOfUsers; i++) {
     const userId = generateId(8);
@@ -52,29 +63,45 @@ async function generateUsersCSV(numberOfUsers) {
     }
   }
 
-  console.log(new Date());
   const hashedPasswords = [];
   await Promise.all(
     passwords.map(async (password) => {
       var bcrypt = dcodeIO.bcrypt;
-      document.title = "generated the " + hashedPasswords.length;
       var hashedPassword = await bcrypt.hash(password, 8);
-      hashedPasswords.push(btoa(hashedPassword));
+      hashedPasswords.push([btoa(hashedPassword), password]);
     }),
   );
-  console.log(new Date());
 
   // https://stackoverflow.com/a/14966131/2603230
+  let firebaseAuthImportCsv = "";
   let usersCsv = "";
   for (let i = 0; i < numberOfUsers; i++) {
-    usersCsv +=
+    firebaseAuthImportCsv +=
       userIds[i] +
       "," +
       userIds[i] +
       "@wellping.ssnl.stanford.edu,false," +
-      hashedPasswords[i] +
+      hashedPasswords[i][0] +
       ",,,,,,,,,,,,,,,,,,,,," +
       "\r\n";
+
+    usersCsv += userIds[i] + "," + hashedPasswords[i][1] + "\r\n";
   }
-  return usersCsv;
+
+  return [firebaseAuthImportCsv, usersCsv];
+}
+
+function generateButtonOnClick(numberOfUsers) {
+  const downloadDiv = document.getElementById("user-generations-download");
+  downloadDiv.innerText = "Generating... (This may take a while.)";
+  generateUsersCSVs(numberOfUsers).then((csvFile) => {
+    downloadDiv.innerText = "Done!";
+
+    addButtonToDownloadDiv(
+      csvFile[0],
+      "import_to_firebase_auth.csv",
+      "Firebase import csv",
+    );
+    addButtonToDownloadDiv(csvFile[1], "users.csv", "user ID and password");
+  });
 }
