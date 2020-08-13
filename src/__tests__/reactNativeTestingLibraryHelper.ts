@@ -1,4 +1,4 @@
-import { fireEvent, act } from "react-native-testing-library";
+import { fireEvent, act, RenderAPI } from "react-native-testing-library";
 import { ReactTestInstance } from "react-test-renderer";
 import waitForExpect from "wait-for-expect";
 
@@ -20,3 +20,16 @@ export async function changeTextAndWaitForUpdateAsync(
     });
   });
 }
+
+const SLIDER_A11Y_LABEL = "slider input";
+export const findSliderAsync = async ({ findAllByA11yLabel }: RenderAPI) => {
+  const sliderInputs = await findAllByA11yLabel(SLIDER_A11Y_LABEL);
+  expect(sliderInputs).toHaveLength(1);
+  const sliderInput = sliderInputs[0];
+  return sliderInput;
+};
+export const moveSlider = (sliderInput: ReactTestInstance, value: number) => {
+  fireEvent(sliderInput, "onSlidingComplete", {
+    nativeEvent: { value },
+  });
+};

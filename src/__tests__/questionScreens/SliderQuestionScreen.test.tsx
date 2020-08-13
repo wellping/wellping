@@ -1,6 +1,5 @@
 import React from "react";
-import { render, fireEvent, RenderAPI } from "react-native-testing-library";
-import { ReactTestInstance } from "react-test-renderer";
+import { render } from "react-native-testing-library";
 
 import { SliderAnswerData } from "../../helpers/answerTypes";
 import { QuestionType } from "../../helpers/helpers";
@@ -10,6 +9,10 @@ import SliderQuestionScreen, {
   getQuestionDefaultSliderValue,
 } from "../../questionScreens/SliderQuestionScreen";
 import { simplePipeInExtraMetaData } from "../helper";
+import {
+  moveSlider,
+  findSliderAsync,
+} from "../reactNativeTestingLibraryHelper";
 
 const SLIDER_QUESTIONS: {
   [questionId: string]: SliderQuestion;
@@ -56,19 +59,6 @@ const WITH_DEFAULT_FROM_Q_WITHOUT_DEFAULT =
   SLIDER_QUESTIONS["WithDefaultFromQWithoutDefault"];
 const WITH_DEFAULT_FROM_Q_WITH_DEFAULT =
   SLIDER_QUESTIONS["WithDefaultFromQWithDefault"];
-
-const SLIDER_A11Y_LABEL = "slider input";
-export const findSliderAsync = async ({ findAllByA11yLabel }: RenderAPI) => {
-  const sliderInputs = await findAllByA11yLabel(SLIDER_A11Y_LABEL);
-  expect(sliderInputs).toHaveLength(1);
-  const sliderInput = sliderInputs[0];
-  return sliderInput;
-};
-export const moveSlider = (sliderInput: ReactTestInstance, value: number) => {
-  fireEvent(sliderInput, "onSlidingComplete", {
-    nativeEvent: { value },
-  });
-};
 
 test("without default value", async () => {
   const mockLoadingCompleted = jest.fn();
