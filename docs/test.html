@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+  <body>
+    <div id="download"></div>
+
+    <button
+      onclick="generateUsersCSV(10).then(csvFile => downloadCsv(csvFile, 'import_to_firebase_auth.csv'))"
+    >
+      yep
+    </button>
+
+    <script src="./lib/bcrypt.min.js"></script>
+
+    <script src="./generate-users.js"></script>
+  </body>
+</html>
