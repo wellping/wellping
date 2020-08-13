@@ -448,5 +448,161 @@ describe.each(DIFFERENT_TYPES_OF_QUESTIONS)(
         });
       });
     });
+
+    describe("next without answering fallback", () => {
+      describe("a question", () => {
+        const props: SurveyScreenProps = {
+          questions: {
+            q1: {
+              ...q1,
+              fallbackNext: {
+                nextWithoutAnswering: "q1_nwa_fallback",
+              },
+            },
+            q1_nwa_fallback: {
+              id: "q1_nwa_fallback",
+              type: QuestionType.Slider,
+              question: "Question 1 - Next without answering fallback",
+              slider: ["left", "right"],
+              next: null,
+            },
+            q2: {
+              id: "q2",
+              type: QuestionType.Slider,
+              question: "Question 2",
+              slider: ["left", "right"],
+              next: null,
+            },
+          },
+          startingQuestionId: "q1",
+          ping: TEST_PING,
+          previousState: null,
+          onFinish: async () => {},
+        };
+
+        test("click next without answering", async () => {
+          const onFinishFn = jest.fn();
+
+          const renderResults = render(
+            <SurveyScreen {...props} onFinish={onFinishFn} />,
+          );
+
+          await testQuestionsSequenceAsync({
+            renderResults,
+            onFinishFn,
+            sequence: [
+              {
+                expectCurrentQuestionAsync: async (getCurrentQuestionTitle) => {
+                  expect(getCurrentQuestionTitle()).toBe("Question 1");
+                },
+              },
+              {
+                expectCurrentQuestionAsync: async (getCurrentQuestionTitle) => {
+                  expect(getCurrentQuestionTitle()).toBe(
+                    "Question 1 - Next without answering fallback",
+                  );
+                },
+              },
+            ],
+          });
+        });
+
+        test("click PNA", async () => {
+          const onFinishFn = jest.fn();
+
+          const renderResults = render(
+            <SurveyScreen {...props} onFinish={onFinishFn} />,
+          );
+
+          await testQuestionsSequenceAsync({
+            renderResults,
+            onFinishFn,
+            sequence: [
+              {
+                expectCurrentQuestionAsync: async (getCurrentQuestionTitle) => {
+                  expect(getCurrentQuestionTitle()).toBe("Question 1");
+                },
+                nextButton: "pna",
+              },
+              {
+                expectCurrentQuestionAsync: async (getCurrentQuestionTitle) => {
+                  expect(getCurrentQuestionTitle()).toBe("Question 2");
+                },
+              },
+            ],
+          });
+        });
+      });
+
+      describe("null", () => {
+        const props: SurveyScreenProps = {
+          questions: {
+            q1: {
+              ...q1,
+              fallbackNext: {
+                nextWithoutAnswering: null,
+              },
+            },
+            q2: {
+              id: "q2",
+              type: QuestionType.Slider,
+              question: "Question 2",
+              slider: ["left", "right"],
+              next: null,
+            },
+          },
+          startingQuestionId: "q1",
+          ping: TEST_PING,
+          previousState: null,
+          onFinish: async () => {},
+        };
+
+        test("click next without answering", async () => {
+          const onFinishFn = jest.fn();
+
+          const renderResults = render(
+            <SurveyScreen {...props} onFinish={onFinishFn} />,
+          );
+
+          await testQuestionsSequenceAsync({
+            renderResults,
+            onFinishFn,
+            sequence: [
+              {
+                expectCurrentQuestionAsync: async (getCurrentQuestionTitle) => {
+                  expect(getCurrentQuestionTitle()).toBe("Question 1");
+                },
+              },
+            ],
+          });
+        });
+
+        test("click PNA", async () => {
+          const onFinishFn = jest.fn();
+
+          const renderResults = render(
+            <SurveyScreen {...props} onFinish={onFinishFn} />,
+          );
+
+          await testQuestionsSequenceAsync({
+            renderResults,
+            onFinishFn,
+            sequence: [
+              {
+                expectCurrentQuestionAsync: async (getCurrentQuestionTitle) => {
+                  expect(getCurrentQuestionTitle()).toBe("Question 1");
+                },
+                nextButton: "pna",
+              },
+              {
+                expectCurrentQuestionAsync: async (getCurrentQuestionTitle) => {
+                  expect(getCurrentQuestionTitle()).toBe("Question 2");
+                },
+              },
+            ],
+          });
+        });
+      });
+    });
   },
 );
