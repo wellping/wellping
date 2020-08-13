@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`QuestionSchema empty 1`] = `
-"4 validation issue(s)
+"3 validation issue(s)
 
   Issue #0: invalid_type at id
   Required
@@ -10,9 +10,6 @@ exports[`QuestionSchema empty 1`] = `
   Input must be one of these values: Slider, ChoicesWithSingleAnswer, ChoicesWithMultipleAnswers, YesNo, MultipleText, HowLongAgo, Branch, BranchWithRelativeComparison
 
   Issue #2: invalid_type at question
-  Required
-
-  Issue #3: invalid_type at next
   Required
 "
 `;
@@ -69,7 +66,7 @@ exports[`QuestionSchema missing type 1`] = `
 exports[`QuestionSchema next should not be undefined 1`] = `
 "1 validation issue(s)
 
-  Issue #0: invalid_type at next
-  Required
+  Issue #0: invalid_union at next
+  Invalid input
 "
 `;

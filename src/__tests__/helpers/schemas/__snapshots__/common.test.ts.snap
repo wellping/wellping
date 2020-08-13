@@ -50,30 +50,3 @@ exports[`QuestionIdSchema doesn't allow undefined 1`] = `
   Required
 "
 `;
-
-exports[`QuestionIdSchemaNullable doesn't allow empty - path info 1`] = `
-"1 validation issue(s)
-
-  Issue #0: invalid_type at myPath
-  Required
-"
-`;
-
-exports[`QuestionIdSchemaNullable doesn't allow empty 1`] = `
-"2 validation issue(s)
-
-  Issue #0: too_small at 
-  Should be at least 1 characters
-
-  Issue #1: custom_error at 
-  Question ID can only include letters, numbers, \\"_\\", \\"[\\", and \\"]\\".
-"
-`;
-
-exports[`QuestionIdSchemaNullable doesn't allow undefined 1`] = `
-"1 validation issue(s)
-
-  Issue #0: invalid_type at 
-  Required
-"
-`;

@@ -30,6 +30,9 @@ export const QuestionIdSchema = z
   });
 
 /**
+ * Note: This isn't current used anywhere because this breaks the type
+ * inference (it will set the type to `any`).
+ *
  * This is a workaround such that the error message for missing it will be
  * > Issue #0: invalid_type at
  * > Required
@@ -49,9 +52,6 @@ export const CustomNullable = (Schema: z.ZodType<any, any>, path: string[]) =>
     }
     return true;
   });
-
-export const QuestionIdSchemaNullable = (path: string[]) =>
-  CustomNullable(QuestionIdSchema, path);
 
 export const ChoiceSchema = z.string().nonempty();
 

@@ -3,7 +3,6 @@ import * as z from "zod";
 import {
   StreamNameSchema,
   QuestionIdSchema,
-  QuestionIdSchemaNullable,
   ChoicesListSchema,
   ChoiceSchema,
 } from "./common";
@@ -59,7 +58,7 @@ const BaseQuestionSchema = z.object({
   /**
    * The question ID of the next question.
    */
-  next: QuestionIdSchemaNullable(["next"]),
+  next: QuestionIdSchema.nullable(),
 });
 
 export const SliderQuestionSchema = BaseQuestionSchema.extend({
