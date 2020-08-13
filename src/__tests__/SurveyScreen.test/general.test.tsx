@@ -3,7 +3,17 @@ import { render } from "react-native-testing-library";
 
 import SurveyScreen, { SurveyScreenProps } from "../../SurveyScreen";
 import { QuestionType } from "../../helpers/helpers";
-import { QuestionsList } from "../../helpers/types";
+import {
+  QuestionsList,
+  Question,
+  QuestionTypeType,
+  SliderQuestion,
+  ChoicesWithSingleAnswerQuestion,
+  ChoicesWithMultipleAnswersQuestion,
+  YesNoQuestion,
+  MultipleTextQuestion,
+  HowLongAgoQuestion,
+} from "../../helpers/types";
 import {
   TEST_PING,
   mockNecessaryFunctionsToTestSurveyScreen,
@@ -149,3 +159,138 @@ test("50 questions", async () => {
     sequence,
   });
 });
+
+const DIFFERENT_TYPES_OF_QUESTIONS = [
+  [
+    QuestionType.Slider,
+    {
+      id: "q1",
+      type: QuestionType.Slider,
+      question: "Question 1",
+      slider: ["left", "right"],
+      next: "q2",
+    } as SliderQuestion,
+  ],
+  [
+    QuestionType.ChoicesWithSingleAnswer,
+    {
+      id: "q1",
+      type: QuestionType.ChoicesWithSingleAnswer,
+      question: "Question 1",
+      choices: ["choice A", "choice B", "choice C", "choice D"],
+      next: "q2",
+    } as ChoicesWithSingleAnswerQuestion,
+  ],
+  [
+    QuestionType.ChoicesWithMultipleAnswers,
+    {
+      id: "q1",
+      type: QuestionType.ChoicesWithMultipleAnswers,
+      question: "Question 1",
+      choices: ["choice A", "choice B", "choice C", "choice D"],
+      next: "q2",
+    } as ChoicesWithMultipleAnswersQuestion,
+  ],
+  [
+    QuestionType.YesNo,
+    {
+      id: "q1",
+      type: QuestionType.YesNo,
+      question: "Question 1",
+      next: "q2",
+    } as YesNoQuestion,
+  ],
+  [
+    QuestionType.MultipleText,
+    {
+      id: "q1",
+      type: QuestionType.MultipleText,
+      max: 3,
+      question: "Question 1",
+      next: "q2",
+    } as MultipleTextQuestion,
+  ],
+  [
+    QuestionType.HowLongAgo,
+    {
+      id: "q1",
+      type: QuestionType.HowLongAgo,
+      question: "Question 1",
+      next: "q2",
+    } as HowLongAgoQuestion,
+  ],
+] as [QuestionTypeType, Question][];
+describe.each(DIFFERENT_TYPES_OF_QUESTIONS)(
+  "%s: prefer not to answer or next without answering",
+  (type, q1) => {
+    describe("without fallback", () => {
+      const props: SurveyScreenProps = {
+        questions: {
+          q1,
+          q2: {
+            id: "q2",
+            type: QuestionType.Slider,
+            question: "Question 2",
+            slider: ["left", "right"],
+            next: null,
+          },
+        },
+        startingQuestionId: "q1",
+        ping: TEST_PING,
+        previousState: null,
+        onFinish: async () => {},
+      };
+
+      test("prefer not to answer", async () => {
+        const onFinishFn = jest.fn();
+
+        const renderResults = render(
+          <SurveyScreen {...props} onFinish={onFinishFn} />,
+        );
+
+        await testQuestionsSequenceAsync({
+          renderResults,
+          onFinishFn,
+          sequence: [
+            {
+              expectCurrentQuestionAsync: async (getCurrentQuestionTitle) => {
+                expect(getCurrentQuestionTitle()).toBe("Question 1");
+              },
+              nextButton: "pna",
+            },
+            {
+              expectCurrentQuestionAsync: async (getCurrentQuestionTitle) => {
+                expect(getCurrentQuestionTitle()).toBe("Question 2");
+              },
+            },
+          ],
+        });
+      });
+
+      test("next without answering", async () => {
+        const onFinishFn = jest.fn();
+
+        const renderResults = render(
+          <SurveyScreen {...props} onFinish={onFinishFn} />,
+        );
+
+        await testQuestionsSequenceAsync({
+          renderResults,
+          onFinishFn,
+          sequence: [
+            {
+              expectCurrentQuestionAsync: async (getCurrentQuestionTitle) => {
+                expect(getCurrentQuestionTitle()).toBe("Question 1");
+              },
+            },
+            {
+              expectCurrentQuestionAsync: async (getCurrentQuestionTitle) => {
+                expect(getCurrentQuestionTitle()).toBe("Question 2");
+              },
+            },
+          ],
+        });
+      });
+    });
+  },
+);
