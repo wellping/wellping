@@ -160,7 +160,7 @@ test("50 questions", async () => {
   });
 });
 
-const DIFFERENT_TYPES_OF_QUESTIONS = [
+const DIFFERENT_TYPES_OF_QUESTIONS: [QuestionTypeType, Question][] = [
   [
     QuestionType.Slider,
     {
@@ -169,7 +169,7 @@ const DIFFERENT_TYPES_OF_QUESTIONS = [
       question: "Question 1",
       slider: ["left", "right"],
       next: "q2",
-    } as SliderQuestion,
+    },
   ],
   [
     QuestionType.ChoicesWithSingleAnswer,
@@ -179,7 +179,7 @@ const DIFFERENT_TYPES_OF_QUESTIONS = [
       question: "Question 1",
       choices: ["choice A", "choice B", "choice C", "choice D"],
       next: "q2",
-    } as ChoicesWithSingleAnswerQuestion,
+    },
   ],
   [
     QuestionType.ChoicesWithMultipleAnswers,
@@ -189,7 +189,7 @@ const DIFFERENT_TYPES_OF_QUESTIONS = [
       question: "Question 1",
       choices: ["choice A", "choice B", "choice C", "choice D"],
       next: "q2",
-    } as ChoicesWithMultipleAnswersQuestion,
+    },
   ],
   [
     QuestionType.YesNo,
@@ -198,7 +198,7 @@ const DIFFERENT_TYPES_OF_QUESTIONS = [
       type: QuestionType.YesNo,
       question: "Question 1",
       next: "q2",
-    } as YesNoQuestion,
+    },
   ],
   [
     QuestionType.MultipleText,
@@ -206,9 +206,11 @@ const DIFFERENT_TYPES_OF_QUESTIONS = [
       id: "q1",
       type: QuestionType.MultipleText,
       max: 3,
+      variableName: "varname",
+      indexName: "idx",
       question: "Question 1",
       next: "q2",
-    } as MultipleTextQuestion,
+    },
   ],
   [
     QuestionType.HowLongAgo,
@@ -217,9 +219,9 @@ const DIFFERENT_TYPES_OF_QUESTIONS = [
       type: QuestionType.HowLongAgo,
       question: "Question 1",
       next: "q2",
-    } as HowLongAgoQuestion,
+    },
   ],
-] as [QuestionTypeType, Question][];
+];
 describe.each(DIFFERENT_TYPES_OF_QUESTIONS)(
   "%s: prefer not to answer or next without answering",
   (type, q1) => {
