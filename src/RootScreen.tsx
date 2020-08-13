@@ -15,6 +15,7 @@ import {
 } from "./helpers/asyncStorage/user";
 import { connectDatabaseAsync } from "./helpers/database";
 import { getCriticalProblemTextForUser } from "./helpers/debug";
+import { initializeFirebase } from "./helpers/firebase";
 import {
   getStudyFileAsync,
   downloadStudyFileAsync,
@@ -27,6 +28,9 @@ import LoginScreen, {
   ParamDownloadAndParseStudyFileAsync,
 } from "./screens/LoginScreen";
 import StudyFileErrorScreen from "./screens/StudyFileErrorScreen";
+
+import "firebase/auth";
+import "firebase/database";
 
 interface RootScreenProps {}
 
@@ -143,6 +147,8 @@ export default class RootScreen extends React.Component<
           // Just do it next time.
         },
       });
+
+      initializeFirebase(survey.studyInfo);
 
       const user = await getUserAsync();
       if (user === null) {

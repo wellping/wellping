@@ -36,6 +36,8 @@ export const StudyInfoSchema = z
      */
     serverURL: z.string().url(),
 
+    firebaseConfig: z.object({}).nonstrict(),
+
     /**
      * The URL of the study consent form (or any web page you would want the
      * user to see before they begin).

@@ -21,6 +21,7 @@ import {
   getCriticalProblemTextForUser,
   shareDebugText,
 } from "../helpers/debug";
+import { initializeFirebase } from "../helpers/firebase";
 import { LoginSchema } from "../helpers/schemas/Login";
 import { getStudyFileAsync } from "../helpers/studyFile";
 
@@ -214,6 +215,8 @@ export default class LoginScreen extends React.Component<
     this.setState({
       loadingText: "Authenticating...",
     });
+
+    initializeFirebase(survey.studyInfo);
 
     const error = await registerUserAsync(user);
     if (!error) {
