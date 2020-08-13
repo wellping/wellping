@@ -33,6 +33,7 @@ const basicTestForQuestionAsync = async (
   question: HowLongAgoQuestion,
   inputValues: HowLongAgoAnswerDataType,
 ) => {
+  const mockLoadingCompleted = jest.fn();
   const mockOnDataChangeFn = jest.fn();
   const mockPipeInExtraMetaData = jest.fn(simplePipeInExtraMetaData);
   const mockSetDataValidationFunction = jest.fn();
@@ -41,6 +42,7 @@ const basicTestForQuestionAsync = async (
     <HowLongAgoQuestionScreen
       key={question.id}
       question={question}
+      loadingCompleted={mockLoadingCompleted}
       onDataChange={mockOnDataChangeFn}
       allAnswers={{}}
       allQuestions={{ [question.id]: question }}
@@ -49,6 +51,8 @@ const basicTestForQuestionAsync = async (
     />,
   );
   const { getAllByA11yLabel, toJSON } = renderResults;
+
+  expect(mockLoadingCompleted).toHaveBeenCalledTimes(1);
 
   // Because there isn't a need to pipe in any data.
   expect(mockPipeInExtraMetaData).not.toHaveBeenCalled();

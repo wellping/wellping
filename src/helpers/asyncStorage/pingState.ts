@@ -31,11 +31,14 @@ export async function getPingStateAsync(
     const value = await AsyncStorage.getItem(keyName);
     if (value == null) {
       return {
-        currentQuestionId: `ERROR: getPingStateAsync is null for ${keyName}`,
-        extraMetaData: {},
-        nextStack: [],
-        currentQuestionAnswers: {},
+        currentQuestionData: {
+          questionId: `ERROR_getPingStateAsync_is_null_for_${keyName}`,
+          extraData: {},
+        },
+        nextQuestionsDataStack: [],
+        answers: {},
         lastUploadDate: new Date(0),
+        isInTransition: false,
       };
     }
     const state: SurveyScreenState = JSON.parse(value);

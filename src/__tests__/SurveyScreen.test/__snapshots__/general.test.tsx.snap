@@ -1,0 +1,7 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`non-existent startingQuestionId 1`] = `
+<Text>
+  [CRITICAL ERROR (Please screenshot this page and send it to the study staff as soon as possible): questions["na"] === undefined]
+</Text>
+`;

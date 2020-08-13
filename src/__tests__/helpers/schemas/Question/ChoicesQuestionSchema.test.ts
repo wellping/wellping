@@ -166,22 +166,11 @@ describe("ChoicesQuestionSchema", () => {
       }).toThrowErrorMatchingSnapshot();
     });
 
-    test("can be empty object", () => {
+    test("can be empty array", () => {
       expect(() => {
         ChoicesQuestionSchema.parse({
           ...question,
-          specialCasesStartId: {},
-        });
-      }).not.toThrowError();
-    });
-
-    test(`can include only "_pna"`, () => {
-      expect(() => {
-        ChoicesQuestionSchema.parse({
-          ...question,
-          specialCasesStartId: {
-            _pna: "hello_world",
-          },
+          specialCasesStartId: [],
         });
       }).not.toThrowError();
     });
@@ -191,32 +180,16 @@ describe("ChoicesQuestionSchema", () => {
         ChoicesQuestionSchema.parse({
           ...question,
           choices: "NAMES",
-          specialCasesStartId: {
-            一尊还酹江月: "dream",
-          },
+          specialCasesStartId: [["一尊还酹江月", "dream"]],
         });
       }).not.toThrowError();
     });
 
-    test(`can include only choices keys`, () => {
+    test(`can include choices keys`, () => {
       expect(() => {
         ChoicesQuestionSchema.parse({
           ...question,
-          specialCasesStartId: {
-            "Hello?": "hello_world",
-          },
-        });
-      }).not.toThrowError();
-    });
-
-    test(`can include both "_pna" and choices keys`, () => {
-      expect(() => {
-        ChoicesQuestionSchema.parse({
-          ...question,
-          specialCasesStartId: {
-            "Hello?": "hello_world",
-            _pna: "goodbye",
-          },
+          specialCasesStartId: [["Hello?", "hello_world"]],
         });
       }).not.toThrowError();
     });
@@ -225,59 +198,36 @@ describe("ChoicesQuestionSchema", () => {
       expect(() => {
         ChoicesQuestionSchema.parse({
           ...question,
-          specialCasesStartId: {
-            notakey: "nonono",
-          },
+          specialCasesStartId: [["notakey", "nonono"]],
         });
       }).toThrowErrorMatchingSnapshot("non-choices key only");
 
       expect(() => {
         ChoicesQuestionSchema.parse({
           ...question,
-          specialCasesStartId: {
-            notakey: "nonono",
-            "World!": "stillno",
-          },
+          specialCasesStartId: [
+            ["notakey", "nonono"],
+            ["World!", "stillno"],
+          ],
         });
       }).toThrowErrorMatchingSnapshot("non-choices key with choice key");
-
-      expect(() => {
-        ChoicesQuestionSchema.parse({
-          ...question,
-          specialCasesStartId: {
-            notakey: "nonono",
-            _pna: "goodbye",
-          },
-        });
-      }).toThrowErrorMatchingSnapshot(`non-choices key with "_pna"`);
     });
 
     test(`question id can be null`, () => {
       expect(() => {
         ChoicesQuestionSchema.parse({
           ...question,
-          specialCasesStartId: {
-            "Hello?": "new_world",
-            _pna: null,
-          },
+          specialCasesStartId: [
+            ["Hello?", "new_world"],
+            ["World!", null],
+          ],
         });
       }).not.toThrowError();
 
       expect(() => {
         ChoicesQuestionSchema.parse({
           ...question,
-          specialCasesStartId: {
-            "World!": null,
-          },
-        });
-      }).not.toThrowError();
-
-      expect(() => {
-        ChoicesQuestionSchema.parse({
-          ...question,
-          specialCasesStartId: {
-            _pna: null,
-          },
+          specialCasesStartId: [["World!", null]],
         });
       }).not.toThrowError();
     });

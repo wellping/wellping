@@ -689,8 +689,8 @@ export default class HomeScreen extends React.Component<
       <View style={{ height: "100%" }}>
         {ExtraView}
         <SurveyScreen
-          survey={streams[currentPing.streamName]}
-          surveyStartingQuestionId={
+          questions={streams[currentPing.streamName]}
+          startingQuestionId={
             studyInfo.streamsStartingQuestionIds[currentPing.streamName]
           }
           ping={currentPing}

@@ -18,6 +18,7 @@ interface MultipleTextQuestionScreenProps extends QuestionScreenProps {
 
 const MultipleTextQuestionScreen: React.ElementType<MultipleTextQuestionScreenProps> = ({
   question,
+  loadingCompleted,
   onDataChange,
   allAnswers,
   pipeInExtraMetaData,
@@ -70,20 +71,24 @@ const MultipleTextQuestionScreen: React.ElementType<MultipleTextQuestionScreenPr
     });
 
     async function setupTextFieldsDropdownItemsAsync() {
-      let tempChoices!: ChoicesList;
-      if (typeof question.choices === "string") {
-        tempChoices = await getReusableChoicesIncludeErrorAsync(
-          question.choices,
+      if (question.choices !== undefined) {
+        let tempChoices!: ChoicesList;
+        if (typeof question.choices === "string") {
+          tempChoices = await getReusableChoicesIncludeErrorAsync(
+            question.choices,
+          );
+        } else {
+          tempChoices = question.choices;
+        }
+        setTextFieldsDropdownItems(
+          tempChoices.map((choice) => ({
+            id: choice,
+            name: pipeInExtraMetaData(choice),
+          })),
         );
-      } else if (question.choices) {
-        tempChoices = question.choices;
       }
-      setTextFieldsDropdownItems(
-        tempChoices.map((choice) => ({
-          id: choice,
-          name: pipeInExtraMetaData(choice),
-        })),
-      );
+
+      loadingCompleted();
     }
     // So that async can be used in `setupTextFieldsDropdownItemsAsync`.
     setupTextFieldsDropdownItemsAsync();

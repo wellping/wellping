@@ -3,36 +3,35 @@ import { Alert } from "react-native";
 import {
   render,
   fireEvent,
-  A11yAPI,
-  FireEventAPI,
+  act,
   waitFor,
+  RenderAPI,
 } from "react-native-testing-library";
-import { ReactTestInstance } from "react-test-renderer";
+import waitForExpect from "wait-for-expect";
 
 import { MultipleTextAnswerEntity } from "../../entities/AnswerEntity";
 import { AnswersList, MultipleTextAnswerData } from "../../helpers/answerTypes";
 import { QuestionType } from "../../helpers/helpers";
+import * as studyFileHelper from "../../helpers/studyFile";
 import { MultipleTextQuestion, ChoicesList } from "../../helpers/types";
 import MultipleTextQuestionScreen from "../../questionScreens/MultipleTextQuestionScreen";
 import { simplePipeInExtraMetaData, mockCurrentExtraData } from "../helper";
+import { changeTextAndWaitForUpdateAsync } from "../reactNativeTestingLibraryHelper";
 
 const A11Y_HINT = "Enter your answer here";
 const getTextInputA11YLabel = (index: number) => `text input ${index}`;
-const getTextInput = (
+const findTextInputAsync = async (
   index: number,
-  getAllByA11yLabel: A11yAPI["getAllByA11yLabel"],
+  { findAllByA11yLabel }: RenderAPI,
 ) => {
-  const textInputs = getAllByA11yLabel(getTextInputA11YLabel(index));
+  const textInputs = await findAllByA11yLabel(getTextInputA11YLabel(index));
   expect(textInputs).toHaveLength(1);
   const textInput = textInputs[0];
   return textInput;
 };
 
 const MOCK_EMOJI_CHOICES_KEY = "emojis";
-const MOCK_EMOJI_CHOICES_LIST = ["😀", "🤪", "🧐", "😎"] as [
-  string,
-  ...string[]
-];
+const MOCK_EMOJI_CHOICES_LIST = ["😀", "🤪", "🧐", "😎"] as ChoicesList;
 const basicTestForQuestionAsync = async (
   question: MultipleTextQuestion,
   allAnswers: AnswersList,
@@ -40,6 +39,7 @@ const basicTestForQuestionAsync = async (
 ) => {
   let codeDataValidationFunction: (() => boolean) | null = null;
 
+  const mockLoadingCompleted = jest.fn();
   const mockOnDataChangeFn = jest.fn();
   const mockPipeInExtraMetaData = jest.fn(simplePipeInExtraMetaData);
   const mockSetDataValidationFunction = jest.fn((func) => {
@@ -50,6 +50,7 @@ const basicTestForQuestionAsync = async (
     <MultipleTextQuestionScreen
       key={question.id}
       question={question}
+      loadingCompleted={mockLoadingCompleted}
       onDataChange={mockOnDataChangeFn}
       allAnswers={allAnswers}
       allQuestions={{ [question.id]: question }}
@@ -60,9 +61,9 @@ const basicTestForQuestionAsync = async (
   const { getAllByA11yLabel, getAllByA11yHint } = renderResults;
 
   // Wait for the text fields to be loaded.
-  await waitFor(() => {
-    return getAllByA11yLabel(/^text input /).length > 0;
-  });
+  await waitFor(() => getAllByA11yLabel(/^text input /));
+
+  expect(mockLoadingCompleted).toHaveBeenCalledTimes(1);
 
   let choices!: ChoicesList | undefined;
   if (typeof question.choices === "string") {
@@ -99,16 +100,19 @@ const basicTestForQuestionAsync = async (
   const expectedAnswerData: MultipleTextAnswerData = { value: [] };
   let callCount = 0;
   for (let i = 0; i < textInputsLength; i++) {
-    const textInput = getTextInput(i, getAllByA11yLabel);
+    const findIthTextInputAsync = async () =>
+      // `findBy` does the `waitFor` for us.
+      await findTextInputAsync(i, renderResults);
+
+    expect((await findIthTextInputAsync()).props.placeholder).toBe(
+      question.placeholder,
+    );
+
     const inputValue = inputValues[i] || "";
-
-    expect(textInput.props.placeholder).toBe(question.placeholder);
-
-    fireEvent.changeText(textInput, inputValue);
-    await waitFor(() => {
-      const newTextInput = getTextInput(i, getAllByA11yLabel);
-      return inputValue === newTextInput.props.value;
-    });
+    await changeTextAndWaitForUpdateAsync(
+      async () => await findIthTextInputAsync(),
+      inputValue,
+    );
 
     if (inputValue.length > 0) {
       expectedAnswerData.value[expectedAnswerData.value.length] = inputValue;
@@ -130,19 +134,33 @@ const basicTestForQuestionAsync = async (
 
         const alertSpy = jest
           .spyOn(Alert, "alert")
-          .mockImplementation((title, message, buttons) => {
+          .mockImplementation(async (title, message, buttons) => {
             expect(message).toContain("You must select an item from the list");
 
-            // Press "OK"
-            buttons![0].onPress!();
+            // TODO: do we need act here?
+            act(() => {
+              // Press "OK"
+              buttons![0].onPress!();
+            });
 
             buttonPressed = true;
           });
-        fireEvent(textInput, "onEndEditing", {});
+        fireEvent(await findIthTextInputAsync(), "onEndEditing", {});
         isInputValid = false;
-        expect(alertSpy).toHaveBeenCalledTimes(1);
 
-        await waitFor(() => buttonPressed);
+        await waitForExpect(async () => {
+          expect(alertSpy).toHaveBeenCalledTimes(1);
+        });
+
+        await waitForExpect(() => {
+          expect(buttonPressed).toBe(true);
+        });
+
+        // Note that we cannot test whether the text field (UI) is cleared, as
+        // we use `ref`s in the app.
+        // See
+        // - https://github.com/facebook/react/issues/7740
+        // - https://github.com/callstack/react-native-testing-library/issues/227
 
         expectedAnswerData.value.pop();
         callCount += 1;
@@ -155,7 +173,7 @@ const basicTestForQuestionAsync = async (
       }
     }
     if (isInputValid) {
-      fireEvent(textInput, "onEndEditing", {});
+      fireEvent(await findIthTextInputAsync(), "onEndEditing", {});
       // There should be no extra call.
       expect(mockOnDataChangeFn).toHaveBeenNthCalledWith(
         callCount,
@@ -164,8 +182,6 @@ const basicTestForQuestionAsync = async (
     }
 
     // TODO: test codeDataValidationFunction
-
-    // TODO: it doesn't seems to be testing whether the text field (UI) is cleared.
   }
 
   // Store the expected data object.

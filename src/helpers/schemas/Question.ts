@@ -3,9 +3,10 @@ import * as z from "zod";
 import {
   StreamNameSchema,
   QuestionIdSchema,
-  QuestionIdSchemaNullable,
   ChoicesListSchema,
+  ChoiceSchema,
 } from "./common";
+import { idRegexCheck, idRegexErrorMessage } from "./helper";
 
 export const QuestionTypeSchema = z.enum([
   "Slider",
@@ -19,10 +20,45 @@ export const QuestionTypeSchema = z.enum([
 ]);
 
 const BaseQuestionSchema = z.object({
+  /**
+   * The question ID.
+   */
   id: QuestionIdSchema,
+
+  /**
+   * The question type.
+   */
   type: QuestionTypeSchema,
+
+  /**
+   * The question text.
+   */
   question: z.string(),
-  next: QuestionIdSchemaNullable(["next"]),
+
+  /**
+   * The optional fallback next IDs.
+   */
+  fallbackNext: z
+    .object({
+      /**
+       * If not `undefined`, this will replace `next` when the user prefers not
+       * to answer this question.
+       */
+      preferNotToAnswer: QuestionIdSchema.nullable().optional(),
+
+      /**
+       * If not `undefined`, this will replace `next` when the user presses the
+       * "Next" button without interacting with the question UI (the slider,
+       * the selection buttons, etc.).
+       */
+      nextWithoutAnswering: QuestionIdSchema.nullable().optional(),
+    })
+    .optional(),
+
+  /**
+   * The question ID of the next question.
+   */
+  next: QuestionIdSchema.nullable(),
 });
 
 export const SliderQuestionSchema = BaseQuestionSchema.extend({
@@ -39,26 +75,26 @@ export const ChoicesQuestionSchema = BaseQuestionSchema.extend({
   ]),
   choices: z.union([z.string(), ChoicesListSchema]),
   specialCasesStartId: z
-    .union([
-      // TODO: https://github.com/vriad/zod/issues/104
-      // Record<choice key, question ID>
-      z.record(QuestionIdSchema.nullable()),
-      // For when the user click "Prefer not to answer" or next without option.
-      z.object({ _pna: QuestionIdSchema.nullable().optional() }),
-    ])
+    // We use an array of tuples here so that the special case next question is
+    // deterministic in the case of ChoicesWithMultipleAnswers.
+    .array(z.tuple([ChoiceSchema, QuestionIdSchema.nullable()]))
     .optional(),
   randomizeChoicesOrder: z.boolean().optional(),
   randomizeExceptForChoiceIds: z.array(z.string()).optional(),
 })
   .refine(
     (question) => {
-      if (question.specialCasesStartId && question.choices) {
+      if (
+        question.specialCasesStartId &&
+        Array.isArray(question.specialCasesStartId) &&
+        question.choices
+      ) {
         if (typeof question.choices === "string") {
           // Can't check if it is using reusable choices.
           return true;
         }
-        for (const key of Object.keys(question.specialCasesStartId)) {
-          if (key !== "_pna" && !question.choices.includes(key)) {
+        for (const specialCase of question.specialCasesStartId) {
+          if (!question.choices.includes(specialCase[0])) {
             return false;
           }
         }
@@ -67,7 +103,7 @@ export const ChoicesQuestionSchema = BaseQuestionSchema.extend({
     },
     {
       message:
-        'Keys in `specialCasesStartId` must also be in `choices` or be "_pna".',
+        "Choices keys in `specialCasesStartId` must also be in `choices`.",
       path: ["specialCasesStartId"],
     },
   )
@@ -148,8 +184,20 @@ export const YesNoQuestionSchema = BaseQuestionSchema.extend({
 export const MultipleTextQuestionSchema = BaseQuestionSchema.extend({
   // `id` will store the number of text fields answered.
   type: z.literal(QuestionTypeSchema.enum.MultipleText),
-  indexName: z.string().nonempty(),
-  variableName: z.string().nonempty(),
+  indexName: z
+    .string()
+    .nonempty()
+    .refine(idRegexCheck, {
+      // Because `indexName` might be used in Question ID.
+      message: idRegexErrorMessage("index name"),
+    }),
+  variableName: z
+    .string()
+    .nonempty()
+    .refine(idRegexCheck, {
+      // Because `variableName` might be used in Question ID.
+      message: idRegexErrorMessage("variable name"),
+    }),
   placeholder: z.string().optional(),
   choices: z.union([z.string(), ChoicesListSchema]).optional(),
   forceChoice: z.boolean().optional(),
@@ -158,11 +206,6 @@ export const MultipleTextQuestionSchema = BaseQuestionSchema.extend({
   // participant entered in `maxMinus` question.
   maxMinus: QuestionIdSchema.optional(),
   repeatedItemStartId: QuestionIdSchema.optional(),
-  // This is used when the user does not enter any name or select prefer not to
-  // answer. Note that this has to exists somewhere else. If it is `null`, we
-  // will go to `next` directly.
-  // TODO: MAKE THIS null = stop HERE
-  fallbackItemStartId: QuestionIdSchema.nullable().optional(),
 }).refine(
   (question) => {
     if (question.forceChoice !== undefined) {

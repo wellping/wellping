@@ -49,6 +49,7 @@ export interface AnswersList {
 
 export interface QuestionScreenProps {
   question: Question;
+  loadingCompleted: () => void;
   onDataChange: (data: AnswerData) => void;
   allAnswers: AnswersList;
   allQuestions: QuestionsList;

@@ -59,6 +59,7 @@ const YESNO_CHOICES: Choice[] = [
 
 const ChoicesQuestionScreen: React.ElementType<ChoicesQuestionScreenProps> = ({
   question,
+  loadingCompleted,
   onDataChange,
   pipeInExtraMetaData,
 }) => {
@@ -151,6 +152,8 @@ const ChoicesQuestionScreen: React.ElementType<ChoicesQuestionScreenProps> = ({
       // the `flatListData` variable) because `flatListData` might still not be
       // updated here.
       setSelected(initAnswerDataWithFlatListData(tempFlatListData));
+
+      loadingCompleted();
     }
     setupAsync();
   }, []);

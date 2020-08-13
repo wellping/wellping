@@ -63,7 +63,7 @@
         "question": "Which of the following best categorizes the PRIMARY anxiety you are experiencing?",
         "choices": "WELLBEING_CATEGORY",
         "randomizeChoicesOrder": true,
-        "randomizeExceptForChoiceIds": ["Not experiencing stress", "Other"],
+        "randomizeExceptForChoiceIds": ["Not experiencing it", "Other"],
         "next": "Stressor"
       },
       "Stressor": {
@@ -72,7 +72,7 @@
         "question": "Which of the following best categorizes the PRIMARY stress you are experiencing?",
         "choices": "WELLBEING_CATEGORY",
         "randomizeChoicesOrder": true,
-        "randomizeExceptForChoiceIds": ["Not experiencing stress", "Other"],
+        "randomizeExceptForChoiceIds": ["Not experiencing it", "Other"],
         "next": "StressDurationNum"
       },
       "StressDurationNum": {
@@ -115,12 +115,29 @@
         "max": 3,
         "variableName": "TARGET_NAME",
         "indexName": "INDEX",
-        "next": "SocInteraction_Relationships"
+        "repeatedItemStartId": "SocInteraction_Names[__INDEX__]_Relationships",
+        "next": "SocInteraction_NonStudent"
       },
-      "SocInteraction_Relationships": {
-        "id": "SocInteraction_Relationships",
+      "SocInteraction_Names[__INDEX__]_Relationships": {
+        "id": "SocInteraction_Names[__INDEX__]_Relationships",
+        "type": "ChoicesWithMultipleAnswers",
+        "question": "What is your relationship(s) to [__TARGET_NAME__]?",
+        "choices": "RELATIONSHIPS",
+        "randomizeChoicesOrder": true,
+        "randomizeExceptForChoiceIds": ["Other"],
+        "next": "SocInteraction_Names[__INDEX__]_Liking"
+      },
+      "SocInteraction_Names[__INDEX__]_Liking": {
+        "id": "SocInteraction_Names[__INDEX__]_Liking",
+        "type": "ChoicesWithSingleAnswer",
+        "question": "Do you like this interaction?",
+        "choices": ["Yes!", "Probably?", "No!"],
+        "next": null
+      },
+      "SocInteraction_NonStudent": {
+        "id": "SocInteraction_NonStudent",
         "type": "MultipleText",
-        "question": "How would you best describe your relationship to the people you had an interaction with?",
+        "question": "What non-students were you talking to?",
         "placeholder": "Select a category...",
         "choices": "RELATIONSHIPS",
         "forceChoice": true,

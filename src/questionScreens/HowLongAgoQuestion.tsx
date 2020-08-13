@@ -44,9 +44,14 @@ interface HowLongAgoQuestionScreenProps extends QuestionScreenProps {
 
 const HowLongAgoQuestionScreen: React.ElementType<HowLongAgoQuestionScreenProps> = ({
   question,
+  loadingCompleted,
   onDataChange,
   pipeInExtraMetaData,
 }) => {
+  React.useEffect(() => {
+    loadingCompleted();
+  }, []);
+
   const [data, setData] = React.useState<HowLongAgoAnswerDataType>([
     null,
     null,
