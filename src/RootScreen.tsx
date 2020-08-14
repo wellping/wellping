@@ -14,7 +14,12 @@ import {
   clearUserAsync,
 } from "./helpers/asyncStorage/user";
 import { connectDatabaseAsync } from "./helpers/database";
-import { getCriticalProblemTextForUser } from "./helpers/debug";
+import {
+  getCriticalProblemTextForUser,
+  alertWithShareButtonContainingDebugInfo,
+  getNonCriticalProblemTextForUser,
+} from "./helpers/debug";
+import { validateAndInitializeFirebaseWithConfig } from "./helpers/firebase";
 import {
   getStudyFileAsync,
   downloadStudyFileAsync,
@@ -138,6 +143,19 @@ export default class RootScreen extends React.Component<
 
       const survey = await getStudyFileAsync();
 
+      try {
+        validateAndInitializeFirebaseWithConfig(
+          survey.studyInfo.firebaseConfig,
+        );
+      } catch (e) {
+        await this.logoutFnAsync();
+        this.setState({ isLoading: false });
+        alertWithShareButtonContainingDebugInfo(
+          getCriticalProblemTextForUser(`${e}`),
+        );
+        return;
+      }
+
       const user = await getUserAsync();
       if (user === null) {
         // This should never happen. But just in case.
@@ -146,6 +164,12 @@ export default class RootScreen extends React.Component<
         // still try to find study file when it is already deleted.
         await this.logoutFnAsync();
         this.setState({ isLoading: false });
+        alertWithShareButtonContainingDebugInfo(
+          getNonCriticalProblemTextForUser(
+            `You have been logged out for an unknown reason.\n\n` +
+              `(REF: studyFileExistsAsync and user === null).`,
+          ),
+        );
         return;
       }
 
