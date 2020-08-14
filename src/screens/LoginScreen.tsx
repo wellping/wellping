@@ -22,7 +22,7 @@ import {
 } from "../helpers/debug";
 import { LoginSchema } from "../helpers/schemas/Login";
 import { getStudyFileAsync } from "../helpers/studyFile";
-import { loginAsync } from "../helpers/users";
+import { loginAsync, logoutAsync } from "../helpers/users";
 
 // This is an ugly hack so that the init url won't pop up again if the user log
 // in and then immediately log out.
@@ -266,6 +266,7 @@ export default class LoginScreen extends React.Component<
         { cancelable: false },
       );
     } else {
+      await logoutAsync();
       this.setState({
         errorText: error,
         disableLoginButton: false,

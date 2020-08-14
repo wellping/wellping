@@ -150,8 +150,7 @@ export default class RootScreen extends React.Component<
 
       const user = await getUserAsync();
       if (user === null) {
-        // This will happen when e.g., the study file is downloads but the user
-        // didn't successfully login.
+        // This should never happen. But just in case.
         await this.logoutFnAsync();
         this.setState({ isLoading: false });
         return;
