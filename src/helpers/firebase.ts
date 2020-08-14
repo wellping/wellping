@@ -1,6 +1,7 @@
 import * as firebase from "firebase/app";
 
 import { User } from "./asyncStorage/user";
+import { HOME_SCREEN_DEBUG_VIEW_SYMBOLS } from "./debug";
 
 const FIREBASE_LOGIN_EMAIL_DOMAIN = "@wellping.ssnl.stanford.edu";
 
@@ -47,5 +48,35 @@ export async function firebaseLogoutAsync(): Promise<void> {
     await firebase.auth().signOut();
   } catch (error) {
     throw error;
+  }
+}
+
+export async function firebaseUploadDataForUserAsync(
+  data: any,
+  startUploading: () => void,
+  // `errorSymbol` will be shown alongside the JS version at the top of the screen.
+  endUploading: (symbol: string) => void,
+) {
+  startUploading();
+
+  const user = firebase.auth().currentUser;
+  if (user === null) {
+    // Only do it when the user is actually logged in to Firebase.
+    // Else they won't have the permission to upload anyway.
+    endUploading(
+      HOME_SCREEN_DEBUG_VIEW_SYMBOLS.FIREBASE_DATABASE.END_ERROR_NOT_LOGGED_IN,
+    );
+    return;
+  }
+
+  try {
+    await firebase.database().ref(`users/${user.uid}`).set(data);
+    endUploading(HOME_SCREEN_DEBUG_VIEW_SYMBOLS.FIREBASE_DATABASE.END_SUCCESS);
+  } catch (e) {
+    // TODO:
+    endUploading(
+      HOME_SCREEN_DEBUG_VIEW_SYMBOLS.FIREBASE_DATABASE.END_ERROR_UNKNOWN,
+    );
+    throw e;
   }
 }

@@ -11,6 +11,22 @@ export const JS_VERSION_NUMBER = "js.1.8.9.1";
 export const NATIVE_VERSION_NUMBER = Constants.nativeAppVersion;
 export const NATIVE_BUILD_NUMBER = Constants.nativeBuildVersion;
 
+export const HOME_SCREEN_DEBUG_VIEW_SYMBOLS = {
+  FIREBASE_AUTH: {
+    LOGGED_IN: "",
+    NOT_LOGGED_IN: "*",
+  },
+  FIREBASE_DATABASE: {
+    INITIAL: "",
+    UPLOADING: "~",
+    END_SUCCESS: "v",
+    END_ERROR_NOT_LOGGED_IN: "",
+    END_ERROR_NO_PERMISSION: "!",
+    END_ERROR_NO_INTERNET: "@",
+    END_ERROR_UNKNOWN: "?",
+  },
+};
+
 export function logError(error: any) {
   console.error(error);
 }

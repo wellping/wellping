@@ -7,6 +7,8 @@ import { AnswerEntity } from "../entities/AnswerEntity";
 import { PingEntity } from "../entities/PingEntity";
 import { getAnswersAsync } from "./answers";
 import { User, storeUserAsync, getUserAsync } from "./asyncStorage/user";
+import { HOME_SCREEN_DEBUG_VIEW_SYMBOLS } from "./debug";
+import { firebaseUploadDataForUserAsync } from "./firebase";
 import { getPingsAsync } from "./pings";
 import { getStudyInfoAsync, isLocalStudyFile } from "./studyFile";
 
@@ -65,11 +67,30 @@ export async function getAllDataAsync(): Promise<UploadData> {
   return data;
 }
 
-export async function uploadDataAsync() {
-  const user = (await getUserAsync())!;
+export async function uploadDataAsync(
+  setFirebaseUploadStatusSymbol: (symbol: string) => void,
+) {
+  //const user = (await getUserAsync())!;
   const data = await getAllDataAsync();
 
-  try {
+  await firebaseUploadDataForUserAsync(
+    data,
+    () => {
+      setFirebaseUploadStatusSymbol(
+        HOME_SCREEN_DEBUG_VIEW_SYMBOLS.FIREBASE_DATABASE.UPLOADING,
+      );
+    },
+    (symbol) => {
+      setFirebaseUploadStatusSymbol(symbol);
+      setTimeout(() => {
+        setFirebaseUploadStatusSymbol(
+          HOME_SCREEN_DEBUG_VIEW_SYMBOLS.FIREBASE_DATABASE.INITIAL,
+        );
+      }, 10000 /* reset symbol in 10 seconds */);
+    },
+  );
+
+  /*try {
     let endpoint = "/ssnl_upload";
     if (Platform.OS === "ios") {
       endpoint += "/ios/";
@@ -79,7 +100,7 @@ export async function uploadDataAsync() {
     return { status: "success", response };
   } catch (e) {
     return { status: "error", error: `Request error: ${e}.` };
-  }
+  }*/
 }
 
 function base64ToBase64URL(input: string): string {

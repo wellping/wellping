@@ -47,6 +47,7 @@ import {
   JS_VERSION_NUMBER,
   getUsefulDebugInfo,
   alertWithShareButtonContainingDebugInfo,
+  HOME_SCREEN_DEBUG_VIEW_SYMBOLS,
 } from "./helpers/debug";
 import { firebaseLoginAsync } from "./helpers/firebase";
 import {
@@ -81,6 +82,7 @@ interface HomeScreenState {
   isLoading: boolean;
   storedPingStateAsync: SurveyScreenState | null;
   firebaseUser: firebase.User | null;
+  firebaseUploadStatusSymbol: string;
 
   // DEBUG
   displayDebugView: boolean;
@@ -125,6 +127,8 @@ export default class HomeScreen extends React.Component<
       displayDebugView: false,
       storedPingStateAsync: null,
       firebaseUser: null,
+      firebaseUploadStatusSymbol:
+        HOME_SCREEN_DEBUG_VIEW_SYMBOLS.FIREBASE_DATABASE.INITIAL,
     };
   }
 
@@ -261,6 +265,10 @@ export default class HomeScreen extends React.Component<
     });
   }
 
+  setFirebaseUploadStatusSymbol = (symbol: string) => {
+    this.setState({ firebaseUploadStatusSymbol: symbol });
+  };
+
   render() {
     const { studyInfo, streams } = this.props;
 
@@ -292,8 +300,9 @@ export default class HomeScreen extends React.Component<
               <Text style={{ color: "lightgray" }}>
                 {JS_VERSION_NUMBER}
                 {this.state.firebaseUser === null
-                  ? "*" /* show a "*" if the user is not logged in to Firebase */
-                  : ""}
+                  ? HOME_SCREEN_DEBUG_VIEW_SYMBOLS.FIREBASE_AUTH.NOT_LOGGED_IN
+                  : HOME_SCREEN_DEBUG_VIEW_SYMBOLS.FIREBASE_AUTH.LOGGED_IN}
+                {this.state.firebaseUploadStatusSymbol}
               </Text>
               {studyInfo.contactEmail && (
                 <TouchableWithoutFeedback
@@ -521,7 +530,9 @@ export default class HomeScreen extends React.Component<
             color="orange"
             title="uploadDataAsync()"
             onPress={async () => {
-              const response = await uploadDataAsync();
+              const response = await uploadDataAsync(
+                this.setFirebaseUploadStatusSymbol,
+              );
               alertWithShareButtonContainingDebugInfo(JSON.stringify(response));
             }}
           />
@@ -734,8 +745,9 @@ export default class HomeScreen extends React.Component<
           previousState={this.state.storedPingStateAsync}
           onFinish={async (finishedPing) => {
             this.setState({ currentPing: finishedPing });
-            uploadDataAsync();
+            uploadDataAsync(this.setFirebaseUploadStatusSymbol);
           }}
+          setFirebaseUploadStatusSymbol={this.setFirebaseUploadStatusSymbol}
         />
         <DebugView />
       </View>

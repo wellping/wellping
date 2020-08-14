@@ -109,6 +109,8 @@ export interface SurveyScreenProps {
    * The function to call when the current ping is completed.
    */
   onFinish: (finishedPing: PingEntity) => Promise<void>;
+
+  setFirebaseUploadStatusSymbol: (symbol: string) => void;
 }
 
 export interface SurveyScreenState {
@@ -564,7 +566,7 @@ export default class SurveyScreen extends React.Component<
           currentTime.getTime() - lastUploadDate.getTime() > 30 * 1000
         ) {
           this.setState({ lastUploadDate: currentTime });
-          uploadDataAsync();
+          uploadDataAsync(this.props.setFirebaseUploadStatusSymbol);
         }
       });
 
