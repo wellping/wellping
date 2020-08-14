@@ -1,6 +1,7 @@
 import { format, addHours, getDay } from "date-fns";
 import { Notifications } from "expo";
 import * as Linking from "expo-linking";
+import * as firebase from "firebase/app";
 import React from "react";
 import {
   Button,
@@ -47,6 +48,7 @@ import {
   getUsefulDebugInfo,
   alertWithShareButtonContainingDebugInfo,
 } from "./helpers/debug";
+import { firebaseLoginAsync } from "./helpers/firebase";
 import {
   setNotificationsAsync,
   setupNotificationsPermissionAsync,
@@ -78,6 +80,7 @@ interface HomeScreenState {
   currentPing: PingEntity | null;
   isLoading: boolean;
   storedPingStateAsync: SurveyScreenState | null;
+  firebaseUser: firebase.User | null;
 
   // DEBUG
   displayDebugView: boolean;
@@ -121,9 +124,11 @@ export default class HomeScreen extends React.Component<
       isLoading: true,
       displayDebugView: false,
       storedPingStateAsync: null,
+      firebaseUser: null,
     };
   }
 
+  unregisterAuthObserver: firebase.Unsubscribe | null = null;
   async componentDidMount() {
     const allowsNotifications = await setupNotificationsPermissionAsync();
     if (!allowsNotifications) {
@@ -176,10 +181,34 @@ export default class HomeScreen extends React.Component<
     }
 
     this.setState({ isLoading: false });
+
+    // Operations following this line are non-critical, so we do it at last and
+    // don't have to `await` this.
+    const user = await getUserAsync();
+    try {
+      firebaseLoginAsync(user!);
+    } catch (e) {
+      // TODO: BETTER WAY TO DO THIS?
+      alert(`Login error: ${e}`);
+    }
+
+    this.unregisterAuthObserver = firebase.auth().onAuthStateChanged((user) => {
+      if (user) {
+        // The user is signed in to Firebase.
+        this.setState({ firebaseUser: user });
+      } else {
+        // The user is not signed in to Firebase.
+        this.setState({ firebaseUser: null });
+      }
+    });
   }
 
   componentWillUnmount() {
     clearInterval(this.interval);
+
+    if (this.unregisterAuthObserver) {
+      this.unregisterAuthObserver();
+    }
   }
 
   async startSurveyAsync() {
@@ -260,7 +289,12 @@ export default class HomeScreen extends React.Component<
                 justifyContent: "center",
               }}
             >
-              <Text style={{ color: "lightgray" }}>{JS_VERSION_NUMBER}</Text>
+              <Text style={{ color: "lightgray" }}>
+                {JS_VERSION_NUMBER}
+                {this.state.firebaseUser === null
+                  ? "*" /* show a "*" if the user is not logged in to Firebase */
+                  : ""}
+              </Text>
               {studyInfo.contactEmail && (
                 <TouchableWithoutFeedback
                   onPress={async () => {
@@ -328,6 +362,9 @@ export default class HomeScreen extends React.Component<
           </Text>
           <Text>
             this.state.currentPing: {JSON.stringify(this.state.currentPing)}
+          </Text>
+          <Text>
+            this.state.firebaseUser: {JSON.stringify(this.state.firebaseUser)}
           </Text>
           <Button
             color="green"
