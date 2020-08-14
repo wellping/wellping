@@ -38,7 +38,7 @@ export async function firebaseLoginAsync(
         user.password,
       );
   } catch (error) {
-    throw error;
+    throw new Error(`**Login error**\n\n${error}`);
   }
 }
 
