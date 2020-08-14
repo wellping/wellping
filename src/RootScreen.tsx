@@ -138,6 +138,17 @@ export default class RootScreen extends React.Component<
 
       const survey = await getStudyFileAsync();
 
+      const user = await getUserAsync();
+      if (user === null) {
+        // This should never happen. But just in case.
+        // Notice that we have to do this before `downloadAndParseStudyFileAsync`
+        // or else the async function in `downloadAndParseStudyFileAsync` will
+        // still try to find study file when it is already deleted.
+        await this.logoutFnAsync();
+        this.setState({ isLoading: false });
+        return;
+      }
+
       // Do it in background because there isn't any urgency to redownload.
       this.downloadAndParseStudyFileAsync({
         url: survey.studyInfo.studyFileJsonURL,
@@ -147,14 +158,6 @@ export default class RootScreen extends React.Component<
           // Just do it next time.
         },
       });
-
-      const user = await getUserAsync();
-      if (user === null) {
-        // This should never happen. But just in case.
-        await this.logoutFnAsync();
-        this.setState({ isLoading: false });
-        return;
-      }
 
       await connectDatabaseAsync(survey.studyInfo.id);
 
@@ -179,7 +182,7 @@ export default class RootScreen extends React.Component<
       return <StudyFileErrorScreen errorText={studyFileErrorText} />;
     }
 
-    if (userInfo == null) {
+    if (userInfo === null) {
       // The user hasn't logged in.
       return (
         <LoginScreen
