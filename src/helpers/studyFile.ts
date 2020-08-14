@@ -8,6 +8,7 @@ import {
   getCurrentStreamsAsync,
   getCurrentExtraDataAsync,
 } from "./asyncStorage/studyFile";
+import { validateAndInitializeFirebaseWithConfig } from "./firebase";
 import { parseJsonToStudyFile } from "./schemas/StudyFile";
 import {
   StudyFile,
@@ -81,8 +82,8 @@ export async function downloadStudyFileAsync(url: string): Promise<string> {
 /**
  * Parses a study file from `rawJsonString` (a string that can be parsed to a
  * JSON object).
- * If the study file is successfully parsed, stores the downloaded study file
- * in Async Storage.
+ * If the study file is successfully parsed and the Firebase config is validated,
+ * initializes Firebase and stores the downloaded study file in Async Storage.
  * Returns `null` if all processes are successful.
  * Returns the error message if any process is unsuccessful.
  */
@@ -91,6 +92,9 @@ export async function parseAndStoreStudyFileAsync(
 ): Promise<string | null> {
   try {
     const parsedStudy = parseJsonToStudyFile(JSON.parse(rawJsonString));
+    validateAndInitializeFirebaseWithConfig(
+      parsedStudy.studyInfo.firebaseConfig,
+    );
     await storeCurrentStudyFileAsync(parsedStudy);
     return null;
   } catch (e) {

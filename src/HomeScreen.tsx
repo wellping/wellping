@@ -272,7 +272,7 @@ export default class HomeScreen extends React.Component<
                     const emailBody = encodeURIComponent(
                       `Please enter your question here (please attach a screenshot if applicable):\n\n\n\n\n\n` +
                         `====\n` +
-                        `User ID: ${user!.patientId}\n` +
+                        `User ID: ${user!.username}\n` +
                         getUsefulDebugInfo(),
                     );
                     const mailtoLink = `mailto:${studyInfo.contactEmail}?subject=${emailSubject}&body=${emailBody}`;

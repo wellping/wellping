@@ -15,7 +15,6 @@ import {
 } from "./helpers/asyncStorage/user";
 import { connectDatabaseAsync } from "./helpers/database";
 import { getCriticalProblemTextForUser } from "./helpers/debug";
-import { initializeFirebase } from "./helpers/firebase";
 import {
   getStudyFileAsync,
   downloadStudyFileAsync,
@@ -23,6 +22,7 @@ import {
   studyFileExistsAsync,
 } from "./helpers/studyFile";
 import { StudyFile } from "./helpers/types";
+import { logoutAsync } from "./helpers/users";
 import LoadingScreen from "./screens/LoadingScreen";
 import LoginScreen, {
   ParamDownloadAndParseStudyFileAsync,
@@ -148,13 +148,11 @@ export default class RootScreen extends React.Component<
         },
       });
 
-      initializeFirebase(survey.studyInfo);
-
       const user = await getUserAsync();
       if (user === null) {
         // This will happen when e.g., the study file is downloads but the user
         // didn't successfully login.
-        await this.logoutAsync();
+        await this.logoutFnAsync();
         this.setState({ isLoading: false });
         return;
       }
@@ -167,9 +165,8 @@ export default class RootScreen extends React.Component<
     this.setState({ isLoading: false });
   }
 
-  async logoutAsync() {
-    await clearUserAsync();
-    await clearCurrentStudyFileAsync();
+  async logoutFnAsync() {
+    await logoutAsync();
     this.setState({ userInfo: null, survey: undefined });
   }
 
@@ -213,7 +210,7 @@ export default class RootScreen extends React.Component<
         studyInfo={this.state.survey.studyInfo}
         streams={this.state.survey.streams}
         logout={async () => {
-          await this.logoutAsync();
+          await this.logoutFnAsync();
         }}
       />
     );

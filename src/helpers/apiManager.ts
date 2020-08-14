@@ -15,14 +15,14 @@ export async function getServerUrlAsync(): Promise<string> {
 }
 
 type UploadData = {
-  patientId: string;
+  username: string;
   pings: PingEntity[];
   answers: AnswerEntity[];
 };
 
 // If success, return `null`. Else return error message.
-export async function registerUserAsync(user: User): Promise<string | null> {
-  if (!user.patientId || !user.password) {
+/*export async function registerUserAsync(user: User): Promise<string | null> {
+  if (!user.username || !user.password) {
     return "You should enter both User ID and password.";
   }
 
@@ -50,7 +50,7 @@ export async function registerUserAsync(user: User): Promise<string | null> {
 
   await storeUserAsync(user);
   return null;
-}
+}*/
 
 export async function getAllDataAsync(): Promise<UploadData> {
   const user = await getUserAsync();
@@ -58,7 +58,7 @@ export async function getAllDataAsync(): Promise<UploadData> {
   const answers = await getAnswersAsync();
 
   const data = {
-    patientId: user!.patientId,
+    username: user!.username,
     pings,
     answers,
   };
@@ -108,8 +108,8 @@ export async function getRequestURLAsync(
     },
   );
   request["password"] = base64ToBase64URL(passwordHash);
-  request["device_id"] = `${user.patientId}-${Constants.installationId}`;
-  request["patient_id"] = user.patientId;
+  request["device_id"] = `${user.username}-${Constants.installationId}`;
+  request["patient_id"] = user.username;
 
   //console.warn(`request is ${JSON.stringify(request)}`);
 

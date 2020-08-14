@@ -12,7 +12,6 @@ import {
   TouchableWithoutFeedback,
 } from "react-native";
 
-import { registerUserAsync } from "../helpers/apiManager";
 import { User } from "../helpers/asyncStorage/user";
 import { connectDatabaseAsync } from "../helpers/database";
 import {
@@ -21,9 +20,9 @@ import {
   getCriticalProblemTextForUser,
   shareDebugText,
 } from "../helpers/debug";
-import { initializeFirebase } from "../helpers/firebase";
 import { LoginSchema } from "../helpers/schemas/Login";
 import { getStudyFileAsync } from "../helpers/studyFile";
+import { loginAsync } from "../helpers/users";
 
 // This is an ugly hack so that the init url won't pop up again if the user log
 // in and then immediately log out.
@@ -82,7 +81,7 @@ export default class LoginScreen extends React.Component<
             {
               text: "OK",
               style: "cancel",
-              onPress: this.loginAsync,
+              onPress: this.loginFnAsync,
             },
           ],
         );
@@ -136,7 +135,7 @@ export default class LoginScreen extends React.Component<
     });
   }
 
-  loginAsync = async () => {
+  loginFnAsync = async () => {
     this.setState({
       errorText: null,
       loadingText: null,
@@ -177,7 +176,7 @@ export default class LoginScreen extends React.Component<
         studyFileJsonUrl: parsedLoginCode[2] || "",
       });
       user = {
-        patientId: loginInfo.username,
+        username: loginInfo.username,
         password: loginInfo.password,
       };
       studyFileJsonUrl = loginInfo.studyFileJsonUrl;
@@ -216,9 +215,13 @@ export default class LoginScreen extends React.Component<
       loadingText: "Authenticating...",
     });
 
-    initializeFirebase(survey.studyInfo);
+    let error: string | null = null;
+    try {
+      await loginAsync(user);
+    } catch (e) {
+      error = `${e}`;
+    }
 
-    const error = await registerUserAsync(user);
     if (!error) {
       this.setState({
         loadingText: "Logged in!",
@@ -307,7 +310,7 @@ export default class LoginScreen extends React.Component<
           multiline
           textAlignVertical="top" // https://reactnative.dev/docs/textinput#multiline
           blurOnSubmit // https://stackoverflow.com/a/38988668/2603230
-          onSubmitEditing={this.loginAsync}
+          onSubmitEditing={this.loginFnAsync}
           editable={!this.state.disableLoginButton}
           style={{
             padding: 8,
@@ -321,7 +324,7 @@ export default class LoginScreen extends React.Component<
         <Button
           title="Log In"
           disabled={this.state.disableLoginButton}
-          onPress={this.loginAsync}
+          onPress={this.loginFnAsync}
         />
         {errorText ? (
           <View
