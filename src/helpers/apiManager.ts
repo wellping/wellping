@@ -80,13 +80,16 @@ export async function uploadDataAsync(
         HOME_SCREEN_DEBUG_VIEW_SYMBOLS.FIREBASE_DATABASE.UPLOADING,
       );
     },
-    (symbol) => {
+    (symbol, isError) => {
       setFirebaseUploadStatusSymbol(symbol);
-      setTimeout(() => {
-        setFirebaseUploadStatusSymbol(
-          HOME_SCREEN_DEBUG_VIEW_SYMBOLS.FIREBASE_DATABASE.INITIAL,
-        );
-      }, 10000 /* reset symbol in 10 seconds */);
+      setTimeout(
+        () => {
+          setFirebaseUploadStatusSymbol(
+            HOME_SCREEN_DEBUG_VIEW_SYMBOLS.FIREBASE_DATABASE.INITIAL,
+          );
+        },
+        isError ? 10000 : 3000 /* reset symbol in 3 (of 10 if error) seconds */,
+      );
     },
   );
 

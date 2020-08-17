@@ -297,13 +297,21 @@ export default class HomeScreen extends React.Component<
                 justifyContent: "center",
               }}
             >
-              <Text style={{ color: "lightgray" }}>
-                {JS_VERSION_NUMBER}
-                {this.state.firebaseUser === null
-                  ? HOME_SCREEN_DEBUG_VIEW_SYMBOLS.FIREBASE_AUTH.NOT_LOGGED_IN
-                  : HOME_SCREEN_DEBUG_VIEW_SYMBOLS.FIREBASE_AUTH.LOGGED_IN}
-                {this.state.firebaseUploadStatusSymbol}
-              </Text>
+              {this.state.firebaseUploadStatusSymbol.length > 1 ? (
+                // If it is not a one-character symbol, there is an error.
+                // We will hide the version code to show the error code.
+                <Text style={{ color: "orange" }}>
+                  {this.state.firebaseUploadStatusSymbol}
+                </Text>
+              ) : (
+                <Text style={{ color: "lightgray" }}>
+                  {JS_VERSION_NUMBER}
+                  {this.state.firebaseUser === null
+                    ? HOME_SCREEN_DEBUG_VIEW_SYMBOLS.FIREBASE_AUTH.NOT_LOGGED_IN
+                    : HOME_SCREEN_DEBUG_VIEW_SYMBOLS.FIREBASE_AUTH.LOGGED_IN}
+                  {this.state.firebaseUploadStatusSymbol}
+                </Text>
+              )}
               {studyInfo.contactEmail && (
                 <TouchableWithoutFeedback
                   onPress={async () => {

@@ -20,10 +20,6 @@ export const HOME_SCREEN_DEBUG_VIEW_SYMBOLS = {
     INITIAL: "",
     UPLOADING: "~",
     END_SUCCESS: "v",
-    END_ERROR_NOT_LOGGED_IN: "",
-    END_ERROR_NO_PERMISSION: "!",
-    END_ERROR_NO_INTERNET: "@",
-    END_ERROR_UNKNOWN: "?",
   },
 };
 
