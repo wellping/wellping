@@ -61,6 +61,8 @@ import {
   getTodayPingsAsync,
   insertPingAsync,
   getNumbersOfPingsForAllStreamNames,
+  getPingsAsync,
+  getThisWeekPingsAsync,
 } from "./helpers/pings";
 import { getAllStreamNames, getStudyInfoAsync } from "./helpers/studyFile";
 import { styles } from "./helpers/styles";
@@ -87,16 +89,48 @@ interface HomeScreenState {
   displayDebugView: boolean;
 }
 
+const ID_TOKEN_PLACEHOLDER = "__ID_TOKEN__";
+const PINGS_COMPLETED_OVERALL_PLACEHOLDER = "__PINGS_COMPLETED_OVERALL__";
+const PINGS_COMPLETED_THIS_WEEK_PLACEHOLDER = "__PINGS_COMPLETED_THIS_WEEK__";
+const PINGS_COMPLETED_TODAY_PLACEHOLDER = "__PINGS_COMPLETED_TODAY__";
 async function getDashboardUrlAsync(
   dashboardRawURL: string,
   firebaseUser: firebase.User | null,
 ) {
-  let idToken = "N/A";
-  if (firebaseUser !== null) {
-    idToken = await firebaseUser.getIdToken(true);
+  let dashboardUrl = dashboardRawURL;
+
+  if (dashboardUrl.includes(ID_TOKEN_PLACEHOLDER)) {
+    let idToken = "N/A";
+    if (firebaseUser !== null) {
+      idToken = await firebaseUser.getIdToken(true);
+    }
+    // https://stackoverflow.com/a/1145525/2603230
+    dashboardUrl = dashboardUrl.split(ID_TOKEN_PLACEHOLDER).join(idToken);
   }
-  // https://stackoverflow.com/a/1145525/2603230
-  return dashboardRawURL.split("__ID_TOKEN__").join(idToken);
+
+  if (dashboardUrl.includes(PINGS_COMPLETED_OVERALL_PLACEHOLDER)) {
+    const numberOfPingsCompletedOverall = (await getPingsAsync()).length;
+    dashboardUrl = dashboardUrl
+      .split(PINGS_COMPLETED_OVERALL_PLACEHOLDER)
+      .join(`${numberOfPingsCompletedOverall}`);
+  }
+
+  if (dashboardUrl.includes(PINGS_COMPLETED_THIS_WEEK_PLACEHOLDER)) {
+    const numberOfPingsCompletedThisWeek = (await getThisWeekPingsAsync())
+      .length;
+    dashboardUrl = dashboardUrl
+      .split(PINGS_COMPLETED_THIS_WEEK_PLACEHOLDER)
+      .join(`${numberOfPingsCompletedThisWeek}`);
+  }
+
+  if (dashboardUrl.includes(PINGS_COMPLETED_TODAY_PLACEHOLDER)) {
+    const numberOfPingsCompletedToday = (await getTodayPingsAsync()).length;
+    dashboardUrl = dashboardUrl
+      .split(PINGS_COMPLETED_TODAY_PLACEHOLDER)
+      .join(`${numberOfPingsCompletedToday}`);
+  }
+
+  return dashboardUrl;
 }
 
 interface DashboardProps {

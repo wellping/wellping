@@ -33,8 +33,25 @@ export const StudyInfoSchema = z
 
     /**
      * The URL of the dashboard that will be shown to the user on the home page.
-     * The placeholder "__ID_TOKEN__" will be replaced by the user's
-     * ID token if the user is signed in to Firebase, and "N/A" otherwise.
+     *
+     * The placeholder `__ID_TOKEN__` will be replaced by the user's Firebase
+     * Auth ID token if the user is signed in to Firebase, and "N/A" otherwise.
+     *
+     * ---
+     *
+     * The following Placeholders are also provided for your convenience so that
+     * you don't have to set up a full back-end server (with Firebase Admin SDK)
+     * just to display the user's progress:
+     *
+     * The placeholder `__PINGS_COMPLETED_OVERALL__` will be replaced by the
+     * number of pings the user has completed overall.
+     *
+     * The placeholder `__PINGS_COMPLETED_THIS_WEEK__` will be replaced by the
+     * number of pings the user has completed this week (defined by
+     * `weekStartsOn`).
+     *
+     * The placeholder `__PINGS_COMPLETED_TODAY__` will be replaced by the
+     * number of pings the user has completed today.
      */
     dashboardURL: z.string().url().optional(),
 

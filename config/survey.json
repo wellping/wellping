@@ -4,7 +4,7 @@
     "studyFileJsonURL": "https://wellping_local__.ssnl.stanford.edu/debug.json",
     "consentFormUrl": "http://ssnl.stanford.edu/research",
     "contactEmail": "testEmail@example.com",
-    "dashboardURL": "http://ssnl.stanford.edu/test_dashbord?id_token=__ID_TOKEN__",
+    "dashboardURL": "http://ssnl.stanford.edu/test_dashbord?overall_completed_pings=__PINGS_COMPLETED_OVERALL__&overall_completed_this_week=__PINGS_COMPLETED_THIS_WEEK__&overall_completed_today=__PINGS_COMPLETED_TODAY__&id_token=__ID_TOKEN__",
     "firebaseConfig": { "_WellPing_doNotUseFirebase": "YES" },
     "startDate": "2020-03-10T08:00:00.000Z",
     "endDate": "2020-04-25T08:00:00.000Z",
