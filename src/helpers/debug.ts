@@ -1,4 +1,5 @@
 import Constants from "expo-constants";
+import * as Device from "expo-device";
 import { Share, Alert } from "react-native";
 
 // Notice that this version number is different from the app version number
@@ -10,6 +11,47 @@ import { Share, Alert } from "react-native";
 export const JS_VERSION_NUMBER = "js.1.8.9.1";
 export const NATIVE_VERSION_NUMBER = Constants.nativeAppVersion;
 export const NATIVE_BUILD_NUMBER = Constants.nativeBuildVersion;
+export const EXPO_VERSION = Constants.expoVersion;
+export const INSTALLATION_ID = Constants.installationId;
+
+export type UserInstallationInfo = {
+  app: {
+    installationId: typeof INSTALLATION_ID;
+    jsVersion: typeof JS_VERSION_NUMBER;
+    nativeVersion: typeof NATIVE_VERSION_NUMBER;
+    nativeBuild: typeof NATIVE_BUILD_NUMBER;
+    expoVersion: typeof EXPO_VERSION;
+  };
+  device: {
+    brand: typeof Device.brand;
+    manufacturer: typeof Device.manufacturer;
+    modelName: typeof Device.modelName;
+    modelId: typeof Device.modelId;
+    designName: typeof Device.designName;
+    productName: typeof Device.productName;
+    osName: typeof Device.osName;
+    osVersion: typeof Device.osVersion;
+  };
+};
+export const USER_INSTALLATION_INFO: UserInstallationInfo = {
+  app: {
+    installationId: INSTALLATION_ID,
+    jsVersion: JS_VERSION_NUMBER,
+    nativeVersion: NATIVE_VERSION_NUMBER,
+    nativeBuild: NATIVE_BUILD_NUMBER,
+    expoVersion: EXPO_VERSION,
+  },
+  device: {
+    brand: Device.brand,
+    manufacturer: Device.manufacturer,
+    modelName: Device.modelName,
+    modelId: Device.modelId,
+    designName: Device.designName,
+    productName: Device.productName,
+    osName: Device.osName,
+    osVersion: Device.osVersion,
+  },
+};
 
 export const HOME_SCREEN_DEBUG_VIEW_SYMBOLS = {
   FIREBASE_AUTH: {
@@ -59,12 +101,7 @@ export function alertWithShareButtonContainingDebugInfo(
 }
 
 export function getUsefulDebugInfo(): string {
-  return `JS Version: ${JS_VERSION_NUMBER}
-Native Version: ${NATIVE_VERSION_NUMBER}
-Native Build Number: ${NATIVE_BUILD_NUMBER}
-Platform Info: ${JSON.stringify(Constants.platform)}
-Installation ID: ${Constants.installationId}
-Expo Version: ${Constants.expoVersion}`;
+  return JSON.stringify(USER_INSTALLATION_INFO);
 }
 
 export function shareDebugText(debugText: string) {

@@ -3,7 +3,7 @@ import * as firebase from "firebase/app";
 
 import { User } from "./asyncStorage/user";
 import { UploadData } from "./dataUpload";
-import { HOME_SCREEN_DEBUG_VIEW_SYMBOLS } from "./debug";
+import { HOME_SCREEN_DEBUG_VIEW_SYMBOLS, INSTALLATION_ID } from "./debug";
 
 const FIREBASE_LOGIN_EMAIL_DOMAIN = "@wellping.ssnl.stanford.edu";
 
@@ -74,7 +74,7 @@ export async function firebaseUploadDataForUserAsync(
     const dataPlain = JSON.parse(JSON.stringify(data));
     await firebase
       .database()
-      .ref(`users/${user.uid}/${Constants.installationId}`)
+      .ref(`users/${user.uid}/${INSTALLATION_ID}`)
       .set(dataPlain);
     endUploading(
       HOME_SCREEN_DEBUG_VIEW_SYMBOLS.FIREBASE_DATABASE.END_SUCCESS,
