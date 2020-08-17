@@ -38,8 +38,7 @@
         "body": "It will expire in two hours. You are #n_ping# away from the weekly bonus.",
         "numberOfCompletionEachWeek": 10
       }
-    },
-    "serverURL": "http://ssnl.stanford.edu/"
+    }
   },
   "streams": {
     "myStream": {
