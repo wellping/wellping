@@ -83,6 +83,18 @@ interface HomeScreenState {
   displayDebugView: boolean;
 }
 
+async function getDashboardUrlAsync(
+  dashboardRawURL: string,
+  firebaseUser: firebase.User | null,
+) {
+  let idToken = "N/A";
+  if (firebaseUser !== null) {
+    idToken = await firebaseUser.getIdToken(true);
+  }
+  // https://stackoverflow.com/a/1145525/2603230
+  return dashboardRawURL.split("__ID_TOKEN__").join(idToken);
+}
+
 interface DashboardProps {
   studyInfo: StudyInfo;
   firebaseUser: firebase.User | null;
@@ -100,12 +112,10 @@ const Dashboard: React.FunctionComponent<DashboardProps> = ({
   const [url, setUrl] = React.useState<string | null>(null);
   React.useEffect(() => {
     async function setDashboardUrlAsync() {
-      let idToken = "N/A";
-      if (firebaseUser !== null) {
-        idToken = await firebaseUser.getIdToken(true);
-      }
-      // https://stackoverflow.com/a/1145525/2603230
-      const dashboardUrl = dashboardRawURL.split("__ID_TOKEN__").join(idToken);
+      const dashboardUrl = await getDashboardUrlAsync(
+        dashboardRawURL,
+        firebaseUser,
+      );
       setUrl(dashboardUrl);
     }
     setDashboardUrlAsync();
@@ -561,10 +571,13 @@ export default class HomeScreen extends React.Component<
             color="orange"
             title="copy dashboard url"
             onPress={async () => {
-              // TODO
-              /*const url = await getRequestURLAsync("/ssnl_dashboard");
+              const url = await getDashboardUrlAsync(
+                studyInfo.dashboardURL ||
+                  "studyInfo.dashboardURL === undefined",
+                firebaseUser,
+              );
+              Clipboard.setString(url);
               alertWithShareButtonContainingDebugInfo(url);
-              Clipboard.setString(url);*/
             }}
           />
           <Button
