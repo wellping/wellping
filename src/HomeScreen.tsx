@@ -1,4 +1,4 @@
-import { format, addHours, getDay } from "date-fns";
+import { format, getDay } from "date-fns";
 import { Notifications } from "expo";
 import * as Linking from "expo-linking";
 import * as firebase from "firebase/app";
@@ -13,10 +13,11 @@ import {
   Platform,
   TouchableWithoutFeedback,
 } from "react-native";
-import { WebView } from "react-native-webview";
 
 import SurveyScreen, { SurveyScreenState } from "./SurveyScreen";
-import { AnswerEntity } from "./entities/AnswerEntity";
+import DashboardComponent, {
+  getDashboardUrlAsync,
+} from "./components/DashboardComponent";
 import { PingEntity } from "./entities/PingEntity";
 import {
   dequeueFuturePingIfAny,
@@ -61,8 +62,6 @@ import {
   getTodayPingsAsync,
   insertPingAsync,
   getNumbersOfPingsForAllStreamNames,
-  getPingsAsync,
-  getThisWeekPingsAsync,
 } from "./helpers/pings";
 import { getAllStreamNames, getStudyInfoAsync } from "./helpers/studyFile";
 import { styles } from "./helpers/styles";
@@ -88,87 +87,6 @@ interface HomeScreenState {
   // DEBUG
   displayDebugView: boolean;
 }
-
-const ID_TOKEN_PLACEHOLDER = "__ID_TOKEN__";
-const PINGS_COMPLETED_OVERALL_PLACEHOLDER = "__PINGS_COMPLETED_OVERALL__";
-const PINGS_COMPLETED_THIS_WEEK_PLACEHOLDER = "__PINGS_COMPLETED_THIS_WEEK__";
-const PINGS_COMPLETED_TODAY_PLACEHOLDER = "__PINGS_COMPLETED_TODAY__";
-async function getDashboardUrlAsync(
-  dashboardRawURL: string,
-  firebaseUser: firebase.User | null,
-) {
-  let dashboardUrl = dashboardRawURL;
-
-  if (dashboardUrl.includes(ID_TOKEN_PLACEHOLDER)) {
-    let idToken = "N/A";
-    if (firebaseUser !== null) {
-      idToken = await firebaseUser.getIdToken(true);
-    }
-    // https://stackoverflow.com/a/1145525/2603230
-    dashboardUrl = dashboardUrl.split(ID_TOKEN_PLACEHOLDER).join(idToken);
-  }
-
-  if (dashboardUrl.includes(PINGS_COMPLETED_OVERALL_PLACEHOLDER)) {
-    const numberOfPingsCompletedOverall = (await getPingsAsync()).length;
-    dashboardUrl = dashboardUrl
-      .split(PINGS_COMPLETED_OVERALL_PLACEHOLDER)
-      .join(`${numberOfPingsCompletedOverall}`);
-  }
-
-  if (dashboardUrl.includes(PINGS_COMPLETED_THIS_WEEK_PLACEHOLDER)) {
-    const numberOfPingsCompletedThisWeek = (await getThisWeekPingsAsync())
-      .length;
-    dashboardUrl = dashboardUrl
-      .split(PINGS_COMPLETED_THIS_WEEK_PLACEHOLDER)
-      .join(`${numberOfPingsCompletedThisWeek}`);
-  }
-
-  if (dashboardUrl.includes(PINGS_COMPLETED_TODAY_PLACEHOLDER)) {
-    const numberOfPingsCompletedToday = (await getTodayPingsAsync()).length;
-    dashboardUrl = dashboardUrl
-      .split(PINGS_COMPLETED_TODAY_PLACEHOLDER)
-      .join(`${numberOfPingsCompletedToday}`);
-  }
-
-  return dashboardUrl;
-}
-
-interface DashboardProps {
-  studyInfo: StudyInfo;
-  firebaseUser: firebase.User | null;
-}
-const Dashboard: React.FunctionComponent<DashboardProps> = ({
-  studyInfo,
-  firebaseUser,
-}) => {
-  if (studyInfo.dashboardURL === undefined) {
-    return <></>;
-  }
-
-  const dashboardRawURL = studyInfo.dashboardURL;
-
-  const [url, setUrl] = React.useState<string | null>(null);
-  React.useEffect(() => {
-    async function setDashboardUrlAsync() {
-      const dashboardUrl = await getDashboardUrlAsync(
-        dashboardRawURL,
-        firebaseUser,
-      );
-      setUrl(dashboardUrl);
-    }
-    setDashboardUrlAsync();
-  }, [studyInfo, firebaseUser]);
-
-  return (
-    <View style={{ flex: 1, marginTop: 20 }}>
-      {url ? (
-        <WebView source={{ uri: url }} cacheEnabled={false} />
-      ) : (
-        <Text style={{ textAlign: "center", fontSize: 16 }}>Loading...</Text>
-      )}
-    </View>
-  );
-};
 
 export default class HomeScreen extends React.Component<
   HomeScreenProps,
@@ -755,7 +673,10 @@ export default class HomeScreen extends React.Component<
             There is currently no active survey. You will receive a notification
             with a survey soon!
           </Text>
-          <Dashboard firebaseUser={firebaseUser} studyInfo={studyInfo} />
+          <DashboardComponent
+            firebaseUser={firebaseUser}
+            studyInfo={studyInfo}
+          />
         </View>
       );
     }
@@ -790,7 +711,10 @@ export default class HomeScreen extends React.Component<
               this.startSurveyAsync();
             }}
           />
-          <Dashboard firebaseUser={firebaseUser} studyInfo={studyInfo} />
+          <DashboardComponent
+            firebaseUser={firebaseUser}
+            studyInfo={studyInfo}
+          />
         </View>
       );
     }
