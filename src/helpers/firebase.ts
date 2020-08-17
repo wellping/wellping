@@ -1,7 +1,7 @@
 import * as firebase from "firebase/app";
 
-import { UploadData } from "./apiManager";
 import { User } from "./asyncStorage/user";
+import { UploadData } from "./dataUpload";
 import { HOME_SCREEN_DEBUG_VIEW_SYMBOLS } from "./debug";
 
 const FIREBASE_LOGIN_EMAIL_DOMAIN = "@wellping.ssnl.stanford.edu";

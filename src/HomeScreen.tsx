@@ -18,7 +18,6 @@ import { WebView } from "react-native-webview";
 import SurveyScreen, { SurveyScreenState } from "./SurveyScreen";
 import { AnswerEntity } from "./entities/AnswerEntity";
 import { PingEntity } from "./entities/PingEntity";
-import { uploadDataAsync, getAllDataAsync } from "./helpers/apiManager";
 import {
   dequeueFuturePingIfAny,
   getFuturePingsQueue,
@@ -33,6 +32,7 @@ import {
   clearPingStateAsync,
 } from "./helpers/asyncStorage/pingState";
 import { getUserAsync } from "./helpers/asyncStorage/user";
+import { uploadDataAsync, getAllDataAsync } from "./helpers/dataUpload";
 import {
   shareDatabaseFileAsync,
   deleteDatabaseFileAsync,

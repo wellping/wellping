@@ -20,12 +20,12 @@ import {
   ChoicesWithMultipleAnswersAnswerData,
 } from "./helpers/answerTypes";
 import { insertAnswerAsync } from "./helpers/answers";
-import { uploadDataAsync } from "./helpers/apiManager";
 import {
   getFuturePingsQueue,
   enqueueToFuturePingQueue,
 } from "./helpers/asyncStorage/futurePings";
 import { storePingStateAsync } from "./helpers/asyncStorage/pingState";
+import { uploadDataAsync } from "./helpers/dataUpload";
 import {
   getNonCriticalProblemTextForUser,
   getCriticalProblemTextForUser,
