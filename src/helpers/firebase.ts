@@ -1,3 +1,4 @@
+import Constants from "expo-constants";
 import * as firebase from "firebase/app";
 
 import { User } from "./asyncStorage/user";
@@ -71,7 +72,10 @@ export async function firebaseUploadDataForUserAsync(
   try {
     // We need to store plain object in Firebase.
     const dataPlain = JSON.parse(JSON.stringify(data));
-    await firebase.database().ref(`users/${user.uid}`).set(dataPlain);
+    await firebase
+      .database()
+      .ref(`users/${user.uid}/${Constants.installationId}`)
+      .set(dataPlain);
     endUploading(
       HOME_SCREEN_DEBUG_VIEW_SYMBOLS.FIREBASE_DATABASE.END_SUCCESS,
       false,
