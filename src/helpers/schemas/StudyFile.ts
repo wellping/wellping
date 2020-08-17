@@ -36,6 +36,13 @@ export const StudyInfoSchema = z
      */
     serverURL: z.string().url(),
 
+    /**
+     * The URL of the dashboard that will be shown to the user on the home page.
+     * The placeholder "__ID_TOKEN__" will be replaced by the user's
+     * ID token if the user is signed in to Firebase, and "N/A" otherwise.
+     */
+    dashboardURL: z.string().url().optional(),
+
     firebaseConfig: z.object({}).nonstrict(),
 
     /**

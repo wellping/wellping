@@ -88,15 +88,33 @@ interface HomeScreenState {
   displayDebugView: boolean;
 }
 
-function SSNLDashboard(): JSX.Element {
-  const [url, setUrl] = React.useState<string | null>(null);
+interface DashboardProps {
+  studyInfo: StudyInfo;
+  firebaseUser: firebase.User | null;
+}
+const Dashboard: React.FunctionComponent<DashboardProps> = ({
+  studyInfo,
+  firebaseUser,
+}) => {
+  if (studyInfo.dashboardURL === undefined) {
+    return <></>;
+  }
 
+  const dashboardRawURL = studyInfo.dashboardURL;
+
+  const [url, setUrl] = React.useState<string | null>(null);
   React.useEffect(() => {
-    async function setDashboardUrl() {
-      setUrl(await getRequestURLAsync("/ssnl_dashboard"));
+    async function setDashboardUrlAsync() {
+      let idToken = "N/A";
+      if (firebaseUser !== null) {
+        idToken = await firebaseUser.getIdToken(true);
+      }
+      // https://stackoverflow.com/a/1145525/2603230
+      const dashboardUrl = dashboardRawURL.split("__ID_TOKEN__").join(idToken);
+      setUrl(dashboardUrl);
     }
-    setDashboardUrl();
-  }, []);
+    setDashboardUrlAsync();
+  }, [studyInfo, firebaseUser]);
 
   return (
     <View style={{ flex: 1, marginTop: 20 }}>
@@ -107,7 +125,7 @@ function SSNLDashboard(): JSX.Element {
       )}
     </View>
   );
-}
+};
 
 export default class HomeScreen extends React.Component<
   HomeScreenProps,
@@ -276,6 +294,7 @@ export default class HomeScreen extends React.Component<
       allowsNotifications,
       currentNotificationTime,
       currentPing,
+      firebaseUser,
       isLoading,
     } = this.state;
 
@@ -306,7 +325,7 @@ export default class HomeScreen extends React.Component<
               ) : (
                 <Text style={{ color: "lightgray" }}>
                   {JS_VERSION_NUMBER}
-                  {this.state.firebaseUser === null
+                  {firebaseUser === null
                     ? HOME_SCREEN_DEBUG_VIEW_SYMBOLS.FIREBASE_AUTH.NOT_LOGGED_IN
                     : HOME_SCREEN_DEBUG_VIEW_SYMBOLS.FIREBASE_AUTH.LOGGED_IN}
                   {this.state.firebaseUploadStatusSymbol}
@@ -687,7 +706,7 @@ export default class HomeScreen extends React.Component<
             There is currently no active survey. You will receive a notification
             with a survey soon!
           </Text>
-          <SSNLDashboard />
+          <Dashboard firebaseUser={firebaseUser} studyInfo={studyInfo} />
         </View>
       );
     }
@@ -722,7 +741,7 @@ export default class HomeScreen extends React.Component<
               this.startSurveyAsync();
             }}
           />
-          <SSNLDashboard />
+          <Dashboard firebaseUser={firebaseUser} studyInfo={studyInfo} />
         </View>
       );
     }
