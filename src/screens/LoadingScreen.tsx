@@ -28,7 +28,17 @@ const LoadingScreen: React.FunctionComponent = () => {
           shareDebugText("Stuck on the loading page.");
         }}
       />
-      <Text style={{ textAlign: "center", marginTop: 50, color: "lightgray" }}>
+      <Text
+        style={{
+          textAlign: "center",
+          marginHorizontal: 20,
+          marginTop: 30,
+          color: "lightgray",
+        }}
+      >
+        If you want to reset the app, please delete and then re-install the app.
+      </Text>
+      <Text style={{ textAlign: "center", marginTop: 20, color: "lightgray" }}>
         {JS_VERSION_NUMBER}
       </Text>
     </View>
