@@ -58,7 +58,7 @@ export async function firebaseUploadDataForUserAsync(
   startUploading: () => void,
   // `errorSymbol` will be shown alongside the JS version at the top of the screen.
   endUploading: (symbol: string, isError: boolean) => void,
-) {
+): Promise<Error | null> {
   startUploading();
 
   const user = firebase.auth().currentUser;
@@ -66,7 +66,9 @@ export async function firebaseUploadDataForUserAsync(
     // Stops if the user is not logged in to Firebase as they won't have
     // permission to upload.
     endUploading("DB: U=N", true);
-    return;
+    return new Error(
+      "firebase.auth().currentUser === null in firebaseUploadDataForUserAsync",
+    );
   }
 
   try {
@@ -80,8 +82,10 @@ export async function firebaseUploadDataForUserAsync(
       HOME_SCREEN_DEBUG_VIEW_SYMBOLS.FIREBASE_DATABASE.END_SUCCESS,
       false,
     );
+    return null;
   } catch (e) {
     const error = e as firebase.FirebaseError;
     endUploading(`DB: ${error.code}`, true);
+    return error;
   }
 }

@@ -41,10 +41,10 @@ export async function getAllDataAsync(): Promise<UploadData> {
 
 export async function uploadDataAsync(
   setFirebaseUploadStatusSymbol: (symbol: string) => void,
-) {
+): Promise<Error | null> {
   const data = await getAllDataAsync();
 
-  await firebaseUploadDataForUserAsync(
+  return await firebaseUploadDataForUserAsync(
     data,
     () => {
       setFirebaseUploadStatusSymbol(

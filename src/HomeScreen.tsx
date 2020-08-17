@@ -557,7 +557,7 @@ export default class HomeScreen extends React.Component<
               const response = await uploadDataAsync(
                 this.setFirebaseUploadStatusSymbol,
               );
-              alertWithShareButtonContainingDebugInfo(JSON.stringify(response));
+              alertWithShareButtonContainingDebugInfo(`${response}`);
             }}
           />
           <Button
