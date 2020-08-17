@@ -16,7 +16,7 @@ export async function getServerUrlAsync(): Promise<string> {
   return (await getStudyInfoAsync()).serverURL;
 }
 
-type UploadData = {
+export type UploadData = {
   username: string;
   pings: PingEntity[];
   answers: AnswerEntity[];

@@ -2,6 +2,7 @@ import * as firebase from "firebase/app";
 
 import { User } from "./asyncStorage/user";
 import { HOME_SCREEN_DEBUG_VIEW_SYMBOLS } from "./debug";
+import { UploadData } from "./apiManager";
 
 const FIREBASE_LOGIN_EMAIL_DOMAIN = "@wellping.ssnl.stanford.edu";
 
@@ -52,7 +53,7 @@ export async function firebaseLogoutAsync(): Promise<void> {
 }
 
 export async function firebaseUploadDataForUserAsync(
-  data: any,
+  data: UploadData,
   startUploading: () => void,
   // `errorSymbol` will be shown alongside the JS version at the top of the screen.
   endUploading: (symbol: string) => void,
@@ -70,7 +71,9 @@ export async function firebaseUploadDataForUserAsync(
   }
 
   try {
-    await firebase.database().ref(`users/${user.uid}`).set(data);
+    // We need to store plain object in Firebase.
+    const dataPlain = JSON.parse(JSON.stringify(data));
+    await firebase.database().ref(`users/${user.uid}`).set(dataPlain);
     endUploading(HOME_SCREEN_DEBUG_VIEW_SYMBOLS.FIREBASE_DATABASE.END_SUCCESS);
   } catch (e) {
     // TODO:
