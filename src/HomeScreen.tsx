@@ -18,12 +18,7 @@ import { WebView } from "react-native-webview";
 import SurveyScreen, { SurveyScreenState } from "./SurveyScreen";
 import { AnswerEntity } from "./entities/AnswerEntity";
 import { PingEntity } from "./entities/PingEntity";
-import {
-  uploadDataAsync,
-  getAllDataAsync,
-  getRequestURLAsync,
-  getServerUrlAsync,
-} from "./helpers/apiManager";
+import { uploadDataAsync, getAllDataAsync } from "./helpers/apiManager";
 import {
   dequeueFuturePingIfAny,
   getFuturePingsQueue,
@@ -514,14 +509,6 @@ export default class HomeScreen extends React.Component<
           />
           <Button
             color="orange"
-            title="getServerUrlAsync()"
-            onPress={async () => {
-              const serverUrl = await getServerUrlAsync();
-              alertWithShareButtonContainingDebugInfo(serverUrl);
-            }}
-          />
-          <Button
-            color="orange"
             title="getUserAsync()"
             onPress={async () => {
               const user = await getUserAsync();
@@ -574,9 +561,10 @@ export default class HomeScreen extends React.Component<
             color="orange"
             title="copy dashboard url"
             onPress={async () => {
-              const url = await getRequestURLAsync("/ssnl_dashboard");
+              // TODO
+              /*const url = await getRequestURLAsync("/ssnl_dashboard");
               alertWithShareButtonContainingDebugInfo(url);
-              Clipboard.setString(url);
+              Clipboard.setString(url);*/
             }}
           />
           <Button

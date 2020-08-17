@@ -12,10 +12,6 @@ import { firebaseUploadDataForUserAsync } from "./firebase";
 import { getPingsAsync } from "./pings";
 import { getStudyInfoAsync, isLocalStudyFile } from "./studyFile";
 
-export async function getServerUrlAsync(): Promise<string> {
-  return (await getStudyInfoAsync()).serverURL;
-}
-
 export type UploadData = {
   username: string;
   pings: PingEntity[];
@@ -104,91 +100,4 @@ export async function uploadDataAsync(
   } catch (e) {
     return { status: "error", error: `Request error: ${e}.` };
   }*/
-}
-
-function base64ToBase64URL(input: string): string {
-  return input.replace(/\+/g, "-").replace(/\//g, "_");
-}
-
-export async function getRequestURLAsync(
-  endpoint: string,
-  request: { [key: string]: any } = {},
-  forUser?: User,
-): Promise<string> {
-  let user: User | null = forUser || null;
-  if (!user) {
-    user = await getUserAsync();
-
-    if (user == null) {
-      throw new Error("user == null in getRequestURLAsync");
-    }
-  }
-
-  const passwordHash = await Crypto.digestStringAsync(
-    Crypto.CryptoDigestAlgorithm.SHA256,
-    user.password,
-    {
-      encoding: Crypto.CryptoEncoding.BASE64,
-    },
-  );
-  request["password"] = base64ToBase64URL(passwordHash);
-  request["device_id"] = `${user.username}-${Constants.installationId}`;
-  request["patient_id"] = user.username;
-
-  //console.warn(`request is ${JSON.stringify(request)}`);
-
-  const serverUrl = await getServerUrlAsync();
-  const query = Object.keys(request)
-    .map((k) => encodeURIComponent(k) + "=" + encodeURIComponent(request[k]))
-    .join("&");
-  const url = `${serverUrl}${endpoint}?${query}`;
-  return url;
-}
-
-export async function makePostRequestAsync(
-  endpoint: string,
-  request: { [key: string]: any },
-  body?: { [key: string]: any },
-  user?: User,
-): Promise<any> {
-  if (isLocalStudyFile()) {
-    // Always return successful response if it is a local study file.
-    await new Promise((r) => setTimeout(r, 3000)); // Simulate loading.
-    return {};
-  }
-
-  const headers = {
-    "Beiwe-Api-Version": "2",
-    Accept: "application/vnd.beiwe.api.v2, application/json",
-  };
-
-  const url = await getRequestURLAsync(endpoint, request, user);
-
-  //console.warn("url is " + url);
-
-  const response = await fetch(url, {
-    method: "POST",
-    headers,
-    body: JSON.stringify(body),
-  });
-
-  if (response.status < 200 || response.status >= 400) {
-    if (response.status === 401 || response.status === 403) {
-      throw new Error(
-        `Verification failed.\n\nRequest: ${JSON.stringify(
-          request,
-        )}.\n\nResponse: ${JSON.stringify(response)}.`,
-      );
-    }
-
-    throw new Error(
-      `Request not successful.\n\nRequest: ${JSON.stringify(
-        request,
-      )}.\n\nResponse: ${JSON.stringify(response)}.`,
-    );
-  }
-
-  //console.warn(response);
-
-  return response.json();
 }

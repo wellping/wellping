@@ -32,11 +32,6 @@ export const StudyInfoSchema = z
     studyFileJsonURL: z.string().url(),
 
     /**
-     * The server URL (including the trailing slash).
-     */
-    serverURL: z.string().url(),
-
-    /**
      * The URL of the dashboard that will be shown to the user on the home page.
      * The placeholder "__ID_TOKEN__" will be replaced by the user's
      * ID token if the user is signed in to Firebase, and "N/A" otherwise.
