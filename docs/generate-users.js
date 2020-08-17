@@ -79,7 +79,7 @@ async function generateUsersCSVs(numberOfUsers) {
     firebaseAuthImportCsv +=
       userIds[i] +
       "," +
-      userIds[i] +
+      userIds[i] + // See `FIREBASE_LOGIN_EMAIL_DOMAIN` constant.
       "@wellping.ssnl.stanford.edu,false," +
       hashedPasswords[i][0] +
       ",,,,,,,,,,,,,,,,,,,,," +

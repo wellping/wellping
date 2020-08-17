@@ -6,6 +6,10 @@ import { UploadData } from "./dataUpload";
 import { HOME_SCREEN_DEBUG_VIEW_SYMBOLS, INSTALLATION_ID } from "./debug";
 import { StudyInfo } from "./types";
 
+/**
+ * Firebase requires to use an email as the user's login name.
+ * So we add a fictional email domain to the actual username.
+ */
 const FIREBASE_LOGIN_EMAIL_DOMAIN = "@wellping.ssnl.stanford.edu";
 
 export function doNotUseFirebase(studyInfo: StudyInfo): boolean {
