@@ -54,6 +54,7 @@ export const USER_INSTALLATION_INFO: UserInstallationInfo = {
 };
 
 export const HOME_SCREEN_DEBUG_VIEW_SYMBOLS = {
+  DO_NOT_USE_FIREBASE: "¡FB N/A!",
   FIREBASE_AUTH: {
     LOGGED_IN: "",
     NOT_LOGGED_IN: "*",

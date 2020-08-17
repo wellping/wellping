@@ -217,7 +217,7 @@ export default class LoginScreen extends React.Component<
 
     let error: string | null = null;
     try {
-      await loginAsync(user);
+      await loginAsync(user, survey.studyInfo);
     } catch (e) {
       error = `${e}`;
     }

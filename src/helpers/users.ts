@@ -7,9 +7,10 @@ import {
   firebaseLogoutAsync,
   firebaseInitialized,
 } from "./firebase";
+import { StudyInfo } from "./types";
 
-export async function loginAsync(user: User) {
-  await firebaseLoginAsync(user);
+export async function loginAsync(user: User, studyInfo: StudyInfo) {
+  await firebaseLoginAsync(studyInfo, user);
   await storeUserAsync(user);
 }
 

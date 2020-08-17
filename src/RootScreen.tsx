@@ -144,9 +144,7 @@ export default class RootScreen extends React.Component<
       const survey = await getStudyFileAsync();
 
       try {
-        validateAndInitializeFirebaseWithConfig(
-          survey.studyInfo.firebaseConfig,
-        );
+        validateAndInitializeFirebaseWithConfig(survey.studyInfo);
       } catch (e) {
         await this.logoutFnAsync();
         this.setState({ isLoading: false });

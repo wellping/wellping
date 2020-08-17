@@ -23,7 +23,7 @@ export const WELLPING_LOCAL_DEBUG_URL =
   "https://wellping_local__.ssnl.stanford.edu/debug.json";
 // TODO: export const WELLPING_LOCAL_DEMO_URL = "https://wellping_local__.ssnl.stanford.edu/demo.json";
 
-export async function isLocalStudyFile(): Promise<boolean> {
+export async function isLocalStudyFileAsync(): Promise<boolean> {
   return (
     (await getStudyInfoAsync()).studyFileJsonURL === WELLPING_LOCAL_DEBUG_URL
   );
@@ -92,9 +92,7 @@ export async function parseAndStoreStudyFileAsync(
 ): Promise<string | null> {
   try {
     const parsedStudy = parseJsonToStudyFile(JSON.parse(rawJsonString));
-    validateAndInitializeFirebaseWithConfig(
-      parsedStudy.studyInfo.firebaseConfig,
-    );
+    validateAndInitializeFirebaseWithConfig(parsedStudy.studyInfo);
     await storeCurrentStudyFileAsync(parsedStudy);
     return null;
   } catch (e) {

@@ -38,7 +38,16 @@ export const StudyInfoSchema = z
      */
     dashboardURL: z.string().url().optional(),
 
-    firebaseConfig: z.object({}).nonstrict(),
+    /**
+     * The Firebase config object for the study. See
+     * https://firebase.google.com/docs/web/setup#config-object
+     *
+     * If it is set to `{ "_WellPing_doNotUseFirebase": "YES" }`, you will be
+     * able to log in using any username password combination, and no data will
+     * be uploaded. This is only intended for testing or demo purposes and
+     * should not be used in production.
+     */
+    firebaseConfig: z.record(z.string()),
 
     /**
      * The URL of the study consent form (or any web page you would want the

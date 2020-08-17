@@ -49,6 +49,7 @@ import {
   BranchWithRelativeComparisonQuestion,
   ChoicesQuestion,
   StreamName,
+  StudyInfo,
 } from "./helpers/types";
 import ChoicesQuestionScreen from "./questionScreens/ChoicesQuestionScreen";
 import HowLongAgoQuestionScreen from "./questionScreens/HowLongAgoQuestion";
@@ -109,6 +110,8 @@ export interface SurveyScreenProps {
    * The function to call when the current ping is completed.
    */
   onFinish: (finishedPing: PingEntity) => Promise<void>;
+
+  studyInfo: StudyInfo;
 
   setFirebaseUploadStatusSymbol: (symbol: string) => void;
 }
@@ -566,7 +569,10 @@ export default class SurveyScreen extends React.Component<
           currentTime.getTime() - lastUploadDate.getTime() > 30 * 1000
         ) {
           this.setState({ lastUploadDate: currentTime });
-          uploadDataAsync(this.props.setFirebaseUploadStatusSymbol);
+          uploadDataAsync(
+            this.props.studyInfo,
+            this.props.setFirebaseUploadStatusSymbol,
+          );
         }
       });
 

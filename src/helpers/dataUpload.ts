@@ -9,6 +9,7 @@ import {
 } from "./debug";
 import { firebaseUploadDataForUserAsync } from "./firebase";
 import { getPingsAsync } from "./pings";
+import { StudyInfo } from "./types";
 
 export type UploadData = {
   user: {
@@ -40,11 +41,13 @@ export async function getAllDataAsync(): Promise<UploadData> {
 }
 
 export async function uploadDataAsync(
+  studyInfo: StudyInfo,
   setFirebaseUploadStatusSymbol: (symbol: string) => void,
 ): Promise<Error | null> {
   const data = await getAllDataAsync();
 
   return await firebaseUploadDataForUserAsync(
+    studyInfo,
     data,
     () => {
       setFirebaseUploadStatusSymbol(

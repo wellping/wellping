@@ -44,7 +44,11 @@ import {
   alertWithShareButtonContainingDebugInfo,
   HOME_SCREEN_DEBUG_VIEW_SYMBOLS,
 } from "./helpers/debug";
-import { firebaseLoginAsync } from "./helpers/firebase";
+import {
+  firebaseLoginAsync,
+  firebaseInitialized,
+  doNotUseFirebase,
+} from "./helpers/firebase";
 import {
   setNotificationsAsync,
   setupNotificationsPermissionAsync,
@@ -157,6 +161,8 @@ export default class HomeScreen extends React.Component<
 
   unregisterAuthObserver: firebase.Unsubscribe | null = null;
   async componentDidMount() {
+    const { studyInfo } = this.props;
+
     const allowsNotifications = await setupNotificationsPermissionAsync();
     if (!allowsNotifications) {
       this.setState({ allowsNotifications: false });
@@ -209,25 +215,29 @@ export default class HomeScreen extends React.Component<
 
     this.setState({ isLoading: false });
 
-    // Operations following this line are non-critical, so we do it at last and
-    // don't have to `await` this.
+    // Operations following this line are non-critical, so we do it at last
+    // (after isLoading is already false) and don't have to `await` them.
     const user = await getUserAsync();
     try {
-      firebaseLoginAsync(user!);
+      firebaseLoginAsync(studyInfo, user!);
     } catch (e) {
       // TODO: BETTER WAY TO DO THIS?
       alert(`Login error: ${e}`);
     }
 
-    this.unregisterAuthObserver = firebase.auth().onAuthStateChanged((user) => {
-      if (user) {
-        // The user is signed in to Firebase.
-        this.setState({ firebaseUser: user });
-      } else {
-        // The user is not signed in to Firebase.
-        this.setState({ firebaseUser: null });
-      }
-    });
+    if (firebaseInitialized()) {
+      this.unregisterAuthObserver = firebase
+        .auth()
+        .onAuthStateChanged((user) => {
+          if (user) {
+            // The user is signed in to Firebase.
+            this.setState({ firebaseUser: user });
+          } else {
+            // The user is not signed in to Firebase.
+            this.setState({ firebaseUser: null });
+          }
+        });
+    }
   }
 
   componentWillUnmount() {
@@ -333,6 +343,9 @@ export default class HomeScreen extends React.Component<
                   {firebaseUser === null
                     ? HOME_SCREEN_DEBUG_VIEW_SYMBOLS.FIREBASE_AUTH.NOT_LOGGED_IN
                     : HOME_SCREEN_DEBUG_VIEW_SYMBOLS.FIREBASE_AUTH.LOGGED_IN}
+                  {doNotUseFirebase(studyInfo)
+                    ? HOME_SCREEN_DEBUG_VIEW_SYMBOLS.DO_NOT_USE_FIREBASE
+                    : ""}
                   {this.state.firebaseUploadStatusSymbol}
                 </Text>
               )}
@@ -555,6 +568,7 @@ export default class HomeScreen extends React.Component<
             title="uploadDataAsync()"
             onPress={async () => {
               const response = await uploadDataAsync(
+                studyInfo,
                 this.setFirebaseUploadStatusSymbol,
               );
               alertWithShareButtonContainingDebugInfo(`${response}`);
@@ -773,8 +787,9 @@ export default class HomeScreen extends React.Component<
           previousState={this.state.storedPingStateAsync}
           onFinish={async (finishedPing) => {
             this.setState({ currentPing: finishedPing });
-            uploadDataAsync(this.setFirebaseUploadStatusSymbol);
+            uploadDataAsync(studyInfo, this.setFirebaseUploadStatusSymbol);
           }}
+          studyInfo={studyInfo}
           setFirebaseUploadStatusSymbol={this.setFirebaseUploadStatusSymbol}
         />
         <DebugView />

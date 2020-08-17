@@ -4,12 +4,25 @@ import * as firebase from "firebase/app";
 import { User } from "./asyncStorage/user";
 import { UploadData } from "./dataUpload";
 import { HOME_SCREEN_DEBUG_VIEW_SYMBOLS, INSTALLATION_ID } from "./debug";
+import { StudyInfo } from "./types";
 
 const FIREBASE_LOGIN_EMAIL_DOMAIN = "@wellping.ssnl.stanford.edu";
 
-export function validateAndInitializeFirebaseWithConfig(firebaseConfig: any) {
+export function doNotUseFirebase(studyInfo: StudyInfo): boolean {
+  if (studyInfo.firebaseConfig._WellPing_doNotUseFirebase === "YES") {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+export function validateAndInitializeFirebaseWithConfig(studyInfo: StudyInfo) {
+  if (doNotUseFirebase(studyInfo)) {
+    return;
+  }
+
   if (firebase.apps.length === 0) {
-    firebase.initializeApp(firebaseConfig);
+    firebase.initializeApp(studyInfo.firebaseConfig);
   }
 
   try {
@@ -31,8 +44,16 @@ export function firebaseInitialized(): boolean {
 }
 
 export async function firebaseLoginAsync(
+  studyInfo: StudyInfo,
   user: User,
 ): Promise<firebase.auth.UserCredential> {
+  if (doNotUseFirebase(studyInfo)) {
+    await new Promise((r) => setTimeout(r, 3000)); // Simulate loading.
+    // Currently the return object is unused by the app, so we can just return
+    // anything.
+    return { firebaseNotUsed: "Firebase is not used." } as any;
+  }
+
   try {
     return await firebase
       .auth()
@@ -54,11 +75,19 @@ export async function firebaseLogoutAsync(): Promise<void> {
 }
 
 export async function firebaseUploadDataForUserAsync(
+  studyInfo: StudyInfo,
   data: UploadData,
   startUploading: () => void,
   // `errorSymbol` will be shown alongside the JS version at the top of the screen.
   endUploading: (symbol: string, isError: boolean) => void,
 ): Promise<Error | null> {
+  if (doNotUseFirebase(studyInfo)) {
+    startUploading();
+    await new Promise((r) => setTimeout(r, 1000)); // Simulate loading.
+    endUploading(`Firebase N/A`, true);
+    return new Error("Firebase is not used.");
+  }
+
   startUploading();
 
   const user = firebase.auth().currentUser;
