@@ -10,7 +10,7 @@ import { StudyInfo } from "./types";
  * Firebase requires to use an email as the user's login name.
  * So we add a fictional email domain to the actual username.
  */
-const FIREBASE_LOGIN_EMAIL_DOMAIN = "@wellping.ssnl.stanford.edu";
+const FIREBASE_LOGIN_EMAIL_DOMAIN = "@user.wellpingssnl";
 
 export function doNotUseFirebase(studyInfo: StudyInfo): boolean {
   if (studyInfo.firebaseConfig._WellPing_doNotUseFirebase === "YES") {
@@ -59,12 +59,20 @@ export async function firebaseLoginAsync(
   }
 
   try {
-    return await firebase
+    const userCredential = await firebase
       .auth()
       .signInWithEmailAndPassword(
         user.username + FIREBASE_LOGIN_EMAIL_DOMAIN,
         user.password,
       );
+    if (!userCredential.user?.emailVerified) {
+      // If the email is not verified, we know that this is not a pre-imported
+      // user (as all pre-imported users have a verified fictional email
+      // address). And they should not use the app.
+      // See `MARK: FIREBASE_AUTH_VERIFIED_FICTIONAL_EMAIL_NOTE`.
+      throw new Error(":( Why are you doing this?");
+    }
+    return userCredential;
   } catch (error) {
     throw new Error(`**Login error**\n\n${error}`);
   }
