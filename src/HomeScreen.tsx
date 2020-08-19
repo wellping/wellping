@@ -167,28 +167,55 @@ export default class HomeScreen extends React.Component<
 
     this.setState({ isLoading: false });
 
-    // Operations following this line are non-critical, so we do it at last
-    // (after isLoading is already false) and don't have to `await` them.
-    const user = await getUserAsync();
-    try {
-      firebaseLoginAsync(studyInfo, user!);
-    } catch (e) {
-      // TODO: BETTER WAY TO DO THIS?
-      alert(`Login error: ${e}`);
-    }
-
     if (firebaseInitialized()) {
-      this.unregisterAuthObserver = firebase
-        .auth()
-        .onAuthStateChanged((user) => {
-          if (user) {
+      this.unregisterAuthObserver = firebase.auth().onAuthStateChanged(
+        async (firebaseUser) => {
+          if (firebaseUser) {
             // The user is signed in to Firebase.
-            this.setState({ firebaseUser: user });
+            // Notice that Firebase Authentication sessions are long lived,
+            // meaning that the user is still signed in even if e.g. there is
+            // no Internet.
+            // As such, we can safely show alert in `else` branch.
+            // See https://firebase.google.com/docs/auth/admin/manage-sessions.
+            this.setState({ firebaseUser });
           } else {
             // The user is not signed in to Firebase.
-            this.setState({ firebaseUser: null });
+
+            // We will try to log in the user again first.
+            const localStoredUser = await getUserAsync();
+            if (localStoredUser === null) {
+              alertWithShareButtonContainingDebugInfo(
+                "Not logged in locally!",
+                "Error",
+              );
+              return;
+            }
+
+            try {
+              // If it is successful, this `onAuthStateChanged` callback will
+              // be called again, so we don't have to do anything here.
+              await firebaseLoginAsync(studyInfo, localStoredUser);
+            } catch (e) {
+              alertWithShareButtonContainingDebugInfo(
+                // I'm pretty sure Internet has nothing to do with this, but
+                // we will still tell user to connect to the Internet just in
+                // case.
+                `Firebase login failed!\nNo data will be uploaded.\n\n` +
+                  `Please make sure you are connected to the Internet and ` +
+                  `then try restarting the app. If this error persists, ` +
+                  `please contact the research staff.\n\n(${e})`,
+                "Warning",
+              );
+            }
           }
-        });
+        },
+        (e) => {
+          // Unsure when will this be called.
+          alertWithShareButtonContainingDebugInfo(
+            `onAuthStateChanged error: ${e}`,
+          );
+        },
+      );
     }
   }
 
