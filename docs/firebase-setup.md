@@ -59,6 +59,8 @@ Then, let's generate a list of username/password combinations by using the tool 
 
 After you enter the number of users to generate and click "Generate", you should see two buttons ("Download the CSV file for Firebase import" and "Download the CSV file containing username/password combinations (for your reference)"). You should click both buttons and download the CSV files.
 
+> It might make sense for you to generate some extra user accounts for your own testing purposes.
+
 <script src="./lib/bcrypt.min.js"></script>
 <script src="./generate-users.js"></script>
 
@@ -190,3 +192,5 @@ Locate `var firebaseConfig`. This object is your `firebaseConfig` object. For ex
 ![Create new web app - 2](./img/firebase-setup/create-web-app-2.png "Create new web app - 2")
 
 Include this Firebase config in your study file, and you are all done!
+
+You can now try log in Well Ping with one of the account generated, complete some questions, and see if Firebase Realtime Database is storing the responses!
