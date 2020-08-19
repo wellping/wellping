@@ -57,7 +57,7 @@ At this point, if you run `firebase projects:list`, you should see the Firebase 
 
 Then, let's generate a list of username/password combinations by using the tool below.
 
-After you enter the number of users to generate and click "Generate", you should see two buttons ("Download the CSV file for Firebase import" and "Download the CSV file containing username/password combinations (for your reference)"). You should click both buttons and download the CSV files.
+After you enter the number of users to generate and click "**Generate**", you should see two buttons ("**Download the CSV file for Firebase import**" and "**Download the CSV file containing username/password combinations (for your reference)**"). You should click both buttons and download the two CSV files.
 
 > It might make sense for you to generate some extra user accounts for your own testing purposes.
 
