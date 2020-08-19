@@ -439,7 +439,7 @@ export default class HomeScreen extends React.Component<
             title="getDatabaseFolderFilelistAsync"
             onPress={async () => {
               alertWithShareButtonContainingDebugInfo(
-                JSON.stringify(await getDatabaseFolderFilelistAsync())
+                JSON.stringify(await getDatabaseFolderFilelistAsync()),
               );
             }}
           />
