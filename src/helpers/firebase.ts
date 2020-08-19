@@ -11,6 +11,8 @@ import { StudyInfo } from "./types";
  * So we add a fictional email domain to the actual username.
  */
 const FIREBASE_LOGIN_EMAIL_DOMAIN = "@user.wellpingssnl";
+const getFirebaseLoginEmail = (username: string): string =>
+  username + FIREBASE_LOGIN_EMAIL_DOMAIN;
 
 export function doNotUseFirebase(studyInfo: StudyInfo): boolean {
   if (studyInfo.firebaseConfig._WellPing_doNotUseFirebase === "YES") {
@@ -62,7 +64,7 @@ export async function firebaseLoginAsync(
     const userCredential = await firebase
       .auth()
       .signInWithEmailAndPassword(
-        user.username + FIREBASE_LOGIN_EMAIL_DOMAIN,
+        getFirebaseLoginEmail(user.username),
         user.password,
       );
     if (!userCredential.user?.emailVerified) {
