@@ -1,9 +1,12 @@
 /* global document, URL, Blob, dcodeIO, btoa */
 
 // https://stackoverflow.com/a/1349426/2603230
-function generateId(length) {
+function generateId(length, includeUppercaseLetters) {
   var result = "";
   var characters = "abcdefghijklmnopqrstuvwxyz0123456789";
+  if (includeUppercaseLetters) {
+    characters += "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  }
   var charactersLength = characters.length;
   for (var i = 0; i < length; i++) {
     result += characters.charAt(Math.floor(Math.random() * charactersLength));
@@ -43,10 +46,12 @@ function addButtonToDownloadDiv(csvText, filename, text) {
   downloadDiv.appendChild(button);
 }
 
-async function generateUsersCSVs(numberOfUsers) {
+async function generateUsersCSVsAsync(numberOfUsers) {
   const userIds = [];
   for (let i = 0; i < numberOfUsers; i++) {
-    const userId = generateId(8);
+    // We do not want to include uppercase letters in username because Firebase
+    // Auth's email is case-insensitive.
+    const userId = generateId(8, false);
     if (userIds.indexOf(userId) === -1) {
       userIds.push(userId);
     }
@@ -54,7 +59,8 @@ async function generateUsersCSVs(numberOfUsers) {
 
   const passwords = [];
   for (let i = 0; i < numberOfUsers; i++) {
-    const password = generateId(8);
+    // Password, unlike username (see above), can include uppercase letters.
+    const password = generateId(8, true);
     if (
       userIds.indexOf(password) === -1 && // Cannot be same as user ID.
       passwords.indexOf(password) === -1
@@ -67,7 +73,11 @@ async function generateUsersCSVs(numberOfUsers) {
   await Promise.all(
     passwords.map(async (password) => {
       var bcrypt = dcodeIO.bcrypt;
-      var hashedPassword = await bcrypt.hash(password, 8);
+      // We don't actually need the password hash here to be very secure, as
+      // Firebase will re-hash the password once the user logs in for the first
+      // time.
+      // Ref: https://firebase.google.com/docs/auth/admin/import-users#usage
+      var hashedPassword = await bcrypt.hash(password, 2);
       hashedPasswords.push([btoa(hashedPassword), password]);
     }),
   );
@@ -101,15 +111,24 @@ async function generateUsersCSVs(numberOfUsers) {
 
 function generateButtonOnClick(numberOfUsers) {
   const downloadDiv = document.getElementById("user-generations-download");
-  downloadDiv.innerText = "Generating... (This may take a while.)";
-  generateUsersCSVs(numberOfUsers).then((csvFile) => {
-    downloadDiv.innerText = "Done!";
+  downloadDiv.innerText =
+    "Generating " +
+    numberOfUsers +
+    " username/password combinations... (This may take a while.)";
+
+  generateUsersCSVsAsync(numberOfUsers).then((csvFile) => {
+    downloadDiv.innerText =
+      "Done! " + numberOfUsers + " username/password combinations generated.";
 
     addButtonToDownloadDiv(
       csvFile[0],
       "import_to_firebase_auth.csv",
-      "Firebase import csv",
+      "a csv file for Firebase import",
     );
-    addButtonToDownloadDiv(csvFile[1], "users.csv", "user ID and password");
+    addButtonToDownloadDiv(
+      csvFile[1],
+      "users.csv",
+      "a csv file containing username/password combinations (for your reference)",
+    );
   });
 }

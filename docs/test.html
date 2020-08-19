@@ -3,8 +3,15 @@
   <body>
     <div id="user-generations-download"></div>
 
-    <button onclick="generateButtonOnClick(10)">
-      yep
+    <input
+      id="user-generations-no-of-users"
+      type="number"
+      placeholder="Number of Users"
+    />
+    <button
+      onclick="generateButtonOnClick(document.getElementById('user-generations-no-of-users').value)"
+    >
+      Generate
     </button>
 
     <script src="./lib/bcrypt.min.js"></script>
