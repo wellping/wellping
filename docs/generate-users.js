@@ -123,12 +123,12 @@ function generateButtonOnClick(numberOfUsers) {
     addButtonToDownloadDiv(
       csvFile[0],
       "import_to_firebase_auth.csv",
-      "a csv file for Firebase import",
+      "the CSV file for Firebase import",
     );
     addButtonToDownloadDiv(
       csvFile[1],
       "users.csv",
-      "a csv file containing username/password combinations (for your reference)",
+      "the CSV file containing username/password combinations (for your reference)",
     );
   });
 }
