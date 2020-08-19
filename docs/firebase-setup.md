@@ -1,4 +1,4 @@
-# Set Up Your Server
+# Set Up Your Firebase Server
 
 Before your participants can start using Well Ping, you have to set up a server that will store your study file (e.g., the questions) as well as the participants' responses.
 
