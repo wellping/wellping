@@ -81,12 +81,13 @@ async function generateUsersCSVs(numberOfUsers) {
       "," +
       userIds[i] +
       // MARK: FIREBASE_AUTH_VERIFIED_FICTIONAL_EMAIL_NOTE
-      // See `FIREBASE_LOGIN_EMAIL_DOMAIN` constant.
-      // This fictional email address should also be verified, so that if any
-      // malicious person tries to create a new account, they will not be able
-      // to interact with the database (as the database rules will require a
-      // user to have a verified `@user.wellpingssnl` email suffix, which is
-      // impossible to obtain unless they are generated here.)
+      // This fictional email address should be imported as verified (hence the
+      // `true` value), so that should any malicious person tries to create a
+      // new account, they will not be able to interact with the database (as
+      // the database rules require a user to have a verified `@user.wellpingssnl`
+      // email suffix, which is impossible to obtain unless they are generated
+      // here.)
+      // See also `FIREBASE_LOGIN_EMAIL_DOMAIN` constant.
       "@user.wellpingssnl,true," +
       hashedPasswords[i][0] +
       ",,,,,,,,,,,,,,,,,,,,," +
