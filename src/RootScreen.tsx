@@ -14,7 +14,12 @@ import {
   clearUserAsync,
 } from "./helpers/asyncStorage/user";
 import { connectDatabaseAsync } from "./helpers/database";
-import { getCriticalProblemTextForUser } from "./helpers/debug";
+import {
+  getCriticalProblemTextForUser,
+  alertWithShareButtonContainingDebugInfo,
+  getNonCriticalProblemTextForUser,
+} from "./helpers/debug";
+import { validateAndInitializeFirebaseWithConfig } from "./helpers/firebase";
 import {
   getStudyFileAsync,
   downloadStudyFileAsync,
@@ -22,11 +27,15 @@ import {
   studyFileExistsAsync,
 } from "./helpers/studyFile";
 import { StudyFile } from "./helpers/types";
+import { logoutAsync } from "./helpers/users";
 import LoadingScreen from "./screens/LoadingScreen";
 import LoginScreen, {
   ParamDownloadAndParseStudyFileAsync,
 } from "./screens/LoginScreen";
 import StudyFileErrorScreen from "./screens/StudyFileErrorScreen";
+
+import "firebase/auth";
+import "firebase/database";
 
 interface RootScreenProps {}
 
@@ -134,6 +143,34 @@ export default class RootScreen extends React.Component<
 
       const survey = await getStudyFileAsync();
 
+      try {
+        validateAndInitializeFirebaseWithConfig(survey.studyInfo);
+      } catch (e) {
+        await this.logoutFnAsync();
+        this.setState({ isLoading: false });
+        alertWithShareButtonContainingDebugInfo(
+          getCriticalProblemTextForUser(`${e}`),
+        );
+        return;
+      }
+
+      const user = await getUserAsync();
+      if (user === null) {
+        // This should never happen. But just in case.
+        // Notice that we have to do this before `downloadAndParseStudyFileAsync`
+        // or else the async function in `downloadAndParseStudyFileAsync` will
+        // still try to find study file when it is already deleted.
+        await this.logoutFnAsync();
+        this.setState({ isLoading: false });
+        alertWithShareButtonContainingDebugInfo(
+          getNonCriticalProblemTextForUser(
+            `You have been logged out for an unknown reason.\n\n` +
+              `(REF: studyFileExistsAsync and user === null).`,
+          ),
+        );
+        return;
+      }
+
       // Do it in background because there isn't any urgency to redownload.
       this.downloadAndParseStudyFileAsync({
         url: survey.studyInfo.studyFileJsonURL,
@@ -144,15 +181,6 @@ export default class RootScreen extends React.Component<
         },
       });
 
-      const user = await getUserAsync();
-      if (user === null) {
-        // This will happen when e.g., the study file is downloads but the user
-        // didn't successfully login.
-        await this.logoutAsync();
-        this.setState({ isLoading: false });
-        return;
-      }
-
       await connectDatabaseAsync(survey.studyInfo.id);
 
       this.setState({ userInfo: user, survey });
@@ -161,10 +189,10 @@ export default class RootScreen extends React.Component<
     this.setState({ isLoading: false });
   }
 
-  async logoutAsync() {
-    await clearUserAsync();
-    await clearCurrentStudyFileAsync();
-    this.setState({ userInfo: null, survey: undefined });
+  async logoutFnAsync() {
+    this.setState({ userInfo: null, survey: undefined }, async () => {
+      await logoutAsync();
+    });
   }
 
   render() {
@@ -177,7 +205,7 @@ export default class RootScreen extends React.Component<
       return <StudyFileErrorScreen errorText={studyFileErrorText} />;
     }
 
-    if (userInfo == null) {
+    if (userInfo === null) {
       // The user hasn't logged in.
       return (
         <LoginScreen
@@ -207,7 +235,7 @@ export default class RootScreen extends React.Component<
         studyInfo={this.state.survey.studyInfo}
         streams={this.state.survey.streams}
         logout={async () => {
-          await this.logoutAsync();
+          await this.logoutFnAsync();
         }}
       />
     );

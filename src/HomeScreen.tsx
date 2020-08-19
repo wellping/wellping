@@ -1,6 +1,7 @@
-import { format, addHours, getDay } from "date-fns";
+import { format, getDay } from "date-fns";
 import { Notifications } from "expo";
 import * as Linking from "expo-linking";
+import * as firebase from "firebase/app";
 import React from "react";
 import {
   Button,
@@ -12,17 +13,12 @@ import {
   Platform,
   TouchableWithoutFeedback,
 } from "react-native";
-import { WebView } from "react-native-webview";
 
 import SurveyScreen, { SurveyScreenState } from "./SurveyScreen";
-import { AnswerEntity } from "./entities/AnswerEntity";
+import DashboardComponent, {
+  getDashboardUrlAsync,
+} from "./components/DashboardComponent";
 import { PingEntity } from "./entities/PingEntity";
-import {
-  uploadDataAsync,
-  getAllDataAsync,
-  getRequestURLAsync,
-  getServerUrlAsync,
-} from "./helpers/apiManager";
 import {
   dequeueFuturePingIfAny,
   getFuturePingsQueue,
@@ -37,16 +33,24 @@ import {
   clearPingStateAsync,
 } from "./helpers/asyncStorage/pingState";
 import { getUserAsync } from "./helpers/asyncStorage/user";
+import { uploadDataAsync, getAllDataAsync } from "./helpers/dataUpload";
 import {
   shareDatabaseFileAsync,
   deleteDatabaseFileAsync,
+  getDatabaseFolderFilelistAsync,
 } from "./helpers/database";
 import {
   getNonCriticalProblemTextForUser,
   JS_VERSION_NUMBER,
   getUsefulDebugInfo,
   alertWithShareButtonContainingDebugInfo,
+  HOME_SCREEN_DEBUG_VIEW_SYMBOLS,
 } from "./helpers/debug";
+import {
+  firebaseLoginAsync,
+  firebaseInitialized,
+  doNotUseFirebase,
+} from "./helpers/firebase";
 import {
   setNotificationsAsync,
   setupNotificationsPermissionAsync,
@@ -78,30 +82,11 @@ interface HomeScreenState {
   currentPing: PingEntity | null;
   isLoading: boolean;
   storedPingStateAsync: SurveyScreenState | null;
+  firebaseUser: firebase.User | null;
+  firebaseUploadStatusSymbol: string;
 
   // DEBUG
   displayDebugView: boolean;
-}
-
-function SSNLDashboard(): JSX.Element {
-  const [url, setUrl] = React.useState<string | null>(null);
-
-  React.useEffect(() => {
-    async function setDashboardUrl() {
-      setUrl(await getRequestURLAsync("/ssnl_dashboard"));
-    }
-    setDashboardUrl();
-  }, []);
-
-  return (
-    <View style={{ flex: 1, marginTop: 20 }}>
-      {url ? (
-        <WebView source={{ uri: url }} cacheEnabled={false} />
-      ) : (
-        <Text style={{ textAlign: "center", fontSize: 16 }}>Loading...</Text>
-      )}
-    </View>
-  );
 }
 
 export default class HomeScreen extends React.Component<
@@ -121,10 +106,16 @@ export default class HomeScreen extends React.Component<
       isLoading: true,
       displayDebugView: false,
       storedPingStateAsync: null,
+      firebaseUser: null,
+      firebaseUploadStatusSymbol:
+        HOME_SCREEN_DEBUG_VIEW_SYMBOLS.FIREBASE_DATABASE.INITIAL,
     };
   }
 
+  unregisterAuthObserver: firebase.Unsubscribe | null = null;
   async componentDidMount() {
+    const { studyInfo } = this.props;
+
     const allowsNotifications = await setupNotificationsPermissionAsync();
     if (!allowsNotifications) {
       this.setState({ allowsNotifications: false });
@@ -175,11 +166,66 @@ export default class HomeScreen extends React.Component<
       });
     }
 
+    if (firebaseInitialized()) {
+      this.unregisterAuthObserver = firebase.auth().onAuthStateChanged(
+        async (firebaseUser) => {
+          if (firebaseUser) {
+            // The user is signed in to Firebase.
+            // Notice that Firebase Authentication sessions are long lived,
+            // meaning that the user is still signed in even if e.g. there is
+            // no Internet.
+            // As such, we can safely show alert in `else` branch.
+            // See https://firebase.google.com/docs/auth/admin/manage-sessions.
+            this.setState({ firebaseUser });
+          } else {
+            // The user is not signed in to Firebase.
+
+            // We will try to log in the user again first.
+            const localStoredUser = await getUserAsync();
+            if (localStoredUser === null) {
+              alertWithShareButtonContainingDebugInfo(
+                "Not logged in locally!",
+                "Error",
+              );
+              return;
+            }
+
+            try {
+              // If it is successful, this `onAuthStateChanged` callback will
+              // be called again, so we don't have to do anything here.
+              await firebaseLoginAsync(studyInfo, localStoredUser);
+            } catch (e) {
+              alertWithShareButtonContainingDebugInfo(
+                // I'm pretty sure Internet has nothing to do with this, but
+                // we will still tell user to connect to the Internet just in
+                // case.
+                `Firebase login failed!\nNo data will be uploaded.\n\n` +
+                  `Please make sure you are connected to the Internet and ` +
+                  `then try restarting the app. If this error persists, ` +
+                  `please contact the research staff.\n\n(${e})`,
+                "Warning",
+              );
+            }
+          }
+        },
+        (e) => {
+          // Unsure when will this be called.
+          alertWithShareButtonContainingDebugInfo(
+            `onAuthStateChanged error: ${e}`,
+          );
+        },
+      );
+    }
+
     this.setState({ isLoading: false });
   }
 
   componentWillUnmount() {
     clearInterval(this.interval);
+
+    if (this.unregisterAuthObserver) {
+      this.unregisterAuthObserver();
+    }
   }
 
   async startSurveyAsync() {
@@ -232,6 +278,10 @@ export default class HomeScreen extends React.Component<
     });
   }
 
+  setFirebaseUploadStatusSymbol = (symbol: string) => {
+    this.setState({ firebaseUploadStatusSymbol: symbol });
+  };
+
   render() {
     const { studyInfo, streams } = this.props;
 
@@ -239,6 +289,7 @@ export default class HomeScreen extends React.Component<
       allowsNotifications,
       currentNotificationTime,
       currentPing,
+      firebaseUser,
       isLoading,
     } = this.state;
 
@@ -260,7 +311,24 @@ export default class HomeScreen extends React.Component<
                 justifyContent: "center",
               }}
             >
-              <Text style={{ color: "lightgray" }}>{JS_VERSION_NUMBER}</Text>
+              {this.state.firebaseUploadStatusSymbol.length > 1 ? (
+                // If it is not a one-character symbol, there is an error.
+                // We will hide the version code to show the error code.
+                <Text style={{ color: "orange" }}>
+                  {this.state.firebaseUploadStatusSymbol}
+                </Text>
+              ) : (
+                <Text style={{ color: "lightgray" }}>
+                  {JS_VERSION_NUMBER}
+                  {firebaseUser === null
+                    ? HOME_SCREEN_DEBUG_VIEW_SYMBOLS.FIREBASE_AUTH.NOT_LOGGED_IN
+                    : HOME_SCREEN_DEBUG_VIEW_SYMBOLS.FIREBASE_AUTH.LOGGED_IN}
+                  {doNotUseFirebase(studyInfo)
+                    ? HOME_SCREEN_DEBUG_VIEW_SYMBOLS.DO_NOT_USE_FIREBASE
+                    : ""}
+                  {this.state.firebaseUploadStatusSymbol}
+                </Text>
+              )}
               {studyInfo.contactEmail && (
                 <TouchableWithoutFeedback
                   onPress={async () => {
@@ -272,7 +340,7 @@ export default class HomeScreen extends React.Component<
                     const emailBody = encodeURIComponent(
                       `Please enter your question here (please attach a screenshot if applicable):\n\n\n\n\n\n` +
                         `====\n` +
-                        `User ID: ${user!.patientId}\n` +
+                        `User ID: ${user!.username}\n` +
                         getUsefulDebugInfo(),
                     );
                     const mailtoLink = `mailto:${studyInfo.contactEmail}?subject=${emailSubject}&body=${emailBody}`;
@@ -329,6 +397,9 @@ export default class HomeScreen extends React.Component<
           <Text>
             this.state.currentPing: {JSON.stringify(this.state.currentPing)}
           </Text>
+          <Text>
+            this.state.firebaseUser: {JSON.stringify(this.state.firebaseUser)}
+          </Text>
           <Button
             color="green"
             title="hide debug view"
@@ -361,6 +432,15 @@ export default class HomeScreen extends React.Component<
               await answer.save();*/
 
               await shareDatabaseFileAsync(studyInfo.id);
+            }}
+          />
+          <Button
+            color="orange"
+            title="getDatabaseFolderFilelistAsync"
+            onPress={async () => {
+              alertWithShareButtonContainingDebugInfo(
+                JSON.stringify(await getDatabaseFolderFilelistAsync()),
+              );
             }}
           />
           <Button
@@ -441,14 +521,6 @@ export default class HomeScreen extends React.Component<
           />
           <Button
             color="orange"
-            title="getServerUrlAsync()"
-            onPress={async () => {
-              const serverUrl = await getServerUrlAsync();
-              alertWithShareButtonContainingDebugInfo(serverUrl);
-            }}
-          />
-          <Button
-            color="orange"
             title="getUserAsync()"
             onPress={async () => {
               const user = await getUserAsync();
@@ -484,8 +556,11 @@ export default class HomeScreen extends React.Component<
             color="orange"
             title="uploadDataAsync()"
             onPress={async () => {
-              const response = await uploadDataAsync();
-              alertWithShareButtonContainingDebugInfo(JSON.stringify(response));
+              const response = await uploadDataAsync(
+                studyInfo,
+                this.setFirebaseUploadStatusSymbol,
+              );
+              alertWithShareButtonContainingDebugInfo(`${response}`);
             }}
           />
           <Button
@@ -499,9 +574,13 @@ export default class HomeScreen extends React.Component<
             color="orange"
             title="copy dashboard url"
             onPress={async () => {
-              const url = await getRequestURLAsync("/ssnl_dashboard");
-              alertWithShareButtonContainingDebugInfo(url);
+              const url = await getDashboardUrlAsync(
+                studyInfo.dashboardURL ||
+                  "studyInfo.dashboardURL === undefined",
+                firebaseUser,
+              );
               Clipboard.setString(url);
+              alertWithShareButtonContainingDebugInfo(url);
             }}
           />
           <Button
@@ -631,7 +710,10 @@ export default class HomeScreen extends React.Component<
             There is currently no active survey. You will receive a notification
             with a survey soon!
           </Text>
-          <SSNLDashboard />
+          <DashboardComponent
+            firebaseUser={firebaseUser}
+            studyInfo={studyInfo}
+          />
         </View>
       );
     }
@@ -666,7 +748,10 @@ export default class HomeScreen extends React.Component<
               this.startSurveyAsync();
             }}
           />
-          <SSNLDashboard />
+          <DashboardComponent
+            firebaseUser={firebaseUser}
+            studyInfo={studyInfo}
+          />
         </View>
       );
     }
@@ -697,8 +782,10 @@ export default class HomeScreen extends React.Component<
           previousState={this.state.storedPingStateAsync}
           onFinish={async (finishedPing) => {
             this.setState({ currentPing: finishedPing });
-            uploadDataAsync();
+            uploadDataAsync(studyInfo, this.setFirebaseUploadStatusSymbol);
           }}
+          studyInfo={studyInfo}
+          setFirebaseUploadStatusSymbol={this.setFirebaseUploadStatusSymbol}
         />
         <DebugView />
       </View>

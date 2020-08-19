@@ -20,12 +20,12 @@ import {
   ChoicesWithMultipleAnswersAnswerData,
 } from "./helpers/answerTypes";
 import { insertAnswerAsync } from "./helpers/answers";
-import { uploadDataAsync } from "./helpers/apiManager";
 import {
   getFuturePingsQueue,
   enqueueToFuturePingQueue,
 } from "./helpers/asyncStorage/futurePings";
 import { storePingStateAsync } from "./helpers/asyncStorage/pingState";
+import { uploadDataAsync } from "./helpers/dataUpload";
 import {
   getNonCriticalProblemTextForUser,
   getCriticalProblemTextForUser,
@@ -49,6 +49,7 @@ import {
   BranchWithRelativeComparisonQuestion,
   ChoicesQuestion,
   StreamName,
+  StudyInfo,
 } from "./helpers/types";
 import ChoicesQuestionScreen from "./questionScreens/ChoicesQuestionScreen";
 import HowLongAgoQuestionScreen from "./questionScreens/HowLongAgoQuestion";
@@ -109,6 +110,10 @@ export interface SurveyScreenProps {
    * The function to call when the current ping is completed.
    */
   onFinish: (finishedPing: PingEntity) => Promise<void>;
+
+  studyInfo: StudyInfo;
+
+  setFirebaseUploadStatusSymbol: (symbol: string) => void;
 }
 
 export interface SurveyScreenState {
@@ -564,7 +569,10 @@ export default class SurveyScreen extends React.Component<
           currentTime.getTime() - lastUploadDate.getTime() > 30 * 1000
         ) {
           this.setState({ lastUploadDate: currentTime });
-          uploadDataAsync();
+          uploadDataAsync(
+            this.props.studyInfo,
+            this.props.setFirebaseUploadStatusSymbol,
+          );
         }
       });
 

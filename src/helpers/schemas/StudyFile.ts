@@ -32,9 +32,39 @@ export const StudyInfoSchema = z
     studyFileJsonURL: z.string().url(),
 
     /**
-     * The server URL (including the trailing slash).
+     * The URL of the dashboard that will be shown to the user on the home page.
+     *
+     * The placeholder `__ID_TOKEN__` will be replaced by the user's Firebase
+     * Auth ID token if the user is signed in to Firebase, and "N/A" otherwise.
+     *
+     * ---
+     *
+     * The following Placeholders are also provided for your convenience so that
+     * you don't have to set up a full back-end server (with Firebase Admin SDK)
+     * just to display the user's progress:
+     *
+     * The placeholder `__PINGS_COMPLETED_OVERALL__` will be replaced by the
+     * number of pings the user has completed overall.
+     *
+     * The placeholder `__PINGS_COMPLETED_THIS_WEEK__` will be replaced by the
+     * number of pings the user has completed this week (defined by
+     * `weekStartsOn`).
+     *
+     * The placeholder `__PINGS_COMPLETED_TODAY__` will be replaced by the
+     * number of pings the user has completed today.
      */
-    serverURL: z.string().url(),
+    dashboardURL: z.string().url().optional(),
+
+    /**
+     * The Firebase config object for the study. See
+     * https://firebase.google.com/docs/web/setup#config-object
+     *
+     * If it is set to `{ "_WellPing_doNotUseFirebase": "YES" }`, you will be
+     * able to log in using any username password combination, and no data will
+     * be uploaded. This is only intended for testing or demo purposes and
+     * should not be used in production.
+     */
+    firebaseConfig: z.record(z.string()),
 
     /**
      * The URL of the study consent form (or any web page you would want the

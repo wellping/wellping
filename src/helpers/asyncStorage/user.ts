@@ -5,7 +5,7 @@ import { logError } from "../debug";
 import { getASKeyAsync } from "./asyncStorage";
 
 export type User = {
-  patientId: string;
+  username: string;
   password: string;
 };
 

@@ -8,6 +8,7 @@ import {
   getCurrentStreamsAsync,
   getCurrentExtraDataAsync,
 } from "./asyncStorage/studyFile";
+import { validateAndInitializeFirebaseWithConfig } from "./firebase";
 import { parseJsonToStudyFile } from "./schemas/StudyFile";
 import {
   StudyFile,
@@ -22,7 +23,7 @@ export const WELLPING_LOCAL_DEBUG_URL =
   "https://wellping_local__.ssnl.stanford.edu/debug.json";
 // TODO: export const WELLPING_LOCAL_DEMO_URL = "https://wellping_local__.ssnl.stanford.edu/demo.json";
 
-export async function isLocalStudyFile(): Promise<boolean> {
+export async function isLocalStudyFileAsync(): Promise<boolean> {
   return (
     (await getStudyInfoAsync()).studyFileJsonURL === WELLPING_LOCAL_DEBUG_URL
   );
@@ -81,8 +82,8 @@ export async function downloadStudyFileAsync(url: string): Promise<string> {
 /**
  * Parses a study file from `rawJsonString` (a string that can be parsed to a
  * JSON object).
- * If the study file is successfully parsed, stores the downloaded study file
- * in Async Storage.
+ * If the study file is successfully parsed and the Firebase config is validated,
+ * initializes Firebase and stores the downloaded study file in Async Storage.
  * Returns `null` if all processes are successful.
  * Returns the error message if any process is unsuccessful.
  */
@@ -91,6 +92,7 @@ export async function parseAndStoreStudyFileAsync(
 ): Promise<string | null> {
   try {
     const parsedStudy = parseJsonToStudyFile(JSON.parse(rawJsonString));
+    validateAndInitializeFirebaseWithConfig(parsedStudy.studyInfo);
     await storeCurrentStudyFileAsync(parsedStudy);
     return null;
   } catch (e) {
