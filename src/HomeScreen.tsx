@@ -37,6 +37,7 @@ import { uploadDataAsync, getAllDataAsync } from "./helpers/dataUpload";
 import {
   shareDatabaseFileAsync,
   deleteDatabaseFileAsync,
+  getDatabaseFolderFilelistAsync,
 } from "./helpers/database";
 import {
   getNonCriticalProblemTextForUser,
@@ -431,6 +432,15 @@ export default class HomeScreen extends React.Component<
               await answer.save();*/
 
               await shareDatabaseFileAsync(studyInfo.id);
+            }}
+          />
+          <Button
+            color="orange"
+            title="getDatabaseFolderFilelistAsync"
+            onPress={async () => {
+              alertWithShareButtonContainingDebugInfo(
+                JSON.stringify(await getDatabaseFolderFilelistAsync())
+              );
             }}
           />
           <Button

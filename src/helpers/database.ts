@@ -52,14 +52,27 @@ export async function connectDatabaseAsync(
   }
 }
 
+export function getDatabaseFolderUrl(): string {
+  // https://forums.expo.io/t/how-to-upload-sqlite-db-dump/2315/3
+  return `${FileSystem.documentDirectory}/SQLite/`;
+}
 export function getDatabaseFileUrl(databaseName: string): string {
   // https://forums.expo.io/t/how-to-upload-sqlite-db-dump/2315/3
-  return `${FileSystem.documentDirectory}/SQLite/${getDatabaseFilename(
-    databaseName,
-  )}`;
+  return `${getDatabaseFolderUrl()}${getDatabaseFilename(databaseName)}`;
+}
+
+export async function databaseFileExistsAsync(
+  databaseName: string,
+): Promise<boolean> {
+  return (await FileSystem.getInfoAsync(getDatabaseFileUrl(databaseName)))
+    .exists;
 }
 
 export async function shareDatabaseFileAsync(databaseName: string) {
+  if (!(await databaseFileExistsAsync(databaseName))) {
+    alert(`Database "${databaseName}" does not exists!`);
+  }
+
   // https://forums.expo.io/t/how-to-upload-sqlite-db-dump/2315/3
   Share.share({
     url: getDatabaseFileUrl(databaseName),
@@ -67,5 +80,25 @@ export async function shareDatabaseFileAsync(databaseName: string) {
 }
 
 export async function deleteDatabaseFileAsync(databaseName: string) {
+  if (!(await databaseFileExistsAsync(databaseName))) {
+    return;
+  }
+
   await FileSystem.deleteAsync(getDatabaseFileUrl(databaseName));
+}
+
+export async function backupDatabaseFileAsync(databaseName: string) {
+  if (!(await databaseFileExistsAsync(databaseName))) {
+    // Don't do anything if the database file does not exists.
+    return;
+  }
+
+  await FileSystem.copyAsync({
+    from: getDatabaseFileUrl(databaseName),
+    to: getDatabaseFileUrl(`${databaseName}.${new Date().getTime()}.bk`),
+  });
+}
+
+export async function getDatabaseFolderFilelistAsync() {
+  return await FileSystem.readDirectoryAsync(getDatabaseFolderUrl());
 }

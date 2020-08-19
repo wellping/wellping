@@ -190,8 +190,9 @@ export default class RootScreen extends React.Component<
   }
 
   async logoutFnAsync() {
-    await logoutAsync();
-    this.setState({ userInfo: null, survey: undefined });
+    this.setState({ userInfo: null, survey: undefined }, async () => {
+      await logoutAsync();
+    });
   }
 
   render() {
