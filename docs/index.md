@@ -4,4 +4,8 @@ Read the guide on how to [set up your Firebase server](./firebase-setup)!
 
 # Privacy & Security
 
-Read about [Privacy & Security](./privacy-security.md)!
+Read about [Privacy & Security](./privacy-security)!
+
+# Glossary
+
+Read about [Glossary](./glossary)!
