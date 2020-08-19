@@ -165,8 +165,6 @@ export default class HomeScreen extends React.Component<
       });
     }
 
-    this.setState({ isLoading: false });
-
     if (firebaseInitialized()) {
       this.unregisterAuthObserver = firebase.auth().onAuthStateChanged(
         async (firebaseUser) => {
@@ -217,6 +215,8 @@ export default class HomeScreen extends React.Component<
         },
       );
     }
+
+    this.setState({ isLoading: false });
   }
 
   componentWillUnmount() {
