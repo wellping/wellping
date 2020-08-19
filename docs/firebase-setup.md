@@ -134,7 +134,7 @@ Navigate to the "**Rules**" tab.
 
 ![Firebase Realtime Database - empty rules](./img/firebase-setup/rtdb-rules-empty.png "Firebase Realtime Database - empty rules")
 
-Paste the following rules into the text box and click "**Publish**".
+Paste the following code into the text box (replacing the existing code) and click "**Publish**".
 
 ```jsonc
 {
@@ -157,7 +157,7 @@ Paste the following rules into the text box and click "**Publish**".
 
 ![Firebase Realtime Database - set rules 2](./img/firebase-setup/rtdb-rules-set-2.png "Firebase Realtime Database - set rules 2")
 
-Congratulations! You have successfully set up the Firebase Realtime Database!
+Good job! You have now successfully set up the Firebase Realtime Database!
 
 ## 4. Obtain Firebase Config
 
