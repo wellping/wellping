@@ -42,17 +42,6 @@ const MultipleTextQuestionScreen: React.ElementType<MultipleTextQuestionScreenPr
     }
   }
 
-  if (numberOfTextFields === 0) {
-    return (
-      <View style={{ marginTop: 30 }}>
-        <Text style={{ textAlign: "center" }}>
-          (No text field available. Please contact the research staff if you
-          believe this is an error.)
-        </Text>
-      </View>
-    );
-  }
-
   const initTextValues = Array(numberOfTextFields).fill("");
 
   const [textValues, setTextValues] = React.useState<string[]>(initTextValues);
@@ -92,7 +81,7 @@ const MultipleTextQuestionScreen: React.ElementType<MultipleTextQuestionScreenPr
     }
     // So that async can be used in `setupTextFieldsDropdownItemsAsync`.
     setupTextFieldsDropdownItemsAsync();
-  }, []);
+  }, [question.choices]);
 
   const updateTextValue = (text: string, index: number) => {
     const newTextValues: string[] = cloneDeep(textValues);
@@ -223,6 +212,17 @@ const MultipleTextQuestionScreen: React.ElementType<MultipleTextQuestionScreenPr
     }
     return false;
   };
+
+  if (numberOfTextFields === 0) {
+    return (
+      <View style={{ marginTop: 30 }}>
+        <Text style={{ textAlign: "center" }}>
+          (No text field available. Please contact the research staff if you
+          believe this is an error.)
+        </Text>
+      </View>
+    );
+  }
 
   return <View style={{ paddingTop: 10 }}>{textFields}</View>;
 };
