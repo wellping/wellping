@@ -779,7 +779,7 @@ export default class HomeScreen extends React.Component<
           }
           ping={currentPing}
           previousState={this.state.storedPingStateAsync}
-          onFinish={async (finishedPing) => {
+          onFinish={(finishedPing) => {
             this.setState({ currentPing: finishedPing });
             uploadDataAsync(studyInfo, this.setFirebaseUploadStatusSymbol);
           }}

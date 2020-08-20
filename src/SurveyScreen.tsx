@@ -109,7 +109,7 @@ export interface SurveyScreenProps {
   /**
    * The function to call when the current ping is completed.
    */
-  onFinish: (finishedPing: PingEntity) => Promise<void>;
+  onFinish: (finishedPing: PingEntity) => void;
 
   studyInfo: StudyInfo;
 
