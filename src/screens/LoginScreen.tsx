@@ -67,7 +67,7 @@ export default class LoginScreen extends React.Component<
   handleUrl(url: Linking.ParsedURL) {
     if (url.hostname === "stanfordsocialneurosciencelab.github.io") {
       if (
-        url.path === "wellping/login" &&
+        url.path === "WellPing/app/login" &&
         url.queryParams &&
         url.queryParams["code"]
       ) {
