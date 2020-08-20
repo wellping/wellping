@@ -257,3 +257,23 @@ Object {
 `;
 
 exports[`input \`[]\` with max 4 and maxMinus "PrevQuestionId" without choices: text inputs length 1`] = `4`;
+
+exports[`max - maxMinus = 0: textInputsLength === 0 1`] = `
+<View
+  style={
+    Object {
+      "marginTop": 30,
+    }
+  }
+>
+  <Text
+    style={
+      Object {
+        "textAlign": "center",
+      }
+    }
+  >
+    (No text field available. Please contact the research staff if you believe this is an error.)
+  </Text>
+</View>
+`;

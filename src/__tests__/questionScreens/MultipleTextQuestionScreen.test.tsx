@@ -58,12 +58,28 @@ const basicTestForQuestionAsync = async (
       setDataValidationFunction={mockSetDataValidationFunction}
     />,
   );
-  const { getAllByA11yLabel, getAllByA11yHint } = renderResults;
+  const { getAllByA11yLabel, getAllByA11yHint, toJSON } = renderResults;
 
-  // Wait for the text fields to be loaded.
-  await waitFor(() => getAllByA11yLabel(/^text input /));
+  let textInputsLength = question.max;
+  if (question.maxMinus) {
+    if (allAnswers[question.maxMinus]) {
+      const data = (allAnswers[question.maxMinus] as MultipleTextAnswerEntity)
+        .data;
+      textInputsLength -= (data ? data.value : []).length;
+    }
+  }
+
+  if (textInputsLength > 0) {
+    // Wait for the text fields to be loaded.
+    await waitFor(() => getAllByA11yLabel(/^text input /));
+  }
 
   expect(mockLoadingCompleted).toHaveBeenCalledTimes(1);
+
+  if (textInputsLength === 0) {
+    expect(toJSON()).toMatchSnapshot("textInputsLength === 0");
+    return;
+  }
 
   let choices!: ChoicesList | undefined;
   if (typeof question.choices === "string") {
@@ -86,14 +102,6 @@ const basicTestForQuestionAsync = async (
 
   // This also helps test the placeholder property.
   const textInputs = getAllByA11yHint(A11Y_HINT);
-  let textInputsLength = question.max;
-  if (question.maxMinus) {
-    if (allAnswers[question.maxMinus]) {
-      const data = (allAnswers[question.maxMinus] as MultipleTextAnswerEntity)
-        .data;
-      textInputsLength -= (data ? data.value : []).length;
-    }
-  }
   expect(textInputs).toHaveLength(textInputsLength);
   expect(textInputs.length).toMatchSnapshot("text inputs length");
 
@@ -383,6 +391,32 @@ test.each([
     await basicTestForQuestionAsync(question, {}, inputValues);
   },
 );
+
+test("max - maxMinus = 0", async () => {
+  const question = {
+    id: "NoTextField",
+    type: QuestionType.MultipleText,
+    question: "A question",
+    max: 3,
+    maxMinus: "AnotherMultipleTextQuestionWithThreeAnswers",
+    variableName: "TARGET_CATEGORY",
+    indexName: "INDEX",
+    next: null,
+  } as MultipleTextQuestion;
+
+  await basicTestForQuestionAsync(
+    question,
+    {
+      AnotherMultipleTextQuestionWithThreeAnswers: {
+        questionId: "AnotherMultipleTextQuestionWithThreeAnswers",
+        data: {
+          value: ["there", "are", "three answers"],
+        },
+      } as any,
+    },
+    [],
+  );
+});
 
 // Should not have been able enter anything except "ERROR: ...".
 test.each([
