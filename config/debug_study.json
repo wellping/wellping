@@ -1,6 +1,6 @@
 {
   "studyInfo": {
-    "id": "example_study",
+    "id": "debug_study_for_v_1_0",
     "studyFileJsonURL": "https://wellping_local__.ssnl.stanford.edu/debug.json",
     "consentFormUrl": "http://ssnl.stanford.edu/research",
     "contactEmail": "testEmail@example.com",

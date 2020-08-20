@@ -48,7 +48,9 @@ export async function connectDatabaseAsync(
         logging: __DEV__, // Only log in dev mode.
       });
     } catch (e) {
-      alertWithShareButtonContainingDebugInfo(getCriticalProblemTextForUser(e));
+      alertWithShareButtonContainingDebugInfo(
+        getCriticalProblemTextForUser(`connectDatabaseAsync: ${e}`),
+      );
       throw e;
     }
   }

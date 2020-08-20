@@ -149,7 +149,9 @@ export default class RootScreen extends React.Component<
         await this.logoutFnAsync();
         this.setState({ isLoading: false });
         alertWithShareButtonContainingDebugInfo(
-          getCriticalProblemTextForUser(`${e}`),
+          getCriticalProblemTextForUser(
+            `componentDidMount validateAndInitializeFirebaseWithConfig: ${e}`,
+          ),
         );
         return;
       }

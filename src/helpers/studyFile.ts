@@ -59,7 +59,9 @@ export async function studyFileExistsAsync() {
 export async function downloadStudyFileAsync(url: string): Promise<string> {
   if (url === WELLPING_LOCAL_DEBUG_URL) {
     await new Promise((r) => setTimeout(r, 3000)); // Simulate loading.
-    const rawJsonString = JSON.stringify(require("../../config/survey.json"));
+    const rawJsonString = JSON.stringify(
+      require("../../config/debug_study.json"),
+    );
     return rawJsonString;
   }
 
