@@ -761,6 +761,7 @@ export default class SurveyScreen extends React.Component<
 
     return (
       <View
+        testID="mainSurveyScreenView"
         style={{
           paddingHorizontal: 20,
           marginTop: smallScreen ? 0 : 20,

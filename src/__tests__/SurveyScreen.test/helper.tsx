@@ -43,6 +43,7 @@ export const TEST_PING_RAW = {
 };
 export const TEST_PING = getPingEntity(TEST_PING_RAW);
 
+export const MAIN_SURVEY_SCREEN_VIEW = "mainSurveyScreenView";
 export const QUESTION_TITLE_TESTID = "questionTitle";
 export const NEXT_BUTTON_A11YLABEL = "Next question";
 export const PNA_BUTTON_A11YLABEL = "Prefer not to answer the current question";
@@ -85,7 +86,13 @@ export function mockNecessaryFunctionsToTestSurveyScreen() {
  * to be loaded.
  */
 export async function testCurrentQuestionAsync({
-  renderResults: { getByA11yLabel, queryByTestId, getByTestId, toJSON },
+  renderResults: {
+    getByA11yLabel,
+    queryByTestId,
+    findByTestId,
+    getByTestId,
+    toJSON,
+  },
   expectCurrentQuestionAsync,
   nextButton = "next",
   waitForAndTestEndPage = false,
@@ -107,6 +114,14 @@ export async function testCurrentQuestionAsync({
     getByTestId(QUESTION_TITLE_TESTID).props.children;
 
   await expectCurrentQuestionAsync(getCurrentQuestionTitle);
+
+  await waitForExpect(async () => {
+    // Expect the screen to return to non-blank after the transition between
+    // question finishes.
+    expect(
+      (await findByTestId(MAIN_SURVEY_SCREEN_VIEW)).props.style.opacity,
+    ).toBe(1);
+  });
 
   // For some reason we have to do this to ensure `fireEvent` works in
   // `expectCurrentQuestionAsync`.
