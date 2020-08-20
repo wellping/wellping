@@ -238,7 +238,6 @@ export const BranchQuestionSchema = BaseQuestionSchema.extend({
     target: z.union([z.number(), z.string()]),
   }),
   branchStartId: z.object({
-    // TODO: ALSO ALLOW NULL = STOP HERE
     true: QuestionIdSchema.nullable().optional(),
     false: QuestionIdSchema.nullable().optional(),
   }),
@@ -248,7 +247,6 @@ export const BranchWithRelativeComparisonQuestionSchema = BaseQuestionSchema.ext
   {
     // This is not actually a question (it will not be displayed to the user)
     type: z.literal(QuestionTypeSchema.enum.BranchWithRelativeComparison),
-    // TODO: ALSO ALLOW NULL = STOP HERE
     branchStartId: z.record(QuestionIdSchema.nullable()),
   },
 );

@@ -42,6 +42,7 @@ interface HowLongAgoQuestionScreenProps extends QuestionScreenProps {
   question: HowLongAgoQuestion;
 }
 
+// TODO: Add one more question type (something like TwoColumnQuestion) to support something more generic - though keep this HowLongAgo question type and just that new question screen here.
 const HowLongAgoQuestionScreen: React.ElementType<HowLongAgoQuestionScreenProps> = ({
   question,
   loadingCompleted,
