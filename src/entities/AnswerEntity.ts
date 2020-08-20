@@ -36,17 +36,29 @@ export abstract class AnswerEntity extends BaseEntity {
   @Column({ type: "varchar", primary: true })
   questionId: QuestionId;
 
-  @Column()
-  preferNotToAnswer: boolean;
+  /**
+   * MARK: WHY_PNA_TRUE_OR_NULL
+   *
+   * It should not be set to `false`. Instead, it should be either `null` or
+   * `false`. This is because using `null` means this key will not be stored in
+   * Firebase and hence saving the storage needed for each question.
+   */
+  @Column({ nullable: true })
+  preferNotToAnswer: true | null;
 
-  @Column()
-  nextWithoutOption: boolean;
-
+  /**
+   * If `null` (and `preferNotToAnswer` is not true), it means that the user
+   * clicks "Next" without answering.
+   */
   @Column({ type: "simple-json", nullable: true })
   data: AnswerData | null;
 
+  /**
+   * The last update date for the answer (i.e., the last time the user interact
+   * with this question - usually when the user clicks "Next").
+   */
   @Column()
-  lastUpdateDate: Date;
+  date: Date;
 
   // https://github.com/microsoft/TypeScript/issues/5863#issuecomment-169173943
   static async findAnswerInPingAsync<T extends AnswerEntity>(
