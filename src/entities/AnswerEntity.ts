@@ -39,6 +39,7 @@ export abstract class AnswerEntity extends BaseEntity {
 
   /**
    * MARK: WHY_PNA_TRUE_OR_NULL
+   *
    * It should not be set to `false`. Instead, it should be either `null` or
    * `false`. This is because using `null` means this key will not be stored in
    * Firebase and hence saving the storage needed for each question.
