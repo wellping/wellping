@@ -37,8 +37,14 @@ export abstract class AnswerEntity extends BaseEntity {
   @Column({ type: "varchar", primary: true })
   questionId: QuestionId;
 
-  @Column()
-  preferNotToAnswer: boolean;
+  @Column({ nullable: true })
+  /**
+   * MARK: WHY_PNA_TRUE_OR_NULL
+   * It should not be set to `false`. Instead, it should be either `null` or
+   * `false`. This is because using `null` means this key will not be stored in
+   * Firebase and hence saving the storage needed for each question.
+   */
+  preferNotToAnswer: true | null;
 
   @Column({ type: "simple-json", nullable: true })
   data: AnswerData | null;

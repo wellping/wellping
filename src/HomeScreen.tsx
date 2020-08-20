@@ -423,7 +423,7 @@ export default class HomeScreen extends React.Component<
               answer.ping = ping;
               answer.questionId = "qu";
               answer.questionType = QuestionType.YesNo;
-              answer.preferNotToAnswer = false;
+              answer.preferNotToAnswer = null;
               answer.data = {
                 value: "haha",
               };

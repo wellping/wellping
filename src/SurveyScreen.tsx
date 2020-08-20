@@ -672,11 +672,11 @@ export default class SurveyScreen extends React.Component<
   async addAnswerToAnswersListAsync(
     question: Question,
     {
-      preferNotToAnswer = false,
+      preferNotToAnswer = null,
       data = null,
       lastUpdateDate = new Date(),
     }: {
-      preferNotToAnswer?: boolean;
+      preferNotToAnswer?: true | null; // See `MARK: WHY_PNA_TRUE_OR_NULL`.
       data?: AnswerData | null;
       lastUpdateDate?: Date;
     },

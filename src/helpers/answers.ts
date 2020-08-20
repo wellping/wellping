@@ -21,7 +21,7 @@ export async function insertAnswerAsync({
   ping: PingEntity;
   question: Question;
   realQuestionId: string;
-  preferNotToAnswer: boolean;
+  preferNotToAnswer: true | null; // See `MARK: WHY_PNA_TRUE_OR_NULL`.
   data: AnswerData | null;
   lastUpdateDate: Date;
 }): Promise<AnswerEntity> {
