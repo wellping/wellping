@@ -43,7 +43,7 @@ export async function connectDatabaseAsync(
         database: getDatabaseFilename(databaseName),
         entities,
         synchronize: true,
-        logging: true,
+        logging: __DEV__, // Only log in dev mode.
       });
     } catch (e) {
       alertWithShareButtonContainingDebugInfo(getCriticalProblemTextForUser(e));
