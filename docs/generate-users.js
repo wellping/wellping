@@ -51,22 +51,26 @@ async function generateUsersCSVsAsync(numberOfUsers) {
   for (let i = 0; i < numberOfUsers; i++) {
     // We do not want to include uppercase letters in username because Firebase
     // Auth's email is case-insensitive.
-    const userId = generateId(8, false);
-    if (userIds.indexOf(userId) === -1) {
-      userIds.push(userId);
-    }
+    let userId;
+    do {
+      userId = generateId(8, false);
+    } while (userIds.indexOf(userId) !== -1);
+
+    userIds.push(userId);
   }
 
   const passwords = [];
   for (let i = 0; i < numberOfUsers; i++) {
     // Password, unlike username (see above), can include uppercase letters.
-    const password = generateId(8, true);
-    if (
-      userIds.indexOf(password) === -1 && // Cannot be same as user ID.
-      passwords.indexOf(password) === -1
-    ) {
-      passwords.push(password);
-    }
+    let password;
+    do {
+      password = generateId(8, true);
+    } while (
+      userIds.indexOf(password) !== -1 || // Cannot be same as user ID.
+      passwords.indexOf(password) !== -1
+    );
+
+    passwords.push(password);
   }
 
   const hashedPasswords = [];
