@@ -49,8 +49,12 @@ export abstract class AnswerEntity extends BaseEntity {
   @Column({ type: "simple-json", nullable: true })
   data: AnswerData | null;
 
+  /**
+   * The last update date for the answer (i.e., the last time the user interact
+   * with this question - usually when the user clicks "Next").
+   */
   @Column()
-  lastUpdateDate: Date;
+  date: Date;
 
   // https://github.com/microsoft/TypeScript/issues/5863#issuecomment-169173943
   static async findAnswerInPingAsync<T extends AnswerEntity>(

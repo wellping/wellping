@@ -674,11 +674,11 @@ export default class SurveyScreen extends React.Component<
     {
       preferNotToAnswer = null,
       data = null,
-      lastUpdateDate = new Date(),
+      date = new Date(),
     }: {
       preferNotToAnswer?: true | null; // See `MARK: WHY_PNA_TRUE_OR_NULL`.
       data?: AnswerData | null;
-      lastUpdateDate?: Date;
+      date?: Date;
     },
   ): Promise<void> {
     const realQuestionId = this.getRealQuestionId(question.id);
@@ -689,7 +689,7 @@ export default class SurveyScreen extends React.Component<
       realQuestionId,
       preferNotToAnswer,
       data,
-      lastUpdateDate,
+      date,
     });
 
     await new Promise((resolve, reject) => {

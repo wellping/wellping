@@ -427,7 +427,7 @@ export default class HomeScreen extends React.Component<
               answer.data = {
                 value: "haha",
               };
-              answer.lastUpdateDate = new Date();
+              answer.date = new Date();
               await answer.save();*/
 
               await shareDatabaseFileAsync(studyInfo.id);
