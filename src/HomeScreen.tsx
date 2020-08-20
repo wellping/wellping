@@ -379,9 +379,6 @@ export default class HomeScreen extends React.Component<
             padding: 5,
           }}
         >
-          <Text style={{ color: "red" }}>
-            App last updated on 2019/11/14 - 12:20
-          </Text>
           <Text>
             Time: {format(this.state.time, "yyyy-MM-dd'T'HH:mm:ss.SSSxxx")}
           </Text>
