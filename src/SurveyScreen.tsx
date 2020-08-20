@@ -767,7 +767,8 @@ export default class SurveyScreen extends React.Component<
           flex: 1,
           // We use `opacity` so that `QuestionScreen` still loads and are able
           // to call `loadingCompleted` and set `isInTransition`.
-          opacity: isInTransition ? 0 : 1,
+          // We use 0.05 instead 0 so that if there's error, we can still see it.
+          opacity: isInTransition ? 0.025 : 1,
         }}
       >
         <Text
