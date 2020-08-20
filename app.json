@@ -27,12 +27,12 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "edu.stanford.ssnl.wellping",
-      "buildNumber": "12",
+      "buildNumber": "13",
       "associatedDomains": ["applinks:stanfordsocialneurosciencelab.github.io"]
     },
     "android": {
       "package": "edu.stanford.ssnl.wellping",
-      "versionCode": 12,
+      "versionCode": 13,
       "icon": "./assets/icon.png",
       "adaptiveIcon": {
         "foregroundImage": "./assets/icon-android-foreground.png",
