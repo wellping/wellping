@@ -40,9 +40,6 @@ export abstract class AnswerEntity extends BaseEntity {
   @Column()
   preferNotToAnswer: boolean;
 
-  @Column()
-  nextWithoutOption: boolean;
-
   @Column({ type: "simple-json", nullable: true })
   data: AnswerData | null;
 

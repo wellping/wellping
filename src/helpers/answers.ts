@@ -15,7 +15,6 @@ export async function insertAnswerAsync({
   question,
   realQuestionId,
   preferNotToAnswer,
-  nextWithoutOption,
   data,
   lastUpdateDate,
 }: {
@@ -23,7 +22,6 @@ export async function insertAnswerAsync({
   question: Question;
   realQuestionId: string;
   preferNotToAnswer: boolean;
-  nextWithoutOption: boolean;
   data: AnswerData | null;
   lastUpdateDate: Date;
 }): Promise<AnswerEntity> {
@@ -31,7 +29,6 @@ export async function insertAnswerAsync({
   answer.ping = ping;
   answer.questionId = realQuestionId;
   answer.preferNotToAnswer = preferNotToAnswer;
-  answer.nextWithoutOption = nextWithoutOption;
   answer.data = data;
   answer.lastUpdateDate = lastUpdateDate;
   await answer.save();

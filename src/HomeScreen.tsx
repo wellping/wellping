@@ -424,7 +424,6 @@ export default class HomeScreen extends React.Component<
               answer.questionId = "qu";
               answer.questionType = QuestionType.YesNo;
               answer.preferNotToAnswer = false;
-              answer.nextWithoutOption = false;
               answer.data = {
                 value: "haha",
               };

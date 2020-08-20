@@ -490,21 +490,21 @@ export default class SurveyScreen extends React.Component<
         throw new Error("prevAnswer !== undefined but it is a user question!");
       }
 
-      if (
-        prevAnswer.preferNotToAnswer &&
-        prevQuestion.fallbackNext?.preferNotToAnswer !== undefined
-      ) {
-        nextQuestionData.questionId =
-          prevQuestion.fallbackNext.preferNotToAnswer;
-      } else if (
-        prevAnswer.nextWithoutOption &&
-        prevQuestion.fallbackNext?.nextWithoutAnswering !== undefined
-      ) {
-        nextQuestionData.questionId =
-          prevQuestion.fallbackNext.nextWithoutAnswering;
-      }
-
-      if (prevAnswer.data !== null) {
+      if (prevAnswer.preferNotToAnswer) {
+        if (prevQuestion.fallbackNext?.preferNotToAnswer !== undefined) {
+          nextQuestionData.questionId =
+            prevQuestion.fallbackNext.preferNotToAnswer;
+        }
+      } else if (prevAnswer.data === null) {
+        // If `prevAnswer.preferNotToAnswer` is not true and `prevAnswer.data
+        // === null`, it means that the user clicked "Next" without answering.
+        if (prevQuestion.fallbackNext?.nextWithoutAnswering !== undefined) {
+          nextQuestionData.questionId =
+            prevQuestion.fallbackNext.nextWithoutAnswering;
+        }
+      } else {
+        // If `prevAnswer.data !== null` and `prevAnswer.preferNotToAnswer` is
+        // not true. It means that the user answered the question normally.
         switch (prevQuestion.type) {
           case QuestionType.YesNo:
             handleYesNoQuestion(
@@ -673,12 +673,10 @@ export default class SurveyScreen extends React.Component<
     question: Question,
     {
       preferNotToAnswer = false,
-      nextWithoutOption = false,
       data = null,
       lastUpdateDate = new Date(),
     }: {
       preferNotToAnswer?: boolean;
-      nextWithoutOption?: boolean;
       data?: AnswerData | null;
       lastUpdateDate?: Date;
     },
@@ -690,7 +688,6 @@ export default class SurveyScreen extends React.Component<
       question,
       realQuestionId,
       preferNotToAnswer,
-      nextWithoutOption,
       data,
       lastUpdateDate,
     });
@@ -837,8 +834,9 @@ export default class SurveyScreen extends React.Component<
               }
 
               if (answers[realQuestionId] == null) {
+                // The user clicks "Next" without answering.
                 await this.addAnswerToAnswersListAsync(question, {
-                  nextWithoutOption: true,
+                  data: null,
                 });
               }
               this.onNextSelect();
