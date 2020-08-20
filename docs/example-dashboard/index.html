@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Example Dashboard - Well Ping</title>
+
+    <style>
+      .each-value {
+        font-weight: bold;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div style="margin: 20px;">
+      <h3>
+        Here’s the information passed to the dashboard:
+      </h3>
+
+      <p>
+        Completed pings overall:
+        <span class="each-value" id="completed-pings-overall"></span>
+      </p>
+      <p>
+        Completed pings this week:
+        <span class="each-value" id="completed-pings-this-week"></span>
+      </p>
+      <p>
+        Completed pings today:
+        <span class="each-value" id="completed-pings-today"></span>
+      </p>
+      <p>ID Token: <span class="each-value" id="id-token"></span></p>
+
+      <h4 style="margin-bottom: 0px;">Raw</h4>
+      <pre
+        id="url-params"
+        style="white-space: pre-wrap; word-wrap: anywhere;"
+      ></pre>
+    </div>
+
+    <script>
+      const urlParams = new URLSearchParams(window.location.search);
+
+      const completedPingsOverall = urlParams.get("completed_pings_overall");
+      const completedPingsThisWeek = urlParams.get("completed_pings_this_week");
+      const completedPingsToday = urlParams.get("completed_pings_today");
+      const idToken = urlParams.get("id_token");
+
+      document.getElementById(
+        "completed-pings-overall",
+      ).innerHTML = completedPingsOverall;
+      document.getElementById(
+        "completed-pings-this-week",
+      ).innerHTML = completedPingsThisWeek;
+      document.getElementById(
+        "completed-pings-today",
+      ).innerHTML = completedPingsToday;
+      document.getElementById("id-token").innerHTML = idToken;
+
+      document.getElementById("url-params").innerHTML = JSON.stringify(
+        Array.from(urlParams.entries()),
+      );
+    </script>
+  </body>
+</html>

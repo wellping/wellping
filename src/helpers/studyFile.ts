@@ -21,7 +21,6 @@ import {
 
 export const WELLPING_LOCAL_DEBUG_URL =
   "https://wellping_local__.ssnl.stanford.edu/debug.json";
-// TODO: export const WELLPING_LOCAL_DEMO_URL = "https://wellping_local__.ssnl.stanford.edu/demo.json";
 
 export async function isLocalStudyFileAsync(): Promise<boolean> {
   return (
