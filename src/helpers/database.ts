@@ -17,6 +17,8 @@ import {
   alertWithShareButtonContainingDebugInfo,
 } from "./debug";
 
+// TODO: remove me once typeorm is updated to a newer version (https://github.com/typeorm/typeorm/issues/6233)
+
 const getDatabaseFilename = (databaseName: string) => `${databaseName}.db`;
 
 export const entities = [

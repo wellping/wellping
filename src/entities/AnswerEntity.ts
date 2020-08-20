@@ -27,7 +27,6 @@ import { PingEntity } from "./PingEntity";
 })
 export abstract class AnswerEntity extends BaseEntity {
   // https://github.com/typeorm/typeorm/issues/4190
-  // TODO: remove me once typeorm is updated to a newer version
   @ManyToOne("PingEntity", "answers", { primary: true })
   ping: PingEntity;
 
