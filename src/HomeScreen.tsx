@@ -12,6 +12,8 @@ import {
   Clipboard,
   Platform,
   TouchableWithoutFeedback,
+  AppState,
+  AppStateStatus,
 } from "react-native";
 
 import SurveyScreen, { SurveyScreenState } from "./SurveyScreen";
@@ -76,6 +78,7 @@ interface HomeScreenProps {
 }
 
 interface HomeScreenState {
+  appState: AppStateStatus;
   time: Date;
   allowsNotifications: boolean;
   currentNotificationTime: Date | null;
@@ -99,6 +102,7 @@ export default class HomeScreen extends React.Component<
     super(props);
 
     this.state = {
+      appState: AppState.currentState,
       time: new Date(),
       allowsNotifications: true,
       currentNotificationTime: null,
@@ -111,6 +115,30 @@ export default class HomeScreen extends React.Component<
         HOME_SCREEN_DEBUG_VIEW_SYMBOLS.FIREBASE_DATABASE.INITIAL,
     };
   }
+
+  async checkIfPingHasExpiredAsync() {
+    const previousNotificationTime = this.state.currentNotificationTime;
+
+    const currentNotificationTime = await getCurrentNotificationTimeAsync();
+    this.setState({ time: new Date(), currentNotificationTime });
+
+    if (currentNotificationTime !== previousNotificationTime) {
+      // It means that the previous ping has ended. We are either in between
+      // two pings or in a new ping. So we can reset `currentPing` state.
+      this.setState({ currentPing: null });
+    }
+  }
+
+  _handleAppStateChange = (nextAppState: AppStateStatus) => {
+    if (
+      this.state.appState.match(/inactive|background/) &&
+      nextAppState === "active"
+    ) {
+      // App has come to the foreground.
+      this.checkIfPingHasExpiredAsync();
+    }
+    this.setState({ appState: nextAppState });
+  };
 
   unregisterAuthObserver: firebase.Unsubscribe | null = null;
   async componentDidMount() {
@@ -129,25 +157,18 @@ export default class HomeScreen extends React.Component<
 
     await setNotificationsAsync();
 
-    const doEveryHalfMinutes = async () => {
-      const currentNotificationTime = await getCurrentNotificationTimeAsync();
-      this.setState({ time: new Date(), currentNotificationTime });
-
-      if (currentNotificationTime == null) {
-        this.setState({ currentPing: null });
-      }
-    };
-
     // Check if the current notification expires.
     this.interval = setInterval(async () => {
-      await doEveryHalfMinutes();
+      await this.checkIfPingHasExpiredAsync();
     }, 30 * 1000);
     // Do this initially too.
-    await doEveryHalfMinutes();
+    await this.checkIfPingHasExpiredAsync();
 
     Notifications.addListener(async () => {
-      await doEveryHalfMinutes();
+      await this.checkIfPingHasExpiredAsync();
     });
+
+    AppState.addEventListener("change", this._handleAppStateChange);
 
     const latestPing = await getLatestPingAsync();
     //console.warn(latestStartedPing);
@@ -222,6 +243,8 @@ export default class HomeScreen extends React.Component<
 
   componentWillUnmount() {
     clearInterval(this.interval);
+
+    AppState.removeEventListener("change", this._handleAppStateChange);
 
     if (this.unregisterAuthObserver) {
       this.unregisterAuthObserver();
