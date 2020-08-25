@@ -122,7 +122,14 @@ export default class HomeScreen extends React.Component<
     const currentNotificationTime = await getCurrentNotificationTimeAsync();
     this.setState({ time: new Date(), currentNotificationTime });
 
-    if (currentNotificationTime !== previousNotificationTime) {
+    // Because we cannot compare data directly, we have to compare the time with
+    // `getTime`.
+    // https://stackoverflow.com/a/7244571/2603230
+    const previousNotificationTimeNumber =
+      previousNotificationTime && previousNotificationTime.getTime();
+    const currentNotificationTimeNumber =
+      currentNotificationTime && currentNotificationTime.getTime();
+    if (currentNotificationTimeNumber !== previousNotificationTimeNumber) {
       // It means that the previous ping has ended. We are either in between
       // two pings or in a new ping. So we can reset `currentPing` state.
       this.setState({ currentPing: null });
