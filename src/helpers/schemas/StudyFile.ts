@@ -66,7 +66,7 @@ export const StudyInfoSchema = z
      * If this object is empty (i.e., `server: {}`), you will be able to log in
      * using any username password combination, and no data will be uploaded.
      * This is only intended for testing or demo purposes and should not be used
-     * in production.
+     * in production. (MARK: NO_SERVER_NOTE)
      *
      * Notice that in theory, both `server.firebase` and `server.beiwe` could be
      * set (meaning that the data will be uploaded to both Beiwe and Firebase).

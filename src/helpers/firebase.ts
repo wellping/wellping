@@ -1,9 +1,9 @@
-import Constants from "expo-constants";
 import * as firebase from "firebase/app";
 
 import { User } from "./asyncStorage/user";
 import { UploadData } from "./dataUpload";
 import { HOME_SCREEN_DEBUG_VIEW_SYMBOLS, INSTALLATION_ID } from "./debug";
+import { useFirebase } from "./server";
 import { StudyInfo } from "./types";
 
 /**
@@ -13,10 +13,6 @@ import { StudyInfo } from "./types";
 const FIREBASE_LOGIN_EMAIL_DOMAIN = "@user.wellpingssnl";
 const getFirebaseLoginEmail = (username: string): string =>
   username + FIREBASE_LOGIN_EMAIL_DOMAIN;
-
-export function useFirebase(studyInfo: StudyInfo): boolean {
-  return studyInfo.server.firebase !== undefined;
-}
 
 export function validateAndInitializeFirebaseWithConfig(studyInfo: StudyInfo) {
   if (!useFirebase(studyInfo)) {
