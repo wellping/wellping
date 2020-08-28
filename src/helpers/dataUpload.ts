@@ -87,7 +87,7 @@ export async function uploadDataAsync(
   } else {
     startUploading();
     await new Promise((r) => setTimeout(r, 1000)); // Simulate loading.
-    endUploading(`No Server`, true);
+    endUploading(`No Server Set`, true);
   }
   return null;
 }
