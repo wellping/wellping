@@ -14,16 +14,12 @@ const FIREBASE_LOGIN_EMAIL_DOMAIN = "@user.wellpingssnl";
 const getFirebaseLoginEmail = (username: string): string =>
   username + FIREBASE_LOGIN_EMAIL_DOMAIN;
 
-export function doNotUseFirebase(studyInfo: StudyInfo): boolean {
-  if (studyInfo.firebaseConfig._WellPing_doNotUseFirebase === "YES") {
-    return true;
-  } else {
-    return false;
-  }
+export function useFirebase(studyInfo: StudyInfo): boolean {
+  return studyInfo.server.firebase !== undefined;
 }
 
 export function validateAndInitializeFirebaseWithConfig(studyInfo: StudyInfo) {
-  if (doNotUseFirebase(studyInfo)) {
+  if (!useFirebase(studyInfo)) {
     return;
   }
 
@@ -53,7 +49,7 @@ export async function firebaseLoginAsync(
   studyInfo: StudyInfo,
   user: User,
 ): Promise<firebase.auth.UserCredential> {
-  if (doNotUseFirebase(studyInfo)) {
+  if (!useFirebase(studyInfo)) {
     await new Promise((r) => setTimeout(r, 3000)); // Simulate loading.
     // Currently the return object is unused by the app, so we can just return
     // anything.
@@ -95,7 +91,7 @@ export async function firebaseUploadDataForUserAsync(
   // `errorSymbol` will be shown alongside the JS version at the top of the screen.
   endUploading: (symbol: string, isError: boolean) => void,
 ): Promise<Error | null> {
-  if (doNotUseFirebase(studyInfo)) {
+  if (!useFirebase(studyInfo)) {
     startUploading();
     await new Promise((r) => setTimeout(r, 1000)); // Simulate loading.
     endUploading(`Firebase N/A`, true);

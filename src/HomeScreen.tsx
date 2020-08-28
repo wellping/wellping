@@ -51,7 +51,7 @@ import {
 import {
   firebaseLoginAsync,
   firebaseInitialized,
-  doNotUseFirebase,
+  useFirebase,
 } from "./helpers/firebase";
 import {
   setNotificationsAsync,
@@ -353,9 +353,9 @@ export default class HomeScreen extends React.Component<
                   {firebaseUser === null
                     ? HOME_SCREEN_DEBUG_VIEW_SYMBOLS.FIREBASE_AUTH.NOT_LOGGED_IN
                     : HOME_SCREEN_DEBUG_VIEW_SYMBOLS.FIREBASE_AUTH.LOGGED_IN}
-                  {doNotUseFirebase(studyInfo)
-                    ? HOME_SCREEN_DEBUG_VIEW_SYMBOLS.DO_NOT_USE_FIREBASE
-                    : ""}
+                  {useFirebase(studyInfo)
+                    ? ""
+                    : HOME_SCREEN_DEBUG_VIEW_SYMBOLS.DO_NOT_USE_FIREBASE}
                   {this.state.firebaseUploadStatusSymbol}
                 </Text>
               )}
