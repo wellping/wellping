@@ -347,10 +347,10 @@ export default class HomeScreen extends React.Component<
               ) : (
                 <Text style={{ color: "lightgray" }}>
                   {JS_VERSION_NUMBER}
-                  {firebaseUser === null
+                  {getSymbolsForServerTypeUsed(studyInfo)}
+                  {useFirebase(studyInfo) && firebaseUser === null
                     ? HOME_SCREEN_DEBUG_VIEW_SYMBOLS.FIREBASE_AUTH.NOT_LOGGED_IN
                     : HOME_SCREEN_DEBUG_VIEW_SYMBOLS.FIREBASE_AUTH.LOGGED_IN}
-                  {getSymbolsForServerTypeUsed(studyInfo)}
                   {this.state.firebaseUploadStatusSymbol}
                 </Text>
               )}
