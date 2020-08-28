@@ -91,7 +91,7 @@ export async function firebaseUploadDataForUserAsync(
   if (user === null) {
     // Stops if the user is not logged in to Firebase as they won't have
     // permission to upload.
-    endUploading("DB: U=N");
+    endUploading("FDB: U=N");
     return new Error(
       "firebase.auth().currentUser === null in firebaseUploadDataForUserAsync",
     );
@@ -108,7 +108,7 @@ export async function firebaseUploadDataForUserAsync(
     return null;
   } catch (e) {
     const error = e as firebase.FirebaseError;
-    endUploading(`DB: ${error.code}`);
+    endUploading(`FDB: ${error.code}`);
     return error;
   }
 }
