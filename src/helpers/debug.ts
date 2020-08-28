@@ -55,9 +55,9 @@ export const USER_INSTALLATION_INFO: UserInstallationInfo = {
 
 export const HOME_SCREEN_DEBUG_VIEW_SYMBOLS = {
   SERVER_USED: {
-    FIREBASE: "f",
-    BEIWE: "b",
-    NO_SERVER: "¡N/A!",
+    FIREBASE: "F",
+    BEIWE: "B",
+    NO_SERVER: "¡N!",
   },
   FIREBASE_AUTH: {
     LOGGED_IN: "",
