@@ -82,8 +82,14 @@ interface HomeScreenState {
   currentPing: PingEntity | null;
   isLoading: boolean;
   storedPingStateAsync: SurveyScreenState | null;
-  firebaseUser: firebase.User | null;
   uploadStatusSymbol: string;
+
+  /**
+   * For when Firebase server is used.
+   *
+   * If Firebase server is not used, it is always `null`.
+   */
+  firebaseUser: firebase.User | null;
 
   // DEBUG
   displayDebugView: boolean;
@@ -107,9 +113,9 @@ export default class HomeScreen extends React.Component<
       isLoading: true,
       displayDebugView: false,
       storedPingStateAsync: null,
-      firebaseUser: null,
       uploadStatusSymbol:
         HOME_SCREEN_DEBUG_VIEW_SYMBOLS.FIREBASE_DATABASE.INITIAL,
+      firebaseUser: null,
     };
   }
 
