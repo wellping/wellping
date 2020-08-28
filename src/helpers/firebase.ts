@@ -25,10 +25,10 @@ export function validateAndInitializeFirebaseWithConfig(studyInfo: StudyInfo) {
   }
 
   try {
-    // Just running an arbitrary to check if the `firebaseConfig` is correct.
+    // Just running an arbitrary to check if the Firebase config is correct.
     firebase.auth();
   } catch (e) {
-    const message = `**firebaseConfig is incorrect.**\n\n${e}`;
+    const message = `**Firebase config object is incorrect.**\n\n${e}`;
     throw new Error(message);
   }
 }
