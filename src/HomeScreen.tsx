@@ -48,11 +48,7 @@ import {
   alertWithShareButtonContainingDebugInfo,
   HOME_SCREEN_DEBUG_VIEW_SYMBOLS,
 } from "./helpers/debug";
-import {
-  firebaseLoginAsync,
-  firebaseInitialized,
-  useFirebase,
-} from "./helpers/firebase";
+import { firebaseLoginAsync, firebaseInitialized } from "./helpers/firebase";
 import {
   setNotificationsAsync,
   setupNotificationsPermissionAsync,
@@ -66,6 +62,7 @@ import {
   insertPingAsync,
   getNumbersOfPingsForAllStreamNames,
 } from "./helpers/pings";
+import { getSymbolsForServerTypeUsed } from "./helpers/server";
 import { getAllStreamNames, getStudyInfoAsync } from "./helpers/studyFile";
 import { styles } from "./helpers/styles";
 import { Streams, StreamName, StudyInfo } from "./helpers/types";
@@ -353,9 +350,7 @@ export default class HomeScreen extends React.Component<
                   {firebaseUser === null
                     ? HOME_SCREEN_DEBUG_VIEW_SYMBOLS.FIREBASE_AUTH.NOT_LOGGED_IN
                     : HOME_SCREEN_DEBUG_VIEW_SYMBOLS.FIREBASE_AUTH.LOGGED_IN}
-                  {useFirebase(studyInfo)
-                    ? ""
-                    : HOME_SCREEN_DEBUG_VIEW_SYMBOLS.DO_NOT_USE_FIREBASE}
+                  {getSymbolsForServerTypeUsed(studyInfo)}
                   {this.state.firebaseUploadStatusSymbol}
                 </Text>
               )}
