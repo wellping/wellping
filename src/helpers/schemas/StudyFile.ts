@@ -55,16 +55,62 @@ export const StudyInfoSchema = z
      */
     dashboardURL: z.string().url().optional(),
 
-    /**
-     * The Firebase config object for the study. See
-     * https://firebase.google.com/docs/web/setup#config-object
-     *
-     * If it is set to `{ "_WellPing_doNotUseFirebase": "YES" }`, you will be
-     * able to log in using any username password combination, and no data will
-     * be uploaded. This is only intended for testing or demo purposes and
-     * should not be used in production.
-     */
-    firebaseConfig: z.record(z.string()),
+    server: z
+      .object({
+        /**
+         * The type of server used for the study.
+         *
+         * - If `"firebase"` is set, `firebaseConfig` must be defined.
+         * - If `"beiwe"` is set, `beiweServerUrl` must be defined.
+         */
+        type: z.union([z.literal("firebase"), z.literal("beiwe")]),
+
+        /**
+         * The Firebase config object for the study. See
+         * https://firebase.google.com/docs/web/setup#config-object
+         *
+         * If it is set to `{ "_WellPing_doNotUseFirebase": "YES" }`, you will be
+         * able to log in using any username password combination, and no data will
+         * be uploaded. This is only intended for testing or demo purposes and
+         * should not be used in production.
+         */
+        firebaseConfig: z.record(z.string()).optional(),
+
+        /**
+         * The server URL of Beiwe backend for the study.
+         *
+         * Example: `"https://beiwe.example.com/"`
+         */
+        beiweServerUrl: z.string().optional(),
+      })
+      .refine(
+        (config) => {
+          if (config.type === "firebase") {
+            if (config.firebaseConfig === undefined) {
+              return false;
+            }
+          }
+          return true;
+        },
+        {
+          message:
+            "Since the server type is Firebase, `firebaseConfig` must be set.",
+        },
+      )
+      .refine(
+        (config) => {
+          if (config.type === "beiwe") {
+            if (config.beiweServerUrl === undefined) {
+              return false;
+            }
+          }
+          return true;
+        },
+        {
+          message:
+            "Since the server type is Beiwe, `beiweServerUrl` must be set.",
+        },
+      ),
 
     /**
      * The URL of the study consent form (or any web page you would want the
