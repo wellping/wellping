@@ -1,6 +1,6 @@
 /**
  * Unless otherwise noted, precondition for every function in the file is:
- * `useFirebase() === true`.
+ * `useFirebase(studyInfo) === true`.
  */
 
 import * as firebase from "firebase/app";
@@ -8,6 +8,8 @@ import * as firebase from "firebase/app";
 import { User } from "./asyncStorage/user";
 import { UploadData } from "./dataUpload";
 import { HOME_SCREEN_DEBUG_VIEW_SYMBOLS, INSTALLATION_ID } from "./debug";
+import { getFirebaseServerConfig } from "./server";
+import { StudyInfo } from "./types";
 
 /**
  * Firebase requires to use an email as the user's login name.
@@ -16,6 +18,20 @@ import { HOME_SCREEN_DEBUG_VIEW_SYMBOLS, INSTALLATION_ID } from "./debug";
 const FIREBASE_LOGIN_EMAIL_DOMAIN = "@user.wellpingssnl";
 const getFirebaseLoginEmail = (username: string): string =>
   username + FIREBASE_LOGIN_EMAIL_DOMAIN;
+
+export function validateAndInitializeFirebaseWithConfig(studyInfo: StudyInfo) {
+  if (firebase.apps.length === 0) {
+    firebase.initializeApp(getFirebaseServerConfig(studyInfo));
+  }
+
+  try {
+    // Just running an arbitrary to check if the `firebaseConfig` is correct.
+    firebase.auth();
+  } catch (e) {
+    const message = `**firebaseConfig is incorrect.**\n\n${e}`;
+    throw new Error(message);
+  }
+}
 
 export function firebaseInitialized(): boolean {
   try {
@@ -50,8 +66,8 @@ export async function firebaseLoginAsync(
 }
 
 /**
- * Precondition: `firebaseInitialized() === true`. Don't need to check
- * `useFirebase()` for this function.
+ * Precondition: `firebaseInitialized() === true`. We don't need to check for
+ * `useFirebase(studyInfo)` for this function.
  */
 export async function firebaseLogoutAndDeleteAppAsync(): Promise<void> {
   try {

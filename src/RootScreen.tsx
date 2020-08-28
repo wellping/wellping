@@ -19,7 +19,7 @@ import {
   alertWithShareButtonContainingDebugInfo,
   getNonCriticalProblemTextForUser,
 } from "./helpers/debug";
-import { validateAndInitializeFirebaseWithConfig } from "./helpers/firebaseInitialization";
+import { validateAndInitializeFirebaseWithConfig } from "./helpers/firebase";
 import { useFirebase } from "./helpers/server";
 import {
   getStudyFileAsync,

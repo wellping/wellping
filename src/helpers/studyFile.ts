@@ -8,7 +8,7 @@ import {
   getCurrentStreamsAsync,
   getCurrentExtraDataAsync,
 } from "./asyncStorage/studyFile";
-import { validateAndInitializeFirebaseWithConfig } from "./firebaseInitialization";
+import { validateAndInitializeFirebaseWithConfig } from "./firebase";
 import { parseJsonToStudyFile } from "./schemas/StudyFile";
 import { useFirebase } from "./server";
 import {
