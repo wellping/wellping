@@ -7,7 +7,7 @@ import * as firebase from "firebase/app";
 
 import { User } from "./asyncStorage/user";
 import { UploadData } from "./dataUpload";
-import { HOME_SCREEN_DEBUG_VIEW_SYMBOLS, INSTALLATION_ID } from "./debug";
+import { INSTALLATION_ID } from "./debug";
 import { getFirebaseServerConfig } from "./server";
 import { StudyInfo } from "./types";
 
@@ -83,7 +83,7 @@ export async function firebaseLogoutAndDeleteAppAsync(): Promise<void> {
 export async function firebaseUploadDataForUserAsync(
   data: UploadData,
   startUploading: () => void,
-  endUploading: (symbol: string, isError: boolean) => void,
+  endUploading: (errorMessage?: string) => void,
 ): Promise<Error | null> {
   startUploading();
 
@@ -91,7 +91,7 @@ export async function firebaseUploadDataForUserAsync(
   if (user === null) {
     // Stops if the user is not logged in to Firebase as they won't have
     // permission to upload.
-    endUploading("DB: U=N", true);
+    endUploading("DB: U=N");
     return new Error(
       "firebase.auth().currentUser === null in firebaseUploadDataForUserAsync",
     );
@@ -104,11 +104,11 @@ export async function firebaseUploadDataForUserAsync(
       .database()
       .ref(`users/${user.uid}/${INSTALLATION_ID}`)
       .set(dataPlain);
-    endUploading(HOME_SCREEN_DEBUG_VIEW_SYMBOLS.UPLOAD.END_SUCCESS, false);
+    endUploading();
     return null;
   } catch (e) {
     const error = e as firebase.FirebaseError;
-    endUploading(`DB: ${error.code}`, true);
+    endUploading(`DB: ${error.code}`);
     return error;
   }
 }

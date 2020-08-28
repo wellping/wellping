@@ -43,29 +43,24 @@ export async function getAllDataAsync(): Promise<UploadData> {
 
 export async function uploadDataAsync(
   studyInfo: StudyInfo,
-  setFirebaseUploadStatusSymbol: (symbol: string) => void,
+  setUploadStatusSymbol: (symbol: string) => void,
 ): Promise<Error | null> {
   const data = await getAllDataAsync();
 
-  const startUploading: () => void = () => {
-    setFirebaseUploadStatusSymbol(
-      HOME_SCREEN_DEBUG_VIEW_SYMBOLS.UPLOAD.UPLOADING,
-    );
+  const startUploading = (): void => {
+    setUploadStatusSymbol(HOME_SCREEN_DEBUG_VIEW_SYMBOLS.UPLOAD.UPLOADING);
   };
-  const endUploading: (symbol: string, isError: boolean) => void = (
-    // `errorSymbol` will be shown alongside the JS version at the top of the
-    // screen.
-    symbol,
-    isError,
-  ) => {
-    setFirebaseUploadStatusSymbol(symbol);
+  const endUploading = (errorMessage?: string): void => {
+    setUploadStatusSymbol(
+      errorMessage || HOME_SCREEN_DEBUG_VIEW_SYMBOLS.UPLOAD.END_SUCCESS,
+    );
+
+    // Reset symbol in 3 seconds if no error, and 10 if there was error.
     setTimeout(
       () => {
-        setFirebaseUploadStatusSymbol(
-          HOME_SCREEN_DEBUG_VIEW_SYMBOLS.UPLOAD.INITIAL,
-        );
+        setUploadStatusSymbol(HOME_SCREEN_DEBUG_VIEW_SYMBOLS.UPLOAD.INITIAL);
       },
-      isError ? 10000 : 3000 /* reset symbol in 3 (of 10 if error) seconds */,
+      errorMessage ? 10000 : 3000,
     );
   };
 
@@ -87,7 +82,7 @@ export async function uploadDataAsync(
   } else {
     startUploading();
     await new Promise((r) => setTimeout(r, 1000)); // Simulate loading.
-    endUploading(`No Server Set`, true);
+    endUploading(`No Server Set`);
   }
   return null;
 }
