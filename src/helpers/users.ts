@@ -1,5 +1,6 @@
 import { clearCurrentStudyFileAsync } from "./asyncStorage/studyFile";
 import { storeUserAsync, User, clearUserAsync } from "./asyncStorage/user";
+import { beiweLoginAsync } from "./beiwe";
 import { backupDatabaseFileAsync } from "./database";
 import {
   firebaseLoginAsync,
@@ -19,7 +20,7 @@ export async function loginAsync(user: User, studyInfo: StudyInfo) {
       await firebaseLoginAsync(user);
     }
     if (useBeiwe(studyInfo)) {
-      // TODO
+      await beiweLoginAsync(user);
     }
   } else {
     await new Promise((r) => setTimeout(r, 3000)); // Simulate loading.

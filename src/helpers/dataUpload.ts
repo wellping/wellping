@@ -11,6 +11,7 @@ import { firebaseUploadDataForUserAsync } from "./firebase";
 import { getPingsAsync } from "./pings";
 import { useFirebase, useServer, useBeiwe } from "./server";
 import { StudyInfo } from "./types";
+import { beiweUploadDataForUserAsync } from "./beiwe";
 
 export type UploadData = {
   user: {
@@ -76,8 +77,14 @@ export async function uploadDataAsync(
       }
     }
     if (useBeiwe(studyInfo)) {
-      // TODO
-      return new Error("TODO: NOT IMPLETEMENTED");
+      const error = await beiweUploadDataForUserAsync(
+        data,
+        startUploading,
+        endUploading,
+      );
+      if (error) {
+        return error;
+      }
     }
   } else {
     startUploading();
