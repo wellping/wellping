@@ -3,6 +3,7 @@ import React from "react";
 import { Text, View } from "react-native";
 import { WebView } from "react-native-webview";
 
+import { getUserAsync } from "../helpers/asyncStorage/user";
 import {
   getPingsAsync,
   getThisWeekPingsAsync,
@@ -10,6 +11,7 @@ import {
 } from "../helpers/pings";
 import { StudyInfo } from "../helpers/types";
 
+const USERNAME_PLACEHOLDER = "__USERNAME__";
 const FIREBASE_ID_TOKEN_PLACEHOLDER = "__FIREBASE_ID_TOKEN__";
 const PINGS_COMPLETED_OVERALL_PLACEHOLDER = "__PINGS_COMPLETED_OVERALL__";
 const PINGS_COMPLETED_THIS_WEEK_PLACEHOLDER = "__PINGS_COMPLETED_THIS_WEEK__";
@@ -19,6 +21,15 @@ export async function getDashboardUrlAsync(
   firebaseUser: firebase.User | null,
 ) {
   let dashboardUrl = dashboardRawURL;
+
+  if (dashboardUrl.includes(USERNAME_PLACEHOLDER)) {
+    let username = "N/A";
+    const user = await getUserAsync();
+    if (user) {
+      username = user.username;
+    }
+    dashboardUrl = dashboardUrl.split(USERNAME_PLACEHOLDER).join(username);
+  }
 
   if (dashboardUrl.includes(FIREBASE_ID_TOKEN_PLACEHOLDER)) {
     let firebaseIdToken = "N/A";

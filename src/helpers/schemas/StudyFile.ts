@@ -55,6 +55,14 @@ export const StudyInfoSchema = z
      *
      * ---
      *
+     * The placeholder `__USERNAME__` will be replaced by the user's username.
+     * Notice that you should not return any sensitive data based on this field
+     * as it can be changed by anyone.
+     * In order to verify the user securely:
+     * - If you are using Firebase, you should use the `__FIREBASE_ID_TOKEN__`
+     *   placeholder as explained below.
+     * - If you are using Beiwe, (A TODO: ITEM).
+     *
      * If Firebase is used, the placeholder `__FIREBASE_ID_TOKEN__` will be
      * replaced by the user's Firebase Auth ID token if the user is signed in
      * to Firebase, and "N/A" otherwise.
