@@ -36,7 +36,12 @@ export async function beiweLoginAsync(user: User): Promise<void> {
     if (Platform.OS === "ios") {
       endpoint += "/ios/";
     }
-    await makePostRequestAsync(endpoint, request, {}, user);
+    await makePostRequestAsync({
+      endpoint,
+      request,
+      body: {},
+      user,
+    });
   } catch (e) {
     throw new Error(`Request error: ${e}.`);
   }
@@ -60,7 +65,12 @@ export async function beiweUploadDataForUserAsync(
     if (Platform.OS === "ios") {
       endpoint += "/ios/";
     }
-    const response = await makePostRequestAsync(endpoint, {}, data, user);
+    const response = await makePostRequestAsync({
+      endpoint,
+      request: {},
+      body: data,
+      user,
+    });
     //console.log(`${JSON.stringify(response)}`);
     endUploading();
     return null;
@@ -110,12 +120,17 @@ export async function getRequestURLAsync(
   return url;
 }
 
-export async function makePostRequestAsync(
-  endpoint: string,
-  request: { [key: string]: any },
-  body?: { [key: string]: any },
-  user?: User,
-): Promise<any> {
+export async function makePostRequestAsync({
+  endpoint,
+  request,
+  body,
+  user,
+}: {
+  endpoint: string;
+  request: { [key: string]: any };
+  body?: { [key: string]: any };
+  user?: User;
+}): Promise<any> {
   const headers = {
     "Beiwe-Api-Version": "2",
     Accept: "application/vnd.beiwe.api.v2, application/json",
