@@ -73,6 +73,9 @@ export function getServerTypeUsed(studyInfo: StudyInfo): ServerType[] {
  */
 export function getSymbolsForServerTypeUsed(studyInfo: StudyInfo): string {
   const serverTypes = getServerTypeUsed(studyInfo);
+  if (serverTypes.length === 0) {
+    return HOME_SCREEN_DEBUG_VIEW_SYMBOLS.SERVER_USED.NO_SERVER;
+  }
   return serverTypes
     .map((serverType) => {
       if (serverType === "firebase") {
