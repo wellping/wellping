@@ -53,8 +53,11 @@ export const StudyInfoSchema = z
     /**
      * The URL of the dashboard that will be shown to the user on the home page.
      *
-     * The placeholder `__ID_TOKEN__` will be replaced by the user's Firebase
-     * Auth ID token if the user is signed in to Firebase, and "N/A" otherwise.
+     * ---
+     *
+     * If Firebase is used, the placeholder `__FIREBASE_ID_TOKEN__` will be
+     * replaced by the user's Firebase Auth ID token if the user is signed in
+     * to Firebase, and "N/A" otherwise.
      *
      * ---
      *

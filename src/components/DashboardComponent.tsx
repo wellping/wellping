@@ -10,7 +10,7 @@ import {
 } from "../helpers/pings";
 import { StudyInfo } from "../helpers/types";
 
-const ID_TOKEN_PLACEHOLDER = "__ID_TOKEN__";
+const FIREBASE_ID_TOKEN_PLACEHOLDER = "__FIREBASE_ID_TOKEN__";
 const PINGS_COMPLETED_OVERALL_PLACEHOLDER = "__PINGS_COMPLETED_OVERALL__";
 const PINGS_COMPLETED_THIS_WEEK_PLACEHOLDER = "__PINGS_COMPLETED_THIS_WEEK__";
 const PINGS_COMPLETED_TODAY_PLACEHOLDER = "__PINGS_COMPLETED_TODAY__";
@@ -20,13 +20,15 @@ export async function getDashboardUrlAsync(
 ) {
   let dashboardUrl = dashboardRawURL;
 
-  if (dashboardUrl.includes(ID_TOKEN_PLACEHOLDER)) {
-    let idToken = "N/A";
+  if (dashboardUrl.includes(FIREBASE_ID_TOKEN_PLACEHOLDER)) {
+    let firebaseIdToken = "N/A";
     if (firebaseUser !== null) {
-      idToken = await firebaseUser.getIdToken(true);
+      firebaseIdToken = await firebaseUser.getIdToken(true);
     }
     // https://stackoverflow.com/a/1145525/2603230
-    dashboardUrl = dashboardUrl.split(ID_TOKEN_PLACEHOLDER).join(idToken);
+    dashboardUrl = dashboardUrl
+      .split(FIREBASE_ID_TOKEN_PLACEHOLDER)
+      .join(firebaseIdToken);
   }
 
   if (dashboardUrl.includes(PINGS_COMPLETED_OVERALL_PLACEHOLDER)) {
