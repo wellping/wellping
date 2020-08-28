@@ -104,10 +104,7 @@ export async function firebaseUploadDataForUserAsync(
       .database()
       .ref(`users/${user.uid}/${INSTALLATION_ID}`)
       .set(dataPlain);
-    endUploading(
-      HOME_SCREEN_DEBUG_VIEW_SYMBOLS.FIREBASE_DATABASE.END_SUCCESS,
-      false,
-    );
+    endUploading(HOME_SCREEN_DEBUG_VIEW_SYMBOLS.UPLOAD.END_SUCCESS, false);
     return null;
   } catch (e) {
     const error = e as firebase.FirebaseError;

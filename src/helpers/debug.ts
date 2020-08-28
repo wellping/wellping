@@ -57,13 +57,13 @@ export const HOME_SCREEN_DEBUG_VIEW_SYMBOLS = {
   SERVER_USED: {
     FIREBASE: "F",
     BEIWE: "B",
-    NO_SERVER: "¡N!",
+    NO_SERVER: "N!",
   },
   FIREBASE_AUTH: {
     LOGGED_IN: "",
     NOT_LOGGED_IN: "*",
   },
-  FIREBASE_DATABASE: {
+  UPLOAD: {
     INITIAL: "",
     UPLOADING: "~",
     END_SUCCESS: "v",

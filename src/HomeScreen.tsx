@@ -113,8 +113,7 @@ export default class HomeScreen extends React.Component<
       isLoading: true,
       displayDebugView: false,
       storedPingStateAsync: null,
-      uploadStatusSymbol:
-        HOME_SCREEN_DEBUG_VIEW_SYMBOLS.FIREBASE_DATABASE.INITIAL,
+      uploadStatusSymbol: HOME_SCREEN_DEBUG_VIEW_SYMBOLS.UPLOAD.INITIAL,
       firebaseUser: null,
     };
   }
