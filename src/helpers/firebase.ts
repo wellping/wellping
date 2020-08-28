@@ -3,7 +3,7 @@ import * as firebase from "firebase/app";
 import { User } from "./asyncStorage/user";
 import { UploadData } from "./dataUpload";
 import { HOME_SCREEN_DEBUG_VIEW_SYMBOLS, INSTALLATION_ID } from "./debug";
-import { useFirebase, getFirebaseServerConfig } from "./server";
+import { useFirebase } from "./server";
 import { StudyInfo } from "./types";
 
 /**
@@ -13,24 +13,6 @@ import { StudyInfo } from "./types";
 const FIREBASE_LOGIN_EMAIL_DOMAIN = "@user.wellpingssnl";
 const getFirebaseLoginEmail = (username: string): string =>
   username + FIREBASE_LOGIN_EMAIL_DOMAIN;
-
-export function validateAndInitializeFirebaseWithConfig(studyInfo: StudyInfo) {
-  if (!useFirebase(studyInfo)) {
-    return;
-  }
-
-  if (firebase.apps.length === 0) {
-    firebase.initializeApp(getFirebaseServerConfig(studyInfo));
-  }
-
-  try {
-    // Just running an arbitrary to check if the `firebaseConfig` is correct.
-    firebase.auth();
-  } catch (e) {
-    const message = `**firebaseConfig is incorrect.**\n\n${e}`;
-    throw new Error(message);
-  }
-}
 
 export function firebaseInitialized(): boolean {
   try {
