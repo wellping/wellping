@@ -19,6 +19,9 @@ import {
   StudyFileSchema,
   StudyInfoSchema,
   ExtraDataSchema,
+  FirebaseConfigSchema,
+  FirebaseServerConfigSchema,
+  BeiweServerConfigSchema,
 } from "./schemas/StudyFile";
 import {
   QuestionIdSchema,
@@ -68,6 +71,11 @@ export type QuestionsList = z.infer<typeof QuestionsListSchema>;
 export type Streams = z.infer<typeof StreamsSchema>;
 
 export type StudyID = z.infer<typeof StudyIdSchema>;
+
+export type FirebaseConfig = z.infer<typeof FirebaseConfigSchema>;
+export type FirebaseServerConfig = z.infer<typeof FirebaseServerConfigSchema>;
+
+export type BeiweServerConfig = z.infer<typeof BeiweServerConfigSchema>;
 
 export type StudyInfo = z.infer<typeof StudyInfoSchema>;
 

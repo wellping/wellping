@@ -3,7 +3,7 @@ import * as firebase from "firebase/app";
 import { User } from "./asyncStorage/user";
 import { UploadData } from "./dataUpload";
 import { HOME_SCREEN_DEBUG_VIEW_SYMBOLS, INSTALLATION_ID } from "./debug";
-import { useFirebase } from "./server";
+import { useFirebase, getFirebaseServerConfig } from "./server";
 import { StudyInfo } from "./types";
 
 /**
@@ -20,7 +20,7 @@ export function validateAndInitializeFirebaseWithConfig(studyInfo: StudyInfo) {
   }
 
   if (firebase.apps.length === 0) {
-    firebase.initializeApp(studyInfo.firebaseConfig);
+    firebase.initializeApp(getFirebaseServerConfig(studyInfo));
   }
 
   try {

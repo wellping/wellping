@@ -15,6 +15,25 @@ export const WeekStartsOnSchema = z.union([
   z.literal(6),
 ]);
 
+export const FirebaseConfigSchema = z.record(z.string());
+export const FirebaseServerConfigSchema = z.object({
+  /**
+   * The Firebase config object for the study.
+   *
+   * See https://firebase.google.com/docs/web/setup#config-object
+   */
+  config: FirebaseConfigSchema,
+});
+
+export const BeiweServerConfigSchema = z.object({
+  /**
+   * The server URL of Beiwe backend for the study.
+   *
+   * Example: `"https://beiwe.example.com/"`
+   */
+  serverUrl: z.string(),
+});
+
 export const StudyInfoSchema = z
   .object({
     /**
@@ -74,27 +93,8 @@ export const StudyInfoSchema = z
      * work correctly.
      */
     server: z.object({
-      firebase: z
-        .object({
-          /**
-           * The Firebase config object for the study.
-           *
-           * See https://firebase.google.com/docs/web/setup#config-object
-           */
-          config: z.record(z.string()),
-        })
-        .optional(),
-
-      beiwe: z
-        .object({
-          /**
-           * The server URL of Beiwe backend for the study.
-           *
-           * Example: `"https://beiwe.example.com/"`
-           */
-          serverUrl: z.string(),
-        })
-        .optional(),
+      firebase: FirebaseServerConfigSchema.optional(),
+      beiwe: BeiweServerConfigSchema.optional(),
     }),
 
     /**

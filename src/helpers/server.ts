@@ -1,11 +1,27 @@
-import { StudyInfo } from "./types";
 import { HOME_SCREEN_DEBUG_VIEW_SYMBOLS } from "./debug";
+import { StudyInfo, FirebaseServerConfig, BeiweServerConfig } from "./types";
+
+export type ServerType = "firebase" | "beiwe";
 
 /**
  * If Firebase is used as the backend server.
  */
 export function useFirebase(studyInfo: StudyInfo): boolean {
   return studyInfo.server.firebase !== undefined;
+}
+
+/**
+ * Returns the server config for Firebase.
+ *
+ * Throws an error if Firebase is not the server type used.
+ */
+export function getFirebaseServerConfig(
+  studyInfo: StudyInfo,
+): FirebaseServerConfig {
+  if (!useFirebase(studyInfo)) {
+    throw new Error("getFirebaseServerConfig: Firebase is not used.");
+  }
+  return studyInfo.server.firebase!;
 }
 
 /**
@@ -16,6 +32,18 @@ export function useBeiwe(studyInfo: StudyInfo): boolean {
 }
 
 /**
+ * Returns the server config for Beiwe.
+ *
+ * Throws an error if Beiwe is not the server type used.
+ */
+export function getBeiweServerConfig(studyInfo: StudyInfo): BeiweServerConfig {
+  if (!useFirebase(studyInfo)) {
+    throw new Error("getBeiweServerConfig: Beiwe is not used.");
+  }
+  return studyInfo.server.beiwe!;
+}
+
+/**
  * If a server (no matter if it's Firebase or Beiwe) is used.
  *
  * See `MARK: NO_SERVER_NOTE`.
@@ -23,8 +51,6 @@ export function useBeiwe(studyInfo: StudyInfo): boolean {
 export function useServer(studyInfo: StudyInfo): boolean {
   return Object.keys(studyInfo.server).length > 0;
 }
-
-export type ServerType = "firebase" | "beiwe";
 
 /**
  * Returns the type(s) of server used.
