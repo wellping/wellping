@@ -37,7 +37,7 @@ export function useBeiwe(studyInfo: StudyInfo): boolean {
  * Throws an error if Beiwe is not the server type used.
  */
 export function getBeiweServerConfig(studyInfo: StudyInfo): BeiweServerConfig {
-  if (!useFirebase(studyInfo)) {
+  if (!useBeiwe(studyInfo)) {
     throw new Error("getBeiweServerConfig: Beiwe is not used.");
   }
   return studyInfo.server.beiwe!;

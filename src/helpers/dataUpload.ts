@@ -2,6 +2,7 @@ import { AnswerEntity } from "../entities/AnswerEntity";
 import { PingEntity } from "../entities/PingEntity";
 import { getAnswersAsync } from "./answers";
 import { getUserAsync } from "./asyncStorage/user";
+import { beiweUploadDataForUserAsync } from "./beiwe";
 import {
   UserInstallationInfo,
   HOME_SCREEN_DEBUG_VIEW_SYMBOLS,
@@ -11,7 +12,6 @@ import { firebaseUploadDataForUserAsync } from "./firebase";
 import { getPingsAsync } from "./pings";
 import { useFirebase, useServer, useBeiwe } from "./server";
 import { StudyInfo } from "./types";
-import { beiweUploadDataForUserAsync } from "./beiwe";
 
 export type UploadData = {
   user: {

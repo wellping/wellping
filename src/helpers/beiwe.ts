@@ -76,7 +76,7 @@ export async function beiweUploadDataForUserAsync(
     endUploading();
     return null;
   } catch (e) {
-    endUploading(`BW: ${e}`);
+    endUploading(`BW: ${e.message}`);
     return e;
   }
 }
