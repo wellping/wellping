@@ -62,7 +62,7 @@ import {
   insertPingAsync,
   getNumbersOfPingsForAllStreamNames,
 } from "./helpers/pings";
-import { getSymbolsForServerTypeUsed } from "./helpers/server";
+import { getSymbolsForServerTypeUsed, useFirebase } from "./helpers/server";
 import { getAllStreamNames, getStudyInfoAsync } from "./helpers/studyFile";
 import { styles } from "./helpers/styles";
 import { Streams, StreamName, StudyInfo } from "./helpers/types";
@@ -191,7 +191,7 @@ export default class HomeScreen extends React.Component<
       });
     }
 
-    if (firebaseInitialized()) {
+    if (useFirebase(studyInfo) && firebaseInitialized()) {
       this.unregisterAuthObserver = firebase.auth().onAuthStateChanged(
         async (firebaseUser) => {
           if (firebaseUser) {
@@ -216,9 +216,9 @@ export default class HomeScreen extends React.Component<
             }
 
             try {
-              // If it is successful, this `onAuthStateChanged` callback will
-              // be called again, so we don't have to do anything here.
-              await firebaseLoginAsync(studyInfo, localStoredUser);
+              await firebaseLoginAsync(localStoredUser);
+              // If the login is successful, this `onAuthStateChanged` callback
+              // will be called again, so we don't have to do anything here.
             } catch (e) {
               alertWithShareButtonContainingDebugInfo(
                 // I'm pretty sure Internet has nothing to do with this, but

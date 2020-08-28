@@ -1,10 +1,13 @@
+/**
+ * Unless otherwise noted, precondition for every function in the file is:
+ * `useFirebase() === true`.
+ */
+
 import * as firebase from "firebase/app";
 
 import { User } from "./asyncStorage/user";
 import { UploadData } from "./dataUpload";
 import { HOME_SCREEN_DEBUG_VIEW_SYMBOLS, INSTALLATION_ID } from "./debug";
-import { useFirebase } from "./server";
-import { StudyInfo } from "./types";
 
 /**
  * Firebase requires to use an email as the user's login name.
@@ -24,16 +27,8 @@ export function firebaseInitialized(): boolean {
 }
 
 export async function firebaseLoginAsync(
-  studyInfo: StudyInfo,
   user: User,
 ): Promise<firebase.auth.UserCredential> {
-  if (!useFirebase(studyInfo)) {
-    await new Promise((r) => setTimeout(r, 3000)); // Simulate loading.
-    // Currently the return object is unused by the app, so we can just return
-    // anything.
-    return { firebaseNotUsed: "Firebase is not used." } as any;
-  }
-
   try {
     const userCredential = await firebase
       .auth()
@@ -54,28 +49,26 @@ export async function firebaseLoginAsync(
   }
 }
 
-export async function firebaseLogoutAsync(): Promise<void> {
+/**
+ * Precondition: `firebaseInitialized() === true`. Don't need to check
+ * `useFirebase()` for this function.
+ */
+export async function firebaseLogoutAndDeleteAppAsync(): Promise<void> {
   try {
-    await firebase.auth().signOut();
+    if (firebase.auth().currentUser !== null) {
+      await firebase.auth().signOut();
+    }
+    await firebase.app().delete();
   } catch (error) {
     throw error;
   }
 }
 
 export async function firebaseUploadDataForUserAsync(
-  studyInfo: StudyInfo,
   data: UploadData,
   startUploading: () => void,
-  // `errorSymbol` will be shown alongside the JS version at the top of the screen.
   endUploading: (symbol: string, isError: boolean) => void,
 ): Promise<Error | null> {
-  if (!useFirebase(studyInfo)) {
-    startUploading();
-    await new Promise((r) => setTimeout(r, 1000)); // Simulate loading.
-    endUploading(`Firebase N/A`, true);
-    return new Error("Firebase is not used.");
-  }
-
   startUploading();
 
   const user = firebase.auth().currentUser;
