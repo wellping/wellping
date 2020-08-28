@@ -21,7 +21,7 @@ const getFirebaseLoginEmail = (username: string): string =>
 
 export function validateAndInitializeFirebaseWithConfig(studyInfo: StudyInfo) {
   if (firebase.apps.length === 0) {
-    firebase.initializeApp(getFirebaseServerConfig(studyInfo));
+    firebase.initializeApp(getFirebaseServerConfig(studyInfo).config);
   }
 
   try {
