@@ -66,8 +66,8 @@ export async function firebaseLoginAsync(
 }
 
 /**
- * Precondition: `firebaseInitialized() === true`. We don't need to check for
- * `useFirebase(studyInfo)` for this function.
+ * Special precondition: `firebaseInitialized() === true`. We don't need to
+ * check for `useFirebase(studyInfo)` for this function.
  */
 export async function firebaseLogoutAndDeleteAppAsync(): Promise<void> {
   try {
