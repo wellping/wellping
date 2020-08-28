@@ -85,7 +85,7 @@ function base64ToBase64URL(input: string): string {
   return input.replace(/\+/g, "-").replace(/\//g, "_");
 }
 
-export async function getRequestURLAsync(
+async function getRequestURLAsync(
   endpoint: string,
   request: { [key: string]: any } = {},
   forUser?: User,
@@ -121,7 +121,7 @@ export async function getRequestURLAsync(
   return url;
 }
 
-export async function makePostRequestAsync({
+async function makePostRequestAsync({
   endpoint,
   request,
   body,
