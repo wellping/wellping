@@ -70,6 +70,7 @@ export async function beiweUploadDataForUserAsync(
       request: {},
       body: data,
       user,
+      throwShortError: true,
     });
     //console.log(`${JSON.stringify(response)}`);
     endUploading();
@@ -125,11 +126,13 @@ export async function makePostRequestAsync({
   request,
   body,
   user,
+  throwShortError,
 }: {
   endpoint: string;
   request: { [key: string]: any };
   body?: { [key: string]: any };
   user?: User;
+  throwShortError?: boolean;
 }): Promise<any> {
   const headers = {
     "Beiwe-Api-Version": "2",
@@ -149,16 +152,20 @@ export async function makePostRequestAsync({
   if (response.status < 200 || response.status >= 400) {
     if (response.status === 401 || response.status === 403) {
       throw new Error(
-        `Verification failed.\n\nRequest: ${JSON.stringify(
-          request,
-        )}.\n\nResponse: ${JSON.stringify(response)}.`,
+        throwShortError
+          ? `VF${response.status}`
+          : `Verification failed.\n\nRequest: ${JSON.stringify(
+              request,
+            )}.\n\nResponse: ${JSON.stringify(response)}.`,
       );
     }
 
     throw new Error(
-      `Request not successful.\n\nRequest: ${JSON.stringify(
-        request,
-      )}.\n\nResponse: ${JSON.stringify(response)}.`,
+      throwShortError
+        ? `OF${response.status}`
+        : `Request not successful.\n\nRequest: ${JSON.stringify(
+            request,
+          )}.\n\nResponse: ${JSON.stringify(response)}.`,
     );
   }
 
