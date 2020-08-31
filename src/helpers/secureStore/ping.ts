@@ -42,6 +42,7 @@ export async function secureGetPingAsync(pingId: PingId): Promise<Ping | null> {
       parsedValue.startTime && new Date(parsedValue.startTime);
     parsedValue.notificationTime =
       parsedValue.notificationTime && new Date(parsedValue.notificationTime);
+    parsedValue.endTime = parsedValue.endTime && new Date(parsedValue.endTime);
 
     return PingSchema.parse(parsedValue);
   } catch (error) {
