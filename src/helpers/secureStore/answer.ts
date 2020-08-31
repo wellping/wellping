@@ -40,7 +40,12 @@ export async function secureGetAnswerAsync(
     if (value == null) {
       return null;
     }
-    return AnswerSchema.parse(value);
+
+    // TODO: CONSIDER BETTER WAY TO DO THIS (INSTEAD OF HARDCODING).
+    const parsedValue = JSON.parse(value);
+    parsedValue.date = parsedValue.date && new Date(parsedValue.date);
+
+    return AnswerSchema.parse(parsedValue);
   } catch (error) {
     logError(error);
     return null;

@@ -35,7 +35,15 @@ export async function secureGetPingAsync(pingId: PingId): Promise<Ping | null> {
     if (value == null) {
       return null;
     }
-    return PingSchema.parse(value);
+
+    // TODO: CONSIDER BETTER WAY TO DO THIS (INSTEAD OF HARDCODING).
+    const parsedValue = JSON.parse(value);
+    parsedValue.startTime =
+      parsedValue.startTime && new Date(parsedValue.startTime);
+    parsedValue.notificationTime =
+      parsedValue.notificationTime && new Date(parsedValue.notificationTime);
+
+    return PingSchema.parse(parsedValue);
   } catch (error) {
     logError(error);
     return null;
