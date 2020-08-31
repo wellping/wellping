@@ -49,7 +49,7 @@ export const AnswerDataSchema = z.union([
   HowLongAgoAnswerDataSchema,
 ]);
 
-export const AnswerSchema = z.object({
+const BaseAnswerSchema = z.object({
   pingId: PingIdSchema,
 
   questionId: QuestionIdSchema,
@@ -75,5 +75,33 @@ export const AnswerSchema = z.object({
    */
   date: z.date(),
 });
+
+export const SliderAnswerSchema = BaseAnswerSchema.extend({
+  data: SliderAnswerDataSchema.nullable(),
+});
+export const ChoicesWithSingleAnswerAnswerSchema = BaseAnswerSchema.extend({
+  data: ChoicesWithSingleAnswerAnswerDataSchema.nullable(),
+});
+export const ChoicesWithMultipleAnswersAnswerSchema = BaseAnswerSchema.extend({
+  data: ChoicesWithMultipleAnswersAnswerDataSchema.nullable(),
+});
+export const YesNoAnswerSchema = BaseAnswerSchema.extend({
+  data: YesNoAnswerDataSchema.nullable(),
+});
+export const MultipleTextAnswerSchema = BaseAnswerSchema.extend({
+  data: MultipleTextAnswerDataSchema.nullable(),
+});
+export const HowLongAgoAnswerSchema = BaseAnswerSchema.extend({
+  data: HowLongAgoAnswerDataSchema.nullable(),
+});
+
+export const AnswerSchema = z.union([
+  SliderAnswerSchema,
+  ChoicesWithSingleAnswerAnswerSchema,
+  ChoicesWithMultipleAnswersAnswerSchema,
+  YesNoAnswerSchema,
+  MultipleTextAnswerSchema,
+  HowLongAgoAnswerSchema,
+]);
 
 export const AnswersListSchema = z.record(AnswerSchema);

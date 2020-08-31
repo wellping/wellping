@@ -15,10 +15,7 @@ const ANSWER_PREFIX = `answer/`;
 const getKey = (pingId: PingId, questionId: QuestionId) =>
   `${ANSWER_PREFIX}${pingId}/${questionId}`;
 
-export async function secureStoreAnswerAsync(
-  answer: Answer,
-  isNew: boolean = true,
-) {
+export async function secureStoreAnswerAsync(answer: Answer, isNew: boolean) {
   try {
     await SecureStore.setItemAsync(
       await getSSKeyAsync(getKey(answer.pingId, answer.questionId)),

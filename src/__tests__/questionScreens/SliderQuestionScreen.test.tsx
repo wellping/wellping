@@ -148,7 +148,7 @@ test.each([
         loadingCompleted={mockLoadingCompleted}
         onDataChange={mockOnDataChangeFn}
         allAnswers={{
-          // @ts-ignore (we don't need to craft an entire AnswerEntity)
+          // @ts-ignore (we don't need to craft an entire Answer)
           [question.defaultValueFromQuestionId]: {
             data: prevAnswerData,
           },

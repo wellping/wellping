@@ -7,12 +7,13 @@ import {
 import { BaseEntity } from "typeorm";
 import waitForExpect from "wait-for-expect";
 
-import { PingEntity } from "../../entities/PingEntity";
 import * as HelperPings from "../../helpers/pings";
+import { PingSchema } from "../../helpers/schemas/Ping";
+import { Ping } from "../../helpers/types";
 import { PINGS_STUDY_INFO } from "../data/pings";
 import { mockCurrentStudyInfo } from "../helper";
 
-export const getPingEntity = ({
+export const getPing = ({
   id,
   notificationTime,
   startTime,
@@ -24,13 +25,15 @@ export const getPingEntity = ({
   startTime: Date;
   tzOffset: number;
   streamName: string;
-}): PingEntity => {
-  const ping = new PingEntity();
-  ping.id = id;
-  ping.notificationTime = notificationTime;
-  ping.startTime = startTime;
-  ping.streamName = streamName;
-  ping.tzOffset = tzOffset;
+}): Ping => {
+  const ping = PingSchema.parse({
+    id,
+    notificationTime,
+    startTime,
+    endTime: null,
+    streamName,
+    tzOffset,
+  });
   return ping;
 };
 
@@ -41,7 +44,7 @@ export const TEST_PING_RAW = {
   tzOffset: 0,
   streamName: "testStream",
 };
-export const TEST_PING = getPingEntity(TEST_PING_RAW);
+export const TEST_PING = getPing(TEST_PING_RAW);
 
 export const MAIN_SURVEY_SCREEN_VIEW = "mainSurveyScreenView";
 export const QUESTION_TITLE_TESTID = "questionTitle";
@@ -66,7 +69,7 @@ export function mockDatabaseRelatedFunction() {
         ...TEST_PING_RAW,
         endDate: new Date(),
       };
-      return getPingEntity(newPing);
+      return getPing(newPing);
     });
 }
 

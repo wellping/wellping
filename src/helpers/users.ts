@@ -10,6 +10,8 @@ import {
 import { useFirebase, useBeiwe, useServer } from "./server";
 import { getStudyInfoAsync, studyFileExistsAsync } from "./studyFile";
 import { StudyInfo } from "./types";
+import { secureRemoveAllAnswersAsync } from "./secureStore/answer";
+import { secureRemoveAllPingsAsync } from "./secureStore/ping";
 
 /**
  * Throws an error if the login is unsuccessful.
@@ -39,6 +41,9 @@ export async function logoutAsync() {
 
     // Backup the database file.
     await backupDatabaseFileAsync(studyInfo.id);
+
+    await secureRemoveAllAnswersAsync();
+    await secureRemoveAllPingsAsync();
   }
 
   await clearUserAsync();

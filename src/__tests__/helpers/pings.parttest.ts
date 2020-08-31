@@ -10,8 +10,8 @@ import {
   getThisWeekPingsAsync,
   getLatestPingAsync,
   NumbersOfPingsForAllStreamNames,
-  getNumbersOfPingsForAllStreamNames,
-  getNumberOfPingsForStreamName,
+  getNumbersOfPingsForAllStreamNamesAsync,
+  getNumberOfPingsForStreamNameAsync,
 } from "../../helpers/pings";
 import {
   connectTestDatabaseAsync,
@@ -47,14 +47,14 @@ export const pingsTest = () => {
     expect(await getLatestPingAsync()).toEqual(null);
 
     const numbersOfPingsForAllStreamNames: NumbersOfPingsForAllStreamNames = {};
-    expect(await getNumbersOfPingsForAllStreamNames()).toEqual(
+    expect(await getNumbersOfPingsForAllStreamNamesAsync()).toEqual(
       numbersOfPingsForAllStreamNames,
     );
 
     for (let i = 0; i < PINGS.length; i++) {
       const ping = PINGS[i];
 
-      expect(await getNumberOfPingsForStreamName(ping.streamName)).toEqual(
+      expect(await getNumberOfPingsForStreamNameAsync(ping.streamName)).toEqual(
         numbersOfPingsForAllStreamNames[ping.streamName] || 0,
       );
 
@@ -84,10 +84,10 @@ export const pingsTest = () => {
 
       numbersOfPingsForAllStreamNames[ping.streamName] =
         (numbersOfPingsForAllStreamNames[ping.streamName] || 0) + 1;
-      expect(await getNumberOfPingsForStreamName(ping.streamName)).toEqual(
+      expect(await getNumberOfPingsForStreamNameAsync(ping.streamName)).toEqual(
         numbersOfPingsForAllStreamNames[ping.streamName],
       );
-      expect(await getNumbersOfPingsForAllStreamNames()).toEqual(
+      expect(await getNumbersOfPingsForAllStreamNamesAsync()).toEqual(
         numbersOfPingsForAllStreamNames,
       );
     }

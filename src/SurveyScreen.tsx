@@ -4,13 +4,6 @@ import { Button, Text, View, ScrollView, Dimensions } from "react-native";
 
 import { _DEBUG_CONFIGS } from "../config/debug";
 import {
-  ChoicesWithSingleAnswerAnswerEntity,
-  MultipleTextAnswerEntity,
-  SliderAnswerEntity,
-  AnswerEntity,
-} from "./entities/AnswerEntity";
-import { PingEntity } from "./entities/PingEntity";
-import {
   AnswersList,
   QuestionScreenProps,
   AnswerData,
@@ -18,6 +11,10 @@ import {
   MultipleTextAnswerData,
   ChoicesWithSingleAnswerAnswerData,
   ChoicesWithMultipleAnswersAnswerData,
+  ChoicesWithSingleAnswerAnswer,
+  Answer,
+  MultipleTextAnswer,
+  SliderAnswer,
 } from "./helpers/answerTypes";
 import { insertAnswerAsync } from "./helpers/answers";
 import {
@@ -50,6 +47,7 @@ import {
   ChoicesQuestion,
   StreamName,
   StudyInfo,
+  Ping,
 } from "./helpers/types";
 import ChoicesQuestionScreen from "./questionScreens/ChoicesQuestionScreen";
 import HowLongAgoQuestionScreen from "./questionScreens/HowLongAgoQuestion";
@@ -97,7 +95,7 @@ export interface SurveyScreenProps {
   /**
    * The current ping.
    */
-  ping: PingEntity;
+  ping: Ping;
 
   /**
    * The previously stored state.
@@ -109,7 +107,7 @@ export interface SurveyScreenProps {
   /**
    * The function to call when the current ping is completed.
    */
-  onFinish: (finishedPing: PingEntity) => void;
+  onFinish: (finishedPing: Ping) => void;
 
   studyInfo: StudyInfo;
 
@@ -228,7 +226,7 @@ export default class SurveyScreen extends React.Component<
               questionId
             ] as ChoicesWithSingleAnswerQuestion;
 
-            const csaAnswer = answer as ChoicesWithSingleAnswerAnswerEntity;
+            const csaAnswer = answer as ChoicesWithSingleAnswerAnswer;
             if (csaAnswer == null) {
               return getNonCriticalProblemTextForUser(
                 `csaAnswer.data (from ${question.id}) == null`,
@@ -273,7 +271,7 @@ export default class SurveyScreen extends React.Component<
   }: {
     prevQuestion: Question;
     // When the question is a branching question, `prevAnswer` can be undefined.
-    prevAnswer?: AnswerEntity;
+    prevAnswer?: Answer;
     prevExtraData: ExtraData;
     answers: AnswersList;
     prevState: SurveyScreenState;
@@ -421,7 +419,7 @@ export default class SurveyScreen extends React.Component<
         case QuestionType.MultipleText: {
           const targetQuestionAnswer = answers[
             this.replacePlaceholders(bQ.condition.questionId, prevState)
-          ] as MultipleTextAnswerEntity;
+          ] as MultipleTextAnswer;
           if (targetQuestionAnswer && targetQuestionAnswer.data) {
             if (
               targetQuestionAnswer.data.value.length === bQ.condition.target
@@ -435,7 +433,7 @@ export default class SurveyScreen extends React.Component<
         case QuestionType.ChoicesWithSingleAnswer: {
           const csaQuestionAnswer = answers[
             this.replacePlaceholders(bQ.condition.questionId, prevState)
-          ] as ChoicesWithSingleAnswerAnswerEntity;
+          ] as ChoicesWithSingleAnswerAnswer;
           if (csaQuestionAnswer && csaQuestionAnswer.data) {
             if (csaQuestionAnswer.data?.value === bQ.condition.target) {
               selectedBranchId = bQ.branchStartId.true;
@@ -458,8 +456,7 @@ export default class SurveyScreen extends React.Component<
       )) {
         // TODO: SUPPORT OTHER QUSTION TYPES.
         const comparingQuestionAnswer =
-          (answers[comparingQuestionId] as SliderAnswerEntity).data?.value ||
-          -1;
+          (answers[comparingQuestionId] as SliderAnswer).data?.value || -1;
         if (comparingQuestionAnswer > curMaxValue) {
           nextQuestionId = bwrcQuestion.branchStartId[comparingQuestionId];
           curMaxValue = comparingQuestionAnswer;

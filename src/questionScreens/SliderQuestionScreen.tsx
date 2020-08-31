@@ -1,8 +1,11 @@
 import React from "react";
 import { View, Text, Slider } from "react-native";
 
-import { SliderAnswerEntity } from "../entities/AnswerEntity";
-import { QuestionScreenProps, SliderAnswerData } from "../helpers/answerTypes";
+import {
+  QuestionScreenProps,
+  SliderAnswerData,
+  SliderAnswer,
+} from "../helpers/answerTypes";
 import {
   getNonCriticalProblemTextForUser,
   alertWithShareButtonContainingDebugInfo,
@@ -38,7 +41,7 @@ const SliderQuestionScreen: React.ElementType<SliderQuestionScreenProps> = ({
   if (question.defaultValueFromQuestionId) {
     const prevQuestionAnswer = allAnswers[
       pipeInExtraMetaData(question.defaultValueFromQuestionId)
-    ] as SliderAnswerEntity;
+    ] as SliderAnswer;
     if (prevQuestionAnswer && prevQuestionAnswer.data != null) {
       defaultSliderValue = prevQuestionAnswer.data.value;
     } else {

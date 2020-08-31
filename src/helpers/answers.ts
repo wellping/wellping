@@ -1,12 +1,25 @@
-import { AnswerEntity, getAnswerEntity } from "../entities/AnswerEntity";
-import { PingEntity } from "../entities/PingEntity";
-import { AnswerData } from "./answerTypes";
-import { Question } from "./types";
+import { AnswerData, Answer } from "./answerTypes";
+import { getAnswersListAsync } from "./asyncStorage/answersList";
+import { AnswerSchema } from "./schemas/Answer";
+import {
+  secureGetAnswerAsync,
+  secureStoreAnswerAsync,
+} from "./secureStore/answer";
+import { Question, Ping } from "./types";
 
-export async function getAnswersAsync(): Promise<AnswerEntity[]> {
-  const answers = await AnswerEntity.createQueryBuilder()
-    .orderBy("date", "ASC")
-    .getMany();
+export async function getAnswersAsync(): Promise<Answer[]> {
+  const answersList = await getAnswersListAsync();
+  const answers: Answer[] = [];
+
+  for (const pingIdAndQuestionId of answersList) {
+    answers.push(
+      (await secureGetAnswerAsync(
+        pingIdAndQuestionId[0],
+        pingIdAndQuestionId[1],
+      ))!,
+    );
+  }
+
   return answers;
 }
 
@@ -18,23 +31,22 @@ export async function insertAnswerAsync({
   data,
   date,
 }: {
-  ping: PingEntity;
+  ping: Ping;
   question: Question;
   realQuestionId: string;
   preferNotToAnswer: true | null; // See `MARK: WHY_PNA_TRUE_OR_NULL`.
   data: AnswerData | null;
   date: Date;
-}): Promise<AnswerEntity> {
-  const answer = getAnswerEntity(question.type);
-  answer.ping = ping;
-  answer.questionId = realQuestionId;
-  answer.preferNotToAnswer = preferNotToAnswer;
-  answer.data = data;
-  answer.date = date;
-  await answer.save();
+}): Promise<Answer> {
+  const answer = AnswerSchema.parse({
+    pingId: ping.id,
+    questionId: realQuestionId,
+    preferNotToAnswer,
+    data,
+    date,
+  });
 
-  // Make sure state and database are consistent.
-  await answer.reload();
+  await secureStoreAnswerAsync(answer, true);
 
   return answer;
 }

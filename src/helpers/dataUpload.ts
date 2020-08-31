@@ -1,5 +1,4 @@
-import { AnswerEntity } from "../entities/AnswerEntity";
-import { PingEntity } from "../entities/PingEntity";
+import { Answer } from "./answerTypes";
 import { getAnswersAsync } from "./answers";
 import { getUserAsync } from "./asyncStorage/user";
 import { beiweUploadDataForUserAsync } from "./beiwe";
@@ -11,15 +10,15 @@ import {
 import { firebaseUploadDataForUserAsync } from "./firebase";
 import { getPingsAsync } from "./pings";
 import { useFirebase, useServer, useBeiwe } from "./server";
-import { StudyInfo } from "./types";
+import { StudyInfo, Ping } from "./types";
 
 export type UploadData = {
   user: {
     username: string;
     installation: UserInstallationInfo;
   };
-  pings: PingEntity[];
-  answers: AnswerEntity[];
+  pings: Ping[];
+  answers: Answer[];
 };
 
 export async function getAllDataAsync(): Promise<UploadData> {

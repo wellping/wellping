@@ -11,6 +11,12 @@ import {
   HowLongAgoAnswerDataSchema,
   AnswerDataSchema,
   AnswersListSchema,
+  SliderAnswerSchema,
+  ChoicesWithSingleAnswerAnswerSchema,
+  ChoicesWithMultipleAnswersAnswerSchema,
+  YesNoAnswerSchema,
+  MultipleTextAnswerSchema,
+  HowLongAgoAnswerSchema,
   AnswerSchema,
 } from "./schemas/Answer";
 import { Question, QuestionsList } from "./types";
@@ -40,6 +46,17 @@ export type HowLongAgoAnswerDataType = z.infer<
 export type HowLongAgoAnswerData = z.infer<typeof HowLongAgoAnswerDataSchema>;
 
 export type AnswerData = z.infer<typeof AnswerDataSchema>;
+
+export type SliderAnswer = z.infer<typeof SliderAnswerSchema>;
+export type ChoicesWithSingleAnswerAnswer = z.infer<
+  typeof ChoicesWithSingleAnswerAnswerSchema
+>;
+export type ChoicesWithMultipleAnswersAnswer = z.infer<
+  typeof ChoicesWithMultipleAnswersAnswerSchema
+>;
+export type YesNoAnswer = z.infer<typeof YesNoAnswerSchema>;
+export type MultipleTextAnswer = z.infer<typeof MultipleTextAnswerSchema>;
+export type HowLongAgoAnswer = z.infer<typeof HowLongAgoAnswerSchema>;
 
 export type Answer = z.infer<typeof AnswerSchema>;
 

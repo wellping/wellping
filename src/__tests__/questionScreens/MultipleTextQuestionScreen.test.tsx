@@ -9,8 +9,11 @@ import {
 } from "react-native-testing-library";
 import waitForExpect from "wait-for-expect";
 
-import { MultipleTextAnswerEntity } from "../../entities/AnswerEntity";
-import { AnswersList, MultipleTextAnswerData } from "../../helpers/answerTypes";
+import {
+  AnswersList,
+  MultipleTextAnswerData,
+  MultipleTextAnswer,
+} from "../../helpers/answerTypes";
 import { QuestionType } from "../../helpers/helpers";
 import * as studyFileHelper from "../../helpers/studyFile";
 import { MultipleTextQuestion, ChoicesList } from "../../helpers/types";
@@ -63,8 +66,7 @@ const basicTestForQuestionAsync = async (
   let textInputsLength = question.max;
   if (question.maxMinus) {
     if (allAnswers[question.maxMinus]) {
-      const data = (allAnswers[question.maxMinus] as MultipleTextAnswerEntity)
-        .data;
+      const data = (allAnswers[question.maxMinus] as MultipleTextAnswer).data;
       textInputsLength -= (data ? data.value : []).length;
     }
   }

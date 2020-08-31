@@ -20,7 +20,6 @@ import SurveyScreen, { SurveyScreenState } from "./SurveyScreen";
 import DashboardComponent, {
   getDashboardUrlAsync,
 } from "./components/DashboardComponent";
-import { PingEntity } from "./entities/PingEntity";
 import {
   dequeueFuturePingIfAny,
   getFuturePingsQueue,
@@ -60,12 +59,14 @@ import {
   getLatestPingAsync,
   getTodayPingsAsync,
   insertPingAsync,
-  getNumbersOfPingsForAllStreamNames,
+  getNumbersOfPingsForAllStreamNamesAsync,
 } from "./helpers/pings";
+import { secureRemoveAllAnswersAsync } from "./helpers/secureStore/answer";
+import { secureRemoveAllPingsAsync } from "./helpers/secureStore/ping";
 import { getSymbolsForServerTypeUsed, useFirebase } from "./helpers/server";
 import { getAllStreamNames, getStudyInfoAsync } from "./helpers/studyFile";
 import { styles } from "./helpers/styles";
-import { Streams, StreamName, StudyInfo } from "./helpers/types";
+import { Streams, StreamName, StudyInfo, Ping } from "./helpers/types";
 import LoadingScreen from "./screens/LoadingScreen";
 
 interface HomeScreenProps {
@@ -79,7 +80,7 @@ interface HomeScreenState {
   time: Date;
   allowsNotifications: boolean;
   currentNotificationTime: Date | null;
-  currentPing: PingEntity | null;
+  currentPing: Ping | null;
   isLoading: boolean;
   storedPingStateAsync: SurveyScreenState | null;
   uploadStatusSymbol: string;
@@ -537,9 +538,9 @@ export default class HomeScreen extends React.Component<
           />
           <Button
             color="orange"
-            title="getNumbersOfPingsForAllStreamNames()"
+            title="getNumbersOfPingsForAllStreamNamesAsync()"
             onPress={async () => {
-              const typesOfPingsAnswered = await getNumbersOfPingsForAllStreamNames();
+              const typesOfPingsAnswered = await getNumbersOfPingsForAllStreamNamesAsync();
               alertWithShareButtonContainingDebugInfo(
                 JSON.stringify(typesOfPingsAnswered),
               );
@@ -666,6 +667,8 @@ export default class HomeScreen extends React.Component<
                     text: "Confirm",
                     style: "destructive",
                     onPress: async () => {
+                      await secureRemoveAllAnswersAsync();
+                      await secureRemoveAllPingsAsync();
                       await deleteDatabaseFileAsync(studyInfo.id);
                       alert("Done! Please restart the app.");
                     },
