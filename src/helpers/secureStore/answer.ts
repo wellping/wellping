@@ -11,9 +11,9 @@ import { AnswerSchema } from "../schemas/Answer";
 import { PingId, QuestionId } from "../types";
 import { getSSKeyAsync } from "./secureStore";
 
-const ANSWER_PREFIX = `answer/`;
+const ANSWER_PREFIX = `answer.`;
 const getKey = (pingId: PingId, questionId: QuestionId) =>
-  `${ANSWER_PREFIX}${pingId}/${questionId}`;
+  `${ANSWER_PREFIX}${pingId}.${questionId}`;
 
 export async function secureStoreAnswerAsync(answer: Answer, isNew: boolean) {
   try {

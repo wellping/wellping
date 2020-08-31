@@ -10,7 +10,7 @@ import { PingSchema } from "../schemas/Ping";
 import { Ping, PingId } from "../types";
 import { getSSKeyAsync } from "./secureStore";
 
-const PING_PREFIX = `ping/`;
+const PING_PREFIX = `ping.`;
 const getKey = (pingId: PingId) => `${PING_PREFIX}${pingId}`;
 
 export async function secureStorePingAsync(ping: Ping, isNew: boolean) {
