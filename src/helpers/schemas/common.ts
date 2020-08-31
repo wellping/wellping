@@ -29,6 +29,8 @@ export const QuestionIdSchema = z
     message: `Question ID can only include letters, numbers, "_", "[", and "]".`,
   });
 
+export const PingIdSchema = z.string().nonempty();
+
 /**
  * Note: This isn't current used anywhere because this breaks the type
  * inference (it will set the type to `any`).
