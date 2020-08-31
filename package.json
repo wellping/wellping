@@ -15,6 +15,7 @@
     "expo-device": "~2.2.1",
     "expo-file-system": "~9.0.1",
     "expo-linking": "^1.0.3",
+    "expo-secure-store": "~9.0.1",
     "expo-sqlite": "~8.2.1",
     "expo-status-bar": "^1.0.0",
     "expo-web-browser": "~8.3.1",
