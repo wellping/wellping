@@ -15,13 +15,18 @@ const ANSWER_PREFIX = `answer/`;
 const getKey = (pingId: PingId, questionId: QuestionId) =>
   `${ANSWER_PREFIX}${pingId}/${questionId}`;
 
-export async function secureStoreAnswerAsync(answer: Answer) {
+export async function secureStoreAnswerAsync(
+  answer: Answer,
+  isNew: boolean = true,
+) {
   try {
     await SecureStore.setItemAsync(
       await getSSKeyAsync(getKey(answer.pingId, answer.questionId)),
       JSON.stringify(answer),
     );
-    await addToAnswersListAsync(answer);
+    if (isNew) {
+      await addToAnswersListAsync(answer);
+    }
   } catch (error) {
     logError(error);
   }

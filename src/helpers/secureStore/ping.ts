@@ -13,13 +13,15 @@ import { getSSKeyAsync } from "./secureStore";
 const PING_PREFIX = `ping/`;
 const getKey = (pingId: PingId) => `${PING_PREFIX}${pingId}`;
 
-export async function secureStorePingAsync(ping: Ping) {
+export async function secureStorePingAsync(ping: Ping, isNew: boolean = true) {
   try {
     await SecureStore.setItemAsync(
       await getSSKeyAsync(getKey(ping.id)),
       JSON.stringify(ping),
     );
-    await addToPingsListAsync(ping);
+    if (isNew) {
+      await addToPingsListAsync(ping);
+    }
   } catch (error) {
     logError(error);
   }
