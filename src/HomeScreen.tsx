@@ -65,6 +65,10 @@ import {
 import { getSymbolsForServerTypeUsed, useFirebase } from "./helpers/server";
 import { getAllStreamNames, getStudyInfoAsync } from "./helpers/studyFile";
 import { styles } from "./helpers/styles";
+import {
+  encryptStringAsync,
+  decryptStringAsync,
+} from "./helpers/typeormEncryption/stringEncryption";
 import { Streams, StreamName, StudyInfo } from "./helpers/types";
 import LoadingScreen from "./screens/LoadingScreen";
 
@@ -551,6 +555,28 @@ export default class HomeScreen extends React.Component<
             onPress={async () => {
               const user = await getUserAsync();
               alertWithShareButtonContainingDebugInfo(JSON.stringify(user));
+            }}
+          />
+          <Button
+            color="orange"
+            title="encryptStringAsync(clipboard)"
+            onPress={async () => {
+              const encryptedHex = await encryptStringAsync(
+                await Clipboard.getString(),
+              );
+              alertWithShareButtonContainingDebugInfo(encryptedHex);
+              Clipboard.setString(encryptedHex);
+            }}
+          />
+          <Button
+            color="orange"
+            title="decryptStringAsync(clipboard)"
+            onPress={async () => {
+              const decryptedText = await decryptStringAsync(
+                await Clipboard.getString(),
+              );
+              alertWithShareButtonContainingDebugInfo(decryptedText);
+              Clipboard.setString(decryptedText);
             }}
           />
           <Button
