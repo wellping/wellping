@@ -12,6 +12,7 @@ import {
   HowLongAgoAnswerEntity,
 } from "../entities/AnswerEntity";
 import { PingEntity } from "../entities/PingEntity";
+import { EncryptedColumnSubscriber } from "../helpers/typeormEncryption/EncryptedColumnSubscriber";
 import {
   getCriticalProblemTextForUser,
   alertWithShareButtonContainingDebugInfo,
@@ -44,6 +45,7 @@ export async function connectDatabaseAsync(
         driver: require("expo-sqlite"),
         database: getDatabaseFilename(databaseName),
         entities,
+        subscribers: [EncryptedColumnSubscriber],
         synchronize: true,
         logging: __DEV__, // Only log in dev mode.
       });

@@ -6,6 +6,7 @@ import {
   ManyToOne,
   RelationId,
   TableInheritance,
+  AfterLoad,
 } from "typeorm";
 
 import {
@@ -20,6 +21,10 @@ import {
 import { QuestionType } from "../helpers/helpers";
 import { QuestionId, QuestionTypeType } from "../helpers/types";
 import { PingEntity } from "./PingEntity";
+import {
+  encryptStringAsync,
+  decryptStringAsync,
+} from "../helpers/typeormEncryption/stringEncryption";
 
 @Entity("answer")
 @TableInheritance({
@@ -50,7 +55,28 @@ export abstract class AnswerEntity extends BaseEntity {
    * If `null` (and `preferNotToAnswer` is not true), it means that the user
    * clicks "Next" without answering.
    */
-  @Column({ type: "simple-json", nullable: true })
+  @Column({
+    type: "simple-json",
+    nullable: true,
+    /*transformer: [
+      {
+        to: async (value: any) => {
+          if (value === null || value === undefined) {
+            return;
+          }
+
+          return await encryptStringAsync(value);
+        },
+        from: async (value: any) => {
+          if (value === null || value === undefined) {
+            return;
+          }
+
+          return await decryptStringAsync(value);
+        },
+      },
+    ],*/
+  })
   data: AnswerData | null;
 
   /**

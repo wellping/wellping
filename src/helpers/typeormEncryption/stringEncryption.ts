@@ -2,6 +2,7 @@ import * as aesjs from "aes-js";
 import * as Crypto from "expo-crypto";
 
 import { getUserAsync } from "../asyncStorage/user";
+import { alertWithShareButtonContainingDebugInfo } from "../debug";
 
 function aesJsEncryptString(text: string, key: aesjs.ByteSource): string {
   // https://github.com/ricmoo/aes-js#ctr---counter-recommended
@@ -64,5 +65,13 @@ export async function encryptStringAsync(text: string): Promise<string> {
 export async function decryptStringAsync(
   encryptedHex: string,
 ): Promise<string> {
-  return aesJsDecryptString(encryptedHex, await getKeyForUser());
+  try {
+    return aesJsDecryptString(encryptedHex, await getKeyForUser());
+  } catch (e) {
+    alertWithShareButtonContainingDebugInfo(
+      `decryptStringAsync failed for ${encryptedHex}: ${e}`,
+    );
+    // Just return the encrypted key if decryption fails.
+    return encryptedHex;
+  }
 }
