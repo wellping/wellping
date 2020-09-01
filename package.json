@@ -78,6 +78,7 @@
     ],
     "setupFiles": [
       "<rootDir>/src/__tests__/setupAsyncStorage.js",
+      "<rootDir>/src/__tests__/setupSecureStore.ts",
       "jest-date-mock"
     ],
     "setupFilesAfterEnv": [
