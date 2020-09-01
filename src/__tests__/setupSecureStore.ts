@@ -14,25 +14,32 @@ const mockSecureStore: any = {
   setItemAsync: jest.fn((key, value) => {
     //console.log(`expo-secure-store setItemAsync(${key}, ${value})`);
     return new Promise((resolve, reject) => {
-      return typeof key !== "string" || typeof value !== "string"
-        ? reject(new Error("key and value must be string"))
-        : resolve((mockSecureStore.__INTERNAL_MOCK_STORAGE__[key] = value));
+      if (typeof key !== "string" || typeof value !== "string") {
+        reject(new Error("key and value must be string"));
+      } else {
+        mockSecureStore.__INTERNAL_MOCK_STORAGE__[key] = value;
+        resolve();
+      }
     });
   }),
   getItemAsync: jest.fn((key) => {
     //console.log(`expo-secure-store getItemAsync(${key})`);
     return new Promise((resolve, reject) => {
-      return mockSecureStore.__INTERNAL_MOCK_STORAGE__.hasOwnProperty(key)
-        ? resolve(mockSecureStore.__INTERNAL_MOCK_STORAGE__[key])
-        : resolve(null);
+      if (mockSecureStore.__INTERNAL_MOCK_STORAGE__.hasOwnProperty(key)) {
+        resolve(mockSecureStore.__INTERNAL_MOCK_STORAGE__[key]);
+      } else {
+        resolve(null);
+      }
     });
   }),
   deleteItemAsync: jest.fn((key) => {
     //console.log(`expo-secure-store deleteItemAsync(${key})`);
     return new Promise((resolve, reject) => {
-      return mockSecureStore.__INTERNAL_MOCK_STORAGE__.hasOwnProperty(key)
-        ? resolve(delete mockSecureStore.__INTERNAL_MOCK_STORAGE__[key])
-        : reject(new Error("No such key!"));
+      if (mockSecureStore.__INTERNAL_MOCK_STORAGE__.hasOwnProperty(key)) {
+        resolve(delete mockSecureStore.__INTERNAL_MOCK_STORAGE__[key]);
+      } else {
+        reject(new Error("No such key!"));
+      }
     });
   }),
 };
