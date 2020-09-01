@@ -8,23 +8,34 @@ exports[`with constant default value 1`] = `
     }
   }
 >
-  <RCTSlider
+  <RNCSlider
     accessibilityLabel="slider input"
     disabled={false}
     enabled={true}
+    inverted={false}
     maximumTrackTintColor="#2F2424"
     maximumValue={100}
     minimumTrackTintColor="#2F2424"
     minimumValue={0}
     onChange={null}
+    onRNCSliderSlidingComplete={[Function]}
+    onRNCSliderSlidingStart={null}
+    onRNCSliderValueChange={null}
     onResponderTerminationRequest={[Function]}
-    onSlidingComplete={[Function]}
     onStartShouldSetResponder={[Function]}
-    onValueChange={null}
     step={1}
     style={
       Object {
         "height": 40,
+      }
+    }
+    thumbImage={
+      Object {
+        "__packager_asset": true,
+        "height": 1,
+        "scale": 1,
+        "uri": "file://assets/full/path/to/directory/name.type",
+        "width": 1,
       }
     }
     value={25}
@@ -67,23 +78,34 @@ exports[`with default value from a question with default value with data \`{ val
     }
   }
 >
-  <RCTSlider
+  <RNCSlider
     accessibilityLabel="slider input"
     disabled={false}
     enabled={true}
+    inverted={false}
     maximumTrackTintColor="#2F2424"
     maximumValue={100}
     minimumTrackTintColor="#2F2424"
     minimumValue={0}
     onChange={null}
+    onRNCSliderSlidingComplete={[Function]}
+    onRNCSliderSlidingStart={null}
+    onRNCSliderValueChange={null}
     onResponderTerminationRequest={[Function]}
-    onSlidingComplete={[Function]}
     onStartShouldSetResponder={[Function]}
-    onValueChange={null}
     step={1}
     style={
       Object {
         "height": 40,
+      }
+    }
+    thumbImage={
+      Object {
+        "__packager_asset": true,
+        "height": 1,
+        "scale": 1,
+        "uri": "file://assets/full/path/to/directory/name.type",
+        "width": 1,
       }
     }
     value={61}
@@ -126,23 +148,34 @@ exports[`with default value from a question with default value with data \`null\
     }
   }
 >
-  <RCTSlider
+  <RNCSlider
     accessibilityLabel="slider input"
     disabled={false}
     enabled={true}
+    inverted={false}
     maximumTrackTintColor="#2F2424"
     maximumValue={100}
     minimumTrackTintColor="#2F2424"
     minimumValue={0}
     onChange={null}
+    onRNCSliderSlidingComplete={[Function]}
+    onRNCSliderSlidingStart={null}
+    onRNCSliderValueChange={null}
     onResponderTerminationRequest={[Function]}
-    onSlidingComplete={[Function]}
     onStartShouldSetResponder={[Function]}
-    onValueChange={null}
     step={1}
     style={
       Object {
         "height": 40,
+      }
+    }
+    thumbImage={
+      Object {
+        "__packager_asset": true,
+        "height": 1,
+        "scale": 1,
+        "uri": "file://assets/full/path/to/directory/name.type",
+        "width": 1,
       }
     }
     value={100}
@@ -185,23 +218,34 @@ exports[`with default value from a question without default value with data \`{ 
     }
   }
 >
-  <RCTSlider
+  <RNCSlider
     accessibilityLabel="slider input"
     disabled={false}
     enabled={true}
+    inverted={false}
     maximumTrackTintColor="#2F2424"
     maximumValue={100}
     minimumTrackTintColor="#2F2424"
     minimumValue={0}
     onChange={null}
+    onRNCSliderSlidingComplete={[Function]}
+    onRNCSliderSlidingStart={null}
+    onRNCSliderValueChange={null}
     onResponderTerminationRequest={[Function]}
-    onSlidingComplete={[Function]}
     onStartShouldSetResponder={[Function]}
-    onValueChange={null}
     step={1}
     style={
       Object {
         "height": 40,
+      }
+    }
+    thumbImage={
+      Object {
+        "__packager_asset": true,
+        "height": 1,
+        "scale": 1,
+        "uri": "file://assets/full/path/to/directory/name.type",
+        "width": 1,
       }
     }
     value={31}
@@ -244,23 +288,34 @@ exports[`with default value from a question without default value with data \`nu
     }
   }
 >
-  <RCTSlider
+  <RNCSlider
     accessibilityLabel="slider input"
     disabled={false}
     enabled={true}
+    inverted={false}
     maximumTrackTintColor="#2F2424"
     maximumValue={100}
     minimumTrackTintColor="#2F2424"
     minimumValue={0}
     onChange={null}
+    onRNCSliderSlidingComplete={[Function]}
+    onRNCSliderSlidingStart={null}
+    onRNCSliderValueChange={null}
     onResponderTerminationRequest={[Function]}
-    onSlidingComplete={[Function]}
     onStartShouldSetResponder={[Function]}
-    onValueChange={null}
     step={1}
     style={
       Object {
         "height": 40,
+      }
+    }
+    thumbImage={
+      Object {
+        "__packager_asset": true,
+        "height": 1,
+        "scale": 1,
+        "uri": "file://assets/full/path/to/directory/name.type",
+        "width": 1,
       }
     }
     value={50}
@@ -303,23 +358,34 @@ exports[`without default value 1`] = `
     }
   }
 >
-  <RCTSlider
+  <RNCSlider
     accessibilityLabel="slider input"
     disabled={false}
     enabled={true}
+    inverted={false}
     maximumTrackTintColor="#2F2424"
     maximumValue={100}
     minimumTrackTintColor="#2F2424"
     minimumValue={0}
     onChange={null}
+    onRNCSliderSlidingComplete={[Function]}
+    onRNCSliderSlidingStart={null}
+    onRNCSliderValueChange={null}
     onResponderTerminationRequest={[Function]}
-    onSlidingComplete={[Function]}
     onStartShouldSetResponder={[Function]}
-    onValueChange={null}
     step={1}
     style={
       Object {
         "height": 40,
+      }
+    }
+    thumbImage={
+      Object {
+        "__packager_asset": true,
+        "height": 1,
+        "scale": 1,
+        "uri": "file://assets/full/path/to/directory/name.type",
+        "width": 1,
       }
     }
     value={50}
