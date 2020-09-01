@@ -2,8 +2,7 @@ import React from "react";
 import { render } from "react-native-testing-library";
 
 import SurveyScreen, { SurveyScreenProps } from "../../SurveyScreen";
-import { clearAnswersListAsync } from "../../helpers/asyncStorage/answersList";
-import { clearPingsListAsync } from "../../helpers/asyncStorage/pingsList";
+import { clearAllPingsAndAnswersAsync } from "../../helpers/cleanup";
 import { QuestionType } from "../../helpers/helpers";
 import { QuestionsList, Question, QuestionTypeType } from "../../helpers/types";
 import {
@@ -17,8 +16,7 @@ beforeEach(() => {
 });
 
 afterEach(async () => {
-  await clearAnswersListAsync();
-  await clearPingsListAsync();
+  await clearAllPingsAndAnswersAsync();
 });
 
 test("non-existent startingQuestionId", async () => {

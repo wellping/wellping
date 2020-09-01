@@ -34,6 +34,7 @@ import {
   clearPingStateAsync,
 } from "./helpers/asyncStorage/pingState";
 import { getUserAsync } from "./helpers/asyncStorage/user";
+import { clearAllPingsAndAnswersAsync } from "./helpers/cleanup";
 import { uploadDataAsync, getAllDataAsync } from "./helpers/dataUpload";
 import {
   shareDatabaseFileAsync,
@@ -61,8 +62,6 @@ import {
   insertPingAsync,
   getNumbersOfPingsForAllStreamNamesAsync,
 } from "./helpers/pings";
-import { secureRemoveAllAnswersAsync } from "./helpers/secureStore/answer";
-import { secureRemoveAllPingsAsync } from "./helpers/secureStore/ping";
 import { getSymbolsForServerTypeUsed, useFirebase } from "./helpers/server";
 import { getAllStreamNames, getStudyInfoAsync } from "./helpers/studyFile";
 import { styles } from "./helpers/styles";
@@ -667,8 +666,7 @@ export default class HomeScreen extends React.Component<
                     text: "Confirm",
                     style: "destructive",
                     onPress: async () => {
-                      await secureRemoveAllAnswersAsync();
-                      await secureRemoveAllPingsAsync();
+                      await clearAllPingsAndAnswersAsync();
                       await deleteDatabaseFileAsync(studyInfo.id);
                       alert("Done! Please restart the app.");
                     },
