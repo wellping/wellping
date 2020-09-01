@@ -2,18 +2,10 @@ import React from "react";
 import { render } from "react-native-testing-library";
 
 import SurveyScreen, { SurveyScreenProps } from "../../SurveyScreen";
+import { clearAnswersListAsync } from "../../helpers/asyncStorage/answersList";
+import { clearPingsListAsync } from "../../helpers/asyncStorage/pingsList";
 import { QuestionType } from "../../helpers/helpers";
-import {
-  QuestionsList,
-  Question,
-  QuestionTypeType,
-  SliderQuestion,
-  ChoicesWithSingleAnswerQuestion,
-  ChoicesWithMultipleAnswersQuestion,
-  YesNoQuestion,
-  MultipleTextQuestion,
-  HowLongAgoQuestion,
-} from "../../helpers/types";
+import { QuestionsList, Question, QuestionTypeType } from "../../helpers/types";
 import {
   TEST_PING,
   mockNecessaryFunctionsToTestSurveyScreen,
@@ -22,6 +14,11 @@ import {
 
 beforeEach(() => {
   mockNecessaryFunctionsToTestSurveyScreen();
+});
+
+afterEach(async () => {
+  await clearAnswersListAsync();
+  await clearPingsListAsync();
 });
 
 test("non-existent startingQuestionId", async () => {
