@@ -1,5 +1,6 @@
+import Slider from "@react-native-community/slider";
 import React from "react";
-import { View, Text, Slider } from "react-native";
+import { View, Text } from "react-native";
 
 import {
   QuestionScreenProps,

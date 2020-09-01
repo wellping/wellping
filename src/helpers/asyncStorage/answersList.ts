@@ -1,4 +1,4 @@
-import { AsyncStorage } from "react-native";
+import AsyncStorage from "@react-native-community/async-storage";
 
 import { Answer } from "../answerTypes";
 import { logError } from "../debug";

@@ -1,5 +1,5 @@
+import AsyncStorage from "@react-native-community/async-storage";
 import { Notifications } from "expo";
-import { AsyncStorage } from "react-native";
 
 import { logError } from "../debug";
 import { getASKeyAsync } from "./asyncStorage";
