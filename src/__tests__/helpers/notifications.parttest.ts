@@ -1,6 +1,5 @@
 import { Notifications } from "expo";
 import * as DateMock from "jest-date-mock";
-import { Connection } from "typeorm";
 
 import * as notificationTimesAsyncStorage from "../../helpers/asyncStorage/notificationTimes";
 import {
@@ -9,27 +8,12 @@ import {
   getIncomingNotificationTimeAsync,
 } from "../../helpers/notifications";
 import { StudyInfo } from "../../helpers/types";
-import {
-  getTestDatabaseFilename,
-  connectTestDatabaseAsync,
-} from "../data/database_helper";
 import { PINGS_STUDY_INFO } from "../data/pings";
 import { mockCurrentStudyInfo } from "../helper";
 import { FunctionSpyInstance } from "../jestHelper";
-import { PINGS_DB_NAME } from "./pings.parttest";
 
 // https://github.com/facebook/jest/issues/6194#issuecomment-419837314
 export const notificationsTest = () => {
-  let connection: Connection;
-  const DB_NAME = PINGS_DB_NAME;
-  const DB_FILENAME = getTestDatabaseFilename(DB_NAME);
-  beforeAll(async () => {
-    connection = await connectTestDatabaseAsync(DB_FILENAME);
-  });
-  afterAll(async () => {
-    await connection.close();
-  });
-
   let mathRandomSpy: FunctionSpyInstance<typeof global.Math.random>;
 
   beforeEach(() => {
@@ -39,8 +23,11 @@ export const notificationsTest = () => {
 
     mockCurrentStudyInfo(PINGS_STUDY_INFO);
   });
-  afterEach(() => {
+  afterEach(async () => {
     DateMock.clear();
+
+    // So that previous test's notifications will not interfere with later tests.
+    await notificationTimesAsyncStorage.clearNotificationTimesAsync();
   });
 
   describe("setNotificationsAsync", () => {

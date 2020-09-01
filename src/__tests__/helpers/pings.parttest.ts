@@ -1,7 +1,7 @@
 import * as DateMock from "jest-date-mock";
-import { Connection } from "typeorm";
 
 import { getAnswersAsync } from "../../helpers/answers";
+import { getPingsListAsync } from "../../helpers/asyncStorage/pingsList";
 import {
   getPingsAsync,
   getTodayPingsAsync,
@@ -13,31 +13,11 @@ import {
   getNumbersOfPingsForAllStreamNamesAsync,
   getNumberOfPingsForStreamNameAsync,
 } from "../../helpers/pings";
-import {
-  connectTestDatabaseAsync,
-  getTestDatabaseFilename,
-} from "../data/database_helper";
 import { PINGS, PINGS_DICT, PINGS_STUDY_INFO } from "../data/pings";
 import { mockCurrentStudyInfo } from "../helper";
 
-export const PINGS_DB_NAME = "pings";
-
 // https://github.com/facebook/jest/issues/6194#issuecomment-419837314
 export const pingsTest = () => {
-  let connection: Connection;
-  const DB_NAME = PINGS_DB_NAME;
-  const DB_FILENAME = getTestDatabaseFilename(DB_NAME);
-  beforeAll(async () => {
-    connection = await connectTestDatabaseAsync(DB_FILENAME);
-
-    // Reset database on start.
-    await connection.dropDatabase();
-    await connection.synchronize();
-  });
-  afterAll(async () => {
-    await connection.close();
-  });
-
   beforeEach(() => {
     mockCurrentStudyInfo(PINGS_STUDY_INFO);
   });
@@ -69,6 +49,9 @@ export const pingsTest = () => {
         endTime: null, // Doesn't have end time yet.
       };
       expect(addedPing).toEqual(pingWithoutEndDate);
+      expect(await getPingsListAsync()).toEqual(
+        PINGS.slice(0, i + 1).map((ping) => ping.id),
+      );
       expect(await getLatestPingAsync()).toEqual(pingWithoutEndDate);
 
       if (ping.endTime) {

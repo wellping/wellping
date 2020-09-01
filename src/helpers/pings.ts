@@ -28,9 +28,10 @@ export async function getNumbersOfPingsForAllStreamNamesAsync(): Promise<
 
   await Promise.all(
     streamNames.map(async (streamName) => {
-      results[streamName] = await getNumberOfPingsForStreamNameAsync(
-        streamName,
-      );
+      const numPing = await getNumberOfPingsForStreamNameAsync(streamName);
+      if (numPing > 0) {
+        results[streamName] = numPing;
+      }
     }),
   );
 
