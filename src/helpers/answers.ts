@@ -1,5 +1,5 @@
 import { AnswerData, Answer } from "./answerTypes";
-import { getAnswersListAsync } from "./asyncStorage/answersList";
+import { getAnswersPingIdsQuestionIdsListAsync } from "./asyncStorage/answersPingIdsQuestionIdsList";
 import { AnswerSchema } from "./schemas/Answer";
 import {
   secureGetAnswerAsync,
@@ -8,7 +8,7 @@ import {
 import { Question, Ping } from "./types";
 
 export async function getAnswersAsync(): Promise<Answer[]> {
-  const answersList = await getAnswersListAsync();
+  const answersList = await getAnswersPingIdsQuestionIdsListAsync();
   const answers: Answer[] = [];
 
   for (const pingIdAndQuestionId of answersList) {

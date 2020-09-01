@@ -2,10 +2,10 @@ import * as SecureStore from "expo-secure-store";
 
 import { Answer } from "../answerTypes";
 import {
-  addToAnswersListAsync,
-  getAnswersListAsync,
-  clearAnswersListAsync,
-} from "../asyncStorage/answersList";
+  addToAnswersQuestionIdsListForPingAsync,
+  getAnswersPingIdsQuestionIdsListAsync,
+  clearAnswersPingIdsQuestionIdsListAsync,
+} from "../asyncStorage/answersPingIdsQuestionIdsList";
 import { logError } from "../debug";
 import { AnswerSchema } from "../schemas/Answer";
 import { PingId, QuestionId } from "../types";
@@ -22,7 +22,7 @@ export async function secureStoreAnswerAsync(answer: Answer, isNew: boolean) {
       JSON.stringify(answer),
     );
     if (isNew) {
-      await addToAnswersListAsync(answer);
+      await addToAnswersQuestionIdsListForPingAsync(answer);
     }
   } catch (error) {
     logError(error);
@@ -54,7 +54,7 @@ export async function secureGetAnswerAsync(
 
 export async function secureRemoveAllAnswersAsync() {
   try {
-    const answersList = await getAnswersListAsync();
+    const answersList = await getAnswersPingIdsQuestionIdsListAsync();
     for (const pingIdAndQuestionId of answersList) {
       await SecureStore.deleteItemAsync(
         await getSSKeyAsync(
@@ -62,7 +62,7 @@ export async function secureRemoveAllAnswersAsync() {
         ),
       );
     }
-    await clearAnswersListAsync();
+    await clearAnswersPingIdsQuestionIdsListAsync();
   } catch (error) {
     logError(error);
   }
