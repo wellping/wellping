@@ -10,6 +10,7 @@ import {
 } from "./asyncStorage/studyFile";
 import { validateAndInitializeFirebaseWithConfig } from "./firebase";
 import { parseJsonToStudyFile } from "./schemas/StudyFile";
+import { useFirebase } from "./server";
 import {
   StudyFile,
   StudyInfo,
@@ -93,7 +94,9 @@ export async function parseAndStoreStudyFileAsync(
 ): Promise<string | null> {
   try {
     const parsedStudy = parseJsonToStudyFile(JSON.parse(rawJsonString));
-    validateAndInitializeFirebaseWithConfig(parsedStudy.studyInfo);
+    if (useFirebase(parsedStudy.studyInfo)) {
+      validateAndInitializeFirebaseWithConfig(parsedStudy.studyInfo);
+    }
     await storeCurrentStudyFileAsync(parsedStudy);
     return null;
   } catch (e) {

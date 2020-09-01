@@ -8,7 +8,7 @@ import { Share, Alert } from "react-native";
 // Format: js.[year - 2019].month.day.[the number of version on that day].
 // We use "js." prefix instead of "v." prefix so that it will be not confused
 // with the native version name.
-export const JS_VERSION_NUMBER = "js.1.8.20.1";
+export const JS_VERSION_NUMBER = "js.1.8.28.1";
 export const NATIVE_VERSION_NUMBER = Constants.nativeAppVersion;
 export const NATIVE_BUILD_NUMBER = Constants.nativeBuildVersion;
 export const EXPO_VERSION = Constants.expoVersion;
@@ -54,12 +54,16 @@ export const USER_INSTALLATION_INFO: UserInstallationInfo = {
 };
 
 export const HOME_SCREEN_DEBUG_VIEW_SYMBOLS = {
-  DO_NOT_USE_FIREBASE: "¡FB N/A!",
+  SERVER_USED: {
+    FIREBASE: "F",
+    BEIWE: "B",
+    NO_SERVER: "N!",
+  },
   FIREBASE_AUTH: {
     LOGGED_IN: "",
     NOT_LOGGED_IN: "*",
   },
-  FIREBASE_DATABASE: {
+  UPLOAD: {
     INITIAL: "",
     UPLOADING: "~",
     END_SUCCESS: "v",

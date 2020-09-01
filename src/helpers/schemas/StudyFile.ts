@@ -15,6 +15,25 @@ export const WeekStartsOnSchema = z.union([
   z.literal(6),
 ]);
 
+export const FirebaseConfigSchema = z.record(z.string());
+export const FirebaseServerConfigSchema = z.object({
+  /**
+   * The Firebase config object for the study.
+   *
+   * See https://firebase.google.com/docs/web/setup#config-object
+   */
+  config: FirebaseConfigSchema,
+});
+
+export const BeiweServerConfigSchema = z.object({
+  /**
+   * The server URL of Beiwe backend for the study.
+   *
+   * Example: `"https://beiwe.example.com/"`
+   */
+  serverUrl: z.string(),
+});
+
 export const StudyInfoSchema = z
   .object({
     /**
@@ -34,8 +53,19 @@ export const StudyInfoSchema = z
     /**
      * The URL of the dashboard that will be shown to the user on the home page.
      *
-     * The placeholder `__ID_TOKEN__` will be replaced by the user's Firebase
-     * Auth ID token if the user is signed in to Firebase, and "N/A" otherwise.
+     * ---
+     *
+     * The placeholder `__USERNAME__` will be replaced by the user's username.
+     * Notice that you should not return any sensitive data based on this field
+     * as it can be changed by anyone.
+     * In order to verify the user securely:
+     * - If you are using Firebase, you should use the `__FIREBASE_ID_TOKEN__`
+     *   placeholder as explained below.
+     * - If you are using Beiwe, (A TODO: ITEM).
+     *
+     * If Firebase is used, the placeholder `__FIREBASE_ID_TOKEN__` will be
+     * replaced by the user's Firebase Auth ID token if the user is signed in
+     * to Firebase, and "N/A" otherwise.
      *
      * ---
      *
@@ -56,15 +86,27 @@ export const StudyInfoSchema = z
     dashboardURL: z.string().url().optional(),
 
     /**
-     * The Firebase config object for the study. See
-     * https://firebase.google.com/docs/web/setup#config-object
+     * The backend server info for the study. Well Ping supports uploading to
+     * Firebase or uploading to Beiwe.
      *
-     * If it is set to `{ "_WellPing_doNotUseFirebase": "YES" }`, you will be
-     * able to log in using any username password combination, and no data will
-     * be uploaded. This is only intended for testing or demo purposes and
-     * should not be used in production.
+     * If Firebase backend is used, `server.firebase` should be defined.
+     *
+     * If Beiwe backend is used, `server.beiwe` should be defined.
+     *
+     * If this object is empty (i.e., `server: {}`), you will be able to log in
+     * using any username password combination, and no data will be uploaded.
+     * This is only intended for testing or demo purposes and should not be used
+     * in production. (MARK: NO_SERVER_NOTE)
+     *
+     * Notice that in theory, both `server.firebase` and `server.beiwe` could be
+     * set (meaning that the data will be uploaded to both Beiwe and Firebase).
+     * However, such pratice is not thoroughly tested and is not guaranteed to
+     * work correctly.
      */
-    firebaseConfig: z.record(z.string()),
+    server: z.object({
+      firebase: FirebaseServerConfigSchema.optional(),
+      beiwe: BeiweServerConfigSchema.optional(),
+    }),
 
     /**
      * The URL of the study consent form (or any web page you would want the

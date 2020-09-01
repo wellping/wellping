@@ -48,11 +48,7 @@ import {
   alertWithShareButtonContainingDebugInfo,
   HOME_SCREEN_DEBUG_VIEW_SYMBOLS,
 } from "./helpers/debug";
-import {
-  firebaseLoginAsync,
-  firebaseInitialized,
-  doNotUseFirebase,
-} from "./helpers/firebase";
+import { firebaseLoginAsync, firebaseInitialized } from "./helpers/firebase";
 import {
   setNotificationsAsync,
   setupNotificationsPermissionAsync,
@@ -66,6 +62,7 @@ import {
   insertPingAsync,
   getNumbersOfPingsForAllStreamNames,
 } from "./helpers/pings";
+import { getSymbolsForServerTypeUsed, useFirebase } from "./helpers/server";
 import { getAllStreamNames, getStudyInfoAsync } from "./helpers/studyFile";
 import { styles } from "./helpers/styles";
 import { Streams, StreamName, StudyInfo } from "./helpers/types";
@@ -85,8 +82,14 @@ interface HomeScreenState {
   currentPing: PingEntity | null;
   isLoading: boolean;
   storedPingStateAsync: SurveyScreenState | null;
+  uploadStatusSymbol: string;
+
+  /**
+   * For when Firebase server is used.
+   *
+   * If Firebase server is not used, it is always `null`.
+   */
   firebaseUser: firebase.User | null;
-  firebaseUploadStatusSymbol: string;
 
   // DEBUG
   displayDebugView: boolean;
@@ -110,9 +113,8 @@ export default class HomeScreen extends React.Component<
       isLoading: true,
       displayDebugView: false,
       storedPingStateAsync: null,
+      uploadStatusSymbol: HOME_SCREEN_DEBUG_VIEW_SYMBOLS.UPLOAD.INITIAL,
       firebaseUser: null,
-      firebaseUploadStatusSymbol:
-        HOME_SCREEN_DEBUG_VIEW_SYMBOLS.FIREBASE_DATABASE.INITIAL,
     };
   }
 
@@ -194,7 +196,7 @@ export default class HomeScreen extends React.Component<
       });
     }
 
-    if (firebaseInitialized()) {
+    if (useFirebase(studyInfo) && firebaseInitialized()) {
       this.unregisterAuthObserver = firebase.auth().onAuthStateChanged(
         async (firebaseUser) => {
           if (firebaseUser) {
@@ -219,9 +221,9 @@ export default class HomeScreen extends React.Component<
             }
 
             try {
-              // If it is successful, this `onAuthStateChanged` callback will
-              // be called again, so we don't have to do anything here.
-              await firebaseLoginAsync(studyInfo, localStoredUser);
+              await firebaseLoginAsync(localStoredUser);
+              // If the login is successful, this `onAuthStateChanged` callback
+              // will be called again, so we don't have to do anything here.
             } catch (e) {
               alertWithShareButtonContainingDebugInfo(
                 // I'm pretty sure Internet has nothing to do with this, but
@@ -308,8 +310,8 @@ export default class HomeScreen extends React.Component<
     });
   }
 
-  setFirebaseUploadStatusSymbol = (symbol: string) => {
-    this.setState({ firebaseUploadStatusSymbol: symbol });
+  setUploadStatusSymbol = (symbol: string) => {
+    this.setState({ uploadStatusSymbol: symbol });
   };
 
   render() {
@@ -341,22 +343,20 @@ export default class HomeScreen extends React.Component<
                 justifyContent: "center",
               }}
             >
-              {this.state.firebaseUploadStatusSymbol.length > 1 ? (
+              {this.state.uploadStatusSymbol.length > 1 ? (
                 // If it is not a one-character symbol, there is an error.
                 // We will hide the version code to show the error code.
                 <Text style={{ color: "orange" }}>
-                  {this.state.firebaseUploadStatusSymbol}
+                  {this.state.uploadStatusSymbol}
                 </Text>
               ) : (
                 <Text style={{ color: "lightgray" }}>
                   {JS_VERSION_NUMBER}
-                  {firebaseUser === null
+                  {getSymbolsForServerTypeUsed(studyInfo)}
+                  {useFirebase(studyInfo) && firebaseUser === null
                     ? HOME_SCREEN_DEBUG_VIEW_SYMBOLS.FIREBASE_AUTH.NOT_LOGGED_IN
                     : HOME_SCREEN_DEBUG_VIEW_SYMBOLS.FIREBASE_AUTH.LOGGED_IN}
-                  {doNotUseFirebase(studyInfo)
-                    ? HOME_SCREEN_DEBUG_VIEW_SYMBOLS.DO_NOT_USE_FIREBASE
-                    : ""}
-                  {this.state.firebaseUploadStatusSymbol}
+                  {this.state.uploadStatusSymbol}
                 </Text>
               )}
               {studyInfo.contactEmail && (
@@ -584,7 +584,7 @@ export default class HomeScreen extends React.Component<
             onPress={async () => {
               const response = await uploadDataAsync(
                 studyInfo,
-                this.setFirebaseUploadStatusSymbol,
+                this.setUploadStatusSymbol,
               );
               alertWithShareButtonContainingDebugInfo(`${response}`);
             }}
@@ -808,10 +808,10 @@ export default class HomeScreen extends React.Component<
           previousState={this.state.storedPingStateAsync}
           onFinish={(finishedPing) => {
             this.setState({ currentPing: finishedPing });
-            uploadDataAsync(studyInfo, this.setFirebaseUploadStatusSymbol);
+            uploadDataAsync(studyInfo, this.setUploadStatusSymbol);
           }}
           studyInfo={studyInfo}
-          setFirebaseUploadStatusSymbol={this.setFirebaseUploadStatusSymbol}
+          setUploadStatusSymbol={this.setUploadStatusSymbol}
         />
         <DebugView />
       </View>

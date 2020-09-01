@@ -113,7 +113,7 @@ export interface SurveyScreenProps {
 
   studyInfo: StudyInfo;
 
-  setFirebaseUploadStatusSymbol: (symbol: string) => void;
+  setUploadStatusSymbol: (symbol: string) => void;
 }
 
 export interface SurveyScreenState {
@@ -571,7 +571,7 @@ export default class SurveyScreen extends React.Component<
           this.setState({ lastUploadDate: currentTime });
           uploadDataAsync(
             this.props.studyInfo,
-            this.props.setFirebaseUploadStatusSymbol,
+            this.props.setUploadStatusSymbol,
           );
         }
       });

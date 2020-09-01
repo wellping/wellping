@@ -20,6 +20,7 @@ import {
   getNonCriticalProblemTextForUser,
 } from "./helpers/debug";
 import { validateAndInitializeFirebaseWithConfig } from "./helpers/firebase";
+import { useFirebase } from "./helpers/server";
 import {
   getStudyFileAsync,
   downloadStudyFileAsync,
@@ -143,17 +144,19 @@ export default class RootScreen extends React.Component<
 
       const survey = await getStudyFileAsync();
 
-      try {
-        validateAndInitializeFirebaseWithConfig(survey.studyInfo);
-      } catch (e) {
-        await this.logoutFnAsync();
-        this.setState({ isLoading: false });
-        alertWithShareButtonContainingDebugInfo(
-          getCriticalProblemTextForUser(
-            `componentDidMount validateAndInitializeFirebaseWithConfig: ${e}`,
-          ),
-        );
-        return;
+      if (useFirebase(survey.studyInfo)) {
+        try {
+          validateAndInitializeFirebaseWithConfig(survey.studyInfo);
+        } catch (e) {
+          await this.logoutFnAsync();
+          this.setState({ isLoading: false });
+          alertWithShareButtonContainingDebugInfo(
+            getCriticalProblemTextForUser(
+              `componentDidMount validateAndInitializeFirebaseWithConfig: ${e}`,
+            ),
+          );
+          return;
+        }
       }
 
       const user = await getUserAsync();

@@ -2,6 +2,7 @@ import { AnswerEntity } from "../entities/AnswerEntity";
 import { PingEntity } from "../entities/PingEntity";
 import { getAnswersAsync } from "./answers";
 import { getUserAsync } from "./asyncStorage/user";
+import { beiweUploadDataForUserAsync } from "./beiwe";
 import {
   UserInstallationInfo,
   HOME_SCREEN_DEBUG_VIEW_SYMBOLS,
@@ -9,6 +10,7 @@ import {
 } from "./debug";
 import { firebaseUploadDataForUserAsync } from "./firebase";
 import { getPingsAsync } from "./pings";
+import { useFirebase, useServer, useBeiwe } from "./server";
 import { StudyInfo } from "./types";
 
 export type UploadData = {
@@ -42,28 +44,52 @@ export async function getAllDataAsync(): Promise<UploadData> {
 
 export async function uploadDataAsync(
   studyInfo: StudyInfo,
-  setFirebaseUploadStatusSymbol: (symbol: string) => void,
+  setUploadStatusSymbol: (symbol: string) => void,
 ): Promise<Error | null> {
   const data = await getAllDataAsync();
 
-  return await firebaseUploadDataForUserAsync(
-    studyInfo,
-    data,
-    () => {
-      setFirebaseUploadStatusSymbol(
-        HOME_SCREEN_DEBUG_VIEW_SYMBOLS.FIREBASE_DATABASE.UPLOADING,
+  const startUploading = (): void => {
+    setUploadStatusSymbol(HOME_SCREEN_DEBUG_VIEW_SYMBOLS.UPLOAD.UPLOADING);
+  };
+  const endUploading = (errorMessage?: string): void => {
+    setUploadStatusSymbol(
+      errorMessage || HOME_SCREEN_DEBUG_VIEW_SYMBOLS.UPLOAD.END_SUCCESS,
+    );
+
+    // Reset symbol in 3 seconds if no error, and 10 if there was error.
+    setTimeout(
+      () => {
+        setUploadStatusSymbol(HOME_SCREEN_DEBUG_VIEW_SYMBOLS.UPLOAD.INITIAL);
+      },
+      errorMessage ? 10000 : 3000,
+    );
+  };
+
+  if (useServer(studyInfo)) {
+    if (useFirebase(studyInfo)) {
+      const error = await firebaseUploadDataForUserAsync(
+        data,
+        startUploading,
+        endUploading,
       );
-    },
-    (symbol, isError) => {
-      setFirebaseUploadStatusSymbol(symbol);
-      setTimeout(
-        () => {
-          setFirebaseUploadStatusSymbol(
-            HOME_SCREEN_DEBUG_VIEW_SYMBOLS.FIREBASE_DATABASE.INITIAL,
-          );
-        },
-        isError ? 10000 : 3000 /* reset symbol in 3 (of 10 if error) seconds */,
+      if (error) {
+        return error;
+      }
+    }
+    if (useBeiwe(studyInfo)) {
+      const error = await beiweUploadDataForUserAsync(
+        data,
+        startUploading,
+        endUploading,
       );
-    },
-  );
+      if (error) {
+        return error;
+      }
+    }
+  } else {
+    startUploading();
+    await new Promise((r) => setTimeout(r, 1000)); // Simulate loading.
+    endUploading(`No Server Set`);
+  }
+  return null;
 }

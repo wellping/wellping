@@ -1,9 +1,14 @@
-import Constants from "expo-constants";
+/**
+ * Unless otherwise noted, precondition for every function in the file is:
+ * `useFirebase(studyInfo) === true`.
+ */
+
 import * as firebase from "firebase/app";
 
 import { User } from "./asyncStorage/user";
 import { UploadData } from "./dataUpload";
-import { HOME_SCREEN_DEBUG_VIEW_SYMBOLS, INSTALLATION_ID } from "./debug";
+import { INSTALLATION_ID } from "./debug";
+import { getFirebaseServerConfig } from "./server";
 import { StudyInfo } from "./types";
 
 /**
@@ -14,28 +19,16 @@ const FIREBASE_LOGIN_EMAIL_DOMAIN = "@user.wellpingssnl";
 const getFirebaseLoginEmail = (username: string): string =>
   username + FIREBASE_LOGIN_EMAIL_DOMAIN;
 
-export function doNotUseFirebase(studyInfo: StudyInfo): boolean {
-  if (studyInfo.firebaseConfig._WellPing_doNotUseFirebase === "YES") {
-    return true;
-  } else {
-    return false;
-  }
-}
-
 export function validateAndInitializeFirebaseWithConfig(studyInfo: StudyInfo) {
-  if (doNotUseFirebase(studyInfo)) {
-    return;
-  }
-
   if (firebase.apps.length === 0) {
-    firebase.initializeApp(studyInfo.firebaseConfig);
+    firebase.initializeApp(getFirebaseServerConfig(studyInfo).config);
   }
 
   try {
-    // Just running an arbitrary to check if the `firebaseConfig` is correct.
+    // Just running an arbitrary to check if the Firebase config is correct.
     firebase.auth();
   } catch (e) {
-    const message = `**firebaseConfig is incorrect.**\n\n${e}`;
+    const message = `**Firebase config object is incorrect.**\n\n${e}`;
     throw new Error(message);
   }
 }
@@ -50,16 +43,8 @@ export function firebaseInitialized(): boolean {
 }
 
 export async function firebaseLoginAsync(
-  studyInfo: StudyInfo,
   user: User,
 ): Promise<firebase.auth.UserCredential> {
-  if (doNotUseFirebase(studyInfo)) {
-    await new Promise((r) => setTimeout(r, 3000)); // Simulate loading.
-    // Currently the return object is unused by the app, so we can just return
-    // anything.
-    return { firebaseNotUsed: "Firebase is not used." } as any;
-  }
-
   try {
     const userCredential = await firebase
       .auth()
@@ -80,35 +65,33 @@ export async function firebaseLoginAsync(
   }
 }
 
-export async function firebaseLogoutAsync(): Promise<void> {
+/**
+ * Special precondition: `firebaseInitialized() === true`. We don't need to
+ * check for `useFirebase(studyInfo)` for this function.
+ */
+export async function firebaseLogoutAndDeleteAppAsync(): Promise<void> {
   try {
-    await firebase.auth().signOut();
+    if (firebase.auth().currentUser !== null) {
+      await firebase.auth().signOut();
+    }
+    await firebase.app().delete();
   } catch (error) {
     throw error;
   }
 }
 
 export async function firebaseUploadDataForUserAsync(
-  studyInfo: StudyInfo,
   data: UploadData,
   startUploading: () => void,
-  // `errorSymbol` will be shown alongside the JS version at the top of the screen.
-  endUploading: (symbol: string, isError: boolean) => void,
+  endUploading: (errorMessage?: string) => void,
 ): Promise<Error | null> {
-  if (doNotUseFirebase(studyInfo)) {
-    startUploading();
-    await new Promise((r) => setTimeout(r, 1000)); // Simulate loading.
-    endUploading(`Firebase N/A`, true);
-    return new Error("Firebase is not used.");
-  }
-
   startUploading();
 
   const user = firebase.auth().currentUser;
   if (user === null) {
     // Stops if the user is not logged in to Firebase as they won't have
     // permission to upload.
-    endUploading("DB: U=N", true);
+    endUploading("FDB: U=N");
     return new Error(
       "firebase.auth().currentUser === null in firebaseUploadDataForUserAsync",
     );
@@ -121,14 +104,11 @@ export async function firebaseUploadDataForUserAsync(
       .database()
       .ref(`users/${user.uid}/${INSTALLATION_ID}`)
       .set(dataPlain);
-    endUploading(
-      HOME_SCREEN_DEBUG_VIEW_SYMBOLS.FIREBASE_DATABASE.END_SUCCESS,
-      false,
-    );
+    endUploading();
     return null;
   } catch (e) {
     const error = e as firebase.FirebaseError;
-    endUploading(`DB: ${error.code}`, true);
+    endUploading(`FDB: ${error.code}`);
     return error;
   }
 }
