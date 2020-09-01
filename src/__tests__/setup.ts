@@ -5,24 +5,6 @@ beforeEach(() => {
   jest.spyOn(console, "error").mockImplementation((...error: any[]) => {
     if (
       (error[0] as string).includes(
-        "Warning: Slider has been extracted from react-native",
-      )
-    ) {
-      // Slience error about Slider.
-      return;
-    }
-
-    if (
-      (error[0] as string).includes(
-        "Warning: AsyncStorage has been extracted from react-native",
-      )
-    ) {
-      // Slience error about AsyncStorage.
-      return;
-    }
-
-    if (
-      (error[0] as string).includes(
         "Consider adding an error boundary to your tree to customize error handling behavior",
       )
     ) {
