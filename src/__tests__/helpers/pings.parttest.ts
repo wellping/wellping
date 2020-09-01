@@ -247,7 +247,7 @@ export const pingsTest = () => {
     DateMock.clear();
   });
 
-  test("database match", async () => {
+  test("data match", async () => {
     const allPings = await getPingsAsync();
     // A snapshot of the "ping" table in database.
     expect(allPings).toMatchSnapshot("getPingsAsync");
