@@ -2,7 +2,6 @@ import { clearCurrentStudyFileAsync } from "./asyncStorage/studyFile";
 import { storeUserAsync, User, clearUserAsync } from "./asyncStorage/user";
 import { beiweLoginAsync } from "./beiwe";
 import { clearAllPingsAndAnswersAsync } from "./cleanup";
-import { backupDatabaseFileAsync } from "./database";
 import {
   firebaseLoginAsync,
   firebaseLogoutAndDeleteAppAsync,
@@ -36,11 +35,6 @@ export async function logoutAsync() {
   }
 
   if (await studyFileExistsAsync()) {
-    const studyInfo = await getStudyInfoAsync();
-
-    // Backup the database file.
-    await backupDatabaseFileAsync(studyInfo.id);
-
     await clearAllPingsAndAnswersAsync();
   }
 

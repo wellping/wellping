@@ -232,11 +232,11 @@ export const pingsTest = () => {
 
   test("data match", async () => {
     const allPings = await getPingsAsync();
-    // A snapshot of the "ping" table in database.
+    // A snapshot of the pings.
     expect(allPings).toMatchSnapshot("getPingsAsync");
 
     const allAnswers = await getAnswersAsync();
-    // A snapshot of the "answer" table in database.
+    // A snapshot of the answers.
     expect(allAnswers).toMatchSnapshot("getAnswersAsync");
   });
 };

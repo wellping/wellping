@@ -37,11 +37,6 @@ import { getUserAsync } from "./helpers/asyncStorage/user";
 import { clearAllPingsAndAnswersAsync } from "./helpers/cleanup";
 import { uploadDataAsync, getAllDataAsync } from "./helpers/dataUpload";
 import {
-  shareDatabaseFileAsync,
-  deleteDatabaseFileAsync,
-  getDatabaseFolderFilelistAsync,
-} from "./helpers/database";
-import {
   getNonCriticalProblemTextForUser,
   JS_VERSION_NUMBER,
   getUsefulDebugInfo,
@@ -436,41 +431,6 @@ export default class HomeScreen extends React.Component<
           />
           <Button
             color="orange"
-            title="shareDatabaseFileAsync"
-            onPress={async () => {
-              /*const ping = new PingEntity();
-              ping.id = "another";
-              ping.notificationTime = new Date();
-              ping.startTime = new Date();
-              ping.streamName = "one";
-              ping.tzOffset = 700;
-              await ping.save();
-
-              const answer = new AnswerEntity();
-              answer.ping = ping;
-              answer.questionId = "qu";
-              answer.questionType = QuestionType.YesNo;
-              answer.preferNotToAnswer = null;
-              answer.data = {
-                value: "haha",
-              };
-              answer.date = new Date();
-              await answer.save();*/
-
-              await shareDatabaseFileAsync(studyInfo.id);
-            }}
-          />
-          <Button
-            color="orange"
-            title="getDatabaseFolderFilelistAsync"
-            onPress={async () => {
-              alertWithShareButtonContainingDebugInfo(
-                JSON.stringify(await getDatabaseFolderFilelistAsync()),
-              );
-            }}
-          />
-          <Button
-            color="orange"
             title="getStudyInfoAsync()"
             onPress={async () => {
               alertWithShareButtonContainingDebugInfo(
@@ -667,7 +627,6 @@ export default class HomeScreen extends React.Component<
                     style: "destructive",
                     onPress: async () => {
                       await clearAllPingsAndAnswersAsync();
-                      await deleteDatabaseFileAsync(studyInfo.id);
                       alert("Done! Please restart the app.");
                     },
                   },

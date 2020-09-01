@@ -13,7 +13,6 @@ import {
   User,
   clearUserAsync,
 } from "./helpers/asyncStorage/user";
-import { connectDatabaseAsync } from "./helpers/database";
 import {
   getCriticalProblemTextForUser,
   alertWithShareButtonContainingDebugInfo,
@@ -185,8 +184,6 @@ export default class RootScreen extends React.Component<
           // Just do it next time.
         },
       });
-
-      await connectDatabaseAsync(survey.studyInfo.id);
 
       this.setState({ userInfo: user, survey });
     }

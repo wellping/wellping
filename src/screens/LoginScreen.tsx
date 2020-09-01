@@ -13,7 +13,6 @@ import {
 } from "react-native";
 
 import { User } from "../helpers/asyncStorage/user";
-import { connectDatabaseAsync } from "../helpers/database";
 import {
   JS_VERSION_NUMBER,
   alertWithShareButtonContainingDebugInfo,
@@ -234,17 +233,6 @@ export default class LoginScreen extends React.Component<
           {
             text: "Review",
             onPress: async () => {
-              try {
-                // Because database was not previously connected.
-                await connectDatabaseAsync(survey.studyInfo.id);
-              } catch (e) {
-                // `connectDatabaseAsync` should already alerted user.
-                this.setState({
-                  errorText: getCriticalProblemTextForUser(`${e}`),
-                });
-                return;
-              }
-
               await WebBrowser.openBrowserAsync(
                 survey.studyInfo.consentFormUrl,
               );

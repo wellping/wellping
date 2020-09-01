@@ -4,10 +4,8 @@ import {
   waitForElementToBeRemoved,
   RenderAPI,
 } from "react-native-testing-library";
-import { BaseEntity } from "typeorm";
 import waitForExpect from "wait-for-expect";
 
-import * as HelperPings from "../../helpers/pings";
 import { PingSchema } from "../../helpers/schemas/Ping";
 import { Ping } from "../../helpers/types";
 import { PINGS_STUDY_INFO } from "../data/pings";
@@ -51,31 +49,7 @@ export const QUESTION_TITLE_TESTID = "questionTitle";
 export const NEXT_BUTTON_A11YLABEL = "Next question";
 export const PNA_BUTTON_A11YLABEL = "Prefer not to answer the current question";
 
-/**
- * If we are not testing database here, we can mock all database-related
- * function.
- * If we don't do so, the code will be stuck on these functions.
- */
-export function mockDatabaseRelatedFunction() {
-  // https://stackoverflow.com/a/56565849/2603230
-  jest.spyOn(BaseEntity.prototype, "save").mockReturnThis();
-  jest.spyOn(BaseEntity.prototype, "reload").mockReturnThis();
-
-  // `addEndTimeToPingAsync` is tested in `pings.parttest.ts`.
-  jest
-    .spyOn(HelperPings, "addEndTimeToPingAsync")
-    .mockImplementation(async () => {
-      const newPing = {
-        ...TEST_PING_RAW,
-        endDate: new Date(),
-      };
-      return getPing(newPing);
-    });
-}
-
 export function mockNecessaryFunctionsToTestSurveyScreen() {
-  mockDatabaseRelatedFunction();
-
   // Just use a study info - it's not important.
   mockCurrentStudyInfo(PINGS_STUDY_INFO);
 }
