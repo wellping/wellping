@@ -92,8 +92,14 @@ export async function getPingsAsync(
   order: "ASC" | "DESC" = "ASC",
 ): Promise<Ping[]> {
   const pingsList = await getPingsListAsync();
+  if (order === "DESC") {
+    // As it is in ascending order by default.
+    pingsList.reverse();
+  }
+
   const pings: Ping[] = [];
 
+  // TODO: Promise.all way to do it to make it faster. (but we have to think of some index based way to do it)
   for (const pingId of pingsList) {
     pings.push((await secureGetPingAsync(pingId))!);
   }
