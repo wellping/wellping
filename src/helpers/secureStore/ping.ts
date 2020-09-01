@@ -1,3 +1,4 @@
+import { parseJSON } from "date-fns";
 import * as SecureStore from "expo-secure-store";
 
 import {
@@ -38,11 +39,15 @@ export async function secureGetPingAsync(pingId: PingId): Promise<Ping | null> {
 
     // TODO: CONSIDER BETTER WAY TO DO THIS (INSTEAD OF HARDCODING).
     const parsedValue = JSON.parse(value);
-    parsedValue.startTime =
-      parsedValue.startTime && new Date(parsedValue.startTime);
-    parsedValue.notificationTime =
-      parsedValue.notificationTime && new Date(parsedValue.notificationTime);
-    parsedValue.endTime = parsedValue.endTime && new Date(parsedValue.endTime);
+    parsedValue.startTime = parsedValue.startTime
+      ? parseJSON(parsedValue.startTime)
+      : null;
+    parsedValue.notificationTime = parsedValue.notificationTime
+      ? parseJSON(parsedValue.notificationTime)
+      : null;
+    parsedValue.endTime = parsedValue.endTime
+      ? parseJSON(parsedValue.endTime)
+      : null;
 
     return PingSchema.parse(parsedValue);
   } catch (error) {

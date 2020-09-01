@@ -1,3 +1,4 @@
+import { parseJSON } from "date-fns";
 import * as SecureStore from "expo-secure-store";
 
 import { Answer } from "../answerTypes";
@@ -43,7 +44,7 @@ export async function secureGetAnswerAsync(
 
     // TODO: CONSIDER BETTER WAY TO DO THIS (INSTEAD OF HARDCODING).
     const parsedValue = JSON.parse(value);
-    parsedValue.date = parsedValue.date && new Date(parsedValue.date);
+    parsedValue.date = parsedValue.date ? parseJSON(parsedValue.date) : null;
 
     return AnswerSchema.parse(parsedValue);
   } catch (error) {
