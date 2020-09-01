@@ -38,7 +38,7 @@ const mockSecureStore: any = {
       if (mockSecureStore.__INTERNAL_MOCK_STORAGE__.hasOwnProperty(key)) {
         resolve(delete mockSecureStore.__INTERNAL_MOCK_STORAGE__[key]);
       } else {
-        reject(new Error("No such key!"));
+        reject(new Error(`No such key "${key}"!`));
       }
     });
   }),
