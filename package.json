@@ -77,6 +77,7 @@
       "**/__tests__/**/*.(spec|test).[jt]s?(x)"
     ],
     "setupFiles": [
+      "<rootDir>/src/__tests__/setupAsyncStorage.js",
       "jest-date-mock"
     ],
     "setupFilesAfterEnv": [
