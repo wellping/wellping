@@ -13,14 +13,26 @@ import {
 import SurveyScreen, { SurveyScreenProps } from "../../SurveyScreen";
 import { QuestionType } from "../../helpers/helpers";
 import {
-  TEST_PING,
-  mockNecessaryFunctionsToTestSurveyScreen,
+  setUpSurveyScreenTestAsync,
+  tearDownSurveyScreenTestAsync,
   testQuestionsSequenceAsync,
   TestQuestionsSequence,
+  getBaseProps,
 } from "./helper";
 
-beforeEach(() => {
-  mockNecessaryFunctionsToTestSurveyScreen();
+let currentPropsBase!: SurveyScreenProps;
+beforeEach(async () => {
+  const currentTestPing = await setUpSurveyScreenTestAsync();
+  currentPropsBase = {
+    ...getBaseProps(),
+    questions: {}, // Will be extended by each test.
+    startingQuestionId: "q1",
+    ping: currentTestPing,
+  };
+});
+
+afterEach(async () => {
+  await tearDownSurveyScreenTestAsync();
 });
 
 async function clickOptionAsync(
@@ -30,14 +42,6 @@ async function clickOptionAsync(
   // `findBy` does the `waitFor` for us.
   fireEvent.press(await findByA11yLabel(`select ${option}`));
 }
-
-const propsBase: SurveyScreenProps = {
-  questions: {},
-  startingQuestionId: "q1",
-  ping: TEST_PING,
-  previousState: null,
-  onFinish: async () => {},
-};
 
 const TWO_TYPES: (
   | "ChoicesWithSingleAnswer"
@@ -56,8 +60,9 @@ describe.each(TWO_TYPES)(
       [],
       [["Non Existent Choice", "newId"]] as [string, string][],
     ])("specialCasesStartId: %p", (specialCasesStartId) => {
-      const props: SurveyScreenProps = {
-        ...propsBase,
+      // See `MARK: SURVEY_TEST_WHY_GET_PROPS`.
+      const getProps = (): SurveyScreenProps => ({
+        ...currentPropsBase,
         questions: {
           q1: {
             id: "q1",
@@ -75,13 +80,13 @@ describe.each(TWO_TYPES)(
             next: null,
           },
         },
-      };
+      });
 
       test("click a choice", async () => {
         const onFinishFn = jest.fn();
 
         const renderResults = render(
-          <SurveyScreen {...props} onFinish={onFinishFn} />,
+          <SurveyScreen {...getProps()} onFinish={onFinishFn} />,
         );
 
         await testQuestionsSequenceAsync({
@@ -108,7 +113,7 @@ describe.each(TWO_TYPES)(
         const onFinishFn = jest.fn();
 
         const renderResults = render(
-          <SurveyScreen {...props} onFinish={onFinishFn} />,
+          <SurveyScreen {...getProps()} onFinish={onFinishFn} />,
         );
 
         await testQuestionsSequenceAsync({
@@ -133,7 +138,7 @@ describe.each(TWO_TYPES)(
         const onFinishFn = jest.fn();
 
         const renderResults = render(
-          <SurveyScreen {...props} onFinish={onFinishFn} />,
+          <SurveyScreen {...getProps()} onFinish={onFinishFn} />,
         );
 
         await testQuestionsSequenceAsync({
@@ -163,8 +168,8 @@ describe.each(TWO_TYPES)(
 );
 
 describe.each(TWO_TYPES)("with non-null specialCasesStartId - %s: ", (type) => {
-  const props: SurveyScreenProps = {
-    ...propsBase,
+  const getProps = (): SurveyScreenProps => ({
+    ...currentPropsBase,
     questions: {
       q1: {
         id: "q1",
@@ -203,13 +208,13 @@ describe.each(TWO_TYPES)("with non-null specialCasesStartId - %s: ", (type) => {
         next: null,
       },
     },
-  };
+  });
 
   test("click special-case choice", async () => {
     const onFinishFn = jest.fn();
 
     const renderResults = render(
-      <SurveyScreen {...props} onFinish={onFinishFn} />,
+      <SurveyScreen {...getProps()} onFinish={onFinishFn} />,
     );
 
     await testQuestionsSequenceAsync({
@@ -243,7 +248,7 @@ describe.each(TWO_TYPES)("with non-null specialCasesStartId - %s: ", (type) => {
     const onFinishFn = jest.fn();
 
     const renderResults = render(
-      <SurveyScreen {...props} onFinish={onFinishFn} />,
+      <SurveyScreen {...getProps()} onFinish={onFinishFn} />,
     );
 
     await testQuestionsSequenceAsync({
@@ -270,7 +275,7 @@ describe.each(TWO_TYPES)("with non-null specialCasesStartId - %s: ", (type) => {
     const onFinishFn = jest.fn();
 
     const renderResults = render(
-      <SurveyScreen {...props} onFinish={onFinishFn} />,
+      <SurveyScreen {...getProps()} onFinish={onFinishFn} />,
     );
 
     await testQuestionsSequenceAsync({
@@ -308,7 +313,7 @@ describe.each(TWO_TYPES)("with non-null specialCasesStartId - %s: ", (type) => {
     const onFinishFn = jest.fn();
 
     const renderResults = render(
-      <SurveyScreen {...props} onFinish={onFinishFn} />,
+      <SurveyScreen {...getProps()} onFinish={onFinishFn} />,
     );
 
     await testQuestionsSequenceAsync({
@@ -333,7 +338,7 @@ describe.each(TWO_TYPES)("with non-null specialCasesStartId - %s: ", (type) => {
     const onFinishFn = jest.fn();
 
     const renderResults = render(
-      <SurveyScreen {...props} onFinish={onFinishFn} />,
+      <SurveyScreen {...getProps()} onFinish={onFinishFn} />,
     );
 
     await testQuestionsSequenceAsync({
@@ -363,8 +368,8 @@ describe.each(TWO_TYPES)("with non-null specialCasesStartId - %s: ", (type) => {
 describe.each(TWO_TYPES)(
   "with some null specialCasesStartId - %s: ",
   (type) => {
-    const props: SurveyScreenProps = {
-      ...propsBase,
+    const getProps = (): SurveyScreenProps => ({
+      ...currentPropsBase,
       questions: {
         q1: {
           id: "q1",
@@ -397,13 +402,13 @@ describe.each(TWO_TYPES)(
           next: null,
         },
       },
-    };
+    });
 
     test("click special-case choice without null", async () => {
       const onFinishFn = jest.fn();
 
       const renderResults = render(
-        <SurveyScreen {...props} onFinish={onFinishFn} />,
+        <SurveyScreen {...getProps()} onFinish={onFinishFn} />,
       );
 
       await testQuestionsSequenceAsync({
@@ -437,7 +442,7 @@ describe.each(TWO_TYPES)(
       const onFinishFn = jest.fn();
 
       const renderResults = render(
-        <SurveyScreen {...props} onFinish={onFinishFn} />,
+        <SurveyScreen {...getProps()} onFinish={onFinishFn} />,
       );
 
       await testQuestionsSequenceAsync({
@@ -459,7 +464,7 @@ describe.each(TWO_TYPES)(
       const onFinishFn = jest.fn();
 
       const renderResults = render(
-        <SurveyScreen {...props} onFinish={onFinishFn} />,
+        <SurveyScreen {...getProps()} onFinish={onFinishFn} />,
       );
 
       await testQuestionsSequenceAsync({
@@ -486,7 +491,7 @@ describe.each(TWO_TYPES)(
       const onFinishFn = jest.fn();
 
       const renderResults = render(
-        <SurveyScreen {...props} onFinish={onFinishFn} />,
+        <SurveyScreen {...getProps()} onFinish={onFinishFn} />,
       );
 
       const sequence: TestQuestionsSequence = [
@@ -529,7 +534,7 @@ describe.each(TWO_TYPES)(
       const onFinishFn = jest.fn();
 
       const renderResults = render(
-        <SurveyScreen {...props} onFinish={onFinishFn} />,
+        <SurveyScreen {...getProps()} onFinish={onFinishFn} />,
       );
 
       await testQuestionsSequenceAsync({
@@ -554,7 +559,7 @@ describe.each(TWO_TYPES)(
       const onFinishFn = jest.fn();
 
       const renderResults = render(
-        <SurveyScreen {...props} onFinish={onFinishFn} />,
+        <SurveyScreen {...getProps()} onFinish={onFinishFn} />,
       );
 
       await testQuestionsSequenceAsync({

@@ -9,13 +9,25 @@ import SurveyScreen, { SurveyScreenProps } from "../../SurveyScreen";
 import { QuestionType } from "../../helpers/helpers";
 import { changeTextAndWaitForUpdateAsync } from "../reactNativeTestingLibraryHelper";
 import {
-  TEST_PING,
-  mockNecessaryFunctionsToTestSurveyScreen,
+  getBaseProps,
+  setUpSurveyScreenTestAsync,
+  tearDownSurveyScreenTestAsync,
   testQuestionsSequenceAsync,
 } from "./helper";
 
-beforeEach(() => {
-  mockNecessaryFunctionsToTestSurveyScreen();
+let currentPropsBase!: SurveyScreenProps;
+beforeEach(async () => {
+  const currentTestPing = await setUpSurveyScreenTestAsync();
+  currentPropsBase = {
+    ...getBaseProps(),
+    questions: {},
+    startingQuestionId: "q1",
+    ping: currentTestPing,
+  };
+});
+
+afterEach(async () => {
+  await tearDownSurveyScreenTestAsync();
 });
 
 async function enterTextAsync(
@@ -30,17 +42,10 @@ async function enterTextAsync(
   );
 }
 
-const propsBase: SurveyScreenProps = {
-  questions: {},
-  startingQuestionId: "q1",
-  ping: TEST_PING,
-  previousState: null,
-  onFinish: async () => {},
-};
-
 describe("without repeatedItemStartId", () => {
-  const props: SurveyScreenProps = {
-    ...propsBase,
+  // See `MARK: SURVEY_TEST_WHY_GET_PROPS`.
+  const getProps = (): SurveyScreenProps => ({
+    ...currentPropsBase,
     questions: {
       q1: {
         id: "q1",
@@ -59,13 +64,13 @@ describe("without repeatedItemStartId", () => {
         next: null,
       },
     },
-  };
+  });
 
   test("enter some text", async () => {
     const onFinishFn = jest.fn();
 
     const renderResults = render(
-      <SurveyScreen {...props} onFinish={onFinishFn} />,
+      <SurveyScreen {...getProps()} onFinish={onFinishFn} />,
     );
 
     await testQuestionsSequenceAsync({
@@ -93,7 +98,7 @@ describe("without repeatedItemStartId", () => {
     const onFinishFn = jest.fn();
 
     const renderResults = render(
-      <SurveyScreen {...props} onFinish={onFinishFn} />,
+      <SurveyScreen {...getProps()} onFinish={onFinishFn} />,
     );
 
     await testQuestionsSequenceAsync({
@@ -123,7 +128,7 @@ describe("without repeatedItemStartId", () => {
     const onFinishFn = jest.fn();
 
     const renderResults = render(
-      <SurveyScreen {...props} onFinish={onFinishFn} />,
+      <SurveyScreen {...getProps()} onFinish={onFinishFn} />,
     );
 
     await testQuestionsSequenceAsync({
@@ -148,7 +153,7 @@ describe("without repeatedItemStartId", () => {
     const onFinishFn = jest.fn();
 
     const renderResults = render(
-      <SurveyScreen {...props} onFinish={onFinishFn} />,
+      <SurveyScreen {...getProps()} onFinish={onFinishFn} />,
     );
 
     await testQuestionsSequenceAsync({
@@ -176,8 +181,8 @@ describe("without repeatedItemStartId", () => {
 });
 
 describe("with repeatedItemStartId", () => {
-  const props: SurveyScreenProps = {
-    ...propsBase,
+  const getProps = (): SurveyScreenProps => ({
+    ...currentPropsBase,
     questions: {
       q1: {
         id: "q1",
@@ -211,13 +216,13 @@ describe("with repeatedItemStartId", () => {
         next: null,
       },
     },
-  };
+  });
 
   test("enter some text", async () => {
     const onFinishFn = jest.fn();
 
     const renderResults = render(
-      <SurveyScreen {...props} onFinish={onFinishFn} />,
+      <SurveyScreen {...getProps()} onFinish={onFinishFn} />,
     );
 
     await testQuestionsSequenceAsync({
@@ -273,7 +278,7 @@ describe("with repeatedItemStartId", () => {
     const onFinishFn = jest.fn();
 
     const renderResults = render(
-      <SurveyScreen {...props} onFinish={onFinishFn} />,
+      <SurveyScreen {...getProps()} onFinish={onFinishFn} />,
     );
 
     await testQuestionsSequenceAsync({
@@ -303,7 +308,7 @@ describe("with repeatedItemStartId", () => {
     const onFinishFn = jest.fn();
 
     const renderResults = render(
-      <SurveyScreen {...props} onFinish={onFinishFn} />,
+      <SurveyScreen {...getProps()} onFinish={onFinishFn} />,
     );
 
     await testQuestionsSequenceAsync({
@@ -348,7 +353,7 @@ describe("with repeatedItemStartId", () => {
     const onFinishFn = jest.fn();
 
     const renderResults = render(
-      <SurveyScreen {...props} onFinish={onFinishFn} />,
+      <SurveyScreen {...getProps()} onFinish={onFinishFn} />,
     );
 
     await testQuestionsSequenceAsync({
@@ -373,7 +378,7 @@ describe("with repeatedItemStartId", () => {
     const onFinishFn = jest.fn();
 
     const renderResults = render(
-      <SurveyScreen {...props} onFinish={onFinishFn} />,
+      <SurveyScreen {...getProps()} onFinish={onFinishFn} />,
     );
 
     await testQuestionsSequenceAsync({

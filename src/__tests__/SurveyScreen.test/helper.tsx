@@ -6,52 +6,44 @@ import {
 } from "react-native-testing-library";
 import waitForExpect from "wait-for-expect";
 
-import { PingSchema } from "../../helpers/schemas/Ping";
+import { clearAllPingsAndAnswersAsync } from "../../helpers/cleanup";
+import { insertPingAsync } from "../../helpers/pings";
 import { Ping } from "../../helpers/types";
 import { PINGS_STUDY_INFO } from "../data/pings";
 import { mockCurrentStudyInfo } from "../helper";
-
-export const getPing = ({
-  id,
-  notificationTime,
-  startTime,
-  tzOffset,
-  streamName,
-}: {
-  id: string;
-  notificationTime: Date;
-  startTime: Date;
-  tzOffset: number;
-  streamName: string;
-}): Ping => {
-  const ping = PingSchema.parse({
-    id,
-    notificationTime,
-    startTime,
-    endTime: null,
-    streamName,
-    tzOffset,
-  });
-  return ping;
-};
-
-export const TEST_PING_RAW = {
-  id: "testPing",
-  notificationTime: new Date(),
-  startTime: new Date(),
-  tzOffset: 0,
-  streamName: "testStream",
-};
-export const TEST_PING = getPing(TEST_PING_RAW);
 
 export const MAIN_SURVEY_SCREEN_VIEW = "mainSurveyScreenView";
 export const QUESTION_TITLE_TESTID = "questionTitle";
 export const NEXT_BUTTON_A11YLABEL = "Next question";
 export const PNA_BUTTON_A11YLABEL = "Prefer not to answer the current question";
 
-export function mockNecessaryFunctionsToTestSurveyScreen() {
-  // Just use a study info - it's not important.
-  mockCurrentStudyInfo(PINGS_STUDY_INFO);
+// Just use a study info - it's not important.
+export const STUDY_INFO = PINGS_STUDY_INFO;
+
+export function getBaseProps() {
+  return {
+    studyInfo: STUDY_INFO,
+    previousState: null,
+    onFinish: () => {},
+    setUploadStatusSymbol: () => {}, // TODO: TEST THIS.
+  };
+}
+
+export async function setUpSurveyScreenTestAsync(): Promise<Ping> {
+  mockCurrentStudyInfo(STUDY_INFO);
+
+  // Just to make sure.
+  await clearAllPingsAndAnswersAsync();
+
+  return await insertPingAsync({
+    notificationTime: new Date(Date.now() - 20000),
+    startTime: new Date(Date.now() - 10000),
+    streamName: `myTest${Date.now()}Stream`, // We use `Date.now()` so that it will not conflict with other data.
+  });
+}
+
+export async function tearDownSurveyScreenTestAsync(): Promise<void> {
+  await clearAllPingsAndAnswersAsync();
 }
 
 /**

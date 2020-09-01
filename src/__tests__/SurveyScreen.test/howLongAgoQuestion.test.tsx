@@ -4,13 +4,39 @@ import { render, fireEvent, RenderAPI } from "react-native-testing-library";
 import SurveyScreen, { SurveyScreenProps } from "../../SurveyScreen";
 import { QuestionType } from "../../helpers/helpers";
 import {
-  TEST_PING,
-  mockNecessaryFunctionsToTestSurveyScreen,
+  setUpSurveyScreenTestAsync,
+  tearDownSurveyScreenTestAsync,
   testQuestionsSequenceAsync,
+  getBaseProps,
 } from "./helper";
 
-beforeEach(() => {
-  mockNecessaryFunctionsToTestSurveyScreen();
+let currentProps!: SurveyScreenProps;
+beforeEach(async () => {
+  const currentTestPing = await setUpSurveyScreenTestAsync();
+  currentProps = {
+    ...getBaseProps(),
+    questions: {
+      q1: {
+        id: "q1",
+        type: QuestionType.HowLongAgo,
+        question: "Question 1",
+        next: "q2",
+      },
+      q2: {
+        id: "q2",
+        type: QuestionType.Slider,
+        question: "Question 2",
+        slider: ["left", "right"],
+        next: null,
+      },
+    },
+    startingQuestionId: "q1",
+    ping: currentTestPing,
+  };
+});
+
+afterEach(async () => {
+  await tearDownSurveyScreenTestAsync();
 });
 
 async function pressSelectionAsync(
@@ -21,33 +47,11 @@ async function pressSelectionAsync(
   fireEvent.press(await findByA11yLabel(`select ${name}`));
 }
 
-const props: SurveyScreenProps = {
-  questions: {
-    q1: {
-      id: "q1",
-      type: QuestionType.HowLongAgo,
-      question: "Question 1",
-      next: "q2",
-    },
-    q2: {
-      id: "q2",
-      type: QuestionType.Slider,
-      question: "Question 2",
-      slider: ["left", "right"],
-      next: null,
-    },
-  },
-  startingQuestionId: "q1",
-  ping: TEST_PING,
-  previousState: null,
-  onFinish: async () => {},
-};
-
 test("click both columns", async () => {
   const onFinishFn = jest.fn();
 
   const renderResults = render(
-    <SurveyScreen {...props} onFinish={onFinishFn} />,
+    <SurveyScreen {...currentProps} onFinish={onFinishFn} />,
   );
 
   await testQuestionsSequenceAsync({
@@ -75,7 +79,7 @@ test("click left column", async () => {
   const onFinishFn = jest.fn();
 
   const renderResults = render(
-    <SurveyScreen {...props} onFinish={onFinishFn} />,
+    <SurveyScreen {...currentProps} onFinish={onFinishFn} />,
   );
 
   await testQuestionsSequenceAsync({
@@ -102,7 +106,7 @@ test("click right column", async () => {
   const onFinishFn = jest.fn();
 
   const renderResults = render(
-    <SurveyScreen {...props} onFinish={onFinishFn} />,
+    <SurveyScreen {...currentProps} onFinish={onFinishFn} />,
   );
 
   await testQuestionsSequenceAsync({
@@ -129,7 +133,7 @@ test("click next without answering", async () => {
   const onFinishFn = jest.fn();
 
   const renderResults = render(
-    <SurveyScreen {...props} onFinish={onFinishFn} />,
+    <SurveyScreen {...currentProps} onFinish={onFinishFn} />,
   );
 
   await testQuestionsSequenceAsync({
@@ -154,7 +158,7 @@ test("click prefer not to answer", async () => {
   const onFinishFn = jest.fn();
 
   const renderResults = render(
-    <SurveyScreen {...props} onFinish={onFinishFn} />,
+    <SurveyScreen {...currentProps} onFinish={onFinishFn} />,
   );
 
   await testQuestionsSequenceAsync({
