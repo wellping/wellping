@@ -53,14 +53,25 @@ export async function secureGetAnswerAsync(
   }
 }
 
+async function secureRemoveAnswerAsync(pingId: PingId, questionId: QuestionId) {
+  try {
+    if ((await secureGetAnswerAsync(pingId, questionId)) !== null) {
+      await SecureStore.deleteItemAsync(
+        await getSSKeyAsync(getKey(pingId, questionId)),
+      );
+    }
+  } catch (error) {
+    logError(error);
+  }
+}
+
 export async function secureRemoveAllAnswersAsync() {
   try {
     const answersList = await getAnswersPingIdsQuestionIdsListAsync();
     for (const pingIdAndQuestionId of answersList) {
-      await SecureStore.deleteItemAsync(
-        await getSSKeyAsync(
-          getKey(pingIdAndQuestionId[0], pingIdAndQuestionId[1]),
-        ),
+      await secureRemoveAnswerAsync(
+        pingIdAndQuestionId[0],
+        pingIdAndQuestionId[1],
       );
     }
     await clearAnswersPingIdsQuestionIdsListAsync();

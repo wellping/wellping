@@ -56,11 +56,21 @@ export async function secureGetPingAsync(pingId: PingId): Promise<Ping | null> {
   }
 }
 
+async function secureRemovePingAsync(pingId: PingId) {
+  try {
+    if ((await secureGetPingAsync(pingId)) !== null) {
+      await SecureStore.deleteItemAsync(await getSSKeyAsync(getKey(pingId)));
+    }
+  } catch (error) {
+    logError(error);
+  }
+}
+
 export async function secureRemoveAllPingsAsync() {
   try {
     const pingsList = await getPingsListAsync();
     for (const pingId of pingsList) {
-      await SecureStore.deleteItemAsync(await getSSKeyAsync(getKey(pingId)));
+      await secureRemovePingAsync(pingId);
     }
     await clearPingsListAsync();
   } catch (error) {
