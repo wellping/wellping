@@ -1,5 +1,6 @@
 import { PINGS, PINGS_DICT } from "./data/pings";
 
+// TODO: REMOVE THIS AS THIS BRINGS MORE DIFFICULTIES THAN HELPS. JUST ADD A NOTE TO TESTS THAT PRODUCE THIS ERROR TO SAY THAT WE CAN IGNORE THIS ERROR.
 beforeEach(() => {
   const originalErrorFn = console.error;
   jest.spyOn(console, "error").mockImplementation((...error: any[]) => {

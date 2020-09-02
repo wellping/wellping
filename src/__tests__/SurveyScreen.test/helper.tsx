@@ -122,7 +122,7 @@ export async function tearDownSurveyScreenTestAsync(
       answer.date = new Date(0);
       answer.pingId = "[removed for snapshot]";
     }
-    // TODO: CHECK SNAPSHOTS
+    // TODO: READ AND MAKE SURE ALL SNAPSHOTS ARE FINE
     expect(answers).toMatchSnapshot(`getAnswersAsync`);
   }
 
