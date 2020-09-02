@@ -3,7 +3,7 @@ import * as SecureStore from "expo-secure-store";
 
 import { Answer } from "../answerTypes";
 import {
-  addToAnswersQuestionIdsListForPingAsync,
+  addToAnswersQuestionIdsListForPingIfNeededAsync,
   getAnswersPingIdsQuestionIdsListAsync,
   clearAnswersPingIdsQuestionIdsListAsync,
 } from "../asyncStorage/answersPingIdsQuestionIdsList";
@@ -16,15 +16,13 @@ const ANSWER_PREFIX = `answer.`;
 const getKey = (pingId: PingId, questionId: QuestionId) =>
   `${ANSWER_PREFIX}${pingId}.${questionId}`;
 
-export async function secureStoreAnswerAsync(answer: Answer, isNew: boolean) {
+export async function secureStoreAnswerAsync(answer: Answer) {
   try {
     await SecureStore.setItemAsync(
       await getSSKeyAsync(getKey(answer.pingId, answer.questionId)),
       JSON.stringify(answer),
     );
-    if (isNew) {
-      await addToAnswersQuestionIdsListForPingAsync(answer);
-    }
+    await addToAnswersQuestionIdsListForPingIfNeededAsync(answer);
   } catch (error) {
     logError(error);
   }

@@ -2,7 +2,7 @@ import { parseJSON } from "date-fns";
 import * as SecureStore from "expo-secure-store";
 
 import {
-  addToPingsListAsync,
+  addToPingsListIfNeededAsync,
   getPingsListAsync,
   clearPingsListAsync,
 } from "../asyncStorage/pingsList";
@@ -14,15 +14,13 @@ import { getSSKeyAsync } from "./secureStore";
 const PING_PREFIX = `ping.`;
 const getKey = (pingId: PingId) => `${PING_PREFIX}${pingId}`;
 
-export async function secureStorePingAsync(ping: Ping, isNew: boolean) {
+export async function secureStorePingAsync(ping: Ping) {
   try {
     await SecureStore.setItemAsync(
       await getSSKeyAsync(getKey(ping.id)),
       JSON.stringify(ping),
     );
-    if (isNew) {
-      await addToPingsListAsync(ping);
-    }
+    await addToPingsListIfNeededAsync(ping);
   } catch (error) {
     logError(error);
   }

@@ -46,7 +46,7 @@ export async function insertAnswerAsync({
     date,
   });
 
-  await secureStoreAnswerAsync(answer, true);
+  await secureStoreAnswerAsync(answer);
 
   return answer;
 }

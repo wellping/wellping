@@ -8,9 +8,14 @@ export type PingsList = PingId[];
 
 const PINGS_LIST = `pingsList`;
 
-export async function addToPingsListAsync(ping: Ping) {
+export async function addToPingsListIfNeededAsync(ping: Ping) {
   try {
     const currentPingsList = await getPingsListAsync();
+    if (currentPingsList.includes(ping.id)) {
+      // Do not add it to the list if it is in the list already.
+      return;
+    }
+
     currentPingsList.push(ping.id);
     await AsyncStorage.setItem(
       await getASKeyAsync(PINGS_LIST),

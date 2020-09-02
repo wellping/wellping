@@ -60,7 +60,7 @@ export async function insertPingAsync({
     tzOffset,
   });
 
-  await secureStorePingAsync(ping, true);
+  await secureStorePingAsync(ping);
 
   return ping;
 }
@@ -75,7 +75,7 @@ export async function addEndTimeToPingAsync(
   }
 
   ping.endTime = endTime;
-  await secureStorePingAsync(ping, false);
+  await secureStorePingAsync(ping);
 
   return ping;
 }

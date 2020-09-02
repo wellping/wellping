@@ -6,8 +6,13 @@ import {
 } from "react-native-testing-library";
 import waitForExpect from "wait-for-expect";
 
+import {
+  getAnswersPingIdsQuestionIdsListAsync,
+  getAnswersQuestionIdsListForPingAsync,
+} from "../../helpers/asyncStorage/answersPingIdsQuestionIdsList";
+import { getPingsListAsync } from "../../helpers/asyncStorage/pingsList";
 import { clearAllPingsAndAnswersAsync } from "../../helpers/cleanup";
-import { insertPingAsync } from "../../helpers/pings";
+import { insertPingAsync, getPingsAsync } from "../../helpers/pings";
 import { Ping } from "../../helpers/types";
 import { PINGS_STUDY_INFO } from "../data/pings";
 import { mockCurrentStudyInfo } from "../helper";
@@ -43,6 +48,33 @@ export async function setUpSurveyScreenTestAsync(): Promise<Ping> {
 }
 
 export async function tearDownSurveyScreenTestAsync(): Promise<void> {
+  const pingsList = await getPingsListAsync();
+  expect(pingsList).toHaveLength(1);
+  const pings = await getPingsAsync();
+  expect(pings).toHaveLength(1);
+
+  const ping = pings[0];
+  expect(ping.endTime).not.toBeNull();
+
+  const answersQuestionIdsListForPing = await getAnswersQuestionIdsListForPingAsync(
+    ping.id,
+  );
+  // Expect the answersQuestionIdsListForPing to be unique.
+  // https://stackoverflow.com/q/57001262/2603230
+  expect(
+    Array.isArray(answersQuestionIdsListForPing) &&
+      answersQuestionIdsListForPing.length ===
+        new Set(answersQuestionIdsListForPing).size,
+  ).toBeTruthy();
+
+  const answersPingIdsQuestionIdsList = await getAnswersPingIdsQuestionIdsListAsync();
+  // Just a easy way to compare if two arrays are equal.
+  expect(JSON.stringify(answersPingIdsQuestionIdsList)).toEqual(
+    JSON.stringify(
+      answersQuestionIdsListForPing.map((questionId) => [ping.id, questionId]),
+    ),
+  );
+
   await clearAllPingsAndAnswersAsync();
 }
 

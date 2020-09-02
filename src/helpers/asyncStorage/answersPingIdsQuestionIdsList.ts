@@ -13,11 +13,18 @@ export type AnswersQuestionIdsListForPing = QuestionId[];
 const ANSWERS_LIST_PREFIX = `answersList/`;
 const getKey = (pingId: PingId) => `${ANSWERS_LIST_PREFIX}/${pingId}`;
 
-export async function addToAnswersQuestionIdsListForPingAsync(answer: Answer) {
+export async function addToAnswersQuestionIdsListForPingIfNeededAsync(
+  answer: Answer,
+) {
   try {
     const currentAnswersQuestionIdsListForPing = await getAnswersQuestionIdsListForPingAsync(
       answer.pingId,
     );
+    if (currentAnswersQuestionIdsListForPing.includes(answer.questionId)) {
+      // Do not add it to the list if it is in the list already.
+      return;
+    }
+
     currentAnswersQuestionIdsListForPing.push(answer.questionId);
     await AsyncStorage.setItem(
       await getASKeyAsync(getKey(answer.pingId)),
