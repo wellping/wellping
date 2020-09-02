@@ -64,12 +64,15 @@ async function secureRemovePingAsync(pingId: PingId) {
   }
 }
 
+// TODO: MOVE THIS TO pings.ts
 export async function secureRemoveAllPingsAsync() {
   try {
     const pingsList = await getPingsListAsync();
-    for (const pingId of pingsList) {
-      await secureRemovePingAsync(pingId);
-    }
+    await Promise.all(
+      pingsList.map(async (pingId) => {
+        await secureRemovePingAsync(pingId);
+      }),
+    );
     await clearPingsListAsync();
   } catch (error) {
     logError(error);

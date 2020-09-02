@@ -98,12 +98,16 @@ export async function getPingsAsync(
     pingsList.reverse();
   }
 
-  const pings: Ping[] = [];
-
-  // TODO: Promise.all way to do it to make it faster. (but we have to think of some index based way to do it)
-  for (const pingId of pingsList) {
-    pings.push((await secureGetPingAsync(pingId))!);
-  }
+  // https://stackoverflow.com/q/28066429/2603230
+  const pings: Ping[] = await Promise.all(
+    pingsList.map(async (pingId) => {
+      const ping = await secureGetPingAsync(pingId);
+      if (ping === null) {
+        throw new Error("ping === null in pingsList.map in getPingsAsync.");
+      }
+      return ping;
+    }),
+  );
 
   return pings;
 }

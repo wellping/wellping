@@ -63,15 +63,18 @@ async function secureRemoveAnswerAsync(pingId: PingId, questionId: QuestionId) {
   }
 }
 
+// TODO: MOVE
 export async function secureRemoveAllAnswersAsync() {
   try {
     const answersList = await getAnswersPingIdsQuestionIdsListAsync();
-    for (const pingIdAndQuestionId of answersList) {
-      await secureRemoveAnswerAsync(
-        pingIdAndQuestionId[0],
-        pingIdAndQuestionId[1],
-      );
-    }
+    await Promise.all(
+      answersList.map(async (pingIdAndQuestionId) => {
+        await secureRemoveAnswerAsync(
+          pingIdAndQuestionId[0],
+          pingIdAndQuestionId[1],
+        );
+      }),
+    );
     await clearAnswersPingIdsQuestionIdsListAsync();
   } catch (error) {
     logError(error);

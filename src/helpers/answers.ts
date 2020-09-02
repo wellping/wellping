@@ -9,16 +9,22 @@ import { Question, Ping } from "./types";
 
 export async function getAnswersAsync(): Promise<Answer[]> {
   const answersList = await getAnswersPingIdsQuestionIdsListAsync();
-  const answers: Answer[] = [];
 
-  for (const pingIdAndQuestionId of answersList) {
-    answers.push(
-      (await secureGetAnswerAsync(
+  // https://stackoverflow.com/q/28066429/2603230
+  const answers: Answer[] = await Promise.all(
+    answersList.map(async (pingIdAndQuestionId) => {
+      const answer = await secureGetAnswerAsync(
         pingIdAndQuestionId[0],
         pingIdAndQuestionId[1],
-      ))!,
-    );
-  }
+      );
+      if (answer === null) {
+        throw new Error(
+          "answer === null in answersList.map in getAnswersAsync.",
+        );
+      }
+      return answer;
+    }),
+  );
 
   return answers;
 }

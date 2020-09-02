@@ -63,19 +63,24 @@ export async function getAnswersQuestionIdsListForPingAsync(
 export async function getAnswersPingIdsQuestionIdsListAsync(): Promise<
   AnswersPingIdsQuestionIdsList
 > {
-  // TODO: USE Promise.all
-  const answersQuestionIds: AnswersPingIdsQuestionIdsList = [];
   const pingsList = await getPingsListAsync();
-  for (const pingId of pingsList) {
-    const answersQuestionIdsForPing = await getAnswersQuestionIdsListForPingAsync(
-      pingId,
-    );
-    answersQuestionIds.push(
-      ...answersQuestionIdsForPing.map<AnswerPingIdQuestionId>(
+
+  // https://stackoverflow.com/q/28066429/2603230
+  const answersQuestionIdsNested: AnswersPingIdsQuestionIdsList[] = await Promise.all(
+    pingsList.map(async (pingId) => {
+      const answersQuestionIdsForPing = await getAnswersQuestionIdsListForPingAsync(
+        pingId,
+      );
+      return answersQuestionIdsForPing.map<AnswerPingIdQuestionId>(
         (answerQuestionId) => [pingId, answerQuestionId],
-      ),
-    );
-  }
+      );
+    }),
+  );
+
+  // As currently `answersQuestionIdsNested` stores e.g.
+  // `[ [[pingId1, qId1], [pingId1, qId2]], [[pingId2, qId1], [pingId2, qId2]] ]`
+  // , we have to flatten it.
+  const answersQuestionIds = answersQuestionIdsNested.flat();
   return answersQuestionIds;
 }
 
