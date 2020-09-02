@@ -1,11 +1,7 @@
 import { parseJSON } from "date-fns";
 import * as SecureStore from "expo-secure-store";
 
-import {
-  addToPingsListIfNeededAsync,
-  getPingsListAsync,
-  clearPingsListAsync,
-} from "../asyncStorage/pingsList";
+import { addToPingsListIfNeededAsync } from "../asyncStorage/pingsList";
 import { logError } from "../debug";
 import { PingSchema } from "../schemas/Ping";
 import { Ping, PingId } from "../types";
@@ -54,26 +50,11 @@ export async function secureGetPingAsync(pingId: PingId): Promise<Ping | null> {
   }
 }
 
-async function secureRemovePingAsync(pingId: PingId) {
+export async function secureRemovePingAsync(pingId: PingId) {
   try {
     if ((await secureGetPingAsync(pingId)) !== null) {
       await SecureStore.deleteItemAsync(await getSSKeyAsync(getKey(pingId)));
     }
-  } catch (error) {
-    logError(error);
-  }
-}
-
-// TODO: MOVE THIS TO pings.ts
-export async function secureRemoveAllPingsAsync() {
-  try {
-    const pingsList = await getPingsListAsync();
-    await Promise.all(
-      pingsList.map(async (pingId) => {
-        await secureRemovePingAsync(pingId);
-      }),
-    );
-    await clearPingsListAsync();
   } catch (error) {
     logError(error);
   }

@@ -1,9 +1,13 @@
 import { AnswerData, Answer } from "./answerTypes";
-import { getAnswersPingIdsQuestionIdsListAsync } from "./asyncStorage/answersPingIdsQuestionIdsList";
+import {
+  getAnswersPingIdsQuestionIdsListAsync,
+  clearAnswersPingIdsQuestionIdsListAsync,
+} from "./asyncStorage/answersPingIdsQuestionIdsList";
 import { AnswerSchema } from "./schemas/Answer";
 import {
   secureGetAnswerAsync,
   secureStoreAnswerAsync,
+  secureRemoveAnswerAsync,
 } from "./secureStore/answer";
 import { Question, Ping } from "./types";
 
@@ -55,4 +59,17 @@ export async function insertAnswerAsync({
   await secureStoreAnswerAsync(answer);
 
   return answer;
+}
+
+export async function clearAllAnswersAsync() {
+  const answersList = await getAnswersPingIdsQuestionIdsListAsync();
+  await Promise.all(
+    answersList.map(async (pingIdAndQuestionId) => {
+      await secureRemoveAnswerAsync(
+        pingIdAndQuestionId[0],
+        pingIdAndQuestionId[1],
+      );
+    }),
+  );
+  await clearAnswersPingIdsQuestionIdsListAsync();
 }

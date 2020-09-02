@@ -2,11 +2,7 @@ import { parseJSON } from "date-fns";
 import * as SecureStore from "expo-secure-store";
 
 import { Answer } from "../answerTypes";
-import {
-  addToAnswersQuestionIdsListForPingIfNeededAsync,
-  getAnswersPingIdsQuestionIdsListAsync,
-  clearAnswersPingIdsQuestionIdsListAsync,
-} from "../asyncStorage/answersPingIdsQuestionIdsList";
+import { addToAnswersQuestionIdsListForPingIfNeededAsync } from "../asyncStorage/answersPingIdsQuestionIdsList";
 import { logError } from "../debug";
 import { AnswerSchema } from "../schemas/Answer";
 import { PingId, QuestionId } from "../types";
@@ -51,31 +47,16 @@ export async function secureGetAnswerAsync(
   }
 }
 
-async function secureRemoveAnswerAsync(pingId: PingId, questionId: QuestionId) {
+export async function secureRemoveAnswerAsync(
+  pingId: PingId,
+  questionId: QuestionId,
+) {
   try {
     if ((await secureGetAnswerAsync(pingId, questionId)) !== null) {
       await SecureStore.deleteItemAsync(
         await getSSKeyAsync(getKey(pingId, questionId)),
       );
     }
-  } catch (error) {
-    logError(error);
-  }
-}
-
-// TODO: MOVE
-export async function secureRemoveAllAnswersAsync() {
-  try {
-    const answersList = await getAnswersPingIdsQuestionIdsListAsync();
-    await Promise.all(
-      answersList.map(async (pingIdAndQuestionId) => {
-        await secureRemoveAnswerAsync(
-          pingIdAndQuestionId[0],
-          pingIdAndQuestionId[1],
-        );
-      }),
-    );
-    await clearAnswersPingIdsQuestionIdsListAsync();
   } catch (error) {
     logError(error);
   }

@@ -1,8 +1,15 @@
 import { isToday } from "date-fns";
 
-import { getPingsListAsync } from "./asyncStorage/pingsList";
+import {
+  getPingsListAsync,
+  clearPingsListAsync,
+} from "./asyncStorage/pingsList";
 import { PingSchema } from "./schemas/Ping";
-import { secureStorePingAsync, secureGetPingAsync } from "./secureStore/ping";
+import {
+  secureStorePingAsync,
+  secureGetPingAsync,
+  secureRemovePingAsync,
+} from "./secureStore/ping";
 import { isTimeThisWeekAsync, getAllStreamNamesAsync } from "./studyFile";
 import { StreamName, Ping } from "./types";
 
@@ -154,4 +161,14 @@ export async function getThisWeekPingsAsync(): Promise<Ping[]> {
   );
   thisWeekPings.reverse(); // So that pings are in ascending order.
   return thisWeekPings;
+}
+
+export async function clearAllPingsAsync() {
+  const pingsList = await getPingsListAsync();
+  await Promise.all(
+    pingsList.map(async (pingId) => {
+      await secureRemovePingAsync(pingId);
+    }),
+  );
+  await clearPingsListAsync();
 }
