@@ -1,0 +1,959 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`with non-null specialCasesStartId - ChoicesWithMultipleAnswers:  click next without answering: getAnswersAsync 1`] = `
+Array [
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q1",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q2",
+  },
+]
+`;
+
+exports[`with non-null specialCasesStartId - ChoicesWithMultipleAnswers:  click no-special-case choice: getAnswersAsync 1`] = `
+Array [
+  Object {
+    "data": Object {
+      "value": Array [
+        Array [
+          "Choice 1",
+          false,
+        ],
+        Array [
+          "Choice 2",
+          true,
+        ],
+        Array [
+          "Choice 3",
+          false,
+        ],
+      ],
+    },
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q1",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q2",
+  },
+]
+`;
+
+exports[`with non-null specialCasesStartId - ChoicesWithMultipleAnswers:  click prefer not to answer: getAnswersAsync 1`] = `
+Array [
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": true,
+    "questionId": "q1",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q2",
+  },
+]
+`;
+
+exports[`with non-null specialCasesStartId - ChoicesWithMultipleAnswers:  click special-case choice: getAnswersAsync 1`] = `
+Array [
+  Object {
+    "data": Object {
+      "value": Array [
+        Array [
+          "Choice 1",
+          true,
+        ],
+        Array [
+          "Choice 2",
+          false,
+        ],
+        Array [
+          "Choice 3",
+          false,
+        ],
+      ],
+    },
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q1",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q1_c1",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q2",
+  },
+]
+`;
+
+exports[`with non-null specialCasesStartId - ChoicesWithMultipleAnswers:  click two special-case choices: getAnswersAsync 1`] = `
+Array [
+  Object {
+    "data": Object {
+      "value": Array [
+        Array [
+          "Choice 1",
+          true,
+        ],
+        Array [
+          "Choice 2",
+          false,
+        ],
+        Array [
+          "Choice 3",
+          true,
+        ],
+      ],
+    },
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q1",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q1_c1",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q2",
+  },
+]
+`;
+
+exports[`with non-null specialCasesStartId - ChoicesWithSingleAnswer:  click next without answering: getAnswersAsync 1`] = `
+Array [
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q1",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q2",
+  },
+]
+`;
+
+exports[`with non-null specialCasesStartId - ChoicesWithSingleAnswer:  click no-special-case choice: getAnswersAsync 1`] = `
+Array [
+  Object {
+    "data": Object {
+      "value": "Choice 2",
+    },
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q1",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q2",
+  },
+]
+`;
+
+exports[`with non-null specialCasesStartId - ChoicesWithSingleAnswer:  click prefer not to answer: getAnswersAsync 1`] = `
+Array [
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": true,
+    "questionId": "q1",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q2",
+  },
+]
+`;
+
+exports[`with non-null specialCasesStartId - ChoicesWithSingleAnswer:  click special-case choice: getAnswersAsync 1`] = `
+Array [
+  Object {
+    "data": Object {
+      "value": "Choice 1",
+    },
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q1",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q1_c1",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q2",
+  },
+]
+`;
+
+exports[`with non-null specialCasesStartId - ChoicesWithSingleAnswer:  click two special-case choices: getAnswersAsync 1`] = `
+Array [
+  Object {
+    "data": Object {
+      "value": "Choice 3",
+    },
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q1",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q1_c3",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q2",
+  },
+]
+`;
+
+exports[`with some null specialCasesStartId - ChoicesWithMultipleAnswers:  click next without answering: getAnswersAsync 1`] = `
+Array [
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q1",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q2",
+  },
+]
+`;
+
+exports[`with some null specialCasesStartId - ChoicesWithMultipleAnswers:  click no-special-case choice: getAnswersAsync 1`] = `
+Array [
+  Object {
+    "data": Object {
+      "value": Array [
+        Array [
+          "Choice 1",
+          false,
+        ],
+        Array [
+          "Choice 2",
+          true,
+        ],
+        Array [
+          "Choice 3",
+          false,
+        ],
+      ],
+    },
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q1",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q2",
+  },
+]
+`;
+
+exports[`with some null specialCasesStartId - ChoicesWithMultipleAnswers:  click prefer not to answer: getAnswersAsync 1`] = `
+Array [
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": true,
+    "questionId": "q1",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q2",
+  },
+]
+`;
+
+exports[`with some null specialCasesStartId - ChoicesWithMultipleAnswers:  click special-case choice with null: getAnswersAsync 1`] = `
+Array [
+  Object {
+    "data": Object {
+      "value": Array [
+        Array [
+          "Choice 1",
+          false,
+        ],
+        Array [
+          "Choice 2",
+          false,
+        ],
+        Array [
+          "Choice 3",
+          true,
+        ],
+      ],
+    },
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q1",
+  },
+]
+`;
+
+exports[`with some null specialCasesStartId - ChoicesWithMultipleAnswers:  click special-case choice without null: getAnswersAsync 1`] = `
+Array [
+  Object {
+    "data": Object {
+      "value": Array [
+        Array [
+          "Choice 1",
+          true,
+        ],
+        Array [
+          "Choice 2",
+          false,
+        ],
+        Array [
+          "Choice 3",
+          false,
+        ],
+      ],
+    },
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q1",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q1_c1",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q2",
+  },
+]
+`;
+
+exports[`with some null specialCasesStartId - ChoicesWithMultipleAnswers:  click two special-case choices (with the latter one being null): getAnswersAsync 1`] = `
+Array [
+  Object {
+    "data": Object {
+      "value": Array [
+        Array [
+          "Choice 1",
+          true,
+        ],
+        Array [
+          "Choice 2",
+          false,
+        ],
+        Array [
+          "Choice 3",
+          true,
+        ],
+      ],
+    },
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q1",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q1_c1",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q2",
+  },
+]
+`;
+
+exports[`with some null specialCasesStartId - ChoicesWithSingleAnswer:  click next without answering: getAnswersAsync 1`] = `
+Array [
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q1",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q2",
+  },
+]
+`;
+
+exports[`with some null specialCasesStartId - ChoicesWithSingleAnswer:  click no-special-case choice: getAnswersAsync 1`] = `
+Array [
+  Object {
+    "data": Object {
+      "value": "Choice 2",
+    },
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q1",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q2",
+  },
+]
+`;
+
+exports[`with some null specialCasesStartId - ChoicesWithSingleAnswer:  click prefer not to answer: getAnswersAsync 1`] = `
+Array [
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": true,
+    "questionId": "q1",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q2",
+  },
+]
+`;
+
+exports[`with some null specialCasesStartId - ChoicesWithSingleAnswer:  click special-case choice with null: getAnswersAsync 1`] = `
+Array [
+  Object {
+    "data": Object {
+      "value": "Choice 3",
+    },
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q1",
+  },
+]
+`;
+
+exports[`with some null specialCasesStartId - ChoicesWithSingleAnswer:  click special-case choice without null: getAnswersAsync 1`] = `
+Array [
+  Object {
+    "data": Object {
+      "value": "Choice 1",
+    },
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q1",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q1_c1",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q2",
+  },
+]
+`;
+
+exports[`with some null specialCasesStartId - ChoicesWithSingleAnswer:  click two special-case choices (with the latter one being null): getAnswersAsync 1`] = `
+Array [
+  Object {
+    "data": Object {
+      "value": "Choice 3",
+    },
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q1",
+  },
+]
+`;
+
+exports[`without meaningful specialCasesStartId - ChoicesWithMultipleAnswers:  specialCasesStartId: [[Array]] click a choice: getAnswersAsync 1`] = `
+Array [
+  Object {
+    "data": Object {
+      "value": Array [
+        Array [
+          "Choice 1",
+          false,
+        ],
+        Array [
+          "Choice 2",
+          true,
+        ],
+        Array [
+          "Choice 3",
+          false,
+        ],
+      ],
+    },
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q1",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q2",
+  },
+]
+`;
+
+exports[`without meaningful specialCasesStartId - ChoicesWithMultipleAnswers:  specialCasesStartId: [[Array]] click next without answering: getAnswersAsync 1`] = `
+Array [
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q1",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q2",
+  },
+]
+`;
+
+exports[`without meaningful specialCasesStartId - ChoicesWithMultipleAnswers:  specialCasesStartId: [[Array]] click prefer not to answer: getAnswersAsync 1`] = `
+Array [
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": true,
+    "questionId": "q1",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q2",
+  },
+]
+`;
+
+exports[`without meaningful specialCasesStartId - ChoicesWithMultipleAnswers:  specialCasesStartId: [] click a choice: getAnswersAsync 1`] = `
+Array [
+  Object {
+    "data": Object {
+      "value": Array [
+        Array [
+          "Choice 1",
+          false,
+        ],
+        Array [
+          "Choice 2",
+          true,
+        ],
+        Array [
+          "Choice 3",
+          false,
+        ],
+      ],
+    },
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q1",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q2",
+  },
+]
+`;
+
+exports[`without meaningful specialCasesStartId - ChoicesWithMultipleAnswers:  specialCasesStartId: [] click next without answering: getAnswersAsync 1`] = `
+Array [
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q1",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q2",
+  },
+]
+`;
+
+exports[`without meaningful specialCasesStartId - ChoicesWithMultipleAnswers:  specialCasesStartId: [] click prefer not to answer: getAnswersAsync 1`] = `
+Array [
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": true,
+    "questionId": "q1",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q2",
+  },
+]
+`;
+
+exports[`without meaningful specialCasesStartId - ChoicesWithMultipleAnswers:  specialCasesStartId: undefined click a choice: getAnswersAsync 1`] = `
+Array [
+  Object {
+    "data": Object {
+      "value": Array [
+        Array [
+          "Choice 1",
+          false,
+        ],
+        Array [
+          "Choice 2",
+          true,
+        ],
+        Array [
+          "Choice 3",
+          false,
+        ],
+      ],
+    },
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q1",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q2",
+  },
+]
+`;
+
+exports[`without meaningful specialCasesStartId - ChoicesWithMultipleAnswers:  specialCasesStartId: undefined click next without answering: getAnswersAsync 1`] = `
+Array [
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q1",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q2",
+  },
+]
+`;
+
+exports[`without meaningful specialCasesStartId - ChoicesWithMultipleAnswers:  specialCasesStartId: undefined click prefer not to answer: getAnswersAsync 1`] = `
+Array [
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": true,
+    "questionId": "q1",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q2",
+  },
+]
+`;
+
+exports[`without meaningful specialCasesStartId - ChoicesWithSingleAnswer:  specialCasesStartId: [[Array]] click a choice: getAnswersAsync 1`] = `
+Array [
+  Object {
+    "data": Object {
+      "value": "Choice 2",
+    },
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q1",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q2",
+  },
+]
+`;
+
+exports[`without meaningful specialCasesStartId - ChoicesWithSingleAnswer:  specialCasesStartId: [[Array]] click next without answering: getAnswersAsync 1`] = `
+Array [
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q1",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q2",
+  },
+]
+`;
+
+exports[`without meaningful specialCasesStartId - ChoicesWithSingleAnswer:  specialCasesStartId: [[Array]] click prefer not to answer: getAnswersAsync 1`] = `
+Array [
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": true,
+    "questionId": "q1",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q2",
+  },
+]
+`;
+
+exports[`without meaningful specialCasesStartId - ChoicesWithSingleAnswer:  specialCasesStartId: [] click a choice: getAnswersAsync 1`] = `
+Array [
+  Object {
+    "data": Object {
+      "value": "Choice 2",
+    },
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q1",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q2",
+  },
+]
+`;
+
+exports[`without meaningful specialCasesStartId - ChoicesWithSingleAnswer:  specialCasesStartId: [] click next without answering: getAnswersAsync 1`] = `
+Array [
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q1",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q2",
+  },
+]
+`;
+
+exports[`without meaningful specialCasesStartId - ChoicesWithSingleAnswer:  specialCasesStartId: [] click prefer not to answer: getAnswersAsync 1`] = `
+Array [
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": true,
+    "questionId": "q1",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q2",
+  },
+]
+`;
+
+exports[`without meaningful specialCasesStartId - ChoicesWithSingleAnswer:  specialCasesStartId: undefined click a choice: getAnswersAsync 1`] = `
+Array [
+  Object {
+    "data": Object {
+      "value": "Choice 2",
+    },
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q1",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q2",
+  },
+]
+`;
+
+exports[`without meaningful specialCasesStartId - ChoicesWithSingleAnswer:  specialCasesStartId: undefined click next without answering: getAnswersAsync 1`] = `
+Array [
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q1",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q2",
+  },
+]
+`;
+
+exports[`without meaningful specialCasesStartId - ChoicesWithSingleAnswer:  specialCasesStartId: undefined click prefer not to answer: getAnswersAsync 1`] = `
+Array [
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": true,
+    "questionId": "q1",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q2",
+  },
+]
+`;

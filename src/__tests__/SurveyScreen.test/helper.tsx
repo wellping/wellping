@@ -6,6 +6,7 @@ import {
 } from "react-native-testing-library";
 import waitForExpect from "wait-for-expect";
 
+import { getAnswersAsync } from "../../helpers/answers";
 import {
   getAnswersPingIdsQuestionIdsListAsync,
   getAnswersQuestionIdsListForPingAsync,
@@ -94,6 +95,35 @@ export async function tearDownSurveyScreenTestAsync(
         ]),
       ),
     );
+
+    const answers = await getAnswersAsync();
+    for (let i = 0; i < answers.length; i++) {
+      const answer = answers[i];
+      expect(answer.pingId).toBe(ping.id);
+      expect(answer.questionId).not.toBeNull();
+      expect(answer.date).not.toBeNull();
+
+      // Make sure prefer not to answer means the input data is not stored.
+      if (answer.preferNotToAnswer) {
+        expect(answer.data).toBeNull();
+      }
+      if (answer.data) {
+        expect(answer.preferNotToAnswer).toBeNull();
+      }
+
+      expect(answersQuestionIdsListForPing[i]).toStrictEqual(answer.questionId);
+      expect(answersPingIdsQuestionIdsList[i]).toEqual([
+        answer.pingId,
+        answer.questionId,
+      ]);
+
+      // So that the date and the ping ID (which are dynamic) wouldn't affect the
+      // snapshot.
+      answer.date = new Date(0);
+      answer.pingId = "[removed for snapshot]";
+    }
+    // TODO: CHECK SNAPSHOTS
+    expect(answers).toMatchSnapshot(`getAnswersAsync`);
   }
 
   await clearAllPingsAndAnswersAsync();
