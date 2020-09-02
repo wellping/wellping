@@ -9,7 +9,10 @@ import {
   testQuestionsSequenceAsync,
   tearDownSurveyScreenTestAsync,
   setUpSurveyScreenTestAsync,
+  TearDownSurveyScreenTestOptions,
 } from "./helper";
+
+let currentTearDownOptions!: Partial<TearDownSurveyScreenTestOptions>;
 
 let currentPropsBase!: SurveyScreenProps;
 beforeEach(async () => {
@@ -20,15 +23,21 @@ beforeEach(async () => {
     startingQuestionId: "q1",
     ping: currentTestPing,
   };
+
+  currentTearDownOptions = {};
 });
 
 afterEach(async () => {
-  await tearDownSurveyScreenTestAsync();
+  await tearDownSurveyScreenTestAsync(currentTearDownOptions);
 });
 
 test("non-existent startingQuestionId", async () => {
   const onFinishFn = jest.fn();
 
+  currentTearDownOptions = {
+    shouldHaveEndTime: false,
+    shouldCheckAnswers: false,
+  };
   const props: SurveyScreenProps = {
     ...currentPropsBase,
     questions: {},

@@ -47,33 +47,54 @@ export async function setUpSurveyScreenTestAsync(): Promise<Ping> {
   });
 }
 
-export async function tearDownSurveyScreenTestAsync(): Promise<void> {
+export type TearDownSurveyScreenTestOptions = {
+  shouldHaveEndTime: boolean;
+  shouldCheckAnswers: boolean;
+};
+export async function tearDownSurveyScreenTestAsync(
+  customizedOptions: Partial<TearDownSurveyScreenTestOptions> = {},
+): Promise<void> {
+  const options: TearDownSurveyScreenTestOptions = {
+    shouldHaveEndTime: true,
+    shouldCheckAnswers: true,
+    ...customizedOptions,
+  };
+
   const pingsList = await getPingsListAsync();
   expect(pingsList).toHaveLength(1);
   const pings = await getPingsAsync();
   expect(pings).toHaveLength(1);
 
   const ping = pings[0];
-  expect(ping.endTime).not.toBeNull();
+  if (options.shouldHaveEndTime) {
+    expect(ping.endTime).not.toBeNull();
+  } else {
+    expect(ping.endTime).toBeNull();
+  }
 
-  const answersQuestionIdsListForPing = await getAnswersQuestionIdsListForPingAsync(
-    ping.id,
-  );
-  // Expect the answersQuestionIdsListForPing to be unique.
-  // https://stackoverflow.com/q/57001262/2603230
-  expect(
-    Array.isArray(answersQuestionIdsListForPing) &&
-      answersQuestionIdsListForPing.length ===
-        new Set(answersQuestionIdsListForPing).size,
-  ).toBeTruthy();
+  if (options.shouldCheckAnswers) {
+    const answersQuestionIdsListForPing = await getAnswersQuestionIdsListForPingAsync(
+      ping.id,
+    );
+    // Expect the answersQuestionIdsListForPing to be unique.
+    // https://stackoverflow.com/q/57001262/2603230
+    expect(
+      Array.isArray(answersQuestionIdsListForPing) &&
+        answersQuestionIdsListForPing.length ===
+          new Set(answersQuestionIdsListForPing).size,
+    ).toBeTruthy();
 
-  const answersPingIdsQuestionIdsList = await getAnswersPingIdsQuestionIdsListAsync();
-  // Just a easy way to compare if two arrays are equal.
-  expect(JSON.stringify(answersPingIdsQuestionIdsList)).toEqual(
-    JSON.stringify(
-      answersQuestionIdsListForPing.map((questionId) => [ping.id, questionId]),
-    ),
-  );
+    const answersPingIdsQuestionIdsList = await getAnswersPingIdsQuestionIdsListAsync();
+    // Just a easy way to compare if two arrays are equal.
+    expect(JSON.stringify(answersPingIdsQuestionIdsList)).toEqual(
+      JSON.stringify(
+        answersQuestionIdsListForPing.map((questionId) => [
+          ping.id,
+          questionId,
+        ]),
+      ),
+    );
+  }
 
   await clearAllPingsAndAnswersAsync();
 }
