@@ -20,7 +20,6 @@ import SurveyScreen, { SurveyScreenState } from "./SurveyScreen";
 import DashboardComponent, {
   getDashboardUrlAsync,
 } from "./components/DashboardComponent";
-import { PingEntity } from "./entities/PingEntity";
 import {
   dequeueFuturePingIfAny,
   getFuturePingsQueue,
@@ -35,12 +34,8 @@ import {
   clearPingStateAsync,
 } from "./helpers/asyncStorage/pingState";
 import { getUserAsync } from "./helpers/asyncStorage/user";
+import { clearAllPingsAndAnswersAsync } from "./helpers/cleanup";
 import { uploadDataAsync, getAllDataAsync } from "./helpers/dataUpload";
-import {
-  shareDatabaseFileAsync,
-  deleteDatabaseFileAsync,
-  getDatabaseFolderFilelistAsync,
-} from "./helpers/database";
 import {
   getNonCriticalProblemTextForUser,
   JS_VERSION_NUMBER,
@@ -60,12 +55,12 @@ import {
   getLatestPingAsync,
   getTodayPingsAsync,
   insertPingAsync,
-  getNumbersOfPingsForAllStreamNames,
+  getNumbersOfPingsForAllStreamNamesAsync,
 } from "./helpers/pings";
 import { getSymbolsForServerTypeUsed, useFirebase } from "./helpers/server";
 import { getAllStreamNames, getStudyInfoAsync } from "./helpers/studyFile";
 import { styles } from "./helpers/styles";
-import { Streams, StreamName, StudyInfo } from "./helpers/types";
+import { Streams, StreamName, StudyInfo, Ping } from "./helpers/types";
 import LoadingScreen from "./screens/LoadingScreen";
 
 interface HomeScreenProps {
@@ -79,7 +74,7 @@ interface HomeScreenState {
   time: Date;
   allowsNotifications: boolean;
   currentNotificationTime: Date | null;
-  currentPing: PingEntity | null;
+  currentPing: Ping | null;
   isLoading: boolean;
   storedPingStateAsync: SurveyScreenState | null;
   uploadStatusSymbol: string;
@@ -436,41 +431,6 @@ export default class HomeScreen extends React.Component<
           />
           <Button
             color="orange"
-            title="shareDatabaseFileAsync"
-            onPress={async () => {
-              /*const ping = new PingEntity();
-              ping.id = "another";
-              ping.notificationTime = new Date();
-              ping.startTime = new Date();
-              ping.streamName = "one";
-              ping.tzOffset = 700;
-              await ping.save();
-
-              const answer = new AnswerEntity();
-              answer.ping = ping;
-              answer.questionId = "qu";
-              answer.questionType = QuestionType.YesNo;
-              answer.preferNotToAnswer = null;
-              answer.data = {
-                value: "haha",
-              };
-              answer.date = new Date();
-              await answer.save();*/
-
-              await shareDatabaseFileAsync(studyInfo.id);
-            }}
-          />
-          <Button
-            color="orange"
-            title="getDatabaseFolderFilelistAsync"
-            onPress={async () => {
-              alertWithShareButtonContainingDebugInfo(
-                JSON.stringify(await getDatabaseFolderFilelistAsync()),
-              );
-            }}
-          />
-          <Button
-            color="orange"
             title="getStudyInfoAsync()"
             onPress={async () => {
               alertWithShareButtonContainingDebugInfo(
@@ -537,9 +497,9 @@ export default class HomeScreen extends React.Component<
           />
           <Button
             color="orange"
-            title="getNumbersOfPingsForAllStreamNames()"
+            title="getNumbersOfPingsForAllStreamNamesAsync()"
             onPress={async () => {
-              const typesOfPingsAnswered = await getNumbersOfPingsForAllStreamNames();
+              const typesOfPingsAnswered = await getNumbersOfPingsForAllStreamNamesAsync();
               alertWithShareButtonContainingDebugInfo(
                 JSON.stringify(typesOfPingsAnswered),
               );
@@ -666,7 +626,7 @@ export default class HomeScreen extends React.Component<
                     text: "Confirm",
                     style: "destructive",
                     onPress: async () => {
-                      await deleteDatabaseFileAsync(studyInfo.id);
+                      await clearAllPingsAndAnswersAsync();
                       alert("Done! Please restart the app.");
                     },
                   },

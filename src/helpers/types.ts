@@ -1,5 +1,6 @@
 import * as z from "zod";
 
+import { PingSchema } from "./schemas/Ping";
 import {
   QuestionSchema,
   SliderQuestionSchema,
@@ -29,6 +30,7 @@ import {
   StudyIdSchema,
   ChoiceSchema,
   ChoicesListSchema,
+  PingIdSchema,
 } from "./schemas/common";
 
 export type Choice = z.infer<typeof ChoiceSchema>;
@@ -65,6 +67,10 @@ export type BranchQuestion = z.infer<typeof BranchQuestionSchema>;
 export type BranchWithRelativeComparisonQuestion = z.infer<
   typeof BranchWithRelativeComparisonQuestionSchema
 >;
+
+export type PingId = z.infer<typeof PingIdSchema>;
+
+export type Ping = z.infer<typeof PingSchema>;
 
 export type QuestionsList = z.infer<typeof QuestionsListSchema>;
 

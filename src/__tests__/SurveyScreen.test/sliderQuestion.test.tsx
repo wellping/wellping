@@ -8,43 +8,47 @@ import {
   findSliderAsync,
 } from "../reactNativeTestingLibraryHelper";
 import {
-  TEST_PING,
-  mockNecessaryFunctionsToTestSurveyScreen,
+  getBaseProps,
+  setUpSurveyScreenTestAsync,
+  tearDownSurveyScreenTestAsync,
   testQuestionsSequenceAsync,
 } from "./helper";
 
-beforeEach(() => {
-  mockNecessaryFunctionsToTestSurveyScreen();
+let currentProps!: SurveyScreenProps;
+beforeEach(async () => {
+  const currentTestPing = await setUpSurveyScreenTestAsync();
+  currentProps = {
+    ...getBaseProps(),
+    questions: {
+      q1: {
+        id: "q1",
+        type: QuestionType.Slider,
+        question: "Question 1",
+        slider: ["left", "right"],
+        next: "q2",
+      },
+      q2: {
+        id: "q2",
+        type: QuestionType.Slider,
+        question: "Question 2",
+        slider: ["left", "right"],
+        next: null,
+      },
+    },
+    startingQuestionId: "q1",
+    ping: currentTestPing,
+  };
 });
 
-const props: SurveyScreenProps = {
-  questions: {
-    q1: {
-      id: "q1",
-      type: QuestionType.Slider,
-      question: "Question 1",
-      slider: ["left", "right"],
-      next: "q2",
-    },
-    q2: {
-      id: "q2",
-      type: QuestionType.Slider,
-      question: "Question 2",
-      slider: ["left", "right"],
-      next: null,
-    },
-  },
-  startingQuestionId: "q1",
-  ping: TEST_PING,
-  previousState: null,
-  onFinish: async () => {},
-};
+afterEach(async () => {
+  await tearDownSurveyScreenTestAsync();
+});
 
 test("move slider", async () => {
   const onFinishFn = jest.fn();
 
   const renderResults = render(
-    <SurveyScreen {...props} onFinish={onFinishFn} />,
+    <SurveyScreen {...currentProps} onFinish={onFinishFn} />,
   );
 
   await testQuestionsSequenceAsync({
@@ -71,7 +75,7 @@ test("click next without answering", async () => {
   const onFinishFn = jest.fn();
 
   const renderResults = render(
-    <SurveyScreen {...props} onFinish={onFinishFn} />,
+    <SurveyScreen {...currentProps} onFinish={onFinishFn} />,
   );
 
   await testQuestionsSequenceAsync({
@@ -96,7 +100,7 @@ test("click prefer not to answer", async () => {
   const onFinishFn = jest.fn();
 
   const renderResults = render(
-    <SurveyScreen {...props} onFinish={onFinishFn} />,
+    <SurveyScreen {...currentProps} onFinish={onFinishFn} />,
   );
 
   await testQuestionsSequenceAsync({

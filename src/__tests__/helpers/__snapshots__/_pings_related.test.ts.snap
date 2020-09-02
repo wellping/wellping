@@ -2803,12 +2803,11 @@ Array [
 ]
 `;
 
-exports[`pings database match: getAnswersAsync 1`] = `Array []`;
+exports[`pings data match: getAnswersAsync 1`] = `Array []`;
 
-exports[`pings database match: getPingsAsync 1`] = `
+exports[`pings data match: getPingsAsync 1`] = `
 Array [
-  PingEntity {
-    "answers": undefined,
+  Object {
     "endTime": 2010-05-01T08:39:40.000Z,
     "id": "cat1",
     "notificationTime": 2010-05-01T08:25:05.000Z,
@@ -2816,8 +2815,7 @@ Array [
     "streamName": "cat",
     "tzOffset": 0,
   },
-  PingEntity {
-    "answers": undefined,
+  Object {
     "endTime": null,
     "id": "dog1",
     "notificationTime": 2010-05-01T10:20:00.000Z,
@@ -2825,8 +2823,7 @@ Array [
     "streamName": "dog",
     "tzOffset": 0,
   },
-  PingEntity {
-    "answers": undefined,
+  Object {
     "endTime": 2010-05-01T20:59:20.000Z,
     "id": "wolf1",
     "notificationTime": 2010-05-01T19:00:05.000Z,
@@ -2834,8 +2831,7 @@ Array [
     "streamName": "wolf",
     "tzOffset": 0,
   },
-  PingEntity {
-    "answers": undefined,
+  Object {
     "endTime": null,
     "id": "cat2",
     "notificationTime": 2010-05-02T13:08:04.000Z,
@@ -2843,8 +2839,7 @@ Array [
     "streamName": "cat",
     "tzOffset": 0,
   },
-  PingEntity {
-    "answers": undefined,
+  Object {
     "endTime": 2010-05-03T09:26:02.000Z,
     "id": "cat3",
     "notificationTime": 2010-05-03T09:08:07.000Z,
@@ -2852,8 +2847,7 @@ Array [
     "streamName": "cat",
     "tzOffset": 0,
   },
-  PingEntity {
-    "answers": undefined,
+  Object {
     "endTime": 2010-05-10T23:59:58.000Z,
     "id": "cat4",
     "notificationTime": 2010-05-10T23:08:07.000Z,
@@ -2861,8 +2855,7 @@ Array [
     "streamName": "cat",
     "tzOffset": 0,
   },
-  PingEntity {
-    "answers": undefined,
+  Object {
     "endTime": 2010-05-11T08:19:58.000Z,
     "id": "cat5",
     "notificationTime": 2010-05-11T08:08:07.000Z,
@@ -2870,8 +2863,7 @@ Array [
     "streamName": "cat",
     "tzOffset": 0,
   },
-  PingEntity {
-    "answers": undefined,
+  Object {
     "endTime": 2010-05-11T10:11:58.000Z,
     "id": "dog2",
     "notificationTime": 2010-05-11T10:09:07.000Z,
@@ -2879,8 +2871,7 @@ Array [
     "streamName": "dog",
     "tzOffset": 0,
   },
-  PingEntity {
-    "answers": undefined,
+  Object {
     "endTime": 2010-05-11T12:30:58.000Z,
     "id": "wolf2",
     "notificationTime": 2010-05-11T12:10:07.000Z,
@@ -2888,8 +2879,7 @@ Array [
     "streamName": "wolf",
     "tzOffset": 0,
   },
-  PingEntity {
-    "answers": undefined,
+  Object {
     "endTime": 2010-05-11T16:33:58.000Z,
     "id": "lynx1",
     "notificationTime": 2010-05-11T16:11:07.000Z,
@@ -2897,8 +2887,7 @@ Array [
     "streamName": "lynx",
     "tzOffset": 0,
   },
-  PingEntity {
-    "answers": undefined,
+  Object {
     "endTime": 2010-05-11T18:34:58.000Z,
     "id": "cat6",
     "notificationTime": 2010-05-11T18:12:07.000Z,
@@ -2906,8 +2895,7 @@ Array [
     "streamName": "cat",
     "tzOffset": 0,
   },
-  PingEntity {
-    "answers": undefined,
+  Object {
     "endTime": 2010-05-11T22:35:58.000Z,
     "id": "dog3",
     "notificationTime": 2010-05-11T22:13:07.000Z,
@@ -2915,8 +2903,7 @@ Array [
     "streamName": "dog",
     "tzOffset": 0,
   },
-  PingEntity {
-    "answers": undefined,
+  Object {
     "endTime": 2010-05-12T12:15:58.000Z,
     "id": "cat7",
     "notificationTime": 2010-05-12T12:13:07.000Z,

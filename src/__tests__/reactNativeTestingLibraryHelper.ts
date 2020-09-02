@@ -29,7 +29,7 @@ export const findSliderAsync = async ({ findAllByA11yLabel }: RenderAPI) => {
   return sliderInput;
 };
 export const moveSlider = (sliderInput: ReactTestInstance, value: number) => {
-  fireEvent(sliderInput, "onSlidingComplete", {
+  fireEvent(sliderInput, "onRNCSliderSlidingComplete", {
     nativeEvent: { value },
   });
 };

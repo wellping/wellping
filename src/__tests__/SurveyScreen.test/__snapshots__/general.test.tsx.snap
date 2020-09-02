@@ -1,7 +1,1449 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`2 questions: getAnswersAsync 1`] = `
+Array [
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q1",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q2",
+  },
+]
+`;
+
+exports[`50 questions: getAnswersAsync 1`] = `
+Array [
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "question_1",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "question_2",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "question_3",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "question_4",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "question_5",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "question_6",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "question_7",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "question_8",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "question_9",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "question_10",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "question_11",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "question_12",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "question_13",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "question_14",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "question_15",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "question_16",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "question_17",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "question_18",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "question_19",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "question_20",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "question_21",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "question_22",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "question_23",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "question_24",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "question_25",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "question_26",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "question_27",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "question_28",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "question_29",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "question_30",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "question_31",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "question_32",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "question_33",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "question_34",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "question_35",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "question_36",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "question_37",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "question_38",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "question_39",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "question_40",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "question_41",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "question_42",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "question_43",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "question_44",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "question_45",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "question_46",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "question_47",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "question_48",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "question_49",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "question_50",
+  },
+]
+`;
+
+exports[`ChoicesWithMultipleAnswers: prefer not to answer or next without answering next without answering fallback a question click PNA: getAnswersAsync 1`] = `
+Array [
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": true,
+    "questionId": "q1",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q2",
+  },
+]
+`;
+
+exports[`ChoicesWithMultipleAnswers: prefer not to answer or next without answering next without answering fallback a question click next without answering: getAnswersAsync 1`] = `
+Array [
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q1",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q1_nwa_fallback",
+  },
+]
+`;
+
+exports[`ChoicesWithMultipleAnswers: prefer not to answer or next without answering next without answering fallback null click PNA: getAnswersAsync 1`] = `
+Array [
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": true,
+    "questionId": "q1",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q2",
+  },
+]
+`;
+
+exports[`ChoicesWithMultipleAnswers: prefer not to answer or next without answering next without answering fallback null click next without answering: getAnswersAsync 1`] = `
+Array [
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q1",
+  },
+]
+`;
+
+exports[`ChoicesWithMultipleAnswers: prefer not to answer or next without answering prefer not to answer fallback a question click PNA: getAnswersAsync 1`] = `
+Array [
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": true,
+    "questionId": "q1",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q1_pna_fallback",
+  },
+]
+`;
+
+exports[`ChoicesWithMultipleAnswers: prefer not to answer or next without answering prefer not to answer fallback a question click next: getAnswersAsync 1`] = `
+Array [
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q1",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q2",
+  },
+]
+`;
+
+exports[`ChoicesWithMultipleAnswers: prefer not to answer or next without answering prefer not to answer fallback null click PNA: getAnswersAsync 1`] = `
+Array [
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": true,
+    "questionId": "q1",
+  },
+]
+`;
+
+exports[`ChoicesWithMultipleAnswers: prefer not to answer or next without answering prefer not to answer fallback null click next: getAnswersAsync 1`] = `
+Array [
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q1",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q2",
+  },
+]
+`;
+
+exports[`ChoicesWithMultipleAnswers: prefer not to answer or next without answering without fallback next without answering: getAnswersAsync 1`] = `
+Array [
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q1",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q2",
+  },
+]
+`;
+
+exports[`ChoicesWithMultipleAnswers: prefer not to answer or next without answering without fallback prefer not to answer: getAnswersAsync 1`] = `
+Array [
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": true,
+    "questionId": "q1",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q2",
+  },
+]
+`;
+
+exports[`ChoicesWithSingleAnswer: prefer not to answer or next without answering next without answering fallback a question click PNA: getAnswersAsync 1`] = `
+Array [
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": true,
+    "questionId": "q1",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q2",
+  },
+]
+`;
+
+exports[`ChoicesWithSingleAnswer: prefer not to answer or next without answering next without answering fallback a question click next without answering: getAnswersAsync 1`] = `
+Array [
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q1",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q1_nwa_fallback",
+  },
+]
+`;
+
+exports[`ChoicesWithSingleAnswer: prefer not to answer or next without answering next without answering fallback null click PNA: getAnswersAsync 1`] = `
+Array [
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": true,
+    "questionId": "q1",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q2",
+  },
+]
+`;
+
+exports[`ChoicesWithSingleAnswer: prefer not to answer or next without answering next without answering fallback null click next without answering: getAnswersAsync 1`] = `
+Array [
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q1",
+  },
+]
+`;
+
+exports[`ChoicesWithSingleAnswer: prefer not to answer or next without answering prefer not to answer fallback a question click PNA: getAnswersAsync 1`] = `
+Array [
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": true,
+    "questionId": "q1",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q1_pna_fallback",
+  },
+]
+`;
+
+exports[`ChoicesWithSingleAnswer: prefer not to answer or next without answering prefer not to answer fallback a question click next: getAnswersAsync 1`] = `
+Array [
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q1",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q2",
+  },
+]
+`;
+
+exports[`ChoicesWithSingleAnswer: prefer not to answer or next without answering prefer not to answer fallback null click PNA: getAnswersAsync 1`] = `
+Array [
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": true,
+    "questionId": "q1",
+  },
+]
+`;
+
+exports[`ChoicesWithSingleAnswer: prefer not to answer or next without answering prefer not to answer fallback null click next: getAnswersAsync 1`] = `
+Array [
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q1",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q2",
+  },
+]
+`;
+
+exports[`ChoicesWithSingleAnswer: prefer not to answer or next without answering without fallback next without answering: getAnswersAsync 1`] = `
+Array [
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q1",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q2",
+  },
+]
+`;
+
+exports[`ChoicesWithSingleAnswer: prefer not to answer or next without answering without fallback prefer not to answer: getAnswersAsync 1`] = `
+Array [
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": true,
+    "questionId": "q1",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q2",
+  },
+]
+`;
+
+exports[`HowLongAgo: prefer not to answer or next without answering next without answering fallback a question click PNA: getAnswersAsync 1`] = `
+Array [
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": true,
+    "questionId": "q1",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q2",
+  },
+]
+`;
+
+exports[`HowLongAgo: prefer not to answer or next without answering next without answering fallback a question click next without answering: getAnswersAsync 1`] = `
+Array [
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q1",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q1_nwa_fallback",
+  },
+]
+`;
+
+exports[`HowLongAgo: prefer not to answer or next without answering next without answering fallback null click PNA: getAnswersAsync 1`] = `
+Array [
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": true,
+    "questionId": "q1",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q2",
+  },
+]
+`;
+
+exports[`HowLongAgo: prefer not to answer or next without answering next without answering fallback null click next without answering: getAnswersAsync 1`] = `
+Array [
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q1",
+  },
+]
+`;
+
+exports[`HowLongAgo: prefer not to answer or next without answering prefer not to answer fallback a question click PNA: getAnswersAsync 1`] = `
+Array [
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": true,
+    "questionId": "q1",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q1_pna_fallback",
+  },
+]
+`;
+
+exports[`HowLongAgo: prefer not to answer or next without answering prefer not to answer fallback a question click next: getAnswersAsync 1`] = `
+Array [
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q1",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q2",
+  },
+]
+`;
+
+exports[`HowLongAgo: prefer not to answer or next without answering prefer not to answer fallback null click PNA: getAnswersAsync 1`] = `
+Array [
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": true,
+    "questionId": "q1",
+  },
+]
+`;
+
+exports[`HowLongAgo: prefer not to answer or next without answering prefer not to answer fallback null click next: getAnswersAsync 1`] = `
+Array [
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q1",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q2",
+  },
+]
+`;
+
+exports[`HowLongAgo: prefer not to answer or next without answering without fallback next without answering: getAnswersAsync 1`] = `
+Array [
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q1",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q2",
+  },
+]
+`;
+
+exports[`HowLongAgo: prefer not to answer or next without answering without fallback prefer not to answer: getAnswersAsync 1`] = `
+Array [
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": true,
+    "questionId": "q1",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q2",
+  },
+]
+`;
+
+exports[`MultipleText: prefer not to answer or next without answering next without answering fallback a question click PNA: getAnswersAsync 1`] = `
+Array [
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": true,
+    "questionId": "q1",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q2",
+  },
+]
+`;
+
+exports[`MultipleText: prefer not to answer or next without answering next without answering fallback a question click next without answering: getAnswersAsync 1`] = `
+Array [
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q1",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q1_nwa_fallback",
+  },
+]
+`;
+
+exports[`MultipleText: prefer not to answer or next without answering next without answering fallback null click PNA: getAnswersAsync 1`] = `
+Array [
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": true,
+    "questionId": "q1",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q2",
+  },
+]
+`;
+
+exports[`MultipleText: prefer not to answer or next without answering next without answering fallback null click next without answering: getAnswersAsync 1`] = `
+Array [
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q1",
+  },
+]
+`;
+
+exports[`MultipleText: prefer not to answer or next without answering prefer not to answer fallback a question click PNA: getAnswersAsync 1`] = `
+Array [
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": true,
+    "questionId": "q1",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q1_pna_fallback",
+  },
+]
+`;
+
+exports[`MultipleText: prefer not to answer or next without answering prefer not to answer fallback a question click next: getAnswersAsync 1`] = `
+Array [
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q1",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q2",
+  },
+]
+`;
+
+exports[`MultipleText: prefer not to answer or next without answering prefer not to answer fallback null click PNA: getAnswersAsync 1`] = `
+Array [
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": true,
+    "questionId": "q1",
+  },
+]
+`;
+
+exports[`MultipleText: prefer not to answer or next without answering prefer not to answer fallback null click next: getAnswersAsync 1`] = `
+Array [
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q1",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q2",
+  },
+]
+`;
+
+exports[`MultipleText: prefer not to answer or next without answering without fallback next without answering: getAnswersAsync 1`] = `
+Array [
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q1",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q2",
+  },
+]
+`;
+
+exports[`MultipleText: prefer not to answer or next without answering without fallback prefer not to answer: getAnswersAsync 1`] = `
+Array [
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": true,
+    "questionId": "q1",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q2",
+  },
+]
+`;
+
+exports[`Slider: prefer not to answer or next without answering next without answering fallback a question click PNA: getAnswersAsync 1`] = `
+Array [
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": true,
+    "questionId": "q1",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q2",
+  },
+]
+`;
+
+exports[`Slider: prefer not to answer or next without answering next without answering fallback a question click next without answering: getAnswersAsync 1`] = `
+Array [
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q1",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q1_nwa_fallback",
+  },
+]
+`;
+
+exports[`Slider: prefer not to answer or next without answering next without answering fallback null click PNA: getAnswersAsync 1`] = `
+Array [
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": true,
+    "questionId": "q1",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q2",
+  },
+]
+`;
+
+exports[`Slider: prefer not to answer or next without answering next without answering fallback null click next without answering: getAnswersAsync 1`] = `
+Array [
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q1",
+  },
+]
+`;
+
+exports[`Slider: prefer not to answer or next without answering prefer not to answer fallback a question click PNA: getAnswersAsync 1`] = `
+Array [
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": true,
+    "questionId": "q1",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q1_pna_fallback",
+  },
+]
+`;
+
+exports[`Slider: prefer not to answer or next without answering prefer not to answer fallback a question click next: getAnswersAsync 1`] = `
+Array [
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q1",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q2",
+  },
+]
+`;
+
+exports[`Slider: prefer not to answer or next without answering prefer not to answer fallback null click PNA: getAnswersAsync 1`] = `
+Array [
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": true,
+    "questionId": "q1",
+  },
+]
+`;
+
+exports[`Slider: prefer not to answer or next without answering prefer not to answer fallback null click next: getAnswersAsync 1`] = `
+Array [
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q1",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q2",
+  },
+]
+`;
+
+exports[`Slider: prefer not to answer or next without answering without fallback next without answering: getAnswersAsync 1`] = `
+Array [
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q1",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q2",
+  },
+]
+`;
+
+exports[`Slider: prefer not to answer or next without answering without fallback prefer not to answer: getAnswersAsync 1`] = `
+Array [
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": true,
+    "questionId": "q1",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q2",
+  },
+]
+`;
+
+exports[`YesNo: prefer not to answer or next without answering next without answering fallback a question click PNA: getAnswersAsync 1`] = `
+Array [
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": true,
+    "questionId": "q1",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q2",
+  },
+]
+`;
+
+exports[`YesNo: prefer not to answer or next without answering next without answering fallback a question click next without answering: getAnswersAsync 1`] = `
+Array [
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q1",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q1_nwa_fallback",
+  },
+]
+`;
+
+exports[`YesNo: prefer not to answer or next without answering next without answering fallback null click PNA: getAnswersAsync 1`] = `
+Array [
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": true,
+    "questionId": "q1",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q2",
+  },
+]
+`;
+
+exports[`YesNo: prefer not to answer or next without answering next without answering fallback null click next without answering: getAnswersAsync 1`] = `
+Array [
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q1",
+  },
+]
+`;
+
+exports[`YesNo: prefer not to answer or next without answering prefer not to answer fallback a question click PNA: getAnswersAsync 1`] = `
+Array [
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": true,
+    "questionId": "q1",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q1_pna_fallback",
+  },
+]
+`;
+
+exports[`YesNo: prefer not to answer or next without answering prefer not to answer fallback a question click next: getAnswersAsync 1`] = `
+Array [
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q1",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q2",
+  },
+]
+`;
+
+exports[`YesNo: prefer not to answer or next without answering prefer not to answer fallback null click PNA: getAnswersAsync 1`] = `
+Array [
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": true,
+    "questionId": "q1",
+  },
+]
+`;
+
+exports[`YesNo: prefer not to answer or next without answering prefer not to answer fallback null click next: getAnswersAsync 1`] = `
+Array [
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q1",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q2",
+  },
+]
+`;
+
+exports[`YesNo: prefer not to answer or next without answering without fallback next without answering: getAnswersAsync 1`] = `
+Array [
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q1",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q2",
+  },
+]
+`;
+
+exports[`YesNo: prefer not to answer or next without answering without fallback prefer not to answer: getAnswersAsync 1`] = `
+Array [
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": true,
+    "questionId": "q1",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q2",
+  },
+]
+`;
+
 exports[`non-existent startingQuestionId 1`] = `
 <Text>
   [CRITICAL ERROR (Please screenshot this page and send it to the study staff as soon as possible): questions["na"] === undefined]
 </Text>
+`;
+
+exports[`single question: getAnswersAsync 1`] = `
+Array [
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "howLongAgoQuestion",
+  },
+]
 `;

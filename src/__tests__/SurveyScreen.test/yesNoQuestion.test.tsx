@@ -9,13 +9,25 @@ import {
 import SurveyScreen, { SurveyScreenProps } from "../../SurveyScreen";
 import { QuestionType } from "../../helpers/helpers";
 import {
-  TEST_PING,
-  mockNecessaryFunctionsToTestSurveyScreen,
+  getBaseProps,
+  setUpSurveyScreenTestAsync,
+  tearDownSurveyScreenTestAsync,
   testQuestionsSequenceAsync,
 } from "./helper";
 
-beforeEach(() => {
-  mockNecessaryFunctionsToTestSurveyScreen();
+let currentPropsBase!: SurveyScreenProps;
+beforeEach(async () => {
+  const currentTestPing = await setUpSurveyScreenTestAsync();
+  currentPropsBase = {
+    ...getBaseProps(),
+    questions: {},
+    startingQuestionId: "q1",
+    ping: currentTestPing,
+  };
+});
+
+afterEach(async () => {
+  await tearDownSurveyScreenTestAsync();
 });
 
 async function clickOptionAsync(
@@ -27,7 +39,9 @@ async function clickOptionAsync(
 }
 
 describe("with both branchStartId", () => {
-  const props: SurveyScreenProps = {
+  // See `MARK: SURVEY_TEST_WHY_GET_PROPS`.
+  const getProps = (): SurveyScreenProps => ({
+    ...currentPropsBase,
     questions: {
       q1: {
         id: "q1",
@@ -60,16 +74,13 @@ describe("with both branchStartId", () => {
       },
     },
     startingQuestionId: "q1",
-    ping: TEST_PING,
-    previousState: null,
-    onFinish: async () => {},
-  };
+  });
 
   test("click yes", async () => {
     const onFinishFn = jest.fn();
 
     const renderResults = render(
-      <SurveyScreen {...props} onFinish={onFinishFn} />,
+      <SurveyScreen {...getProps()} onFinish={onFinishFn} />,
     );
 
     await testQuestionsSequenceAsync({
@@ -101,7 +112,7 @@ describe("with both branchStartId", () => {
     const onFinishFn = jest.fn();
 
     const renderResults = render(
-      <SurveyScreen {...props} onFinish={onFinishFn} />,
+      <SurveyScreen {...getProps()} onFinish={onFinishFn} />,
     );
 
     await testQuestionsSequenceAsync({
@@ -133,7 +144,7 @@ describe("with both branchStartId", () => {
     const onFinishFn = jest.fn();
 
     const renderResults = render(
-      <SurveyScreen {...props} onFinish={onFinishFn} />,
+      <SurveyScreen {...getProps()} onFinish={onFinishFn} />,
     );
 
     await testQuestionsSequenceAsync({
@@ -158,7 +169,7 @@ describe("with both branchStartId", () => {
     const onFinishFn = jest.fn();
 
     const renderResults = render(
-      <SurveyScreen {...props} onFinish={onFinishFn} />,
+      <SurveyScreen {...getProps()} onFinish={onFinishFn} />,
     );
 
     await testQuestionsSequenceAsync({
@@ -186,7 +197,8 @@ describe("with both branchStartId", () => {
 });
 
 describe("with only `yes` branchStartId", () => {
-  const props: SurveyScreenProps = {
+  const getProps = (): SurveyScreenProps => ({
+    ...currentPropsBase,
     questions: {
       q1: {
         id: "q1",
@@ -212,16 +224,13 @@ describe("with only `yes` branchStartId", () => {
       },
     },
     startingQuestionId: "q1",
-    ping: TEST_PING,
-    previousState: null,
-    onFinish: async () => {},
-  };
+  });
 
   test("click yes", async () => {
     const onFinishFn = jest.fn();
 
     const renderResults = render(
-      <SurveyScreen {...props} onFinish={onFinishFn} />,
+      <SurveyScreen {...getProps()} onFinish={onFinishFn} />,
     );
 
     await testQuestionsSequenceAsync({
@@ -253,7 +262,7 @@ describe("with only `yes` branchStartId", () => {
     const onFinishFn = jest.fn();
 
     const renderResults = render(
-      <SurveyScreen {...props} onFinish={onFinishFn} />,
+      <SurveyScreen {...getProps()} onFinish={onFinishFn} />,
     );
 
     await testQuestionsSequenceAsync({
@@ -280,7 +289,7 @@ describe("with only `yes` branchStartId", () => {
     const onFinishFn = jest.fn();
 
     const renderResults = render(
-      <SurveyScreen {...props} onFinish={onFinishFn} />,
+      <SurveyScreen {...getProps()} onFinish={onFinishFn} />,
     );
 
     await testQuestionsSequenceAsync({
@@ -305,7 +314,7 @@ describe("with only `yes` branchStartId", () => {
     const onFinishFn = jest.fn();
 
     const renderResults = render(
-      <SurveyScreen {...props} onFinish={onFinishFn} />,
+      <SurveyScreen {...getProps()} onFinish={onFinishFn} />,
     );
 
     await testQuestionsSequenceAsync({
@@ -333,7 +342,8 @@ describe("with only `yes` branchStartId", () => {
 });
 
 describe("with only `no` branchStartId", () => {
-  const props: SurveyScreenProps = {
+  const getProps = (): SurveyScreenProps => ({
+    ...currentPropsBase,
     questions: {
       q1: {
         id: "q1",
@@ -359,16 +369,13 @@ describe("with only `no` branchStartId", () => {
       },
     },
     startingQuestionId: "q1",
-    ping: TEST_PING,
-    previousState: null,
-    onFinish: async () => {},
-  };
+  });
 
   test("click yes", async () => {
     const onFinishFn = jest.fn();
 
     const renderResults = render(
-      <SurveyScreen {...props} onFinish={onFinishFn} />,
+      <SurveyScreen {...getProps()} onFinish={onFinishFn} />,
     );
 
     await testQuestionsSequenceAsync({
@@ -395,7 +402,7 @@ describe("with only `no` branchStartId", () => {
     const onFinishFn = jest.fn();
 
     const renderResults = render(
-      <SurveyScreen {...props} onFinish={onFinishFn} />,
+      <SurveyScreen {...getProps()} onFinish={onFinishFn} />,
     );
 
     await testQuestionsSequenceAsync({
@@ -427,7 +434,7 @@ describe("with only `no` branchStartId", () => {
     const onFinishFn = jest.fn();
 
     const renderResults = render(
-      <SurveyScreen {...props} onFinish={onFinishFn} />,
+      <SurveyScreen {...getProps()} onFinish={onFinishFn} />,
     );
 
     await testQuestionsSequenceAsync({
@@ -452,7 +459,7 @@ describe("with only `no` branchStartId", () => {
     const onFinishFn = jest.fn();
 
     const renderResults = render(
-      <SurveyScreen {...props} onFinish={onFinishFn} />,
+      <SurveyScreen {...getProps()} onFinish={onFinishFn} />,
     );
 
     await testQuestionsSequenceAsync({
@@ -480,7 +487,8 @@ describe("with only `no` branchStartId", () => {
 });
 
 describe("with only `yes` and `no` being `null` branchStartId", () => {
-  const props: SurveyScreenProps = {
+  const getProps = (): SurveyScreenProps => ({
+    ...currentPropsBase,
     questions: {
       q1: {
         id: "q1",
@@ -501,16 +509,13 @@ describe("with only `yes` and `no` being `null` branchStartId", () => {
       },
     },
     startingQuestionId: "q1",
-    ping: TEST_PING,
-    previousState: null,
-    onFinish: async () => {},
-  };
+  });
 
   test("click yes", async () => {
     const onFinishFn = jest.fn();
 
     const renderResults = render(
-      <SurveyScreen {...props} onFinish={onFinishFn} />,
+      <SurveyScreen {...getProps()} onFinish={onFinishFn} />,
     );
 
     await testQuestionsSequenceAsync({
@@ -532,7 +537,7 @@ describe("with only `yes` and `no` being `null` branchStartId", () => {
     const onFinishFn = jest.fn();
 
     const renderResults = render(
-      <SurveyScreen {...props} onFinish={onFinishFn} />,
+      <SurveyScreen {...getProps()} onFinish={onFinishFn} />,
     );
 
     await testQuestionsSequenceAsync({
@@ -554,7 +559,7 @@ describe("with only `yes` and `no` being `null` branchStartId", () => {
     const onFinishFn = jest.fn();
 
     const renderResults = render(
-      <SurveyScreen {...props} onFinish={onFinishFn} />,
+      <SurveyScreen {...getProps()} onFinish={onFinishFn} />,
     );
 
     await testQuestionsSequenceAsync({
@@ -579,7 +584,7 @@ describe("with only `yes` and `no` being `null` branchStartId", () => {
     const onFinishFn = jest.fn();
 
     const renderResults = render(
-      <SurveyScreen {...props} onFinish={onFinishFn} />,
+      <SurveyScreen {...getProps()} onFinish={onFinishFn} />,
     );
 
     await testQuestionsSequenceAsync({
@@ -607,7 +612,8 @@ describe("with only `yes` and `no` being `null` branchStartId", () => {
 });
 
 describe("with undefined branchStartId", () => {
-  const props: SurveyScreenProps = {
+  const getProps = (): SurveyScreenProps => ({
+    ...currentPropsBase,
     questions: {
       q1: {
         id: "q1",
@@ -624,16 +630,13 @@ describe("with undefined branchStartId", () => {
       },
     },
     startingQuestionId: "q1",
-    ping: TEST_PING,
-    previousState: null,
-    onFinish: async () => {},
-  };
+  });
 
   test("click yes", async () => {
     const onFinishFn = jest.fn();
 
     const renderResults = render(
-      <SurveyScreen {...props} onFinish={onFinishFn} />,
+      <SurveyScreen {...getProps()} onFinish={onFinishFn} />,
     );
 
     await testQuestionsSequenceAsync({
@@ -660,7 +663,7 @@ describe("with undefined branchStartId", () => {
     const onFinishFn = jest.fn();
 
     const renderResults = render(
-      <SurveyScreen {...props} onFinish={onFinishFn} />,
+      <SurveyScreen {...getProps()} onFinish={onFinishFn} />,
     );
 
     await testQuestionsSequenceAsync({
@@ -687,7 +690,7 @@ describe("with undefined branchStartId", () => {
     const onFinishFn = jest.fn();
 
     const renderResults = render(
-      <SurveyScreen {...props} onFinish={onFinishFn} />,
+      <SurveyScreen {...getProps()} onFinish={onFinishFn} />,
     );
 
     await testQuestionsSequenceAsync({
@@ -712,7 +715,7 @@ describe("with undefined branchStartId", () => {
     const onFinishFn = jest.fn();
 
     const renderResults = render(
-      <SurveyScreen {...props} onFinish={onFinishFn} />,
+      <SurveyScreen {...getProps()} onFinish={onFinishFn} />,
     );
 
     await testQuestionsSequenceAsync({

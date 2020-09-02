@@ -3,35 +3,45 @@ import { render } from "react-native-testing-library";
 
 import SurveyScreen, { SurveyScreenProps } from "../../SurveyScreen";
 import { QuestionType } from "../../helpers/helpers";
+import { QuestionsList, Question, QuestionTypeType } from "../../helpers/types";
 import {
-  QuestionsList,
-  Question,
-  QuestionTypeType,
-  SliderQuestion,
-  ChoicesWithSingleAnswerQuestion,
-  ChoicesWithMultipleAnswersQuestion,
-  YesNoQuestion,
-  MultipleTextQuestion,
-  HowLongAgoQuestion,
-} from "../../helpers/types";
-import {
-  TEST_PING,
-  mockNecessaryFunctionsToTestSurveyScreen,
+  getBaseProps,
   testQuestionsSequenceAsync,
+  tearDownSurveyScreenTestAsync,
+  setUpSurveyScreenTestAsync,
+  TearDownSurveyScreenTestOptions,
 } from "./helper";
 
-beforeEach(() => {
-  mockNecessaryFunctionsToTestSurveyScreen();
+let currentTearDownOptions!: Partial<TearDownSurveyScreenTestOptions>;
+
+let currentPropsBase!: SurveyScreenProps;
+beforeEach(async () => {
+  const currentTestPing = await setUpSurveyScreenTestAsync();
+  currentPropsBase = {
+    ...getBaseProps(),
+    questions: {}, // Will be extended by each test.
+    startingQuestionId: "q1",
+    ping: currentTestPing,
+  };
+
+  currentTearDownOptions = {};
+});
+
+afterEach(async () => {
+  await tearDownSurveyScreenTestAsync(currentTearDownOptions);
 });
 
 test("non-existent startingQuestionId", async () => {
   const onFinishFn = jest.fn();
 
+  currentTearDownOptions = {
+    shouldHaveEndTime: false,
+    shouldCheckAnswers: false,
+  };
   const props: SurveyScreenProps = {
+    ...currentPropsBase,
     questions: {},
     startingQuestionId: "na",
-    ping: TEST_PING,
-    previousState: null,
     onFinish: onFinishFn,
   };
   const { toJSON } = render(<SurveyScreen {...props} />);
@@ -47,6 +57,7 @@ test("single question", async () => {
   const onFinishFn = jest.fn();
 
   const props: SurveyScreenProps = {
+    ...currentPropsBase,
     questions: {
       howLongAgoQuestion: {
         id: "howLongAgoQuestion",
@@ -56,8 +67,6 @@ test("single question", async () => {
       },
     },
     startingQuestionId: "howLongAgoQuestion",
-    ping: TEST_PING,
-    previousState: null,
     onFinish: onFinishFn,
   };
   const renderResults = render(<SurveyScreen {...props} />);
@@ -79,6 +88,7 @@ test("2 questions", async () => {
   const onFinishFn = jest.fn();
 
   const props: SurveyScreenProps = {
+    ...currentPropsBase,
     questions: {
       q1: {
         id: "q1",
@@ -95,8 +105,6 @@ test("2 questions", async () => {
       },
     },
     startingQuestionId: "q1",
-    ping: TEST_PING,
-    previousState: null,
     onFinish: onFinishFn,
   };
   const renderResults = render(<SurveyScreen {...props} />);
@@ -133,10 +141,9 @@ test("50 questions", async () => {
   }
 
   const props: SurveyScreenProps = {
+    ...currentPropsBase,
     questions,
     startingQuestionId: "question_1",
-    ping: TEST_PING,
-    previousState: null,
     onFinish: onFinishFn,
   };
   const renderResults = render(<SurveyScreen {...props} />);
@@ -226,7 +233,12 @@ describe.each(DIFFERENT_TYPES_OF_QUESTIONS)(
   "%s: prefer not to answer or next without answering",
   (type, q1) => {
     describe("without fallback", () => {
-      const props: SurveyScreenProps = {
+      // MARK: SURVEY_TEST_WHY_GET_PROPS
+      // For instances like this where we define a prop in `describe` instead of
+      // `test`, we have to use a function because `currentPropsBase` will change
+      // for each test.
+      const getProps = (): SurveyScreenProps => ({
+        ...currentPropsBase,
         questions: {
           q1,
           q2: {
@@ -238,16 +250,13 @@ describe.each(DIFFERENT_TYPES_OF_QUESTIONS)(
           },
         },
         startingQuestionId: "q1",
-        ping: TEST_PING,
-        previousState: null,
-        onFinish: async () => {},
-      };
+      });
 
       test("prefer not to answer", async () => {
         const onFinishFn = jest.fn();
 
         const renderResults = render(
-          <SurveyScreen {...props} onFinish={onFinishFn} />,
+          <SurveyScreen {...getProps()} onFinish={onFinishFn} />,
         );
 
         await testQuestionsSequenceAsync({
@@ -273,7 +282,7 @@ describe.each(DIFFERENT_TYPES_OF_QUESTIONS)(
         const onFinishFn = jest.fn();
 
         const renderResults = render(
-          <SurveyScreen {...props} onFinish={onFinishFn} />,
+          <SurveyScreen {...getProps()} onFinish={onFinishFn} />,
         );
 
         await testQuestionsSequenceAsync({
@@ -297,7 +306,8 @@ describe.each(DIFFERENT_TYPES_OF_QUESTIONS)(
 
     describe("prefer not to answer fallback", () => {
       describe("a question", () => {
-        const props: SurveyScreenProps = {
+        const getProps = (): SurveyScreenProps => ({
+          ...currentPropsBase,
           questions: {
             q1: {
               ...q1,
@@ -321,16 +331,13 @@ describe.each(DIFFERENT_TYPES_OF_QUESTIONS)(
             },
           },
           startingQuestionId: "q1",
-          ping: TEST_PING,
-          previousState: null,
-          onFinish: async () => {},
-        };
+        });
 
         test("click next", async () => {
           const onFinishFn = jest.fn();
 
           const renderResults = render(
-            <SurveyScreen {...props} onFinish={onFinishFn} />,
+            <SurveyScreen {...getProps()} onFinish={onFinishFn} />,
           );
 
           await testQuestionsSequenceAsync({
@@ -355,7 +362,7 @@ describe.each(DIFFERENT_TYPES_OF_QUESTIONS)(
           const onFinishFn = jest.fn();
 
           const renderResults = render(
-            <SurveyScreen {...props} onFinish={onFinishFn} />,
+            <SurveyScreen {...getProps()} onFinish={onFinishFn} />,
           );
 
           await testQuestionsSequenceAsync({
@@ -381,7 +388,8 @@ describe.each(DIFFERENT_TYPES_OF_QUESTIONS)(
       });
 
       describe("null", () => {
-        const props: SurveyScreenProps = {
+        const getProps = (): SurveyScreenProps => ({
+          ...currentPropsBase,
           questions: {
             q1: {
               ...q1,
@@ -398,16 +406,13 @@ describe.each(DIFFERENT_TYPES_OF_QUESTIONS)(
             },
           },
           startingQuestionId: "q1",
-          ping: TEST_PING,
-          previousState: null,
-          onFinish: async () => {},
-        };
+        });
 
         test("click next", async () => {
           const onFinishFn = jest.fn();
 
           const renderResults = render(
-            <SurveyScreen {...props} onFinish={onFinishFn} />,
+            <SurveyScreen {...getProps()} onFinish={onFinishFn} />,
           );
 
           await testQuestionsSequenceAsync({
@@ -432,7 +437,7 @@ describe.each(DIFFERENT_TYPES_OF_QUESTIONS)(
           const onFinishFn = jest.fn();
 
           const renderResults = render(
-            <SurveyScreen {...props} onFinish={onFinishFn} />,
+            <SurveyScreen {...getProps()} onFinish={onFinishFn} />,
           );
 
           await testQuestionsSequenceAsync({
@@ -453,7 +458,8 @@ describe.each(DIFFERENT_TYPES_OF_QUESTIONS)(
 
     describe("next without answering fallback", () => {
       describe("a question", () => {
-        const props: SurveyScreenProps = {
+        const getProps = (): SurveyScreenProps => ({
+          ...currentPropsBase,
           questions: {
             q1: {
               ...q1,
@@ -477,16 +483,13 @@ describe.each(DIFFERENT_TYPES_OF_QUESTIONS)(
             },
           },
           startingQuestionId: "q1",
-          ping: TEST_PING,
-          previousState: null,
-          onFinish: async () => {},
-        };
+        });
 
         test("click next without answering", async () => {
           const onFinishFn = jest.fn();
 
           const renderResults = render(
-            <SurveyScreen {...props} onFinish={onFinishFn} />,
+            <SurveyScreen {...getProps()} onFinish={onFinishFn} />,
           );
 
           await testQuestionsSequenceAsync({
@@ -513,7 +516,7 @@ describe.each(DIFFERENT_TYPES_OF_QUESTIONS)(
           const onFinishFn = jest.fn();
 
           const renderResults = render(
-            <SurveyScreen {...props} onFinish={onFinishFn} />,
+            <SurveyScreen {...getProps()} onFinish={onFinishFn} />,
           );
 
           await testQuestionsSequenceAsync({
@@ -537,7 +540,8 @@ describe.each(DIFFERENT_TYPES_OF_QUESTIONS)(
       });
 
       describe("null", () => {
-        const props: SurveyScreenProps = {
+        const getProps = (): SurveyScreenProps => ({
+          ...currentPropsBase,
           questions: {
             q1: {
               ...q1,
@@ -554,16 +558,13 @@ describe.each(DIFFERENT_TYPES_OF_QUESTIONS)(
             },
           },
           startingQuestionId: "q1",
-          ping: TEST_PING,
-          previousState: null,
-          onFinish: async () => {},
-        };
+        });
 
         test("click next without answering", async () => {
           const onFinishFn = jest.fn();
 
           const renderResults = render(
-            <SurveyScreen {...props} onFinish={onFinishFn} />,
+            <SurveyScreen {...getProps()} onFinish={onFinishFn} />,
           );
 
           await testQuestionsSequenceAsync({
@@ -583,7 +584,7 @@ describe.each(DIFFERENT_TYPES_OF_QUESTIONS)(
           const onFinishFn = jest.fn();
 
           const renderResults = render(
-            <SurveyScreen {...props} onFinish={onFinishFn} />,
+            <SurveyScreen {...getProps()} onFinish={onFinishFn} />,
           );
 
           await testQuestionsSequenceAsync({

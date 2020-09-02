@@ -1,39 +1,48 @@
 import { isToday } from "date-fns";
 
-import { PingEntity } from "../entities/PingEntity";
-import { isTimeThisWeekAsync } from "./studyFile";
-import { StreamName } from "./types";
+import {
+  getPingsListAsync,
+  clearPingsListAsync,
+} from "./asyncStorage/pingsList";
+import { PingSchema } from "./schemas/Ping";
+import {
+  secureStorePingAsync,
+  secureGetPingAsync,
+  secureRemovePingAsync,
+} from "./secureStore/ping";
+import { isTimeThisWeekAsync, getAllStreamNamesAsync } from "./studyFile";
+import { StreamName, Ping } from "./types";
 
-export async function getNumberOfPingsForStreamName(
+export async function getNumberOfPingsForStreamNameAsync(
   streamName: StreamName,
 ): Promise<number> {
-  const countRaw: {
-    count: number;
-  } = await PingEntity.createQueryBuilder()
-    .select("COUNT(id) as count")
-    .where("streamName = :streamName", { streamName })
-    .getRawOne();
-  return countRaw.count;
+  const pingsList = await getPingsListAsync();
+  return pingsList.filter((pingId) => {
+    // If the ping ID is of this stream.
+    return pingId.startsWith(streamName);
+  }).length;
 }
 
 export type NumbersOfPingsForAllStreamNames = {
   [stream: string /* actually StreamName */]: number;
 };
-export async function getNumbersOfPingsForAllStreamNames(): Promise<
+export async function getNumbersOfPingsForAllStreamNamesAsync(): Promise<
   NumbersOfPingsForAllStreamNames
 > {
-  const pingsGroupByStreamNameRaw: {
-    streamName: StreamName;
-    count: number;
-  }[] = await PingEntity.createQueryBuilder()
-    .select("streamName, COUNT(id) as count")
-    .groupBy("streamName")
-    .getRawMany();
+  const streamNames = await getAllStreamNamesAsync();
 
-  return pingsGroupByStreamNameRaw.reduce((map, row) => {
-    map[row.streamName] = row.count;
-    return map;
-  }, {} as NumbersOfPingsForAllStreamNames);
+  const results: NumbersOfPingsForAllStreamNames = {};
+
+  await Promise.all(
+    streamNames.map(async (streamName) => {
+      const numPing = await getNumberOfPingsForStreamNameAsync(streamName);
+      if (numPing > 0) {
+        results[streamName] = numPing;
+      }
+    }),
+  );
+
+  return results;
 }
 
 export async function insertPingAsync({
@@ -44,62 +53,69 @@ export async function insertPingAsync({
   notificationTime: Date;
   startTime: Date;
   streamName: StreamName;
-}): Promise<PingEntity> {
-  const newIndex = (await getNumberOfPingsForStreamName(streamName)) + 1;
+}): Promise<Ping> {
+  const newIndex = (await getNumberOfPingsForStreamNameAsync(streamName)) + 1;
   const pingId = `${streamName}${newIndex}`;
   const tzOffset = startTime.getTimezoneOffset();
 
-  const pingEntity = new PingEntity();
-  pingEntity.id = pingId;
-  pingEntity.notificationTime = notificationTime;
-  pingEntity.startTime = startTime;
-  pingEntity.streamName = streamName;
-  pingEntity.tzOffset = tzOffset;
-  await pingEntity.save();
+  const ping = PingSchema.parse({
+    id: pingId,
+    notificationTime,
+    startTime,
+    endTime: null,
+    streamName,
+    tzOffset,
+  });
 
-  // Make sure state and database are consistent.
-  await pingEntity.reload();
+  await secureStorePingAsync(ping);
 
-  return pingEntity;
+  return ping;
 }
 
 export async function addEndTimeToPingAsync(
   pingId: string,
   endTime: Date,
-): Promise<PingEntity> {
-  const ping = await PingEntity.createQueryBuilder()
-    .where("id = :pingId", { pingId })
-    .getOne();
+): Promise<Ping> {
+  const ping = await secureGetPingAsync(pingId);
   if (ping == null) {
     throw new Error(`pingId ${pingId} not found in getPingsAsync.`);
   }
 
   ping.endTime = endTime;
-  await ping.save();
-
-  // Make sure state and database are consistent.
-  ping.reload();
+  await secureStorePingAsync(ping);
 
   return ping;
 }
 
-export async function getLatestPingAsync(): Promise<PingEntity | null> {
-  const latestPing = await PingEntity.createQueryBuilder()
-    .orderBy("startTime", "DESC")
-    .take(1)
-    .getOne();
-  if (!latestPing) {
+export async function getLatestPingAsync(): Promise<Ping | null> {
+  const pingsList = await getPingsListAsync();
+  if (pingsList.length === 0) {
     return null;
   }
-  return latestPing;
+  const latestPingId = pingsList[pingsList.length - 1];
+  return await secureGetPingAsync(latestPingId);
 }
 
 export async function getPingsAsync(
   order: "ASC" | "DESC" = "ASC",
-): Promise<PingEntity[]> {
-  const pings = await PingEntity.createQueryBuilder()
-    .orderBy("startTime", order)
-    .getMany();
+): Promise<Ping[]> {
+  const pingsList = await getPingsListAsync();
+  if (order === "DESC") {
+    // As it is in ascending order by default.
+    pingsList.reverse();
+  }
+
+  // https://stackoverflow.com/q/28066429/2603230
+  const pings: Ping[] = await Promise.all(
+    pingsList.map(async (pingId) => {
+      const ping = await secureGetPingAsync(pingId);
+      if (ping === null) {
+        throw new Error("ping === null in pingsList.map in getPingsAsync.");
+      }
+      return ping;
+    }),
+  );
+
   return pings;
 }
 
@@ -107,11 +123,11 @@ export async function getPingsAsync(
 // condition is met.
 // The returning pings are always in `order` order.
 export async function getPingsUntilAsync(
-  untilAsync: (ping: PingEntity) => Promise<boolean> | boolean,
+  untilAsync: (ping: Ping) => Promise<boolean> | boolean,
   order: "ASC" | "DESC",
-): Promise<PingEntity[]> {
+): Promise<Ping[]> {
   const allPings = await getPingsAsync(order);
-  const resultsPings: PingEntity[] = [];
+  const resultsPings: Ping[] = [];
   for (const ping of allPings) {
     if (ping.notificationTime > new Date()) {
       // It is almost impossible to get this, because finished pings
@@ -127,7 +143,7 @@ export async function getPingsUntilAsync(
   return resultsPings;
 }
 
-export async function getTodayPingsAsync(): Promise<PingEntity[]> {
+export async function getTodayPingsAsync(): Promise<Ping[]> {
   // Stops when the finished ping was in yesterday.
   const todayPings = await getPingsUntilAsync(
     (ping) => !isToday(ping.notificationTime),
@@ -137,7 +153,7 @@ export async function getTodayPingsAsync(): Promise<PingEntity[]> {
   return todayPings;
 }
 
-export async function getThisWeekPingsAsync(): Promise<PingEntity[]> {
+export async function getThisWeekPingsAsync(): Promise<Ping[]> {
   // Stops when the finished ping was last week.
   const thisWeekPings = await getPingsUntilAsync(
     async (ping) => !(await isTimeThisWeekAsync(ping.notificationTime)),
@@ -145,4 +161,14 @@ export async function getThisWeekPingsAsync(): Promise<PingEntity[]> {
   );
   thisWeekPings.reverse(); // So that pings are in ascending order.
   return thisWeekPings;
+}
+
+export async function clearAllPingsAsync() {
+  const pingsList = await getPingsListAsync();
+  await Promise.all(
+    pingsList.map(async (pingId) => {
+      await secureRemovePingAsync(pingId);
+    }),
+  );
+  await clearPingsListAsync();
 }

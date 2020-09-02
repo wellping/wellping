@@ -1,0 +1,111 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`click both columns: getAnswersAsync 1`] = `
+Array [
+  Object {
+    "data": Object {
+      "value": Array [
+        7,
+        "hours",
+      ],
+    },
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q1",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q2",
+  },
+]
+`;
+
+exports[`click left column: getAnswersAsync 1`] = `
+Array [
+  Object {
+    "data": Object {
+      "value": Array [
+        7,
+        null,
+      ],
+    },
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q1",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q2",
+  },
+]
+`;
+
+exports[`click next without answering: getAnswersAsync 1`] = `
+Array [
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q1",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q2",
+  },
+]
+`;
+
+exports[`click prefer not to answer: getAnswersAsync 1`] = `
+Array [
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": true,
+    "questionId": "q1",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q2",
+  },
+]
+`;
+
+exports[`click right column: getAnswersAsync 1`] = `
+Array [
+  Object {
+    "data": Object {
+      "value": Array [
+        null,
+        "days",
+      ],
+    },
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q1",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q2",
+  },
+]
+`;

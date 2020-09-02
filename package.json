@@ -8,6 +8,8 @@
     "eject": "expo eject"
   },
   "dependencies": {
+    "@react-native-community/async-storage": "~1.11.0",
+    "@react-native-community/slider": "3.0.0",
     "date-fns": "^2.14.0",
     "expo": "^38.0.0",
     "expo-constants": "~9.1.1",
@@ -15,6 +17,7 @@
     "expo-device": "~2.2.1",
     "expo-file-system": "~9.0.1",
     "expo-linking": "^1.0.3",
+    "expo-secure-store": "~9.0.1",
     "expo-sqlite": "~8.2.1",
     "expo-status-bar": "^1.0.0",
     "expo-web-browser": "~8.3.1",
@@ -25,7 +28,6 @@
     "react-native-sqlite-storage": "^5.0.0",
     "react-native-webview": "9.4.0",
     "reflect-metadata": "^0.1.13",
-    "typeorm": "^0.2.25",
     "url": "^0.11.0",
     "zod": "^1.10.1"
   },
@@ -74,6 +76,8 @@
       "**/__tests__/**/*.(spec|test).[jt]s?(x)"
     ],
     "setupFiles": [
+      "<rootDir>/src/__tests__/setupAsyncStorage.js",
+      "<rootDir>/src/__tests__/setupSecureStore.ts",
       "jest-date-mock"
     ],
     "setupFilesAfterEnv": [

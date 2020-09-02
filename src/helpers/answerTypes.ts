@@ -1,51 +1,66 @@
-import { AnswerEntity } from "../entities/AnswerEntity";
-import { Question, QuestionsList, Choice } from "./types";
+import * as z from "zod";
 
-// We use `{ value: ... }` because it seems that `"simple-json"`
-// does not support simply mixing normal values.
-// This also increases the consistency of the data.
+import {
+  SliderAnswerDataSchema,
+  ChoicesWithSingleAnswerAnswerDataSchema,
+  ChoicesWithMultipleAnswersAnswerChoicesSchema,
+  ChoicesWithMultipleAnswersAnswerDataSchema,
+  YesNoAnswerDataSchema,
+  MultipleTextAnswerDataSchema,
+  HowLongAgoAnswerDataTypeSchema,
+  HowLongAgoAnswerDataSchema,
+  AnswerDataSchema,
+  AnswersListSchema,
+  SliderAnswerSchema,
+  ChoicesWithSingleAnswerAnswerSchema,
+  ChoicesWithMultipleAnswersAnswerSchema,
+  YesNoAnswerSchema,
+  MultipleTextAnswerSchema,
+  HowLongAgoAnswerSchema,
+  AnswerSchema,
+} from "./schemas/Answer";
+import { Question, QuestionsList } from "./types";
 
-export type SliderAnswerData = {
-  value: number;
-};
+export type SliderAnswerData = z.infer<typeof SliderAnswerDataSchema>;
 
-export type ChoicesWithSingleAnswerAnswerData = {
-  value: Choice;
-};
+export type ChoicesWithSingleAnswerAnswerData = z.infer<
+  typeof ChoicesWithSingleAnswerAnswerDataSchema
+>;
 
-// We use an array of tuples here (instead of `{ [key: string]: boolean }`)
-// because the order shown on the screen can be kept in the results.
-// This is potentially helpful for analysis later if the order is randomized
-// as now we know the order the user saw the choices in.
-export type ChoicesWithMultipleAnswersAnswerChoices = [Choice, boolean][];
-export type ChoicesWithMultipleAnswersAnswerData = {
-  value: ChoicesWithMultipleAnswersAnswerChoices;
-};
+export type ChoicesWithMultipleAnswersAnswerChoices = z.infer<
+  typeof ChoicesWithMultipleAnswersAnswerChoicesSchema
+>;
+export type ChoicesWithMultipleAnswersAnswerData = z.infer<
+  typeof ChoicesWithMultipleAnswersAnswerDataSchema
+>;
 
-export type YesNoAnswerData = {
-  value: boolean;
-};
+export type YesNoAnswerData = z.infer<typeof YesNoAnswerDataSchema>;
 
-export type MultipleTextAnswerData = {
-  value: string[];
-};
+export type MultipleTextAnswerData = z.infer<
+  typeof MultipleTextAnswerDataSchema
+>;
 
-export type HowLongAgoAnswerDataType = [number | null, string | null];
-export type HowLongAgoAnswerData = {
-  value: HowLongAgoAnswerDataType;
-};
+export type HowLongAgoAnswerDataType = z.infer<
+  typeof HowLongAgoAnswerDataTypeSchema
+>;
+export type HowLongAgoAnswerData = z.infer<typeof HowLongAgoAnswerDataSchema>;
 
-export type AnswerData =
-  | SliderAnswerData
-  | ChoicesWithSingleAnswerAnswerData
-  | ChoicesWithMultipleAnswersAnswerData
-  | YesNoAnswerData
-  | MultipleTextAnswerData
-  | HowLongAgoAnswerData;
+export type AnswerData = z.infer<typeof AnswerDataSchema>;
 
-export interface AnswersList {
-  [id: string]: AnswerEntity;
-}
+export type SliderAnswer = z.infer<typeof SliderAnswerSchema>;
+export type ChoicesWithSingleAnswerAnswer = z.infer<
+  typeof ChoicesWithSingleAnswerAnswerSchema
+>;
+export type ChoicesWithMultipleAnswersAnswer = z.infer<
+  typeof ChoicesWithMultipleAnswersAnswerSchema
+>;
+export type YesNoAnswer = z.infer<typeof YesNoAnswerSchema>;
+export type MultipleTextAnswer = z.infer<typeof MultipleTextAnswerSchema>;
+export type HowLongAgoAnswer = z.infer<typeof HowLongAgoAnswerSchema>;
+
+export type Answer = z.infer<typeof AnswerSchema>;
+
+export type AnswersList = z.infer<typeof AnswersListSchema>;
 
 export interface QuestionScreenProps {
   question: Question;

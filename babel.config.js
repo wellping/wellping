@@ -3,7 +3,7 @@ module.exports = function (api) {
   return {
     presets: ["babel-preset-expo"],
     plugins: [
-      "babel-plugin-transform-typescript-metadata", // https://github.com/typeorm/expo-example/blob/master/babel.config.js
+      "babel-plugin-transform-typescript-metadata", // Previously for Typeorm, but keep it here just to be safe.
     ],
   };
 };

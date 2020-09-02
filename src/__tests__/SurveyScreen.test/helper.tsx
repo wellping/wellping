@@ -4,77 +4,129 @@ import {
   waitForElementToBeRemoved,
   RenderAPI,
 } from "react-native-testing-library";
-import { BaseEntity } from "typeorm";
 import waitForExpect from "wait-for-expect";
 
-import { PingEntity } from "../../entities/PingEntity";
-import * as HelperPings from "../../helpers/pings";
+import { getAnswersAsync } from "../../helpers/answers";
+import {
+  getAnswersPingIdsQuestionIdsListAsync,
+  getAnswersQuestionIdsListForPingAsync,
+} from "../../helpers/asyncStorage/answersPingIdsQuestionIdsList";
+import { getPingsListAsync } from "../../helpers/asyncStorage/pingsList";
+import { clearAllPingsAndAnswersAsync } from "../../helpers/cleanup";
+import { insertPingAsync, getPingsAsync } from "../../helpers/pings";
+import { Ping } from "../../helpers/types";
 import { PINGS_STUDY_INFO } from "../data/pings";
 import { mockCurrentStudyInfo } from "../helper";
-
-export const getPingEntity = ({
-  id,
-  notificationTime,
-  startTime,
-  tzOffset,
-  streamName,
-}: {
-  id: string;
-  notificationTime: Date;
-  startTime: Date;
-  tzOffset: number;
-  streamName: string;
-}): PingEntity => {
-  const ping = new PingEntity();
-  ping.id = id;
-  ping.notificationTime = notificationTime;
-  ping.startTime = startTime;
-  ping.streamName = streamName;
-  ping.tzOffset = tzOffset;
-  return ping;
-};
-
-export const TEST_PING_RAW = {
-  id: "testPing",
-  notificationTime: new Date(),
-  startTime: new Date(),
-  tzOffset: 0,
-  streamName: "testStream",
-};
-export const TEST_PING = getPingEntity(TEST_PING_RAW);
 
 export const MAIN_SURVEY_SCREEN_VIEW = "mainSurveyScreenView";
 export const QUESTION_TITLE_TESTID = "questionTitle";
 export const NEXT_BUTTON_A11YLABEL = "Next question";
 export const PNA_BUTTON_A11YLABEL = "Prefer not to answer the current question";
 
-/**
- * If we are not testing database here, we can mock all database-related
- * function.
- * If we don't do so, the code will be stuck on these functions.
- */
-export function mockDatabaseRelatedFunction() {
-  // https://stackoverflow.com/a/56565849/2603230
-  jest.spyOn(BaseEntity.prototype, "save").mockReturnThis();
-  jest.spyOn(BaseEntity.prototype, "reload").mockReturnThis();
+// Just use a study info - it's not important.
+export const STUDY_INFO = PINGS_STUDY_INFO;
 
-  // `addEndTimeToPingAsync` is tested in `pings.parttest.ts`.
-  jest
-    .spyOn(HelperPings, "addEndTimeToPingAsync")
-    .mockImplementation(async () => {
-      const newPing = {
-        ...TEST_PING_RAW,
-        endDate: new Date(),
-      };
-      return getPingEntity(newPing);
-    });
+export function getBaseProps() {
+  return {
+    studyInfo: STUDY_INFO,
+    previousState: null,
+    onFinish: () => {},
+    setUploadStatusSymbol: () => {}, // TODO: TEST THIS.
+  };
 }
 
-export function mockNecessaryFunctionsToTestSurveyScreen() {
-  mockDatabaseRelatedFunction();
+export async function setUpSurveyScreenTestAsync(): Promise<Ping> {
+  mockCurrentStudyInfo(STUDY_INFO);
 
-  // Just use a study info - it's not important.
-  mockCurrentStudyInfo(PINGS_STUDY_INFO);
+  // Just to make sure.
+  await clearAllPingsAndAnswersAsync();
+
+  return await insertPingAsync({
+    notificationTime: new Date(Date.now() - 20000),
+    startTime: new Date(Date.now() - 10000),
+    streamName: `myTest${Date.now()}Stream`, // We use `Date.now()` so that it will not conflict with other data.
+  });
+}
+
+export type TearDownSurveyScreenTestOptions = {
+  shouldHaveEndTime: boolean;
+  shouldCheckAnswers: boolean;
+};
+export async function tearDownSurveyScreenTestAsync(
+  customizedOptions: Partial<TearDownSurveyScreenTestOptions> = {},
+): Promise<void> {
+  const options: TearDownSurveyScreenTestOptions = {
+    shouldHaveEndTime: true,
+    shouldCheckAnswers: true,
+    ...customizedOptions,
+  };
+
+  const pingsList = await getPingsListAsync();
+  expect(pingsList).toHaveLength(1);
+  const pings = await getPingsAsync();
+  expect(pings).toHaveLength(1);
+
+  const ping = pings[0];
+  if (options.shouldHaveEndTime) {
+    expect(ping.endTime).not.toBeNull();
+  } else {
+    expect(ping.endTime).toBeNull();
+  }
+
+  if (options.shouldCheckAnswers) {
+    const answersQuestionIdsListForPing = await getAnswersQuestionIdsListForPingAsync(
+      ping.id,
+    );
+    // Expect the answersQuestionIdsListForPing to be unique.
+    // https://stackoverflow.com/q/57001262/2603230
+    expect(
+      Array.isArray(answersQuestionIdsListForPing) &&
+        answersQuestionIdsListForPing.length ===
+          new Set(answersQuestionIdsListForPing).size,
+    ).toBeTruthy();
+
+    const answersPingIdsQuestionIdsList = await getAnswersPingIdsQuestionIdsListAsync();
+    // Just a easy way to compare if two arrays are equal.
+    expect(JSON.stringify(answersPingIdsQuestionIdsList)).toEqual(
+      JSON.stringify(
+        answersQuestionIdsListForPing.map((questionId) => [
+          ping.id,
+          questionId,
+        ]),
+      ),
+    );
+
+    const answers = await getAnswersAsync();
+    for (let i = 0; i < answers.length; i++) {
+      const answer = answers[i];
+      expect(answer.pingId).toBe(ping.id);
+      expect(answer.questionId).not.toBeNull();
+      expect(answer.date).not.toBeNull();
+
+      // Make sure prefer not to answer means the input data is not stored.
+      if (answer.preferNotToAnswer) {
+        expect(answer.data).toBeNull();
+      }
+      if (answer.data) {
+        expect(answer.preferNotToAnswer).toBeNull();
+      }
+
+      expect(answersQuestionIdsListForPing[i]).toStrictEqual(answer.questionId);
+      expect(answersPingIdsQuestionIdsList[i]).toEqual([
+        answer.pingId,
+        answer.questionId,
+      ]);
+
+      // So that the date and the ping ID (which are dynamic) wouldn't affect the
+      // snapshot.
+      answer.date = new Date(0);
+      answer.pingId = "[removed for snapshot]";
+    }
+    // TODO: READ AND MAKE SURE ALL SNAPSHOTS ARE FINE
+    expect(answers).toMatchSnapshot(`getAnswersAsync`);
+  }
+
+  await clearAllPingsAndAnswersAsync();
 }
 
 /**

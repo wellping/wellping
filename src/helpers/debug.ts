@@ -70,6 +70,7 @@ export const HOME_SCREEN_DEBUG_VIEW_SYMBOLS = {
   },
 };
 
+// TODO: DO NOT catch and logError for async stores... just allow it to throw the error
 export function logError(error: any) {
   console.error(error);
 }

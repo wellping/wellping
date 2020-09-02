@@ -2,10 +2,10 @@ import cloneDeep from "lodash/cloneDeep";
 import React from "react";
 import { View, Text, TextInput, Alert } from "react-native";
 
-import { MultipleTextAnswerEntity } from "../entities/AnswerEntity";
 import {
   QuestionScreenProps,
   MultipleTextAnswerData,
+  MultipleTextAnswer,
 } from "../helpers/answerTypes";
 import { getReusableChoicesIncludeErrorAsync } from "../helpers/studyFile";
 import { MultipleTextQuestion, ChoicesList } from "../helpers/types";
@@ -33,7 +33,7 @@ const MultipleTextQuestionScreen: React.ElementType<MultipleTextQuestionScreenPr
   if (question.maxMinus) {
     const prevQuestionAnswer = allAnswers[
       question.maxMinus
-    ] as MultipleTextAnswerEntity;
+    ] as MultipleTextAnswer;
     if (prevQuestionAnswer && prevQuestionAnswer.data) {
       const length = prevQuestionAnswer.data.value.length;
       if (length > 0) {

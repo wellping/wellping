@@ -98,7 +98,6 @@ export const PINGS = PINGS_PARTIAL.map((value) => {
   return {
     ...value,
     tzOffset: value.startTime.getTimezoneOffset(),
-    answers: undefined, // Unused.
   };
 });
 
