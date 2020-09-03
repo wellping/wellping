@@ -48,19 +48,19 @@ describe("with both branchStartId", () => {
         type: QuestionType.YesNo,
         question: "Question 1",
         branchStartId: {
-          yes: "q1.yes",
-          no: "q1.no",
+          yes: "q1_yes",
+          no: "q1_no",
         },
         next: "q2",
       },
-      "q1.yes": {
-        id: "q1.yes",
+      q1_yes: {
+        id: "q1_yes",
         type: QuestionType.YesNo,
         question: "Question 1 - yes branch",
         next: null,
       },
-      "q1.no": {
-        id: "q1.no",
+      q1_no: {
+        id: "q1_no",
         type: QuestionType.YesNo,
         question: "Question 1 - no branch",
         next: null,
@@ -205,12 +205,12 @@ describe("with only `yes` branchStartId", () => {
         type: QuestionType.YesNo,
         question: "Question 1",
         branchStartId: {
-          yes: "q1.yes",
+          yes: "q1_yes",
         },
         next: "q2",
       },
-      "q1.yes": {
-        id: "q1.yes",
+      q1_yes: {
+        id: "q1_yes",
         type: QuestionType.YesNo,
         question: "Question 1 - yes branch",
         next: null,
@@ -350,12 +350,12 @@ describe("with only `no` branchStartId", () => {
         type: QuestionType.YesNo,
         question: "Question 1",
         branchStartId: {
-          no: "q1.no",
+          no: "q1_no",
         },
         next: "q2",
       },
-      "q1.no": {
-        id: "q1.no",
+      q1_no: {
+        id: "q1_no",
         type: QuestionType.YesNo,
         question: "Question 1 - no branch",
         next: null,

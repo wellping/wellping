@@ -35,7 +35,7 @@ Array [
     "date": 1970-01-01T00:00:00.000Z,
     "pingId": "[removed for snapshot]",
     "preferNotToAnswer": null,
-    "questionId": "q1.no",
+    "questionId": "q1_no",
   },
   Object {
     "data": null,
@@ -82,7 +82,7 @@ Array [
     "date": 1970-01-01T00:00:00.000Z,
     "pingId": "[removed for snapshot]",
     "preferNotToAnswer": null,
-    "questionId": "q1.yes",
+    "questionId": "q1_yes",
   },
   Object {
     "data": null,
@@ -129,7 +129,7 @@ Array [
     "date": 1970-01-01T00:00:00.000Z,
     "pingId": "[removed for snapshot]",
     "preferNotToAnswer": null,
-    "questionId": "q1.no",
+    "questionId": "q1_no",
   },
   Object {
     "data": null,
@@ -322,7 +322,7 @@ Array [
     "date": 1970-01-01T00:00:00.000Z,
     "pingId": "[removed for snapshot]",
     "preferNotToAnswer": null,
-    "questionId": "q1.yes",
+    "questionId": "q1_yes",
   },
   Object {
     "data": null,
