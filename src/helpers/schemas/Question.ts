@@ -6,7 +6,7 @@ import {
   ChoicesListSchema,
   ChoiceSchema,
 } from "./common";
-import { idRegexCheck, idRegexErrorMessage } from "./helper";
+import { idRegex, idRegexErrorMessage } from "./helper";
 
 export const QuestionTypeSchema = z.enum([
   "Slider",
@@ -187,14 +187,14 @@ export const MultipleTextQuestionSchema = BaseQuestionSchema.extend({
   indexName: z
     .string()
     .nonempty()
-    .refine(idRegexCheck, {
+    .regex(idRegex, {
       // Because `indexName` might be used in Question ID.
       message: idRegexErrorMessage("index name"),
     }),
   variableName: z
     .string()
     .nonempty()
-    .refine(idRegexCheck, {
+    .regex(idRegex, {
       // Because `variableName` might be used in Question ID.
       message: idRegexErrorMessage("variable name"),
     }),

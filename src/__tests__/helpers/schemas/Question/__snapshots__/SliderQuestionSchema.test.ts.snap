@@ -30,7 +30,7 @@ exports[`SliderQuestionSchema defaultValueFromQuestionId is question ID: empty i
   Issue #0: too_small at defaultValueFromQuestionId
   Should be at least 1 characters
 
-  Issue #1: custom_error at defaultValueFromQuestionId
+  Issue #1: invalid_string at defaultValueFromQuestionId
   Question ID can only include letters, numbers, \\"_\\", \\"[\\", and \\"]\\".
 "
 `;
@@ -38,7 +38,7 @@ exports[`SliderQuestionSchema defaultValueFromQuestionId is question ID: empty i
 exports[`SliderQuestionSchema defaultValueFromQuestionId is question ID: invalid id 1`] = `
 "1 validation issue(s)
 
-  Issue #0: custom_error at defaultValueFromQuestionId
+  Issue #0: invalid_string at defaultValueFromQuestionId
   Question ID can only include letters, numbers, \\"_\\", \\"[\\", and \\"]\\".
 "
 `;

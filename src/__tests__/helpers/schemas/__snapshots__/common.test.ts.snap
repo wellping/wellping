@@ -6,7 +6,7 @@ exports[`QuestionIdSchema doesn't allow empty 1`] = `
   Issue #0: too_small at 
   Should be at least 1 characters
 
-  Issue #1: custom_error at 
+  Issue #1: invalid_string at 
   Question ID can only include letters, numbers, \\"_\\", \\"[\\", and \\"]\\".
 "
 `;
@@ -22,7 +22,7 @@ exports[`QuestionIdSchema doesn't allow null 1`] = `
 exports[`QuestionIdSchema doesn't allow special characters except _, [, and ] 1`] = `
 "1 validation issue(s)
 
-  Issue #0: custom_error at 
+  Issue #0: invalid_string at 
   Question ID can only include letters, numbers, \\"_\\", \\"[\\", and \\"]\\".
 "
 `;
@@ -30,7 +30,7 @@ exports[`QuestionIdSchema doesn't allow special characters except _, [, and ] 1`
 exports[`QuestionIdSchema doesn't allow special characters except _, [, and ] 2`] = `
 "1 validation issue(s)
 
-  Issue #0: custom_error at 
+  Issue #0: invalid_string at 
   Question ID can only include letters, numbers, \\"_\\", \\"[\\", and \\"]\\".
 "
 `;
@@ -38,7 +38,7 @@ exports[`QuestionIdSchema doesn't allow special characters except _, [, and ] 2`
 exports[`QuestionIdSchema doesn't allow special characters except _, [, and ] 3`] = `
 "1 validation issue(s)
 
-  Issue #0: custom_error at 
+  Issue #0: invalid_string at 
   Question ID can only include letters, numbers, \\"_\\", \\"[\\", and \\"]\\".
 "
 `;
@@ -46,7 +46,7 @@ exports[`QuestionIdSchema doesn't allow special characters except _, [, and ] 3`
 exports[`QuestionIdSchema doesn't allow special characters except _, [, and ] 4`] = `
 "1 validation issue(s)
 
-  Issue #0: custom_error at 
+  Issue #0: invalid_string at 
   Question ID can only include letters, numbers, \\"_\\", \\"[\\", and \\"]\\".
 "
 `;
