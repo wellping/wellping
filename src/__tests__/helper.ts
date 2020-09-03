@@ -7,8 +7,8 @@ export const simplePipeInExtraMetaData = (id: string) => id;
 /**
  * Some tests might produce "Consider adding an error boundary to your tree to
  * customize error handling behavior." console error. We can safely ignore those
- * error. But to make our tests output clearer, we should wrap those those tests
- * (`fnAsync`) inside this function so that those error will be silenced.
+ * error. But to make our tests output clearer, we should wrap those tests (`fnAsync`)
+ * inside this function so that this error boundary error will be silenced.
  *
  * See also https://github.com/facebook/react/issues/11098.
  */
