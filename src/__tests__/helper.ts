@@ -15,15 +15,19 @@ export const simplePipeInExtraMetaData = (id: string) => id;
 export const expectErrorBoundaryConsoleErrorAsync = async (
   fnAsync: () => Promise<void>,
 ) => {
+  const oriConsoleError = console.error;
   const spy = jest.spyOn(console, "error");
   spy.mockImplementation((...error: any[]) => {
-    // This also means that any other error will still be visible to us as this
-    // `expect` will fail.
-    expect(
+    if (
       (error[0] as string).includes(
         "Consider adding an error boundary to your tree to customize error handling behavior",
-      ),
-    ).toBeTruthy();
+      )
+    ) {
+      // Do nothing.
+    } else {
+      // This means that any other error will still be visible to us.
+      oriConsoleError(...error);
+    }
   });
 
   await fnAsync();
