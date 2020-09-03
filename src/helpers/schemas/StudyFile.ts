@@ -289,6 +289,7 @@ export const StudyInfoSchema = z
         "to the length of `frequency.hoursEveryday`.",
     },
   );
+// TODO: REFINE IF streams in e.g. streamsOrder, etc. is found in `streamsStartingQuestionIds`'s key
 
 export const ExtraDataSchema = z.object({
   reusableChoices: z.record(ChoicesListSchema).optional(),
@@ -299,6 +300,7 @@ export const StudyFileSchema = z.object({
   streams: StreamsSchema,
   extraData: ExtraDataSchema,
 });
+// TODO: REFINE IF `streams` matches `streamsStartingQuestionIds`'s key
 
 // https://stackoverflow.com/a/13104500/2603230
 const convertSpecialTypesInStudyInfo = (studyInfoRawJson: any) => {
