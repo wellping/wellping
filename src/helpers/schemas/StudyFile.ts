@@ -188,9 +188,9 @@ export const StudyInfoSchema = z
           min: z.number().nonnegative(),
           max: z.number().nonnegative(),
         })
-        .refine((data) => data.max > data.min, {
+        .refine((data) => data.max >= data.min, {
           message:
-            "`randomMinuteAddition.max` needs to be greater than " +
+            "`randomMinuteAddition.max` needs to be greater than or equal to " +
             "`randomMinuteAddition.min`.",
         }),
     }),
