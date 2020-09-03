@@ -1,7 +1,7 @@
 import AsyncStorage from "@react-native-community/async-storage";
 
 import { Answer } from "../answerTypes";
-import { logError } from "../debug";
+import { logAndThrowError } from "../debug";
 import { PingId, QuestionId } from "../types";
 import { getASKeyAsync } from "./asyncStorage";
 import { getPingsListAsync } from "./pingsList";
@@ -31,7 +31,7 @@ export async function addToAnswersQuestionIdsListForPingIfNeededAsync(
       JSON.stringify(currentAnswersQuestionIdsListForPing),
     );
   } catch (error) {
-    logError(error);
+    logAndThrowError(error);
   }
 }
 
@@ -39,7 +39,7 @@ export async function clearAnswersQuestionIdsListForPingAsync(pingId: PingId) {
   try {
     await AsyncStorage.removeItem(await getASKeyAsync(getKey(pingId)));
   } catch (error) {
-    logError(error);
+    logAndThrowError(error);
   }
 }
 
@@ -55,8 +55,7 @@ export async function getAnswersQuestionIdsListForPingAsync(
     }
     return JSON.parse(value);
   } catch (error) {
-    logError(error);
-    return [];
+    logAndThrowError(error);
   }
 }
 

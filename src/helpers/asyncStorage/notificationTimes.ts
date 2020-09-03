@@ -1,7 +1,7 @@
 import AsyncStorage from "@react-native-community/async-storage";
 import { Notifications } from "expo";
 
-import { logError } from "../debug";
+import { logAndThrowError } from "../debug";
 import { getASKeyAsync } from "./asyncStorage";
 
 const NOTIFICATION_TIMES_KEY = `NotificationTime`;
@@ -13,8 +13,7 @@ export async function storeNotificationTimesAsync(times: Date[]) {
       JSON.stringify(times),
     );
   } catch (error) {
-    // Error saving data
-    logError(error);
+    logAndThrowError(error);
   }
 }
 
@@ -23,8 +22,7 @@ export async function clearNotificationTimesAsync() {
     await Notifications.cancelAllScheduledNotificationsAsync();
     await AsyncStorage.removeItem(await getASKeyAsync(NOTIFICATION_TIMES_KEY));
   } catch (error) {
-    // Error saving data
-    logError(error);
+    logAndThrowError(error);
   }
 }
 
@@ -40,8 +38,6 @@ export async function getNotificationTimesAsync(): Promise<Date[] | null> {
     const times = timesString.map((dateString) => new Date(dateString));
     return times;
   } catch (error) {
-    // Error retrieving data
-    logError(error);
-    return null;
+    logAndThrowError(error);
   }
 }

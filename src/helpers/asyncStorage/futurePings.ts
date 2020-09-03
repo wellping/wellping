@@ -1,6 +1,6 @@
 import AsyncStorage from "@react-native-community/async-storage";
 
-import { logError } from "../debug";
+import { logAndThrowError } from "../debug";
 import { StreamName } from "../types";
 import { getASKeyAsync } from "./asyncStorage";
 
@@ -24,8 +24,7 @@ export async function initFuturePingQueueAsync() {
       JSON.stringify([]),
     );
   } catch (error) {
-    // Error saving data
-    logError(error);
+    logAndThrowError(error);
   }
 }
 
@@ -42,8 +41,7 @@ export async function enqueueToFuturePingQueue(futurePing: FuturePing) {
       JSON.stringify(futurePings),
     );
   } catch (error) {
-    // Error saving data
-    logError(error);
+    logAndThrowError(error);
   }
 }
 
@@ -61,9 +59,7 @@ export async function dequeueFuturePingIfAny(): Promise<FuturePing | null> {
           JSON.stringify(futurePings),
         );
       } catch (error) {
-        // Error saving data
-        logError(error);
-        return null;
+        logAndThrowError(error);
       }
       return futurePing;
     }
@@ -100,8 +96,6 @@ export async function getFuturePingsQueue(): Promise<FuturePing[]> {
     }));
     return futurePings;
   } catch (error) {
-    // Error retrieving data
-    logError(error);
-    throw error;
+    logAndThrowError(error);
   }
 }

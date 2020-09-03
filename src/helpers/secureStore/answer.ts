@@ -3,7 +3,7 @@ import * as SecureStore from "expo-secure-store";
 
 import { Answer } from "../answerTypes";
 import { addToAnswersQuestionIdsListForPingIfNeededAsync } from "../asyncStorage/answersPingIdsQuestionIdsList";
-import { logError } from "../debug";
+import { logAndThrowError } from "../debug";
 import { AnswerSchema } from "../schemas/Answer";
 import { PingId, QuestionId } from "../types";
 import { getSSKeyAsync } from "./secureStore";
@@ -20,7 +20,7 @@ export async function secureStoreAnswerAsync(answer: Answer) {
     );
     await addToAnswersQuestionIdsListForPingIfNeededAsync(answer);
   } catch (error) {
-    logError(error);
+    logAndThrowError(error);
   }
 }
 
@@ -42,8 +42,7 @@ export async function secureGetAnswerAsync(
 
     return AnswerSchema.parse(parsedValue);
   } catch (error) {
-    logError(error);
-    return null;
+    logAndThrowError(error);
   }
 }
 
@@ -58,6 +57,6 @@ export async function secureRemoveAnswerAsync(
       );
     }
   } catch (error) {
-    logError(error);
+    logAndThrowError(error);
   }
 }

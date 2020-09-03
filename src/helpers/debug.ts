@@ -70,9 +70,14 @@ export const HOME_SCREEN_DEBUG_VIEW_SYMBOLS = {
   },
 };
 
-// TODO: DO NOT catch and logError for async stores... just allow it to throw the error
-export function logError(error: any) {
+export function logError(error: Error) {
   console.error(error);
+}
+
+// https://stackoverflow.com/a/49435648/2603230
+export function logAndThrowError(error: Error): never {
+  logError(error);
+  throw error;
 }
 
 // Use this function for non-critical error so the user can inform the study staff.

@@ -1,7 +1,7 @@
 import AsyncStorage from "@react-native-community/async-storage";
 
 import { SurveyScreenState } from "../../SurveyScreen";
-import { logError } from "../debug";
+import { logAndThrowError } from "../debug";
 import { getASKeyAsync } from "./asyncStorage";
 
 /** SURVEYSTATE TABLE (stores ping answers and other states) **/
@@ -17,9 +17,7 @@ export async function storePingStateAsync(
       JSON.stringify(state),
     );
   } catch (error) {
-    // Error saving data
-    logError(error);
-    throw error;
+    logAndThrowError(error);
   }
 }
 
@@ -47,9 +45,7 @@ export async function getPingStateAsync(
     }
     return state;
   } catch (error) {
-    // Error retrieving data
-    logError(error);
-    throw error;
+    logAndThrowError(error);
   }
 }
 
@@ -59,7 +55,6 @@ export async function clearPingStateAsync(pingId: string) {
       `${await getASKeyAsync(PINGS_STATE_PREFIX)}${pingId}`,
     );
   } catch (error) {
-    // Error saving data
-    logError(error);
+    logAndThrowError(error);
   }
 }

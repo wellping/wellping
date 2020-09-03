@@ -8,7 +8,7 @@
  */
 import AsyncStorage from "@react-native-community/async-storage";
 
-import { logError } from "../debug";
+import { logAndThrowError } from "../debug";
 import { getASKeyAsync } from "./asyncStorage";
 
 const TEMP_STUDY_FILE = `tempStudyFile`;
@@ -20,8 +20,7 @@ export async function storeTempStudyFileAsync(responseString: string) {
       responseString,
     );
   } catch (error) {
-    // Error saving data
-    logError(error);
+    logAndThrowError(error);
   }
 }
 
@@ -29,8 +28,7 @@ export async function clearTempStudyFileAsync() {
   try {
     await AsyncStorage.removeItem(await getASKeyAsync(TEMP_STUDY_FILE));
   } catch (error) {
-    // Error saving data
-    logError(error);
+    logAndThrowError(error);
   }
 }
 
@@ -44,8 +42,6 @@ export async function getTempStudyFileAsync(): Promise<string | null> {
     }
     return value;
   } catch (error) {
-    // Error retrieving data
-    logError(error);
-    return null;
+    logAndThrowError(error);
   }
 }

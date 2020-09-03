@@ -2,7 +2,7 @@ import { parseJSON } from "date-fns";
 import * as SecureStore from "expo-secure-store";
 
 import { addToPingsListIfNeededAsync } from "../asyncStorage/pingsList";
-import { logError } from "../debug";
+import { logAndThrowError } from "../debug";
 import { PingSchema } from "../schemas/Ping";
 import { Ping, PingId } from "../types";
 import { getSSKeyAsync } from "./secureStore";
@@ -18,7 +18,7 @@ export async function secureStorePingAsync(ping: Ping) {
     );
     await addToPingsListIfNeededAsync(ping);
   } catch (error) {
-    logError(error);
+    logAndThrowError(error);
   }
 }
 
@@ -45,8 +45,7 @@ export async function secureGetPingAsync(pingId: PingId): Promise<Ping | null> {
 
     return PingSchema.parse(parsedValue);
   } catch (error) {
-    logError(error);
-    return null;
+    logAndThrowError(error);
   }
 }
 
@@ -56,6 +55,6 @@ export async function secureRemovePingAsync(pingId: PingId) {
       await SecureStore.deleteItemAsync(await getSSKeyAsync(getKey(pingId)));
     }
   } catch (error) {
-    logError(error);
+    logAndThrowError(error);
   }
 }

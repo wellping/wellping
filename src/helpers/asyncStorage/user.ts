@@ -1,7 +1,7 @@
 import AsyncStorage from "@react-native-community/async-storage";
 
 import { _DEBUG_CONFIGS } from "../../../config/debug";
-import { logError } from "../debug";
+import { logAndThrowError } from "../debug";
 import { getASKeyAsync } from "./asyncStorage";
 
 export type User = {
@@ -18,8 +18,7 @@ export async function storeUserAsync(user: User) {
       JSON.stringify(user),
     );
   } catch (error) {
-    // Error saving data
-    logError(error);
+    logAndThrowError(error);
   }
 }
 
@@ -27,8 +26,7 @@ export async function clearUserAsync() {
   try {
     await AsyncStorage.removeItem(await getASKeyAsync(USER_KEY));
   } catch (error) {
-    // Error saving data
-    logError(error);
+    logAndThrowError(error);
   }
 }
 
@@ -41,8 +39,6 @@ export async function getUserAsync(): Promise<User | null> {
     const user: User = JSON.parse(value);
     return user;
   } catch (error) {
-    // Error retrieving data
-    logError(error);
-    return null;
+    logAndThrowError(error);
   }
 }

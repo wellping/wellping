@@ -1,6 +1,6 @@
 import AsyncStorage from "@react-native-community/async-storage";
 
-import { logError } from "../debug";
+import { logAndThrowError } from "../debug";
 import { Ping, PingId } from "../types";
 import { getASKeyAsync } from "./asyncStorage";
 
@@ -22,7 +22,7 @@ export async function addToPingsListIfNeededAsync(ping: Ping) {
       JSON.stringify(currentPingsList),
     );
   } catch (error) {
-    logError(error);
+    logAndThrowError(error);
   }
 }
 
@@ -30,7 +30,7 @@ export async function clearPingsListAsync() {
   try {
     await AsyncStorage.removeItem(await getASKeyAsync(PINGS_LIST));
   } catch (error) {
-    logError(error);
+    logAndThrowError(error);
   }
 }
 
@@ -42,7 +42,6 @@ export async function getPingsListAsync(): Promise<PingsList> {
     }
     return JSON.parse(value);
   } catch (error) {
-    logError(error);
-    return [];
+    logAndThrowError(error);
   }
 }

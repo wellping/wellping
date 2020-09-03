@@ -1,6 +1,6 @@
 import AsyncStorage from "@react-native-community/async-storage";
 
-import { logError } from "../debug";
+import { logAndThrowError } from "../debug";
 import { parseJsonToStreams } from "../schemas/Stream";
 import {
   parseJsonToStudyInfo,
@@ -24,8 +24,7 @@ export async function storeCurrentStudyFileAsync(studyFile: StudyFile) {
       JSON.stringify(studyFile.extraData),
     );
   } catch (error) {
-    // Error saving data
-    logError(error);
+    logAndThrowError(error);
   }
 }
 
@@ -35,8 +34,7 @@ export async function clearCurrentStudyFileAsync() {
     await AsyncStorage.removeItem(STREAMS_KEY);
     await AsyncStorage.removeItem(EXTRA_DATA_KEY);
   } catch (error) {
-    // Error saving data
-    logError(error);
+    logAndThrowError(error);
   }
 }
 
@@ -51,8 +49,7 @@ export async function getCurrentStudyInfoAsync(): Promise<StudyInfo | null> {
   } catch (error) {
     // We don't want this ill-formatted study file to be stored.
     await clearCurrentStudyFileAsync();
-    logError(error);
-    return null;
+    logAndThrowError(error);
   }
 }
 
@@ -67,8 +64,7 @@ export async function getCurrentStreamsAsync(): Promise<Streams | null> {
   } catch (error) {
     // We don't want this ill-formatted study file to be stored.
     await clearCurrentStudyFileAsync();
-    logError(error);
-    return null;
+    logAndThrowError(error);
   }
 }
 
@@ -83,7 +79,6 @@ export async function getCurrentExtraDataAsync(): Promise<ExtraData | null> {
   } catch (error) {
     // We don't want this ill-formatted study file to be stored.
     await clearCurrentStudyFileAsync();
-    logError(error);
-    return null;
+    logAndThrowError(error);
   }
 }
