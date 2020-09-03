@@ -5,7 +5,7 @@
     "consentFormUrl": "https://example.com",
     "contactEmail": "test-study-contact@example.com",
     "dashboardURL": "https://stanfordsocialneurosciencelab.github.io/WellPing/example-dashboard/demonstration-mode.html?completed_pings_overall=__PINGS_COMPLETED_OVERALL__&completed_pings_this_week=__PINGS_COMPLETED_THIS_WEEK__&completed_pings_today=__PINGS_COMPLETED_TODAY__&id_token=__ID_TOKEN__",
-    "server": {},
+    "firebaseConfig": { "_WellPing_doNotUseFirebase": "YES" },
     "startDate": "2008-08-08T20:08:08.000Z",
     "endDate": "2088-08-08T20:08:08.000Z",
     "weekStartsOn": 1,
@@ -37,7 +37,7 @@
         22,
         23
       ],
-      "randomMinuteAddition": { "min": 1, "max": 1 }
+      "randomMinuteAddition": { "min": 0, "max": 1 }
     },
     "streamsStartingQuestionIds": {
       "myStream": "Feel_Current"
