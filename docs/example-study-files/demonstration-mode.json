@@ -2,7 +2,7 @@
   "studyInfo": {
     "id": "demonstration_mode_for_v_1_0",
     "studyFileJsonURL": "https://stanfordsocialneurosciencelab.github.io/WellPing/example-study-files/demonstration-mode.json",
-    "consentFormUrl": "https://example.com",
+    "consentFormUrl": "https://stanfordsocialneurosciencelab.github.io/WellPing/example-dashboard/demonstration-mode.html",
     "contactEmail": "test-study-contact@example.com",
     "dashboardURL": "https://stanfordsocialneurosciencelab.github.io/WellPing/example-dashboard/demonstration-mode.html?completed_pings_overall=__PINGS_COMPLETED_OVERALL__&completed_pings_this_week=__PINGS_COMPLETED_THIS_WEEK__&completed_pings_today=__PINGS_COMPLETED_TODAY__&id_token=__ID_TOKEN__",
     "firebaseConfig": { "_WellPing_doNotUseFirebase": "YES" },
