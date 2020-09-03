@@ -43,6 +43,14 @@ exports[`QuestionIdSchema doesn't allow special characters except _, [, and ] 3`
 "
 `;
 
+exports[`QuestionIdSchema doesn't allow special characters except _, [, and ] 4`] = `
+"1 validation issue(s)
+
+  Issue #0: custom_error at 
+  Question ID can only include letters, numbers, \\"_\\", \\"[\\", and \\"]\\".
+"
+`;
+
 exports[`QuestionIdSchema doesn't allow undefined 1`] = `
 "1 validation issue(s)
 

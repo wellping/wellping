@@ -31,6 +31,10 @@ describe("QuestionIdSchema", () => {
     expect(() => {
       QuestionIdSchema.parse("测试");
     }).toThrowErrorMatchingSnapshot();
+
+    expect(() => {
+      QuestionIdSchema.parse(".");
+    }).toThrowErrorMatchingSnapshot();
   });
 
   test("accept", () => {
