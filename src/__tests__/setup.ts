@@ -1,22 +1,5 @@
 import { PINGS, PINGS_DICT } from "./data/pings";
 
-// TODO: REMOVE THIS AS THIS BRINGS MORE DIFFICULTIES THAN HELPS. JUST ADD A NOTE TO TESTS THAT PRODUCE THIS ERROR TO SAY THAT WE CAN IGNORE THIS ERROR.
-beforeEach(() => {
-  const originalErrorFn = console.error;
-  jest.spyOn(console, "error").mockImplementation((...error: any[]) => {
-    if (
-      (error[0] as string).includes(
-        "Consider adding an error boundary to your tree to customize error handling behavior",
-      )
-    ) {
-      // https://github.com/facebook/react/issues/11098
-      return;
-    }
-
-    originalErrorFn(...error);
-  });
-});
-
 beforeAll(() => {
   // Similar to https://github.com/expo/expo/blob/dba287e9686718ff6375f9274d0e5c72b6c3ff4e/packages/expo-asset/src/__tests__/Asset-test.ts#L213-L220
   // @ts-ignore: the type declaration marks __DEV__ as read-only

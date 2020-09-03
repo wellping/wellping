@@ -5,6 +5,33 @@ import { FunctionSpyInstance } from "./jestHelper";
 export const simplePipeInExtraMetaData = (id: string) => id;
 
 /**
+ * Some tests might produce "Consider adding an error boundary to your tree to
+ * customize error handling behavior." console error. We can safely ignore those
+ * error. But to make our tests output clearer, we should wrap those those tests
+ * (`fnAsync`) inside this function so that those error will be silenced.
+ *
+ * See also https://github.com/facebook/react/issues/11098.
+ */
+export const expectErrorBoundaryConsoleErrorAsync = async (
+  fnAsync: () => Promise<void>,
+) => {
+  const spy = jest.spyOn(console, "error");
+  spy.mockImplementation((...error: any[]) => {
+    // This also means that any other error will still be visible to us as this
+    // `expect` will fail.
+    expect(
+      (error[0] as string).includes(
+        "Consider adding an error boundary to your tree to customize error handling behavior",
+      ),
+    ).toBeTruthy();
+  });
+
+  await fnAsync();
+
+  spy.mockRestore();
+};
+
+/**
  * Notice that it is possible to e.g. `mockStudyInfo` in an outer `beforeEach`,
  * and then `mockStudyInfo` again in an inner `beforeEach`.
  * The `mockStudyInfo` in the inner `beforeEach` will override the outer one.

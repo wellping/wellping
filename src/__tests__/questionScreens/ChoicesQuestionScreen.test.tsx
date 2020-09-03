@@ -24,7 +24,11 @@ import {
   ChoicesList,
 } from "../../helpers/types";
 import ChoicesQuestionScreen from "../../questionScreens/ChoicesQuestionScreen";
-import { simplePipeInExtraMetaData, mockCurrentExtraData } from "../helper";
+import {
+  simplePipeInExtraMetaData,
+  mockCurrentExtraData,
+  expectErrorBoundaryConsoleErrorAsync,
+} from "../helper";
 
 export const getSelectionA11YLabel = (option: string) => `select ${option}`;
 export const getSelection = (
@@ -445,20 +449,22 @@ test("wrong QuestionType", async () => {
     next: null,
   } as any;
 
-  expect(() => {
-    render(
-      <ChoicesQuestionScreen
-        key={question.id}
-        question={question}
-        loadingCompleted={jest.fn()}
-        onDataChange={jest.fn()}
-        allAnswers={{}}
-        allQuestions={{ [question.id]: question }}
-        pipeInExtraMetaData={jest.fn()}
-        setDataValidationFunction={jest.fn()}
-      />,
+  await expectErrorBoundaryConsoleErrorAsync(async () => {
+    expect(() => {
+      render(
+        <ChoicesQuestionScreen
+          key={question.id}
+          question={question}
+          loadingCompleted={jest.fn()}
+          onDataChange={jest.fn()}
+          allAnswers={{}}
+          allQuestions={{ [question.id]: question }}
+          pipeInExtraMetaData={jest.fn()}
+          setDataValidationFunction={jest.fn()}
+        />,
+      );
+    }).toThrowErrorMatchingInlineSnapshot(
+      `"Wrong QuestionType in ChoicesQuestionScreen"`,
     );
-  }).toThrowErrorMatchingInlineSnapshot(
-    `"Wrong QuestionType in ChoicesQuestionScreen"`,
-  );
+  });
 });
