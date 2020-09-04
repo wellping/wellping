@@ -286,7 +286,7 @@ export default class LoginScreen extends React.Component<
             Welcome to Well Ping!
           </Text>
           <Text style={{ fontSize: 20 }}>
-            Please log in using the login code sent to your email.
+            Please log in using the login code sent to you.
           </Text>
         </View>
         <TextInput
