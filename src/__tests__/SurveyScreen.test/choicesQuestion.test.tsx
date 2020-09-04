@@ -12,12 +12,14 @@ import {
 
 import SurveyScreen, { SurveyScreenProps } from "../../SurveyScreen";
 import { QuestionType } from "../../helpers/helpers";
+import { ChoicesQuestion, QuestionTypeType } from "../../helpers/types";
 import {
   setUpSurveyScreenTestAsync,
   tearDownSurveyScreenTestAsync,
   testQuestionsSequenceAsync,
   TestQuestionsSequence,
   getBaseProps,
+  PART_OF_NON_CRITICAL_ERROR_STRING,
 } from "./helper";
 
 let currentPropsBase!: SurveyScreenProps;
@@ -582,6 +584,143 @@ describe.each(TWO_TYPES)(
             },
           },
         ],
+      });
+    });
+  },
+);
+
+const PREV_QUESTONS_CHOICES_FOR_PLACEHOLDERS_TEST: [
+  QuestionTypeType,
+  ChoicesQuestion,
+  string,
+  string,
+][] = [
+  [
+    QuestionType.ChoicesWithSingleAnswer,
+    {
+      id: "q1",
+      type: QuestionType.ChoicesWithSingleAnswer,
+      question: "Question 1",
+      choices: ["Wolf", "Coyote", "Lynx"],
+      next: "q2",
+    },
+    "Coyote",
+    "coyote",
+  ],
+];
+describe.each(PREV_QUESTONS_CHOICES_FOR_PLACEHOLDERS_TEST)(
+  "%s: replace placeholder with previous question's answer",
+  (type, q1, answerToChoose, expectedReplacement) => {
+    describe("single answer replacement", () => {
+      const getProps = (): SurveyScreenProps => ({
+        ...currentPropsBase,
+        questions: {
+          q1,
+          q2: {
+            id: "q2",
+            type: QuestionType.Slider,
+            question: "Question 2: previous answer is {PREV:q1}!",
+            slider: ["left", "right"],
+            next: null,
+          },
+        },
+        startingQuestionId: "q1",
+      });
+
+      test("choose and next", async () => {
+        const onFinishFn = jest.fn();
+
+        const renderResults = render(
+          <SurveyScreen {...getProps()} onFinish={onFinishFn} />,
+        );
+
+        await testQuestionsSequenceAsync({
+          renderResults,
+          onFinishFn,
+          sequence: [
+            {
+              expectCurrentQuestionAsync: async (getCurrentQuestionTitle) => {
+                await clickOptionAsync(answerToChoose, renderResults);
+
+                expect(getCurrentQuestionTitle()).toBe("Question 1");
+              },
+            },
+            {
+              expectCurrentQuestionAsync: async (getCurrentQuestionTitle) => {
+                const title = getCurrentQuestionTitle();
+                expect(title).toBe(
+                  `Question 2: previous answer is ${expectedReplacement}!`,
+                );
+                expect(title).toMatchSnapshot("Question 2 title");
+              },
+            },
+          ],
+        });
+      });
+
+      test("choose and prefer not to answer", async () => {
+        const onFinishFn = jest.fn();
+
+        const renderResults = render(
+          <SurveyScreen {...getProps()} onFinish={onFinishFn} />,
+        );
+
+        await testQuestionsSequenceAsync({
+          renderResults,
+          onFinishFn,
+          sequence: [
+            {
+              expectCurrentQuestionAsync: async (getCurrentQuestionTitle) => {
+                await clickOptionAsync(answerToChoose, renderResults);
+
+                expect(getCurrentQuestionTitle()).toBe("Question 1");
+              },
+              nextButton: "pna",
+            },
+            {
+              expectCurrentQuestionAsync: async (getCurrentQuestionTitle) => {
+                const title = getCurrentQuestionTitle();
+                expect(
+                  title.includes(
+                    `Question 2: previous answer is ${PART_OF_NON_CRITICAL_ERROR_STRING}`,
+                  ),
+                ).toBeTruthy();
+                expect(title).toMatchSnapshot("Question 2 title");
+              },
+            },
+          ],
+        });
+      });
+
+      test("next without answering", async () => {
+        const onFinishFn = jest.fn();
+
+        const renderResults = render(
+          <SurveyScreen {...getProps()} onFinish={onFinishFn} />,
+        );
+
+        await testQuestionsSequenceAsync({
+          renderResults,
+          onFinishFn,
+          sequence: [
+            {
+              expectCurrentQuestionAsync: async (getCurrentQuestionTitle) => {
+                expect(getCurrentQuestionTitle()).toBe("Question 1");
+              },
+            },
+            {
+              expectCurrentQuestionAsync: async (getCurrentQuestionTitle) => {
+                const title = getCurrentQuestionTitle();
+                expect(
+                  title.includes(
+                    `Question 2: previous answer is ${PART_OF_NON_CRITICAL_ERROR_STRING}`,
+                  ),
+                ).toBeTruthy();
+                expect(title).toMatchSnapshot("Question 2 title");
+              },
+            },
+          ],
+        });
       });
     });
   },
