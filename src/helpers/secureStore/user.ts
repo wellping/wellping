@@ -1,8 +1,8 @@
-import AsyncStorage from "@react-native-community/async-storage";
+import * as SecureStore from "expo-secure-store";
 
 import { _DEBUG_CONFIGS } from "../../../config/debug";
 import { logAndThrowError } from "../debug";
-import { getASKeyAsync } from "./asyncStorage";
+import { getSSKeyAsync } from "./secureStore";
 
 export type User = {
   username: string;
@@ -11,10 +11,10 @@ export type User = {
 
 const USER_KEY = `user`;
 
-export async function storeUserAsync(user: User) {
+export async function secureStoreUserAsync(user: User) {
   try {
-    await AsyncStorage.setItem(
-      await getASKeyAsync(USER_KEY),
+    await SecureStore.setItemAsync(
+      await getSSKeyAsync(USER_KEY),
       JSON.stringify(user),
     );
   } catch (error) {
@@ -22,17 +22,17 @@ export async function storeUserAsync(user: User) {
   }
 }
 
-export async function clearUserAsync() {
+export async function secureClearUserAsync() {
   try {
-    await AsyncStorage.removeItem(await getASKeyAsync(USER_KEY));
+    await SecureStore.deleteItemAsync(await getSSKeyAsync(USER_KEY));
   } catch (error) {
     logAndThrowError(error);
   }
 }
 
-export async function getUserAsync(): Promise<User | null> {
+export async function secureGetUserAsync(): Promise<User | null> {
   try {
-    const value = await AsyncStorage.getItem(await getASKeyAsync(USER_KEY));
+    const value = await SecureStore.getItemAsync(await getSSKeyAsync(USER_KEY));
     if (value == null) {
       return null;
     }

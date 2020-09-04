@@ -3,12 +3,12 @@ import React from "react";
 import { Text, View } from "react-native";
 import { WebView } from "react-native-webview";
 
-import { getUserAsync } from "../helpers/asyncStorage/user";
 import {
   getPingsAsync,
   getThisWeekPingsAsync,
   getTodayPingsAsync,
 } from "../helpers/pings";
+import { secureGetUserAsync } from "../helpers/secureStore/user";
 import { StudyInfo } from "../helpers/types";
 
 const USERNAME_PLACEHOLDER = "__USERNAME__";
@@ -24,7 +24,7 @@ export async function getDashboardUrlAsync(
 
   if (dashboardUrl.includes(USERNAME_PLACEHOLDER)) {
     let username = "N/A";
-    const user = await getUserAsync();
+    const user = await secureGetUserAsync();
     if (user) {
       username = user.username;
     }

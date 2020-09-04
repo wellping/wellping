@@ -1,6 +1,5 @@
 import { Answer } from "./answerTypes";
 import { getAnswersAsync } from "./answers";
-import { getUserAsync } from "./asyncStorage/user";
 import { beiweUploadDataForUserAsync } from "./beiwe";
 import {
   UserInstallationInfo,
@@ -9,6 +8,7 @@ import {
 } from "./debug";
 import { firebaseUploadDataForUserAsync } from "./firebase";
 import { getPingsAsync } from "./pings";
+import { secureGetUserAsync } from "./secureStore/user";
 import { useFirebase, useServer, useBeiwe } from "./server";
 import { StudyInfo, Ping } from "./types";
 
@@ -22,7 +22,7 @@ export type UploadData = {
 };
 
 export async function getAllDataAsync(): Promise<UploadData> {
-  const user = await getUserAsync();
+  const user = await secureGetUserAsync();
   const pings = await getPingsAsync();
   const answers = await getAnswersAsync();
 

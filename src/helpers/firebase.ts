@@ -5,9 +5,9 @@
 
 import * as firebase from "firebase/app";
 
-import { User } from "./asyncStorage/user";
 import { UploadData } from "./dataUpload";
 import { INSTALLATION_ID } from "./debug";
+import { User } from "./secureStore/user";
 import { getFirebaseServerConfig } from "./server";
 import { StudyInfo } from "./types";
 
