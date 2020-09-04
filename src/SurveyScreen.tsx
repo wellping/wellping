@@ -192,24 +192,41 @@ export default class SurveyScreen extends React.Component<
     input: string,
     state: SurveyScreenState = this.state,
   ): string {
-    const { questions } = this.props;
+    const { questions, studyInfo } = this.props;
     const { currentQuestionData, answers } = state;
 
     let output = input;
     for (const [key, value] of Object.entries(currentQuestionData.extraData)) {
-      let newValue = value;
+      let treatedValue = value;
 
-      // TODO: MAKE THIS CUSTOMIZABLE
-      if (key === "TARGET_CATEGORY") {
-        let capValue = value;
-        if (capValue !== "PHE") {
-          capValue = decapitalizeFirstCharacter(capValue);
+      let shouldDecap = false;
+
+      const treatments = studyInfo.specialVariablePlaceholderTreatments;
+      if (treatments && Object.keys(treatments).includes(key)) {
+        const treatment = treatments[key];
+
+        const decapOptions = treatment.decapitalizeFirstCharacter;
+        if (decapOptions && decapOptions.enabled) {
+          if (decapOptions.includes) {
+            if (decapOptions.includes.includes(value)) {
+              shouldDecap = true;
+            }
+          } else if (decapOptions.excludes) {
+            if (!decapOptions.excludes.includes(value)) {
+              shouldDecap = true;
+            }
+          } else {
+            shouldDecap = true;
+          }
         }
-        newValue = `your ${capValue}`;
+      }
+
+      if (shouldDecap) {
+        treatedValue = decapitalizeFirstCharacter(treatedValue);
       }
 
       // https://stackoverflow.com/a/56136657/2603230
-      output = output.split(withVariable(key)).join(newValue);
+      output = output.split(withVariable(key)).join(treatedValue);
     }
 
     output = replacePreviousAnswerPlaceholdersWithActualContent(
