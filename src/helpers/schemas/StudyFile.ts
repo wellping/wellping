@@ -34,6 +34,34 @@ export const BeiweServerConfigSchema = z.object({
   serverUrl: z.string(),
 });
 
+export const PlaceholderReplacementValueTreatmentOptionsSchema = z.object({
+  decapitalizeFirstCharacter: z
+    .object({
+      /**
+       * If `true`, the first character of the answer data replacing the
+       * placeholder will be decapitalized.
+       *
+       * For example, if the answer is `"Friends"` and variable is `"CONTACT"`
+       * and `decapitalizeFirstCharacter` is `true`, `"Why [__CONTACT__]?"`
+       * will be replaced by `"Why friends?"`.
+       */
+      enabled: z.boolean(),
+
+      /**
+       * If set, answer data included in it will not be decapitalize.
+       */
+      excludes: z.array(z.string()).optional(),
+
+      /**
+       * If set, only answer data included in it will be decapitalize.
+       *
+       * If both `excludes` and `includes` are set, `excludes` is ignored.
+       */
+      includes: z.array(z.string()).optional(),
+    })
+    .optional(),
+});
+
 export const StudyInfoSchema = z
   .object({
     /**
@@ -314,34 +342,7 @@ export const StudyInfoSchema = z
      * the variable name as defined by supported question's `variableName`.
      */
     specialVariablePlaceholderTreatments: z
-      .record(
-        z.object({
-          decapitalizeFirstCharacter: z
-            .object({
-              /**
-               * If `true`, the first character of the answer data replacing the
-               * placeholder will be decapitalized.
-               *
-               * For example, if the answer is `"Friends"` and variable is `"CONTACT"`
-               * and `decapitalizeFirstCharacter` is `true`, `"Why [__CONTACT__]?"`
-               * will be replaced by `"Why friends?"`.
-               */
-              enabled: z.boolean(),
-
-              /**
-               * If set, answer data included in it will not be decapitalize.
-               */
-              excludes: z.array(z.string()).optional(),
-
-              /**
-               * If set, only answer data included in it will be decapitalize.
-               * If both `excludes` and `includes` are set, `excludes` is ignored.
-               */
-              includes: z.array(z.string()).optional(),
-            })
-            .optional(),
-        }),
-      )
+      .record(PlaceholderReplacementValueTreatmentOptionsSchema)
       .optional(),
   })
   .refine((data) => data.endDate > data.startDate, {
