@@ -244,3 +244,6 @@ export async function testQuestionsSequenceAsync({
     onFinishFn,
   });
 }
+
+export const PART_OF_NON_CRITICAL_ERROR_STRING =
+  "[INTERNAL ERROR (Please screenshot this page";
