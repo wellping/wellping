@@ -34,7 +34,6 @@ import {
   clearPingStateAsync,
 } from "./helpers/asyncStorage/pingState";
 import { getPingsListAsync } from "./helpers/asyncStorage/pingsList";
-import { getUserAsync } from "./helpers/asyncStorage/user";
 import { clearAllPingsAndAnswersAsync } from "./helpers/cleanup";
 import { uploadDataAsync, getAllDataAsync } from "./helpers/dataUpload";
 import {
@@ -58,6 +57,7 @@ import {
   insertPingAsync,
   getNumbersOfPingsForAllStreamNamesAsync,
 } from "./helpers/pings";
+import { secureGetUserAsync } from "./helpers/secureStore/user";
 import { getSymbolsForServerTypeUsed, useFirebase } from "./helpers/server";
 import { getAllStreamNames, getStudyInfoAsync } from "./helpers/studyFile";
 import { styles } from "./helpers/styles";
@@ -207,7 +207,7 @@ export default class HomeScreen extends React.Component<
             // The user is not signed in to Firebase.
 
             // We will try to log in the user again first.
-            const localStoredUser = await getUserAsync();
+            const localStoredUser = await secureGetUserAsync();
             if (localStoredUser === null) {
               alertWithShareButtonContainingDebugInfo(
                 "Not logged in locally!",
@@ -366,7 +366,7 @@ export default class HomeScreen extends React.Component<
               {studyInfo.contactEmail && (
                 <TouchableWithoutFeedback
                   onPress={async () => {
-                    const user = await getUserAsync();
+                    const user = await secureGetUserAsync();
 
                     const emailSubject = encodeURIComponent(
                       `Questions about Well Ping study ${studyInfo.id}`,
@@ -516,9 +516,9 @@ export default class HomeScreen extends React.Component<
           />
           <Button
             color="orange"
-            title="getUserAsync()"
+            title="secureGetUserAsync()"
             onPress={async () => {
-              const user = await getUserAsync();
+              const user = await secureGetUserAsync();
               alertWithShareButtonContainingDebugInfo(JSON.stringify(user));
             }}
           />

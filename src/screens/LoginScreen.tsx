@@ -12,7 +12,6 @@ import {
   TouchableWithoutFeedback,
 } from "react-native";
 
-import { User } from "../helpers/asyncStorage/user";
 import {
   JS_VERSION_NUMBER,
   alertWithShareButtonContainingDebugInfo,
@@ -20,6 +19,7 @@ import {
   shareDebugText,
 } from "../helpers/debug";
 import { LoginSchema } from "../helpers/schemas/Login";
+import { User } from "../helpers/secureStore/user";
 import { getStudyFileAsync } from "../helpers/studyFile";
 import { loginAsync, logoutAsync } from "../helpers/users";
 

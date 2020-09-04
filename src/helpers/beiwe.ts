@@ -8,9 +8,9 @@ import * as Crypto from "expo-crypto";
 import * as Device from "expo-device";
 import { Platform } from "react-native";
 
-import { User, getUserAsync } from "./asyncStorage/user";
 import { UploadData } from "./dataUpload";
 import { JS_VERSION_NUMBER } from "./debug";
+import { User, secureGetUserAsync } from "./secureStore/user";
 import { getBeiweServerConfig } from "./server";
 import { getStudyInfoAsync } from "./studyFile";
 
@@ -54,10 +54,12 @@ export async function beiweUploadDataForUserAsync(
 ): Promise<Error | null> {
   startUploading();
 
-  const user = await getUserAsync();
+  const user = await secureGetUserAsync();
   if (user === null) {
     endUploading("BW: U=N");
-    return new Error("getUserAsync() === null in beiweUploadDataForUserAsync");
+    return new Error(
+      "secureGetUserAsync() === null in beiweUploadDataForUserAsync",
+    );
   }
 
   try {
@@ -92,7 +94,7 @@ async function getRequestURLAsync(
 ): Promise<string> {
   let user: User | null = forUser || null;
   if (!user) {
-    user = await getUserAsync();
+    user = await secureGetUserAsync();
 
     if (user == null) {
       throw new Error("user == null in getRequestURLAsync");

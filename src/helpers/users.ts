@@ -1,5 +1,4 @@
 import { clearCurrentStudyFileAsync } from "./asyncStorage/studyFile";
-import { storeUserAsync, User, clearUserAsync } from "./asyncStorage/user";
 import { beiweLoginAsync } from "./beiwe";
 import { clearAllPingsAndAnswersAsync } from "./cleanup";
 import {
@@ -7,6 +6,11 @@ import {
   firebaseLogoutAndDeleteAppAsync,
   firebaseInitialized,
 } from "./firebase";
+import {
+  secureStoreUserAsync,
+  secureClearUserAsync,
+  User,
+} from "./secureStore/user";
 import { useFirebase, useBeiwe, useServer } from "./server";
 import { getStudyInfoAsync, studyFileExistsAsync } from "./studyFile";
 import { StudyInfo } from "./types";
@@ -26,7 +30,7 @@ export async function loginAsync(user: User, studyInfo: StudyInfo) {
     await new Promise((r) => setTimeout(r, 3000)); // Simulate loading.
   }
 
-  await storeUserAsync(user);
+  await secureStoreUserAsync(user);
 }
 
 export async function logoutAsync() {
@@ -38,6 +42,6 @@ export async function logoutAsync() {
     await clearAllPingsAndAnswersAsync();
   }
 
-  await clearUserAsync();
+  await secureClearUserAsync();
   await clearCurrentStudyFileAsync();
 }

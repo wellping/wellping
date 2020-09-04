@@ -9,16 +9,12 @@ import {
   clearTempStudyFileAsync,
 } from "./helpers/asyncStorage/tempStudyFile";
 import {
-  getUserAsync,
-  User,
-  clearUserAsync,
-} from "./helpers/asyncStorage/user";
-import {
   getCriticalProblemTextForUser,
   alertWithShareButtonContainingDebugInfo,
   getNonCriticalProblemTextForUser,
 } from "./helpers/debug";
 import { validateAndInitializeFirebaseWithConfig } from "./helpers/firebase";
+import { secureGetUserAsync, User } from "./helpers/secureStore/user";
 import { useFirebase } from "./helpers/server";
 import {
   getStudyFileAsync,
@@ -158,7 +154,7 @@ export default class RootScreen extends React.Component<
         }
       }
 
-      const user = await getUserAsync();
+      const user = await secureGetUserAsync();
       if (user === null) {
         // This should never happen. But just in case.
         // Notice that we have to do this before `downloadAndParseStudyFileAsync`
