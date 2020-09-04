@@ -23,6 +23,7 @@ import {
   FirebaseConfigSchema,
   FirebaseServerConfigSchema,
   BeiweServerConfigSchema,
+  PlaceholderReplacementValueTreatmentOptionsSchema,
 } from "./schemas/StudyFile";
 import {
   QuestionIdSchema,
@@ -82,6 +83,10 @@ export type FirebaseConfig = z.infer<typeof FirebaseConfigSchema>;
 export type FirebaseServerConfig = z.infer<typeof FirebaseServerConfigSchema>;
 
 export type BeiweServerConfig = z.infer<typeof BeiweServerConfigSchema>;
+
+export type PlaceholderReplacementValueTreatmentOptions = z.infer<
+  typeof PlaceholderReplacementValueTreatmentOptionsSchema
+>;
 
 export type StudyInfo = z.infer<typeof StudyInfoSchema>;
 

@@ -1,8 +1,8 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`ChoicesWithSingleAnswer: replace placeholder with previous question's answer single answer replacement choose and next: Question 2 title 1`] = `"Question 2: previous answer is coyote!"`;
+exports[`ChoicesWithSingleAnswer: replace placeholder with previous question's answer (treatment options: { decapitalizeFirstCharacter: { enabled: true } }) single answer replacement choose and next: Question 2 title 1`] = `"Question 2: previous answer is coyote!"`;
 
-exports[`ChoicesWithSingleAnswer: replace placeholder with previous question's answer single answer replacement choose and next: getAnswersAsync 1`] = `
+exports[`ChoicesWithSingleAnswer: replace placeholder with previous question's answer (treatment options: { decapitalizeFirstCharacter: { enabled: true } }) single answer replacement choose and next: getAnswersAsync 1`] = `
 Array [
   Object {
     "data": Object {
@@ -23,13 +23,13 @@ Array [
 ]
 `;
 
-exports[`ChoicesWithSingleAnswer: replace placeholder with previous question's answer single answer replacement choose and prefer not to answer: Question 2 title 1`] = `
+exports[`ChoicesWithSingleAnswer: replace placeholder with previous question's answer (treatment options: { decapitalizeFirstCharacter: { enabled: true } }) single answer replacement choose and prefer not to answer: Question 2 title 1`] = `
 "Question 2: previous answer is [INTERNAL ERROR (Please screenshot this page and send it to the study staff): csaAnswerChoiceValue (from q1) == null]
 
 [However, you may continue to complete this survey as normal.]!"
 `;
 
-exports[`ChoicesWithSingleAnswer: replace placeholder with previous question's answer single answer replacement choose and prefer not to answer: getAnswersAsync 1`] = `
+exports[`ChoicesWithSingleAnswer: replace placeholder with previous question's answer (treatment options: { decapitalizeFirstCharacter: { enabled: true } }) single answer replacement choose and prefer not to answer: getAnswersAsync 1`] = `
 Array [
   Object {
     "data": null,
@@ -48,13 +48,86 @@ Array [
 ]
 `;
 
-exports[`ChoicesWithSingleAnswer: replace placeholder with previous question's answer single answer replacement next without answering: Question 2 title 1`] = `
+exports[`ChoicesWithSingleAnswer: replace placeholder with previous question's answer (treatment options: { decapitalizeFirstCharacter: { enabled: true } }) single answer replacement next without answering: Question 2 title 1`] = `
 "Question 2: previous answer is [INTERNAL ERROR (Please screenshot this page and send it to the study staff): csaAnswerChoiceValue (from q1) == null]
 
 [However, you may continue to complete this survey as normal.]!"
 `;
 
-exports[`ChoicesWithSingleAnswer: replace placeholder with previous question's answer single answer replacement next without answering: getAnswersAsync 1`] = `
+exports[`ChoicesWithSingleAnswer: replace placeholder with previous question's answer (treatment options: { decapitalizeFirstCharacter: { enabled: true } }) single answer replacement next without answering: getAnswersAsync 1`] = `
+Array [
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q1",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q2",
+  },
+]
+`;
+
+exports[`ChoicesWithSingleAnswer: replace placeholder with previous question's answer (treatment options: undefined) single answer replacement choose and next: Question 2 title 1`] = `"Question 2: previous answer is Coyote!"`;
+
+exports[`ChoicesWithSingleAnswer: replace placeholder with previous question's answer (treatment options: undefined) single answer replacement choose and next: getAnswersAsync 1`] = `
+Array [
+  Object {
+    "data": Object {
+      "value": "Coyote",
+    },
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q1",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q2",
+  },
+]
+`;
+
+exports[`ChoicesWithSingleAnswer: replace placeholder with previous question's answer (treatment options: undefined) single answer replacement choose and prefer not to answer: Question 2 title 1`] = `
+"Question 2: previous answer is [INTERNAL ERROR (Please screenshot this page and send it to the study staff): csaAnswerChoiceValue (from q1) == null]
+
+[However, you may continue to complete this survey as normal.]!"
+`;
+
+exports[`ChoicesWithSingleAnswer: replace placeholder with previous question's answer (treatment options: undefined) single answer replacement choose and prefer not to answer: getAnswersAsync 1`] = `
+Array [
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": true,
+    "questionId": "q1",
+  },
+  Object {
+    "data": null,
+    "date": 1970-01-01T00:00:00.000Z,
+    "pingId": "[removed for snapshot]",
+    "preferNotToAnswer": null,
+    "questionId": "q2",
+  },
+]
+`;
+
+exports[`ChoicesWithSingleAnswer: replace placeholder with previous question's answer (treatment options: undefined) single answer replacement next without answering: Question 2 title 1`] = `
+"Question 2: previous answer is [INTERNAL ERROR (Please screenshot this page and send it to the study staff): csaAnswerChoiceValue (from q1) == null]
+
+[However, you may continue to complete this survey as normal.]!"
+`;
+
+exports[`ChoicesWithSingleAnswer: replace placeholder with previous question's answer (treatment options: undefined) single answer replacement next without answering: getAnswersAsync 1`] = `
 Array [
   Object {
     "data": null,

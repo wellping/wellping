@@ -31,7 +31,7 @@ import {
   QuestionType,
   withVariable,
   replacePreviousAnswerPlaceholdersWithActualContent,
-  decapitalizeFirstCharacter,
+  treatPlaceholderReplacementValue,
   NON_USER_QUESTION_TYPES,
 } from "./helpers/helpers";
 import { addEndTimeToPingAsync } from "./helpers/pings";
@@ -192,24 +192,19 @@ export default class SurveyScreen extends React.Component<
     input: string,
     state: SurveyScreenState = this.state,
   ): string {
-    const { questions } = this.props;
+    const { questions, studyInfo } = this.props;
     const { currentQuestionData, answers } = state;
 
     let output = input;
     for (const [key, value] of Object.entries(currentQuestionData.extraData)) {
-      let newValue = value;
-
-      // TODO: MAKE THIS CUSTOMIZABLE
-      if (key === "TARGET_CATEGORY") {
-        let capValue = value;
-        if (capValue !== "PHE") {
-          capValue = decapitalizeFirstCharacter(capValue);
-        }
-        newValue = `your ${capValue}`;
-      }
+      const treatedValue = treatPlaceholderReplacementValue(
+        key,
+        value,
+        studyInfo,
+      );
 
       // https://stackoverflow.com/a/56136657/2603230
-      output = output.split(withVariable(key)).join(newValue);
+      output = output.split(withVariable(key)).join(treatedValue);
     }
 
     output = replacePreviousAnswerPlaceholdersWithActualContent(
@@ -220,6 +215,8 @@ export default class SurveyScreen extends React.Component<
         if (!question) {
           return null;
         }
+
+        let returnedAnswer: string | null = null;
         switch (question.type) {
           case QuestionType.ChoicesWithSingleAnswer: {
             const csaQuestion = questions[
@@ -240,12 +237,22 @@ export default class SurveyScreen extends React.Component<
               );
             }
 
-            return decapitalizeFirstCharacter(csaAnswerChoiceValue);
+            returnedAnswer = csaAnswerChoiceValue;
+            break;
           }
 
           default:
-            return null;
+            break;
         }
+
+        if (returnedAnswer !== null) {
+          returnedAnswer = treatPlaceholderReplacementValue(
+            questionId,
+            returnedAnswer,
+            studyInfo,
+          );
+        }
+        return returnedAnswer;
       },
     );
 

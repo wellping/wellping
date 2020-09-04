@@ -1,5 +1,10 @@
 import { QuestionTypeSchema } from "./schemas/Question";
-import { QuestionId, QuestionTypeType } from "./types";
+import {
+  QuestionId,
+  QuestionTypeType,
+  PlaceholderReplacementValueTreatmentOptions,
+  StudyInfo,
+} from "./types";
 
 export const QuestionType = QuestionTypeSchema.enum;
 
@@ -39,6 +44,51 @@ export const replacePreviousAnswerPlaceholdersWithActualContent = (
   } while (m);
 
   return output;
+};
+
+const _treatPlaceholderReplacementValue = (
+  value: string,
+  treatment?: PlaceholderReplacementValueTreatmentOptions,
+): string => {
+  if (treatment === undefined) {
+    return value;
+  }
+
+  let treatedValue = value;
+
+  let shouldDecap = false;
+  const decapOptions = treatment.decapitalizeFirstCharacter;
+  if (decapOptions && decapOptions.enabled) {
+    if (decapOptions.includes) {
+      if (decapOptions.includes.includes(value)) {
+        shouldDecap = true;
+      }
+    } else if (decapOptions.excludes) {
+      if (!decapOptions.excludes.includes(value)) {
+        shouldDecap = true;
+      }
+    } else {
+      shouldDecap = true;
+    }
+  }
+
+  if (shouldDecap) {
+    treatedValue = decapitalizeFirstCharacter(treatedValue);
+  }
+
+  return treatedValue;
+};
+
+export const treatPlaceholderReplacementValue = (
+  key: string,
+  value: string,
+  studyInfo: StudyInfo,
+): string => {
+  return _treatPlaceholderReplacementValue(
+    value,
+    // https://stackoverflow.com/a/58780897/2603230
+    studyInfo.specialVariablePlaceholderTreatments?.[key],
+  );
 };
 
 // https://stackoverflow.com/a/2450976/2603230
