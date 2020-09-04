@@ -31,7 +31,7 @@ import {
   QuestionType,
   withVariable,
   replacePreviousAnswerPlaceholdersWithActualContent,
-  decapitalizeFirstCharacter,
+  treatPlaceholderReplacementValue,
   NON_USER_QUESTION_TYPES,
 } from "./helpers/helpers";
 import { addEndTimeToPingAsync } from "./helpers/pings";
@@ -197,33 +197,11 @@ export default class SurveyScreen extends React.Component<
 
     let output = input;
     for (const [key, value] of Object.entries(currentQuestionData.extraData)) {
-      let treatedValue = value;
-
-      let shouldDecap = false;
-
-      const treatments = studyInfo.specialVariablePlaceholderTreatments;
-      if (treatments && Object.keys(treatments).includes(key)) {
-        const treatment = treatments[key];
-
-        const decapOptions = treatment.decapitalizeFirstCharacter;
-        if (decapOptions && decapOptions.enabled) {
-          if (decapOptions.includes) {
-            if (decapOptions.includes.includes(value)) {
-              shouldDecap = true;
-            }
-          } else if (decapOptions.excludes) {
-            if (!decapOptions.excludes.includes(value)) {
-              shouldDecap = true;
-            }
-          } else {
-            shouldDecap = true;
-          }
-        }
-      }
-
-      if (shouldDecap) {
-        treatedValue = decapitalizeFirstCharacter(treatedValue);
-      }
+      const treatedValue = treatPlaceholderReplacementValue(
+        key,
+        value,
+        studyInfo,
+      );
 
       // https://stackoverflow.com/a/56136657/2603230
       output = output.split(withVariable(key)).join(treatedValue);
@@ -237,6 +215,8 @@ export default class SurveyScreen extends React.Component<
         if (!question) {
           return null;
         }
+
+        let returnedAnswer: string | null = null;
         switch (question.type) {
           case QuestionType.ChoicesWithSingleAnswer: {
             const csaQuestion = questions[
@@ -257,12 +237,22 @@ export default class SurveyScreen extends React.Component<
               );
             }
 
-            return decapitalizeFirstCharacter(csaAnswerChoiceValue);
+            returnedAnswer = csaAnswerChoiceValue;
+            break;
           }
 
           default:
-            return null;
+            break;
         }
+
+        if (returnedAnswer !== null) {
+          returnedAnswer = treatPlaceholderReplacementValue(
+            questionId,
+            returnedAnswer,
+            studyInfo,
+          );
+        }
+        return returnedAnswer;
       },
     );
 

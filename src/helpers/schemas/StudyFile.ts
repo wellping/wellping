@@ -339,7 +339,9 @@ export const StudyInfoSchema = z
 
     /**
      * Special treatments for variable placeholders. The key of each record is
-     * the variable name as defined by supported question's `variableName`.
+     * the variable name as defined by supported question's `variableName`, or a
+     * question ID (if you want to replace the placeholder with a previous
+     * question's answer).
      */
     specialVariablePlaceholderTreatments: z
       .record(PlaceholderReplacementValueTreatmentOptionsSchema)

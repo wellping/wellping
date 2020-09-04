@@ -12,7 +12,11 @@ import {
 
 import SurveyScreen, { SurveyScreenProps } from "../../SurveyScreen";
 import { QuestionType } from "../../helpers/helpers";
-import { ChoicesQuestion, QuestionTypeType } from "../../helpers/types";
+import {
+  ChoicesQuestion,
+  QuestionTypeType,
+  PlaceholderReplacementValueTreatmentOptions,
+} from "../../helpers/types";
 import {
   setUpSurveyScreenTestAsync,
   tearDownSurveyScreenTestAsync,
@@ -591,12 +595,31 @@ describe.each(TWO_TYPES)(
 
 const PREV_QUESTONS_CHOICES_FOR_PLACEHOLDERS_TEST: [
   QuestionTypeType,
+  PlaceholderReplacementValueTreatmentOptions | undefined,
   ChoicesQuestion,
   string,
   string,
 ][] = [
   [
     QuestionType.ChoicesWithSingleAnswer,
+    undefined,
+    {
+      id: "q1",
+      type: QuestionType.ChoicesWithSingleAnswer,
+      question: "Question 1",
+      choices: ["Wolf", "Coyote", "Lynx"],
+      next: "q2",
+    },
+    "Coyote",
+    "Coyote",
+  ],
+  [
+    QuestionType.ChoicesWithSingleAnswer,
+    {
+      decapitalizeFirstCharacter: {
+        enabled: true,
+      },
+    },
     {
       id: "q1",
       type: QuestionType.ChoicesWithSingleAnswer,
@@ -609,23 +632,31 @@ const PREV_QUESTONS_CHOICES_FOR_PLACEHOLDERS_TEST: [
   ],
 ];
 describe.each(PREV_QUESTONS_CHOICES_FOR_PLACEHOLDERS_TEST)(
-  "%s: replace placeholder with previous question's answer",
-  (type, q1, answerToChoose, expectedReplacement) => {
+  "%s: replace placeholder with previous question's answer (treatment options: %o)",
+  (type, treatments, q1, answerToChoose, expectedReplacement) => {
     describe("single answer replacement", () => {
-      const getProps = (): SurveyScreenProps => ({
-        ...currentPropsBase,
-        questions: {
-          q1,
-          q2: {
-            id: "q2",
-            type: QuestionType.Slider,
-            question: "Question 2: previous answer is {PREV:q1}!",
-            slider: ["left", "right"],
-            next: null,
+      const getProps = (): SurveyScreenProps => {
+        const props: SurveyScreenProps = {
+          ...currentPropsBase,
+          questions: {
+            q1,
+            q2: {
+              id: "q2",
+              type: QuestionType.Slider,
+              question: "Question 2: previous answer is {PREV:q1}!",
+              slider: ["left", "right"],
+              next: null,
+            },
           },
-        },
-        startingQuestionId: "q1",
-      });
+          startingQuestionId: "q1",
+        };
+        if (treatments !== undefined) {
+          props.studyInfo.specialVariablePlaceholderTreatments = {
+            q1: treatments,
+          };
+        }
+        return props;
+      };
 
       test("choose and next", async () => {
         const onFinishFn = jest.fn();
