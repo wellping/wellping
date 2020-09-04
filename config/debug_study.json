@@ -15,6 +15,7 @@
       "randomMinuteAddition": { "min": 0, "max": 119 }
     },
     "streamsStartingQuestionIds": {
+      "welcomeStream": "Hello",
       "myStream": "Feel_Current",
       "errorStream": "firstQuestion"
     },
@@ -26,6 +27,9 @@
       "4": ["myStream", "myStream", "myStream", "myStream"],
       "5": ["myStream", "myStream", "myStream", "myStream"],
       "6": ["myStream", "myStream", "myStream", "myStream"]
+    },
+    "streamsForNthPings": {
+      "1": "welcomeStream"
     },
     "streamInCaseOfError": "myStream",
     "streamsNotReplacedByFollowupStream": ["myStream"],
@@ -42,6 +46,15 @@
     }
   },
   "streams": {
+    "welcomeStream": {
+      "Hello": {
+        "id": "Hello",
+        "type": "ChoicesWithSingleAnswer",
+        "question": "How are you doing?",
+        "choices": [":)", ":|", ":("],
+        "next": null
+      }
+    },
     "myStream": {
       "Feel_Current": {
         "id": "Feel_Current",

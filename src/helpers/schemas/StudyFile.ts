@@ -226,6 +226,44 @@ export const StudyInfoSchema = z
     }),
 
     /**
+     * The stream type(s) for n-th ping(s). The key is the "n" in "n-th ping".
+     * This will **replace** the originally sceduled stream type for that ping.
+     *
+     * For example,
+     * ```{json}
+     * "streamsForNthPings": {
+     *   "1": "demographic",
+     *   "10": "interests"
+     * }
+     * ```
+     * means that the user's first ping will be `"demographic"` stream and the
+     * user's 10th ping will be `"interests"` stream.
+     */
+    streamsForNthPings: z
+      .record(StreamNameSchema)
+      .optional()
+      .refine(
+        (value) => {
+          if (value === undefined) {
+            return true;
+          }
+          for (const nth of Object.keys(value)) {
+            // https://stackoverflow.com/a/10834843/2603230
+            if (!/^\+?[1-9]\d*$/.test(nth)) {
+              // If it is not a positive integer.
+              return false;
+            }
+          }
+          return true;
+        },
+        {
+          message:
+            "The key in `streamsForNthPings` must be a positive integer as it " +
+            'represents the "n" in "n-th ping".',
+        },
+      ),
+
+    /**
      * The stream that the user will see if there is any error in `streamsOrder`.
      */
     streamInCaseOfError: StreamNameSchema,
@@ -289,6 +327,7 @@ export const StudyInfoSchema = z
         "to the length of `frequency.hoursEveryday`.",
     },
   );
+// TODO: REFINE IF streams in e.g. streamsOrder, etc. is found in `streamsStartingQuestionIds`'s key
 
 export const ExtraDataSchema = z.object({
   reusableChoices: z.record(ChoicesListSchema).optional(),
@@ -299,6 +338,7 @@ export const StudyFileSchema = z.object({
   streams: StreamsSchema,
   extraData: ExtraDataSchema,
 });
+// TODO: REFINE IF `streams` matches `streamsStartingQuestionIds`'s key
 
 // https://stackoverflow.com/a/13104500/2603230
 const convertSpecialTypesInStudyInfo = (studyInfoRawJson: any) => {

@@ -33,6 +33,7 @@ import {
   getPingStateAsync,
   clearPingStateAsync,
 } from "./helpers/asyncStorage/pingState";
+import { getPingsListAsync } from "./helpers/asyncStorage/pingsList";
 import { getUserAsync } from "./helpers/asyncStorage/user";
 import { clearAllPingsAndAnswersAsync } from "./helpers/cleanup";
 import { uploadDataAsync, getAllDataAsync } from "./helpers/dataUpload";
@@ -260,8 +261,11 @@ export default class HomeScreen extends React.Component<
 
     const todayWeekday = getDay(new Date());
     const todayPings = await getTodayPingsAsync();
-    let newPingName: StreamName;
 
+    const pingsList = await getPingsListAsync();
+    const newPingNth = pingsList.length + 1;
+
+    let newStreamName: StreamName;
     if (todayPings.length >= studyInfo.frequency.hoursEveryday.length) {
       alertWithShareButtonContainingDebugInfo(
         getNonCriticalProblemTextForUser(
@@ -269,23 +273,28 @@ export default class HomeScreen extends React.Component<
         ),
       );
 
-      newPingName = studyInfo.streamInCaseOfError;
+      newStreamName = studyInfo.streamInCaseOfError;
+    } else if (
+      studyInfo.streamsForNthPings &&
+      studyInfo.streamsForNthPings[`${newPingNth}`]
+    ) {
+      newStreamName = studyInfo.streamsForNthPings[`${newPingNth}`];
     } else {
-      newPingName = studyInfo.streamsOrder[todayWeekday][todayPings.length];
+      newStreamName = studyInfo.streamsOrder[todayWeekday][todayPings.length];
 
       if (
         !(studyInfo.streamsNotReplacedByFollowupStream || []).includes(
-          newPingName,
+          newStreamName,
         )
       ) {
         const futurePingIfAny = await dequeueFuturePingIfAny();
         if (futurePingIfAny) {
-          newPingName = futurePingIfAny.streamName;
+          newStreamName = futurePingIfAny.streamName;
         }
       }
     }
 
-    await this._startSurveyTypeAsync(newPingName);
+    await this._startSurveyTypeAsync(newStreamName);
 
     // So that the notification text ("n pings left") can be updated.
     await setNotificationsAsync();
