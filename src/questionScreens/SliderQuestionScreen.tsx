@@ -63,6 +63,12 @@ const SliderQuestionScreen: React.ElementType<SliderQuestionScreenProps> = ({
     }
   }
 
+  // This value is for display only - it should not be used for anything else.
+  const [
+    __FOR_DISPLAY_ONLY__sliderValue,
+    __FOR_DISPLAY_ONLY__setSliderValue,
+  ] = React.useState<number | null>(null);
+
   return (
     <View style={{ paddingVertical: 30 }}>
       <Slider
@@ -72,6 +78,12 @@ const SliderQuestionScreen: React.ElementType<SliderQuestionScreenProps> = ({
         maximumValue={100}
         minimumTrackTintColor="#2F2424"
         maximumTrackTintColor="#2F2424"
+        onValueChange={(value) => {
+          if (question.displayCurrentValueToUser) {
+            // We need to set it only if it is displayed.
+            __FOR_DISPLAY_ONLY__setSliderValue(value);
+          }
+        }}
         onSlidingComplete={(value) => {
           onDataChange({ value } as SliderAnswerData);
         }}
@@ -81,6 +93,12 @@ const SliderQuestionScreen: React.ElementType<SliderQuestionScreenProps> = ({
         <Text style={{ maxWidth: "40%" }}>{question.slider[0]}</Text>
         <Text style={{ maxWidth: "40%" }}>{question.slider[1]}</Text>
       </View>
+      {question.displayCurrentValueToUser &&
+        __FOR_DISPLAY_ONLY__sliderValue !== null && (
+          <Text style={{ marginTop: 20, textAlign: "center" }}>
+            (You have selected {__FOR_DISPLAY_ONLY__sliderValue})
+          </Text>
+        )}
     </View>
   );
 };
