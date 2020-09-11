@@ -42,6 +42,23 @@ const BaseQuestionSchema = z.object({
   description: z.string().optional(),
 
   /**
+   * The optional question image that will be shown below the question title
+   * and description (if any).
+   */
+  image: z
+    .object({
+      /**
+       * An image URL or an Base64 image data.
+       */
+      url: z.string(),
+
+      width: z.number().positive(),
+
+      height: z.number().positive(),
+    })
+    .optional(),
+
+  /**
    * The optional fallback next IDs.
    */
   fallbackNext: z

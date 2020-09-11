@@ -1,6 +1,13 @@
 import { addDays } from "date-fns";
 import React from "react";
-import { Button, Text, View, ScrollView, Dimensions } from "react-native";
+import {
+  Button,
+  Text,
+  View,
+  ScrollView,
+  Image,
+  Dimensions,
+} from "react-native";
 
 import { _DEBUG_CONFIGS } from "../config/debug";
 import {
@@ -816,6 +823,18 @@ export default class SurveyScreen extends React.Component<
                 You may need to scroll to see the full description.
               </Text>
             </>
+          )}
+          {question.image && (
+            <Image
+              style={{
+                width: question.image.width,
+                height: question.image.height,
+                alignSelf: "center",
+              }}
+              source={{
+                uri: question.image.url,
+              }}
+            />
           )}
         </View>
         <View
