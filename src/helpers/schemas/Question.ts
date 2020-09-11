@@ -36,6 +36,12 @@ const BaseQuestionSchema = z.object({
   question: z.string(),
 
   /**
+   * The optional question description that will be shown below the question
+   * title.
+   */
+  description: z.string().optional(),
+
+  /**
    * The optional fallback next IDs.
    */
   fallbackNext: z

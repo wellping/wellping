@@ -777,16 +777,47 @@ export default class SurveyScreen extends React.Component<
           opacity: isInTransition ? 0.025 : 1,
         }}
       >
-        <Text
-          testID="questionTitle"
-          style={{
-            textAlign: "center",
-            fontSize: smallScreen ? 15 : 20,
-            flex: 0,
-          }}
-        >
-          {this.replacePlaceholders(question.question)}
-        </Text>
+        <View style={{ flex: 0 }}>
+          <Text
+            testID="questionTitle"
+            style={{
+              textAlign: "center",
+              fontSize: smallScreen ? 15 : 20,
+            }}
+          >
+            {this.replacePlaceholders(question.question)}
+          </Text>
+          {question.description && (
+            <>
+              <ScrollView
+                style={{
+                  marginTop: 10,
+                  maxHeight: 200,
+                  borderWidth: 1,
+                  borderColor: "lightgray",
+                }}
+              >
+                <Text
+                  testID="questionDescription"
+                  style={{
+                    textAlign: "left",
+                    padding: 5,
+                  }}
+                >
+                  {this.replacePlaceholders(question.description)}
+                </Text>
+              </ScrollView>
+              <Text
+                style={{
+                  textAlign: "center",
+                  color: "lightgray",
+                }}
+              >
+                You may need to scroll to see the full description.
+              </Text>
+            </>
+          )}
+        </View>
         <View
           style={{
             // Change this to `1` if we always want the "Next" button to be on the bottom.

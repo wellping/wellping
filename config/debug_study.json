@@ -61,6 +61,35 @@
         "type": "Slider",
         "question": "Please use the slider bar to indicate how you are feeling right now.",
         "slider": ["extremely negative", "extremely positive"],
+        "next": "Feel_Current_withDesp"
+      },
+      "Feel_Current_withDesp": {
+        "id": "Feel_Current_withDesp",
+        "type": "Slider",
+        "question": "Please use the slider bar to indicate how you are feeling right now.",
+        "description": "“Swallow, Swallow, little Swallow,” said the Prince, “will you not stay with me for one night, and be my messenger?  The boy is so thirsty, and the mother so sad.”\n“I don’t think I like boys,” answered the Swallow.  “Last summer, when I was staying on the river, there were two rude boys, the miller’s sons, who were always throwing stones at me.  They never hit me, of course; we swallows fly far too well for that, and besides, I come of a family famous for its agility; but still, it was a mark of disrespect.”\nBut the Happy Prince looked so sad that the little Swallow was sorry.  “It is very cold here,” he said; “but I will stay with you for one night, and be your messenger.”\n“Thank you, little Swallow,” said the Prince.\nSo the Swallow picked out the great ruby from the Prince’s sword, and flew away with it in his beak over the roofs of the town.\n“Swallow, Swallow, little Swallow,” said the Prince, “will you not stay with me for one night, and be my messenger?  The boy is so thirsty, and the mother so sad.”\n“I don’t think I like boys,” answered the Swallow.  “Last summer, when I was staying on the river, there were two rude boys, the miller’s sons, who were always throwing stones at me.  They never hit me, of course; we swallows fly far too well for that, and besides, I come of a family famous for its agility; but still, it was a mark of disrespect.”\nBut the Happy Prince looked so sad that the little Swallow was sorry.  “It is very cold here,” he said; “but I will stay with you for one night, and be your messenger.”\n“Thank you, little Swallow,” said the Prince.\nSo the Swallow picked out the great ruby from the Prince’s sword, and flew away with it in his beak over the roofs of the town.",
+        "slider": ["extremely negative", "extremely positive"],
+        "next": "Feel_Current_withDespShort"
+      },
+      "Feel_Current_withDespShort": {
+        "id": "Feel_Current_withDespShort",
+        "type": "Slider",
+        "question": "Please use the slider bar to indicate how you are feeling right now.",
+        "description": "“Swallow, Swallow, little Swallow,”",
+        "slider": ["extremely negative", "extremely positive"],
+        "next": "Ladder"
+      },
+      "Ladder": {
+        "id": "Ladder",
+        "type": "MultipleText",
+        "question": "Ladder?",
+        "description": "At the top of the ladder are the people at Stanford who are the best off, those who have the most money, most education, and best jobs. At the bottom are the people who are the worst off, those who have the least money, least education, worst jobs, or no job. Please indicate the rung where you think you stand at this time in your life, relative to other people at Stanford (1 to 10).",
+        "placeholder": "Enter a number...",
+        "choices": ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"],
+        "max": 1,
+        "forceChoice": true,
+        "variableName": "LEVEL",
+        "indexName": "INDEX",
         "next": "Feel_Ideal"
       },
       "Feel_Ideal": {
