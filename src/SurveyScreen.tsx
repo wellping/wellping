@@ -856,6 +856,7 @@ export default class SurveyScreen extends React.Component<
           <View
             style={{
               flexDirection: "row",
+              flex: -1,
             }}
           >
             {getImageIfAnyForPosition("left")}
