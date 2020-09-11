@@ -794,7 +794,7 @@ export default class SurveyScreen extends React.Component<
           >
             {this.replacePlaceholders(question.question)}
           </Text>
-          {question.description && (
+          {(question.description || question.image) && (
             <>
               <ScrollView
                 style={{
@@ -804,15 +804,30 @@ export default class SurveyScreen extends React.Component<
                   borderColor: "lightgray",
                 }}
               >
-                <Text
-                  testID="questionDescription"
-                  style={{
-                    textAlign: "left",
-                    padding: 5,
-                  }}
-                >
-                  {this.replacePlaceholders(question.description)}
-                </Text>
+                {question.description && (
+                  <Text
+                    testID="questionDescription"
+                    style={{
+                      textAlign: "left",
+                      padding: 5,
+                    }}
+                  >
+                    {this.replacePlaceholders(question.description)}
+                  </Text>
+                )}
+                {question.image && (
+                  <Image
+                    style={{
+                      marginVertical: 5,
+                      width: question.image.width,
+                      height: question.image.height,
+                      alignSelf: "center",
+                    }}
+                    source={{
+                      uri: question.image.url,
+                    }}
+                  />
+                )}
               </ScrollView>
               <Text
                 style={{
@@ -823,18 +838,6 @@ export default class SurveyScreen extends React.Component<
                 You may need to scroll to see the full description.
               </Text>
             </>
-          )}
-          {question.image && (
-            <Image
-              style={{
-                width: question.image.width,
-                height: question.image.height,
-                alignSelf: "center",
-              }}
-              source={{
-                uri: question.image.url,
-              }}
-            />
           )}
         </View>
         <View
