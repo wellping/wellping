@@ -67,7 +67,7 @@ const SliderQuestionScreen: React.ElementType<SliderQuestionScreenProps> = ({
   const [
     __FOR_DISPLAY_ONLY__sliderValue,
     __FOR_DISPLAY_ONLY__setSliderValue,
-  ] = React.useState<number>(defaultSliderValue);
+  ] = React.useState<number | null>(null);
 
   return (
     <View style={{ paddingVertical: 30 }}>
@@ -93,11 +93,12 @@ const SliderQuestionScreen: React.ElementType<SliderQuestionScreenProps> = ({
         <Text style={{ maxWidth: "40%" }}>{question.slider[0]}</Text>
         <Text style={{ maxWidth: "40%" }}>{question.slider[1]}</Text>
       </View>
-      {question.displayCurrentValueToUser && (
-        <Text style={{ marginTop: 20, textAlign: "center" }}>
-          (You have selected {__FOR_DISPLAY_ONLY__sliderValue})
-        </Text>
-      )}
+      {question.displayCurrentValueToUser &&
+        __FOR_DISPLAY_ONLY__sliderValue !== null && (
+          <Text style={{ marginTop: 20, textAlign: "center" }}>
+            (You have selected {__FOR_DISPLAY_ONLY__sliderValue})
+          </Text>
+        )}
     </View>
   );
 };
