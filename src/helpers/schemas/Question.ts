@@ -91,6 +91,7 @@ export const SliderQuestionSchema = BaseQuestionSchema.extend({
   slider: z.tuple([z.string(), z.string()]), // [left, right]
   defaultValue: z.number().int().nonnegative().max(100).optional(),
   defaultValueFromQuestionId: QuestionIdSchema.optional(),
+  displayCurrentValueToUser: z.boolean().optional(),
 });
 
 export const ChoicesQuestionSchema = BaseQuestionSchema.extend({
