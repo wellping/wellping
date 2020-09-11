@@ -8,7 +8,6 @@ import {
   Image,
   Dimensions,
 } from "react-native";
-import { TypeOf } from "zod";
 
 import { _DEBUG_CONFIGS } from "../config/debug";
 import {
