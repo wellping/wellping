@@ -72,11 +72,12 @@ export const StudyInfoSchema = z
     id: StudyIdSchema,
 
     /**
-     * The URL that host this study file. The app fetches this URL in the
-     * background at every start and loads the downloaded new file at the
-     * next start.
+     * The URL that host this study file (which could be a JSON or a YAML file).
+     *
+     * The app fetches this URL in the background at every start and loads the
+     * downloaded new file at the next start.
      */
-    studyFileJsonURL: z.string().url(),
+    studyFileURL: z.string().url(),
 
     /**
      * The URL of the dashboard that will be shown to the user on the home page.

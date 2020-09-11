@@ -173,7 +173,7 @@ export default class RootScreen extends React.Component<
 
       // Do it in background because there isn't any urgency to redownload.
       this.downloadAndParseStudyFileAsync({
-        url: survey.studyInfo.studyFileJsonURL,
+        url: survey.studyInfo.studyFileURL,
         isRedownload: true,
         handleNetworkErrorAsync: async () => {
           // No need to handle network error.

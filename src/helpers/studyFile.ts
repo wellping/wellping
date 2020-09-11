@@ -24,9 +24,7 @@ export const WELLPING_LOCAL_DEBUG_URL =
   "https://wellping_local__.ssnl.stanford.edu/debug.json";
 
 export async function isLocalStudyFileAsync(): Promise<boolean> {
-  return (
-    (await getStudyInfoAsync()).studyFileJsonURL === WELLPING_LOCAL_DEBUG_URL
-  );
+  return (await getStudyInfoAsync()).studyFileURL === WELLPING_LOCAL_DEBUG_URL;
 }
 
 /**
