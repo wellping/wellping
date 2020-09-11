@@ -62,6 +62,8 @@ export type Answer = z.infer<typeof AnswerSchema>;
 
 export type AnswersList = z.infer<typeof AnswersListSchema>;
 
+export type DataValidationFunction = () => boolean;
+
 export interface QuestionScreenProps {
   question: Question;
   loadingCompleted: () => void;
@@ -69,5 +71,5 @@ export interface QuestionScreenProps {
   allAnswers: AnswersList;
   allQuestions: QuestionsList;
   pipeInExtraMetaData: (input: string) => string;
-  setDataValidationFunction: (func: () => boolean) => void;
+  setDataValidationFunction: (func: DataValidationFunction) => void;
 }

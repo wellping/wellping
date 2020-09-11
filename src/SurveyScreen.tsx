@@ -15,6 +15,7 @@ import {
   Answer,
   MultipleTextAnswer,
   SliderAnswer,
+  DataValidationFunction,
 } from "./helpers/answerTypes";
 import { insertAnswerAsync } from "./helpers/answers";
 import {
@@ -709,7 +710,7 @@ export default class SurveyScreen extends React.Component<
     });
   }
 
-  dataValidationFunction: (() => boolean) | null = null;
+  dataValidationFunction: DataValidationFunction | null = null;
   render() {
     const {
       currentQuestionData: { questionId },
@@ -832,18 +833,18 @@ export default class SurveyScreen extends React.Component<
           />
           <Button
             onPress={async () => {
-              if (
-                this.dataValidationFunction &&
-                !this.dataValidationFunction()
-              ) {
-                return;
-              }
-
               if (answers[realQuestionId] == null) {
                 // The user clicks "Next" without answering.
                 await this.addAnswerToAnswersListAsync(question, {
                   data: null,
                 });
+              } else {
+                if (
+                  this.dataValidationFunction &&
+                  !this.dataValidationFunction()
+                ) {
+                  return;
+                }
               }
               this.onNextSelect();
             }}

@@ -99,7 +99,11 @@ const basicTestForQuestionAsync = async (
   // For each choices
   expect(mockPipeInExtraMetaData).toHaveBeenCalledTimes(choices?.length || 0);
 
-  expect(mockSetDataValidationFunction).toHaveBeenCalledTimes(1);
+  // Called when the dropdown items are changed.
+  const mockSetDataValidationFunctionInitTimes = choices ? 2 : 1;
+  expect(mockSetDataValidationFunction).toHaveBeenCalledTimes(
+    mockSetDataValidationFunctionInitTimes,
+  );
   expect(typeof codeDataValidationFunction).toBe("function");
 
   // This also helps test the placeholder property.
@@ -134,6 +138,11 @@ const basicTestForQuestionAsync = async (
       expectedAnswerData,
     );
     expect(mockOnDataChangeFn).toHaveBeenCalledTimes(callCount);
+
+    // `setDataValidationFunction` is called each time the data is changed.
+    expect(mockSetDataValidationFunction).toHaveBeenCalledTimes(
+      mockSetDataValidationFunctionInitTimes + callCount,
+    );
 
     let isInputValid = true;
     if (question.choices && question.forceChoice && inputValue.length > 0) {

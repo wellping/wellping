@@ -54,11 +54,6 @@ const MultipleTextQuestionScreen: React.ElementType<MultipleTextQuestionScreenPr
   );
 
   React.useEffect(() => {
-    // Should only be called once.
-    setDataValidationFunction(() => {
-      return dataValidationFunction(true);
-    });
-
     async function setupTextFieldsDropdownItemsAsync() {
       if (question.choices !== undefined) {
         let tempChoices!: ChoicesList;
@@ -82,6 +77,16 @@ const MultipleTextQuestionScreen: React.ElementType<MultipleTextQuestionScreenPr
     // So that async can be used in `setupTextFieldsDropdownItemsAsync`.
     setupTextFieldsDropdownItemsAsync();
   }, [question.choices]);
+
+  React.useEffect(() => {
+    // We have to `setDataValidationFunction` again when `textFieldsDropdownItems`
+    // is changed so that the function will use the new `textValues` and
+    // `textFieldsDropdownItems` when validating (as `dataValidationFunction`
+    // depends on those two variables).
+    setDataValidationFunction(() => {
+      return dataValidationFunction();
+    });
+  }, [textValues, textFieldsDropdownItems]);
 
   const updateTextValue = (text: string, index: number) => {
     const newTextValues: string[] = cloneDeep(textValues);
@@ -138,7 +143,7 @@ const MultipleTextQuestionScreen: React.ElementType<MultipleTextQuestionScreenPr
             focusOnNextIfNotLast();
           },
           onEndEditing: () => {
-            dataValidationFunction(true);
+            dataValidationFunction();
           },
           accessibilityLabel: `text input ${index}`,
           accessibilityHint: "Enter your answer here",
@@ -155,10 +160,7 @@ const MultipleTextQuestionScreen: React.ElementType<MultipleTextQuestionScreenPr
   }
 
   let alertDisplaying = false;
-  const dataValidationFunction = (
-    showAlert?: boolean,
-    values: string[] = textValues,
-  ) => {
+  const dataValidationFunction = () => {
     if (!question.forceChoice) {
       // If there is no `forceChoice`, the data is always valid.
       return true;
@@ -169,7 +171,7 @@ const MultipleTextQuestionScreen: React.ElementType<MultipleTextQuestionScreenPr
       return false;
     }
 
-    const invalidValues = values.filter((value) => {
+    const invalidValues = textValues.filter((value) => {
       // If the text value is not empty and is not in the items list.
       return value && !textFieldsDropdownNames.includes(value);
     });
@@ -179,37 +181,35 @@ const MultipleTextQuestionScreen: React.ElementType<MultipleTextQuestionScreenPr
       return true;
     }
 
-    if (showAlert) {
-      alertDisplaying = true;
+    // We clear the values first so that there will not be duplicate alerts.
+    const invalidValuesIndices = invalidValues.map((value) =>
+      textValues.indexOf(value),
+    );
+    invalidValuesIndices.forEach((index) => {
+      textFieldsRef[index].current && textFieldsRef[index].current!.clear();
+      // Because `clear()` does not call `onChangeText`.
+      updateTextValue("", index);
+    });
 
-      const invalidValuesIndices = invalidValues.map((value) =>
-        values.indexOf(value),
-      );
-      Alert.alert(
-        "Notice",
-        `You must select an item from the list.\n\n` +
-          `The following ${
-            invalidValues.length === 1 ? "item is" : "items are"
-          } not in the list: ` +
-          `${invalidValues.join(", ")}`,
-        [
-          {
-            text: "OK",
-            onPress: () => {
-              invalidValuesIndices.forEach((index) => {
-                textFieldsRef[index].current &&
-                  textFieldsRef[index].current!.clear();
-                // Because `clear()` does not call `onChangeText`.
-                updateTextValue("", index);
-              });
-              textFieldsRef[invalidValuesIndices[0]].current!.focus();
-              alertDisplaying = false;
-            },
-            style: "cancel",
+    alertDisplaying = true;
+    Alert.alert(
+      "Notice",
+      `You must select an item from the list.\n\n` +
+        `The following ${
+          invalidValues.length === 1 ? "item is" : "items are"
+        } not in the list: ` +
+        `${invalidValues.join(", ")}`,
+      [
+        {
+          text: "OK",
+          onPress: () => {
+            textFieldsRef[invalidValuesIndices[0]].current!.focus();
+            alertDisplaying = false;
           },
-        ],
-      );
-    }
+          style: "cancel",
+        },
+      ],
+    );
     return false;
   };
 
