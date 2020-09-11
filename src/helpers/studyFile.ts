@@ -65,19 +65,37 @@ export async function downloadStudyFileAsync(url: string): Promise<string> {
     return rawJsonString;
   }
 
+  let response: Response;
   try {
-    const response = await fetch(url, {
+    response = await fetch(url, {
       method: "GET",
       cache: "no-cache",
       headers: {
-        Accept: "application/json",
+        Accept: "*/*",
         "Content-Type": "application/json",
       },
     });
-
-    return response.text();
   } catch (e) {
     throw e;
+  }
+
+  const responseText = await response.text();
+
+  const contentType = response.headers.get("content-type");
+  if (contentType && contentType.includes("json")) {
+    // It is a JSON file.
+    return responseText;
+  } else {
+    // Try if YAML can parse it.
+    // "every JSON file is also a valid YAML file."
+    // https://yaml.org/spec/1.2/spec.html#id2759572
+    try {
+      const yaml = require("js-yaml");
+      const doc = yaml.safeLoad(responseText);
+      return JSON.stringify(doc);
+    } catch (e) {
+      throw e;
+    }
   }
 }
 
