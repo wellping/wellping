@@ -87,8 +87,10 @@ export async function downloadStudyFileAsync(url: string): Promise<string> {
     return responseText;
   } else {
     // Try if YAML can parse it.
-    // "every JSON file is also a valid YAML file."
-    // https://yaml.org/spec/1.2/spec.html#id2759572
+    // Notice that since "every JSON file is also a valid YAML file."
+    // (https://yaml.org/spec/1.2/spec.html#id2759572),
+    // So this will also handle the case if the JSON file has a wrong content
+    // type.
     try {
       const yaml = require("js-yaml");
       const doc = yaml.safeLoad(responseText);
