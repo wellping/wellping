@@ -14,6 +14,7 @@ import {
   BranchQuestionSchema,
   BranchWithRelativeComparisonQuestionSchema,
   QuestionTypeSchema,
+  QuestionImageOptionsSchema,
 } from "./schemas/Question";
 import { StreamsSchema } from "./schemas/Stream";
 import {
@@ -42,6 +43,8 @@ export type StreamName = z.infer<typeof StreamNameSchema>;
 export type QuestionId = z.infer<typeof QuestionIdSchema>;
 
 export type QuestionTypeType = z.infer<typeof QuestionTypeSchema>;
+
+export type QuestionImageOptions = z.infer<typeof QuestionImageOptionsSchema>;
 
 export type Question = z.infer<typeof QuestionSchema>;
 

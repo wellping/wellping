@@ -19,6 +19,19 @@ export const QuestionTypeSchema = z.enum([
   "BranchWithRelativeComparison",
 ]);
 
+export const QuestionImageOptionsSchema = z.object({
+  /**
+   * An image URL or an Base64 image data.
+   */
+  url: z.string(),
+
+  width: z.number().positive(),
+
+  height: z.number().positive(),
+
+  position: z.union([z.literal("inDescriptionBox"), z.literal("left")]),
+});
+
 const BaseQuestionSchema = z.object({
   /**
    * The question ID.
@@ -40,6 +53,12 @@ const BaseQuestionSchema = z.object({
    * title.
    */
   description: z.string().optional(),
+
+  /**
+   * The optional question image that will be shown below the question title
+   * and description (if any).
+   */
+  image: QuestionImageOptionsSchema.optional(),
 
   /**
    * The optional fallback next IDs.

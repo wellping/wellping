@@ -1,6 +1,13 @@
 import { addDays } from "date-fns";
 import React from "react";
-import { Button, Text, View, ScrollView, Dimensions } from "react-native";
+import {
+  Button,
+  Text,
+  View,
+  ScrollView,
+  Image,
+  Dimensions,
+} from "react-native";
 
 import { _DEBUG_CONFIGS } from "../config/debug";
 import {
@@ -49,6 +56,7 @@ import {
   StreamName,
   StudyInfo,
   Ping,
+  QuestionImageOptions,
 } from "./helpers/types";
 import ChoicesQuestionScreen from "./questionScreens/ChoicesQuestionScreen";
 import HowLongAgoQuestionScreen from "./questionScreens/HowLongAgoQuestion";
@@ -764,6 +772,24 @@ export default class SurveyScreen extends React.Component<
 
     const smallScreen = Dimensions.get("window").height < 600;
 
+    const getImageIfAnyForPosition = (
+      position: QuestionImageOptions["position"],
+    ) =>
+      question.image &&
+      question.image.position === position && (
+        <Image
+          style={{
+            margin: 5,
+            width: question.image.width,
+            height: question.image.height,
+            alignSelf: "center",
+          }}
+          source={{
+            uri: question.image.url,
+          }}
+        />
+      );
+
     return (
       <View
         testID="mainSurveyScreenView"
@@ -787,7 +813,7 @@ export default class SurveyScreen extends React.Component<
           >
             {this.replacePlaceholders(question.question)}
           </Text>
-          {question.description && (
+          {(question.description || question.image) && (
             <>
               <ScrollView
                 style={{
@@ -797,15 +823,18 @@ export default class SurveyScreen extends React.Component<
                   borderColor: "lightgray",
                 }}
               >
-                <Text
-                  testID="questionDescription"
-                  style={{
-                    textAlign: "left",
-                    padding: 5,
-                  }}
-                >
-                  {this.replacePlaceholders(question.description)}
-                </Text>
+                {question.description && (
+                  <Text
+                    testID="questionDescription"
+                    style={{
+                      textAlign: "left",
+                      padding: 5,
+                    }}
+                  >
+                    {this.replacePlaceholders(question.description)}
+                  </Text>
+                )}
+                {getImageIfAnyForPosition("inDescriptionBox")}
               </ScrollView>
               <Text
                 style={{
@@ -824,25 +853,35 @@ export default class SurveyScreen extends React.Component<
             flex: -1,
           }}
         >
-          <QuestionScreen
-            /* https://stackoverflow.com/a/21750576/2603230 */
-            key={question.id}
-            question={question}
-            loadingCompleted={() => {
-              this.setState({ isInTransition: false });
+          <View
+            style={{
+              flexDirection: "row",
+              flex: -1,
             }}
-            onDataChange={(data) => {
-              this.addAnswerToAnswersListAsync(question, {
-                data,
-              });
-            }}
-            allAnswers={answers}
-            allQuestions={questions}
-            pipeInExtraMetaData={(input) => this.replacePlaceholders(input)}
-            setDataValidationFunction={(func) => {
-              this.dataValidationFunction = func;
-            }}
-          />
+          >
+            {getImageIfAnyForPosition("left")}
+            <View style={{ flex: 1 }}>
+              <QuestionScreen
+                /* https://stackoverflow.com/a/21750576/2603230 */
+                key={question.id}
+                question={question}
+                loadingCompleted={() => {
+                  this.setState({ isInTransition: false });
+                }}
+                onDataChange={(data) => {
+                  this.addAnswerToAnswersListAsync(question, {
+                    data,
+                  });
+                }}
+                allAnswers={answers}
+                allQuestions={questions}
+                pipeInExtraMetaData={(input) => this.replacePlaceholders(input)}
+                setDataValidationFunction={(func) => {
+                  this.dataValidationFunction = func;
+                }}
+              />
+            </View>
+          </View>
         </View>
         <View
           style={{
