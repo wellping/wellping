@@ -10,7 +10,9 @@ A React Native survey app that pings you once a while to answer questions!
 
 ## Docs
 
-- [Supported Question Types](https://github.com/StanfordSocialNeuroscienceLab/WellPing/wiki/Supported-Question-Types)
+*Work in Progress*
+
+- [Docs](https://stanfordsocialneurosciencelab.github.io/WellPing/)
 
 ## Demo
 
