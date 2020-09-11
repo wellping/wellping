@@ -155,7 +155,7 @@ export default class LoginScreen extends React.Component<
     });
 
     let user!: User;
-    let studyFileJsonUrl!: string;
+    let studyFileURL!: string;
     try {
       const loginCode = this.state.formData?.trim();
       if (!loginCode) {
@@ -172,13 +172,13 @@ export default class LoginScreen extends React.Component<
       const loginInfo = LoginSchema.parse({
         username: parsedLoginCode[0] || "",
         password: parsedLoginCode[1] || "",
-        studyFileJsonUrl: parsedLoginCode[2] || "",
+        studyFileURL: parsedLoginCode[2] || "",
       });
       user = {
         username: loginInfo.username,
         password: loginInfo.password,
       };
-      studyFileJsonUrl = loginInfo.studyFileJsonUrl;
+      studyFileURL = loginInfo.studyFileURL;
     } catch (e) {
       this.setState({
         disableLoginButton: false,
@@ -193,7 +193,7 @@ export default class LoginScreen extends React.Component<
 
     if (
       !(await this.props.downloadAndParseStudyFileAsync({
-        url: studyFileJsonUrl,
+        url: studyFileURL,
         isRedownload: false,
         handleNetworkErrorAsync: async (errorMessage) => {
           this.setState({

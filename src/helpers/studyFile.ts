@@ -24,9 +24,7 @@ export const WELLPING_LOCAL_DEBUG_URL =
   "https://wellping_local__.ssnl.stanford.edu/debug.json";
 
 export async function isLocalStudyFileAsync(): Promise<boolean> {
-  return (
-    (await getStudyInfoAsync()).studyFileJsonURL === WELLPING_LOCAL_DEBUG_URL
-  );
+  return (await getStudyInfoAsync()).studyFileURL === WELLPING_LOCAL_DEBUG_URL;
 }
 
 /**
@@ -52,9 +50,11 @@ export async function studyFileExistsAsync() {
 }
 
 /**
- * Downloads a study file (in JSON format) from `url`.
- * Returns the content of the file (as a string).
- * Throws an error if the download process failed.
+ * Downloads a study file (in JSON or YAML format) from `url`.
+ * Returns the content of the file (as a string) if the file is a JSON file,
+ * or returns a JSON-stringified parsed YAML object.
+ * Throws an error if the download process (or YAML parsing process if any)
+ * failed.
  */
 export async function downloadStudyFileAsync(url: string): Promise<string> {
   if (url === WELLPING_LOCAL_DEBUG_URL) {
@@ -65,19 +65,38 @@ export async function downloadStudyFileAsync(url: string): Promise<string> {
     return rawJsonString;
   }
 
+  let response: Response;
   try {
-    const response = await fetch(url, {
+    response = await fetch(url, {
       method: "GET",
       cache: "no-cache",
       headers: {
-        Accept: "application/json",
+        Accept: "*/*",
         "Content-Type": "application/json",
       },
     });
-
-    return response.text();
   } catch (e) {
     throw e;
+  }
+
+  const responseText = await response.text();
+
+  const contentType = response.headers.get("content-type");
+  if (contentType && contentType.includes("json")) {
+    // It is a JSON file.
+    return responseText;
+  } else {
+    // Try if YAML can parse it.
+    // Notice that since "every JSON file is also a valid YAML file."
+    // (https://yaml.org/spec/1.2/spec.html#id2759572), this will also handle
+    // the case if the JSON file has a wrong content type.
+    try {
+      const yaml = require("js-yaml");
+      const doc = yaml.safeLoad(responseText);
+      return JSON.stringify(doc);
+    } catch (e) {
+      throw e;
+    }
   }
 }
 

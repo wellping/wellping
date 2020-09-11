@@ -1,5 +1,5 @@
 /**
- * The study file is downloaded from the studyFileJsonUrl at every start in the
+ * The study file is downloaded from the `studyFileURL` at every start in the
  * background.
  * This stores the downloaded file, which will be loaded (and replace the normal
  * study file) at the next start.
