@@ -32,6 +32,9 @@ Alternatively, click this link on your phone to automatically enter the login co
 # Installation
 yarn
 
+# We have to include a `study.json` file here as otherwise the program will not build (see https://github.com/facebook/react-native/issues/6391).
+echo "{}" > local/private/study.json
+
 # Start
 yarn start
 
