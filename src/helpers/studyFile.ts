@@ -21,10 +21,28 @@ import {
 } from "./types";
 
 export const WELLPING_LOCAL_DEBUG_URL =
-  "https://wellping_local__.ssnl.stanford.edu/debug.json";
+  "https://debug.local.wellping.ssnl.stanford.edu/DEBUG_STUDY.json";
+const WELLPING_LOCAL_DEBUG_FILEPATH = "../../local/debug/DEBUG_STUDY.json";
 
-export async function isLocalStudyFileAsync(): Promise<boolean> {
-  return (await getStudyInfoAsync()).studyFileURL === WELLPING_LOCAL_DEBUG_URL;
+export const WELLPING_LOCAL_PRIVATE_URL =
+  "https://local.wellping.ssnl.stanford.edu/study.json";
+const WELLPING_LOCAL_PRIVATE_FILEPATH = "../../local/private/study.json";
+
+export type LocalStudyFileType = "debug" | "private";
+export function getLocalStudyFileType(
+  studyFileURL: string,
+): LocalStudyFileType | null {
+  if (studyFileURL === WELLPING_LOCAL_DEBUG_URL) {
+    return "debug";
+  }
+  if (studyFileURL === WELLPING_LOCAL_PRIVATE_URL) {
+    return "private";
+  }
+  return null;
+}
+
+export async function getLocalStudyFileTypeAsync(): Promise<LocalStudyFileType | null> {
+  return getLocalStudyFileType((await getStudyInfoAsync()).studyFileURL);
 }
 
 /**
@@ -57,11 +75,21 @@ export async function studyFileExistsAsync() {
  * failed.
  */
 export async function downloadStudyFileAsync(url: string): Promise<string> {
-  if (url === WELLPING_LOCAL_DEBUG_URL) {
-    await new Promise((r) => setTimeout(r, 3000)); // Simulate loading.
-    const rawJsonString = JSON.stringify(
-      require("../../config/debug_study.json"),
-    );
+  const localStudyFilePath = getLocalStudyFileType(url);
+  if (localStudyFilePath !== null) {
+    await new Promise((r) => setTimeout(r, 1000)); // Simulate loading.
+    let rawJsonString: string;
+    switch (localStudyFilePath) {
+      case "debug":
+        rawJsonString = JSON.stringify(require(WELLPING_LOCAL_DEBUG_FILEPATH));
+        break;
+
+      case "private":
+        rawJsonString = JSON.stringify(
+          require(WELLPING_LOCAL_PRIVATE_FILEPATH),
+        );
+        break;
+    }
     return rawJsonString;
   }
 
