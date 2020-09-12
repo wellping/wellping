@@ -25,9 +25,23 @@ export const QuestionImageOptionsSchema = z.object({
    */
   url: z.string(),
 
-  width: z.number().positive(),
+  style: z.object({
+    width: z.union([z.number().positive(), z.string()]),
 
-  height: z.number().positive(),
+    height: z.union([z.number().positive(), z.string()]),
+
+    maxHeight: z.number().positive().optional(),
+
+    maxWidth: z.number().positive().optional(),
+
+    /**
+     * If `width` or `height` is set to `"auto"`, this has to be set with the
+     * aspect ratio (width:height) of the image.
+     *
+     * See https://stackoverflow.com/a/61708419/2603230
+     */
+    aspectRatio: z.number().positive().optional(),
+  }),
 
   position: z.union([z.literal("inDescriptionBox"), z.literal("left")]),
 });

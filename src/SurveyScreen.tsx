@@ -780,9 +780,12 @@ export default class SurveyScreen extends React.Component<
         <Image
           style={{
             margin: 5,
-            width: question.image.width,
-            height: question.image.height,
             alignSelf: "center",
+            width: question.image.style.width,
+            height: question.image.style.height,
+            maxHeight: question.image.style.maxHeight,
+            maxWidth: question.image.style.maxWidth,
+            aspectRatio: question.image.style.aspectRatio,
           }}
           source={{
             uri: question.image.url,
