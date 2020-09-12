@@ -20,32 +20,29 @@ import {
   ChoicesList,
 } from "./types";
 
-export const WELLPING_LOCAL_DEBUG_URL_PREFIX =
-  "https://debug.local.wellping.ssnl.stanford.edu/";
-const WELLPING_LOCAL_DEBUG_PATH_PREFIX = "../../local/debug/";
+export const WELLPING_LOCAL_DEBUG_URL =
+  "https://debug.local.wellping.ssnl.stanford.edu/DEBUG_STUDY.json";
+const WELLPING_LOCAL_DEBUG_FILEPATH = "../../local/debug/DEBUG_STUDY.json";
 
-export const WELLPING_LOCAL_PRIVATE_URL_PREFIX =
-  "https://local.wellping.ssnl.stanford.edu/";
-const WELLPING_LOCAL_PRIVATE_PATH_PREFIX = "../../local/private/";
+export const WELLPING_LOCAL_PRIVATE_URL =
+  "https://local.wellping.ssnl.stanford.edu/study.json";
+const WELLPING_LOCAL_PRIVATE_FILEPATH = "../../local/private/study.json";
 
-export function getLocalStudyFilePath(studyFileURL: string): string | null {
-  if (studyFileURL.startsWith(WELLPING_LOCAL_DEBUG_URL_PREFIX)) {
-    return (
-      WELLPING_LOCAL_DEBUG_PATH_PREFIX +
-      studyFileURL.slice(WELLPING_LOCAL_DEBUG_URL_PREFIX.length)
-    );
+export type LocalStudyFileType = "debug" | "private";
+export function getLocalStudyFileType(
+  studyFileURL: string,
+): LocalStudyFileType | null {
+  if (studyFileURL === WELLPING_LOCAL_DEBUG_URL) {
+    return "debug";
   }
-  if (studyFileURL.startsWith(WELLPING_LOCAL_DEBUG_URL_PREFIX)) {
-    return (
-      WELLPING_LOCAL_PRIVATE_PATH_PREFIX +
-      studyFileURL.slice(WELLPING_LOCAL_DEBUG_URL_PREFIX.length)
-    );
+  if (studyFileURL === WELLPING_LOCAL_PRIVATE_URL) {
+    return "private";
   }
   return null;
 }
 
-export async function getLocalStudyFilePathAsync(): Promise<string | null> {
-  return getLocalStudyFilePath((await getStudyInfoAsync()).studyFileURL);
+export async function getLocalStudyFileTypeAsync(): Promise<LocalStudyFileType | null> {
+  return getLocalStudyFileType((await getStudyInfoAsync()).studyFileURL);
 }
 
 /**
@@ -78,10 +75,21 @@ export async function studyFileExistsAsync() {
  * failed.
  */
 export async function downloadStudyFileAsync(url: string): Promise<string> {
-  const localStudyFilePath = getLocalStudyFilePath(url);
+  const localStudyFilePath = getLocalStudyFileType(url);
   if (localStudyFilePath !== null) {
     await new Promise((r) => setTimeout(r, 1000)); // Simulate loading.
-    const rawJsonString = JSON.stringify(require(localStudyFilePath));
+    let rawJsonString: string;
+    switch (localStudyFilePath) {
+      case "debug":
+        rawJsonString = JSON.stringify(require(WELLPING_LOCAL_DEBUG_FILEPATH));
+        break;
+
+      case "private":
+        rawJsonString = JSON.stringify(
+          require(WELLPING_LOCAL_PRIVATE_FILEPATH),
+        );
+        break;
+    }
     return rawJsonString;
   }
 
