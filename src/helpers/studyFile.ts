@@ -77,7 +77,7 @@ export async function studyFileExistsAsync() {
 export async function downloadStudyFileAsync(url: string): Promise<string> {
   const localStudyFilePath = getLocalStudyFileType(url);
   if (localStudyFilePath !== null) {
-    await new Promise((r) => setTimeout(r, 1000)); // Simulate loading.
+    await new Promise((r) => setTimeout(r, 100)); // Simulate loading.
     let rawJsonString: string;
     switch (localStudyFilePath) {
       case "debug":
