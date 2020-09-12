@@ -8,6 +8,7 @@ import {
   isSameDay,
   addSeconds,
   max,
+  isSameWeek,
 } from "date-fns";
 import { Notifications } from "expo";
 import * as Permissions from "expo-permissions";
@@ -19,7 +20,7 @@ import {
   getNotificationTimesAsync,
   storeNotificationTimesAsync,
 } from "./asyncStorage/notificationTimes";
-import { getThisWeekPingsAsync } from "./pings";
+import { getPingsAsync, getThisWeekPingsAsync } from "./pings";
 import { isTimeThisWeekAsync, getStudyInfoAsync } from "./studyFile";
 
 const ANDROID_CHANNEL_NAME = "ssnlPingChannel";
@@ -193,6 +194,44 @@ export async function setNotificationsAsync() {
   await storeNotificationTimesAsync(notificationTimes);
 
   //console.warn("NEW NOTIFICATION SET!");
+}
+
+// Temporary hardcoded function
+async function __ssnlCalculatePaymentAsync(): Promise<number> {
+  const allPings = await getPingsAsync();
+  if (allPings.length === 0) {
+    return 0;
+  }
+
+  let totalMoney = 0;
+  let curWeek = allPings[0].notificationTime;
+  let curWeekPingCount = 0;
+  const addWeekMoney = () => {
+    // payment = 0.75x. if x > 23, then payment = 0.75x + 7
+    let moneyToAdd = 0;
+    moneyToAdd += curWeekPingCount * 0.75;
+    if (curWeekPingCount > 23) {
+      moneyToAdd += 7;
+    }
+    // Just to make sure it won't return anything crazy.
+    totalMoney += Math.min(28, moneyToAdd);
+  };
+  for (const eachPing of allPings) {
+    if (isSameWeek(curWeek, eachPing.notificationTime)) {
+      curWeekPingCount += 1;
+    } else {
+      addWeekMoney();
+      curWeek = eachPing.notificationTime;
+      curWeekPingCount = 0;
+
+      curWeekPingCount += 1;
+    }
+  }
+
+  addWeekMoney();
+
+  // Just to make sure it won't return anything crazy.
+  return Math.min(28 * 3, totalMoney);
 }
 
 // If `null` is returned, it means that currently there's no active ping.
