@@ -20,11 +20,32 @@ import {
   ChoicesList,
 } from "./types";
 
-export const WELLPING_LOCAL_DEBUG_URL =
-  "https://wellping_local__.ssnl.stanford.edu/debug.json";
+export const WELLPING_LOCAL_DEBUG_URL_PREFIX =
+  "https://debug.local.wellping.ssnl.stanford.edu/";
+const WELLPING_LOCAL_DEBUG_PATH_PREFIX = "../../local/debug/";
 
-export async function isLocalStudyFileAsync(): Promise<boolean> {
-  return (await getStudyInfoAsync()).studyFileURL === WELLPING_LOCAL_DEBUG_URL;
+export const WELLPING_LOCAL_PRIVATE_URL_PREFIX =
+  "https://local.wellping.ssnl.stanford.edu/";
+const WELLPING_LOCAL_PRIVATE_PATH_PREFIX = "../../local/private/";
+
+export function getLocalStudyFilePath(studyFileURL: string): string | null {
+  if (studyFileURL.startsWith(WELLPING_LOCAL_DEBUG_URL_PREFIX)) {
+    return (
+      WELLPING_LOCAL_DEBUG_PATH_PREFIX +
+      studyFileURL.slice(WELLPING_LOCAL_DEBUG_URL_PREFIX.length)
+    );
+  }
+  if (studyFileURL.startsWith(WELLPING_LOCAL_DEBUG_URL_PREFIX)) {
+    return (
+      WELLPING_LOCAL_PRIVATE_PATH_PREFIX +
+      studyFileURL.slice(WELLPING_LOCAL_DEBUG_URL_PREFIX.length)
+    );
+  }
+  return null;
+}
+
+export async function getLocalStudyFilePathAsync(): Promise<string | null> {
+  return getLocalStudyFilePath((await getStudyInfoAsync()).studyFileURL);
 }
 
 /**
@@ -57,11 +78,10 @@ export async function studyFileExistsAsync() {
  * failed.
  */
 export async function downloadStudyFileAsync(url: string): Promise<string> {
-  if (url === WELLPING_LOCAL_DEBUG_URL) {
-    await new Promise((r) => setTimeout(r, 3000)); // Simulate loading.
-    const rawJsonString = JSON.stringify(
-      require("../../config/debug_study.json"),
-    );
+  const localStudyFilePath = getLocalStudyFilePath(url);
+  if (localStudyFilePath !== null) {
+    await new Promise((r) => setTimeout(r, 1000)); // Simulate loading.
+    const rawJsonString = JSON.stringify(require(localStudyFilePath));
     return rawJsonString;
   }
 
