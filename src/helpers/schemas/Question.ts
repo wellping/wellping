@@ -103,10 +103,31 @@ const BaseQuestionSchema = z.object({
 export const SliderQuestionSchema = BaseQuestionSchema.extend({
   type: z.literal(QuestionTypeSchema.enum.Slider),
   slider: z.tuple([z.string(), z.string()]), // [left, right]
-  defaultValue: z.number().int().nonnegative().max(100).optional(),
+  minimumValue: z.number().optional(),
+  maximumValue: z.number().optional(),
+  step: z.number().optional(),
+  defaultValue: z.number().optional(),
   defaultValueFromQuestionId: QuestionIdSchema.optional(),
   displayCurrentValueToUser: z.boolean().optional(),
-});
+}).refine(
+  (question) => {
+    if (question.defaultValue) {
+      const minValue = question.minimumValue ?? 0;
+      const maxValue = question.maximumValue ?? 100;
+      if (
+        question.defaultValue < minValue ||
+        question.defaultValue > maxValue
+      ) {
+        return false;
+      }
+    }
+    return true;
+  },
+  {
+    message:
+      "`defaultValue` should be in the range of `minimumValue` (default: 0) and `maximumValue` (default: 100)",
+  },
+);
 
 export const ChoicesQuestionSchema = BaseQuestionSchema.extend({
   type: z.union([

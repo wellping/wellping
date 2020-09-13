@@ -72,10 +72,10 @@ const SliderQuestionScreen: React.ElementType<SliderQuestionScreenProps> = ({
   return (
     <View style={{ paddingVertical: 30 }}>
       <Slider
-        step={1}
+        step={question.step ?? 1}
         value={defaultSliderValue}
-        minimumValue={0}
-        maximumValue={100}
+        minimumValue={question.minimumValue ?? 0}
+        maximumValue={question.maximumValue ?? 100}
         minimumTrackTintColor="#2F2424"
         maximumTrackTintColor="#2F2424"
         onValueChange={(value) => {
