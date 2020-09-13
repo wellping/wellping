@@ -165,7 +165,7 @@ test("50 questions", async () => {
     onFinishFn,
     sequence,
   });
-});
+}, 30000); // https://github.com/facebook/jest/issues/5055
 
 const DIFFERENT_TYPES_OF_QUESTIONS: [QuestionTypeType, Question][] = [
   [
