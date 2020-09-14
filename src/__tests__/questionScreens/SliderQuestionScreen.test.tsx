@@ -5,9 +5,9 @@ import { SliderAnswerData } from "../../helpers/answerTypes";
 import { QuestionType } from "../../helpers/helpers";
 import { SliderQuestion } from "../../helpers/types";
 import SliderQuestionScreen, {
-  DEFAULT_SLIDER_VALUE,
   getQuestionDefaultSliderValue,
 } from "../../questionScreens/SliderQuestionScreen";
+import { SLIDER_DEFAULTS } from "../../questionScreens/constants";
 import { simplePipeInExtraMetaData } from "../helper";
 import {
   moveSlider,
@@ -81,7 +81,7 @@ test("without default value", async () => {
   const { toJSON } = renderResults;
 
   const sliderInput = await findSliderAsync(renderResults);
-  expect(sliderInput.props.value).toBe(DEFAULT_SLIDER_VALUE);
+  expect(sliderInput.props.value).toBe(SLIDER_DEFAULTS.DEFAULT_VALUE);
 
   expect(mockLoadingCompleted).toHaveBeenCalledTimes(1);
 

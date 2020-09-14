@@ -1,0 +1,6 @@
+export const SLIDER_DEFAULTS = {
+  DEFAULT_VALUE: 50,
+  MIN_VALUE: 0,
+  MAX_VALUE: 100,
+  STEP: 1,
+};

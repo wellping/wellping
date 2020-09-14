@@ -4,7 +4,7 @@ exports[`SliderQuestionSchema default value range 0 - 100: <0 1`] = `
 "1 validation issue(s)
 
   Issue #0: custom_error at 
-  \`defaultValue\` should be in the range of \`minimumValue\` (default: 0) and \`maximumValue\` (default: 100)
+  \`defaultValue\` (default: 50) should be in the range of \`minimumValue\` (default: 0) and \`maximumValue\` (default: 100)
 "
 `;
 
@@ -12,7 +12,7 @@ exports[`SliderQuestionSchema default value range 0 - 100: >100 1`] = `
 "1 validation issue(s)
 
   Issue #0: custom_error at 
-  \`defaultValue\` should be in the range of \`minimumValue\` (default: 0) and \`maximumValue\` (default: 100)
+  \`defaultValue\` (default: 50) should be in the range of \`minimumValue\` (default: 0) and \`maximumValue\` (default: 100)
 "
 `;
 

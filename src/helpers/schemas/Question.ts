@@ -1,5 +1,6 @@
 import * as z from "zod";
 
+import { SLIDER_DEFAULTS } from "../../questionScreens/constants";
 import {
   StreamNameSchema,
   QuestionIdSchema,
@@ -111,9 +112,10 @@ export const SliderQuestionSchema = BaseQuestionSchema.extend({
   displayCurrentValueToUser: z.boolean().optional(),
 }).refine(
   (question) => {
+    const defaultValue = question.defaultValue ?? SLIDER_DEFAULTS.DEFAULT_VALUE;
     if (question.defaultValue) {
-      const minValue = question.minimumValue ?? 0;
-      const maxValue = question.maximumValue ?? 100;
+      const minValue = question.minimumValue ?? SLIDER_DEFAULTS.MIN_VALUE;
+      const maxValue = question.maximumValue ?? SLIDER_DEFAULTS.MAX_VALUE;
       if (
         question.defaultValue < minValue ||
         question.defaultValue > maxValue
@@ -125,7 +127,9 @@ export const SliderQuestionSchema = BaseQuestionSchema.extend({
   },
   {
     message:
-      "`defaultValue` should be in the range of `minimumValue` (default: 0) and `maximumValue` (default: 100)",
+      `\`defaultValue\` (default: ${SLIDER_DEFAULTS.DEFAULT_VALUE}) should be ` +
+      `in the range of \`minimumValue\` (default: ${SLIDER_DEFAULTS.MIN_VALUE}) ` +
+      `and \`maximumValue\` (default: ${SLIDER_DEFAULTS.MAX_VALUE})`,
   },
 );
 

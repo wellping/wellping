@@ -12,12 +12,11 @@ import {
   alertWithShareButtonContainingDebugInfo,
 } from "../helpers/debug";
 import { SliderQuestion } from "../helpers/types";
-
-export const DEFAULT_SLIDER_VALUE = 50;
+import { SLIDER_DEFAULTS } from "./constants";
 
 export const getQuestionDefaultSliderValue = (question: SliderQuestion) => {
   if (question.defaultValue == null) {
-    return DEFAULT_SLIDER_VALUE;
+    return SLIDER_DEFAULTS.DEFAULT_VALUE;
   }
   return question.defaultValue;
 };
@@ -72,10 +71,10 @@ const SliderQuestionScreen: React.ElementType<SliderQuestionScreenProps> = ({
   return (
     <View style={{ paddingVertical: 30 }}>
       <Slider
-        step={question.step ?? 1}
+        step={question.step ?? SLIDER_DEFAULTS.STEP}
         value={defaultSliderValue}
-        minimumValue={question.minimumValue ?? 0}
-        maximumValue={question.maximumValue ?? 100}
+        minimumValue={question.minimumValue ?? SLIDER_DEFAULTS.MIN_VALUE}
+        maximumValue={question.maximumValue ?? SLIDER_DEFAULTS.MAX_VALUE}
         minimumTrackTintColor="#2F2424"
         maximumTrackTintColor="#2F2424"
         onValueChange={(value) => {
