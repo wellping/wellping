@@ -1,7 +1,7 @@
 {
   "studyInfo": {
     "id": "debug_study_for_v_1_0",
-    "studyFileURL": "https://wellping_local__.ssnl.stanford.edu/debug.json",
+    "studyFileURL": "https://debug.local.wellping.ssnl.stanford.edu/DEBUG_STUDY.json",
     "consentFormUrl": "http://ssnl.stanford.edu/research",
     "contactEmail": "testEmail@example.com",
     "dashboardURL": "http://ssnl.stanford.edu/test_dashbord?overall_completed_pings=__PINGS_COMPLETED_OVERALL__&overall_completed_this_week=__PINGS_COMPLETED_THIS_WEEK__&overall_completed_today=__PINGS_COMPLETED_TODAY__&id_token=__ID_TOKEN__",
@@ -109,6 +109,17 @@
         "question": "The current value on the slider bar is your previous response about how you currently feel. Please use the slider bar to indicate how you WOULD LIKE to feel.",
         "slider": ["extremely negative", "extremely positive"],
         "defaultValueFromQuestionId": "Feel_Current",
+        "next": "poliIdeology"
+      },
+      "poliIdeology": {
+        "id": "poliIdeology",
+        "type": "Slider",
+        "question": "General political ideology",
+        "slider": ["Liberal", "Conserative"],
+        "minimumValue": 1,
+        "maximumValue": 7,
+        "step": 1,
+        "defaultValue": 4,
         "next": "Anxiety"
       },
       "Anxiety": {
