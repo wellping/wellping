@@ -46,8 +46,8 @@
           "data": [
             {
               "scheme": "https",
-              "host": "stanfordsocialneurosciencelab.github.io",
-              "pathPrefix": "/WellPing/app"
+              "host": "wellping.github.io",
+              "pathPrefix": "/"
             }
           ],
           "category": [
