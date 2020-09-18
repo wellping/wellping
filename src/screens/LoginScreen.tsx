@@ -20,7 +20,10 @@ import {
 } from "../helpers/debug";
 import { LoginSchema } from "../helpers/schemas/Login";
 import { User } from "../helpers/secureStore/user";
-import { getStudyFileAsync } from "../helpers/studyFile";
+import {
+  getStudyFileAsync,
+  WELLPING_LOCAL_PRIVATE_URL,
+} from "../helpers/studyFile";
 import { loginAsync, logoutAsync } from "../helpers/users";
 
 // This is an ugly hack so that the init url won't pop up again if the user log
@@ -172,7 +175,7 @@ export default class LoginScreen extends React.Component<
       const loginInfo = LoginSchema.parse({
         username: parsedLoginCode[0] || "",
         password: parsedLoginCode[1] || "",
-        studyFileURL: parsedLoginCode[2] || "",
+        studyFileURL: parsedLoginCode[2] || WELLPING_LOCAL_PRIVATE_URL,
       });
       user = {
         username: loginInfo.username,
