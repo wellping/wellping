@@ -6,7 +6,7 @@
 
 export function _DEBUG_CONFIGS() {
   return {
-    ignoreNotificationTime: true,
+    ignoreNotificationTime: false,
     showCurrentStatesInSurveyScreen: false,
   };
 }
