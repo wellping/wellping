@@ -1,3 +1,5 @@
+import { addMinutes } from "date-fns";
+
 import { QuestionTypeSchema } from "./schemas/Question";
 import {
   QuestionId,
@@ -110,4 +112,12 @@ export function shuffle(array: any[]): any[] {
   }
 
   return array;
+}
+
+/**
+ * Use local time zone for date. In other words, ignore the timezone suffix of
+ * the date.
+ */
+export function ignoreTimeObjectTimezone(date: Date): Date {
+  return addMinutes(date, new Date().getTimezoneOffset());
 }

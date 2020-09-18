@@ -165,6 +165,8 @@ export const StudyInfoSchema = z
      * The start date (time) of the study.
      *
      * The first ping will be sent after this time.
+     *
+     * Timezone in this date string is ignored.
      */
     startDate: z.date(),
 
@@ -172,6 +174,8 @@ export const StudyInfoSchema = z
      * The end date (time) of the study.
      *
      * The last ping will be sent before this time.
+     *
+     * Timezone in this date string is ignored.
      */
     endDate: z.date(),
 

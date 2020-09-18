@@ -9,6 +9,7 @@ import {
   getCurrentExtraDataAsync,
 } from "./asyncStorage/studyFile";
 import { validateAndInitializeFirebaseWithConfig } from "./firebase";
+import { ignoreTimeObjectTimezone } from "./helpers";
 import { parseJsonToStudyFile } from "./schemas/StudyFile";
 import { useFirebase } from "./server";
 import {
@@ -168,6 +169,21 @@ export async function getStudyInfoAsync(): Promise<StudyInfo> {
   }
 
   return currentStudyInfo;
+}
+
+function getStudyStartDateOrEndDateAsync(
+  type: "startDate" | "endDate",
+  studyInfo: StudyInfo,
+): Date {
+  return ignoreTimeObjectTimezone(
+    type === "startDate" ? studyInfo.startDate : studyInfo.endDate,
+  );
+}
+export function getStudyStartDate(studyInfo: StudyInfo): Date {
+  return getStudyStartDateOrEndDateAsync("startDate", studyInfo);
+}
+export function getStudyEndDate(studyInfo: StudyInfo): Date {
+  return getStudyStartDateOrEndDateAsync("endDate", studyInfo);
 }
 
 /**

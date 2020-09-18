@@ -20,7 +20,12 @@ import {
   storeNotificationTimesAsync,
 } from "./asyncStorage/notificationTimes";
 import { getThisWeekPingsAsync } from "./pings";
-import { isTimeThisWeekAsync, getStudyInfoAsync } from "./studyFile";
+import {
+  isTimeThisWeekAsync,
+  getStudyInfoAsync,
+  getStudyStartDate,
+  getStudyEndDate,
+} from "./studyFile";
 
 const ANDROID_CHANNEL_NAME = "ssnlPingChannel";
 
@@ -68,8 +73,8 @@ export async function setNotificationsAsync() {
   const thisMorning = new Date();
   thisMorning.setHours(1, 0, 0, 0); // 1AM this morning
 
-  const startDate = max([new Date(studyInfo.startDate), thisMorning]);
-  const studyEndDate = new Date(studyInfo.endDate);
+  const startDate = max([getStudyStartDate(studyInfo), thisMorning]);
+  const studyEndDate = getStudyEndDate(studyInfo);
   // You can only schedule at most 64 local notifications on iOS.
   // Some say on Android, the limit is even lower: 50 (https://stackoverflow.com/a/36677835/2603230)
   // To be safe, we schedule at most 28 notifications, which means (28 / hoursEveryday.length) days.

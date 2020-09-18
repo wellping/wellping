@@ -59,7 +59,12 @@ import {
 } from "./helpers/pings";
 import { secureGetUserAsync } from "./helpers/secureStore/user";
 import { getSymbolsForServerTypeUsed, useFirebase } from "./helpers/server";
-import { getAllStreamNames, getStudyInfoAsync } from "./helpers/studyFile";
+import {
+  getAllStreamNames,
+  getStudyStartDate,
+  getStudyEndDate,
+  getStudyInfoAsync,
+} from "./helpers/studyFile";
 import { styles } from "./helpers/styles";
 import { Streams, StreamName, StudyInfo, Ping } from "./helpers/types";
 import LoadingScreen from "./screens/LoadingScreen";
@@ -449,6 +454,24 @@ export default class HomeScreen extends React.Component<
           />
           <Button
             color="orange"
+            title="getStudyStartDate()"
+            onPress={async () => {
+              alertWithShareButtonContainingDebugInfo(
+                getStudyStartDate(await getStudyInfoAsync()).toString(),
+              );
+            }}
+          />
+          <Button
+            color="orange"
+            title="getStudyEndDate()"
+            onPress={async () => {
+              alertWithShareButtonContainingDebugInfo(
+                getStudyEndDate(await getStudyInfoAsync()).toString(),
+              );
+            }}
+          />
+          <Button
+            color="orange"
             title="getIncomingNotificationTimeAsync()"
             onPress={async () => {
               const nextPingTime = await getIncomingNotificationTimeAsync();
@@ -654,7 +677,7 @@ export default class HomeScreen extends React.Component<
       // `currentNotificationTime == null` so that the user can normally finish
       // their last ping even if it's after the end date.
 
-      if (new Date() > studyInfo.endDate) {
+      if (new Date() > getStudyEndDate(studyInfo)) {
         return (
           <View style={{ height: "100%" }}>
             {ExtraView}
@@ -669,15 +692,15 @@ export default class HomeScreen extends React.Component<
                 textAlign: "center",
               }}
             >
-              The study has concluded on {format(studyInfo.endDate, "PPP")}.
-              {"\n"}
+              The study has concluded on{" "}
+              {format(getStudyEndDate(studyInfo), "PPP")}.{"\n"}
               You may now uninstall Well Ping from your phone.
             </Text>
           </View>
         );
       }
 
-      if (new Date() < studyInfo.startDate) {
+      if (new Date() < getStudyStartDate(studyInfo)) {
         return (
           <View style={{ height: "100%" }}>
             {ExtraView}
@@ -691,7 +714,7 @@ export default class HomeScreen extends React.Component<
               }}
             >
               You will receive your first ping on{" "}
-              {format(studyInfo.startDate, "PPP")}.
+              {format(getStudyStartDate(studyInfo), "PPP")}.
             </Text>
           </View>
         );
