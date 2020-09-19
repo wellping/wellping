@@ -692,8 +692,8 @@ export default class HomeScreen extends React.Component<
                 textAlign: "center",
               }}
             >
-              The study has concluded on{" "}
-              {format(getStudyEndDate(studyInfo), "PPP")}.{"\n"}
+              The study has concluded on{"\n"}
+              {format(getStudyEndDate(studyInfo), "PPPP")}.{"\n\n"}
               You may now uninstall Well Ping from your phone.
             </Text>
           </View>
@@ -713,8 +713,8 @@ export default class HomeScreen extends React.Component<
                 textAlign: "center",
               }}
             >
-              You will receive your first ping on{" "}
-              {format(getStudyStartDate(studyInfo), "PPP")}.
+              You will receive your first ping on{"\n"}
+              {format(getStudyStartDate(studyInfo), "PPPP")}.
             </Text>
           </View>
         );
