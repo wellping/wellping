@@ -398,8 +398,8 @@ export default class HomeScreen extends React.Component<
     ) : (
       <View>
         <Text style={{ color: "red", fontWeight: "bold" }}>
-          If you wish to receive pings, please allow Well Ping to send
-          notifications.
+          If you'd like to receive reminders and updates on your participation,
+          please allow Well Ping to send you notifications.
         </Text>
       </View>
     );
