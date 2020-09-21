@@ -821,7 +821,7 @@ export default class SurveyScreen extends React.Component<
               <ScrollView
                 style={{
                   marginTop: 10,
-                  maxHeight: 200,
+                  maxHeight: Dimensions.get("window").height / 10,
                   borderWidth: 1,
                   borderColor: "lightgray",
                 }}
