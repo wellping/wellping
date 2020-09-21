@@ -28,13 +28,13 @@ import {
 const ANDROID_CHANNEL_NAME = "ssnlPingChannel";
 
 export async function setupNotificationsPermissionAsync(): Promise<boolean> {
-  const { status: existingStatus } = await Notifications.getPermissionsAsync();
-  let finalStatus = existingStatus;
+  const existingPermission = await Notifications.getPermissionsAsync();
+  let finalPermission = existingPermission;
 
   // only ask if permissions have not already been determined, because
   // iOS won't necessarily prompt the user a second time.
-  if (existingStatus !== "granted") {
-    const { status } = await Notifications.requestPermissionsAsync({
+  if (!finalPermission.granted) {
+    const results = await Notifications.requestPermissionsAsync({
       ios: {
         allowAlert: true,
         allowBadge: true,
@@ -42,10 +42,15 @@ export async function setupNotificationsPermissionAsync(): Promise<boolean> {
         allowAnnouncements: true,
       },
     });
-    finalStatus = status;
+    finalPermission = results;
   }
 
-  if (finalStatus !== "granted") {
+  let finalGranted = finalPermission.granted;
+  if (Platform.OS === "ios") {
+    finalGranted = !!finalPermission.ios?.allowsAlert;
+  }
+
+  if (!finalGranted) {
     return false;
   } else {
     if (Platform.OS === "android") {
