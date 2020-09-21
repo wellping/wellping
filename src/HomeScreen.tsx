@@ -1,6 +1,7 @@
+import { Subscription } from "@unimodules/core";
 import { format, getDay } from "date-fns";
-import { Notifications } from "expo";
 import * as Linking from "expo-linking";
+import * as Notifications from "expo-notifications";
 import * as firebase from "firebase/app";
 import React from "react";
 import {
@@ -49,6 +50,7 @@ import {
   setupNotificationsPermissionAsync,
   getCurrentNotificationTimeAsync,
   getIncomingNotificationTimeAsync,
+  clearSentNotificationsAsync,
   _sendTestNotificationAsync,
 } from "./helpers/notifications";
 import {
@@ -150,6 +152,7 @@ export default class HomeScreen extends React.Component<
     this.setState({ appState: nextAppState });
   };
 
+  notificationResponseReceivedListener: Subscription | null = null;
   unregisterAuthObserver: firebase.Unsubscribe | null = null;
   async componentDidMount() {
     const { studyInfo } = this.props;
@@ -159,11 +162,7 @@ export default class HomeScreen extends React.Component<
       this.setState({ allowsNotifications: false });
     }
 
-    if (Platform.OS === "android") {
-      await Notifications.dismissAllNotificationsAsync();
-    } else {
-      await Notifications.setBadgeNumberAsync(0);
-    }
+    await clearSentNotificationsAsync();
 
     await setNotificationsAsync();
 
@@ -174,9 +173,12 @@ export default class HomeScreen extends React.Component<
     // Do this initially too.
     await this.checkIfPingHasExpiredAsync();
 
-    Notifications.addListener(async () => {
-      await this.checkIfPingHasExpiredAsync();
-    });
+    this.notificationResponseReceivedListener = Notifications.addNotificationResponseReceivedListener(
+      async () => {
+        await this.checkIfPingHasExpiredAsync();
+        await clearSentNotificationsAsync();
+      },
+    );
 
     AppState.addEventListener("change", this._handleAppStateChange);
 
@@ -258,6 +260,10 @@ export default class HomeScreen extends React.Component<
 
     if (this.unregisterAuthObserver) {
       this.unregisterAuthObserver();
+    }
+
+    if (this.notificationResponseReceivedListener) {
+      this.notificationResponseReceivedListener.remove();
     }
   }
 
