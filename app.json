@@ -38,7 +38,10 @@
         "foregroundImage": "./assets/icon-android-foreground.png",
         "backgroundColor": "#FFFFFF"
       },
-      "permissions": [],
+      "permissions": [
+        "ACCESS_NOTIFICATION_POLICY"
+      ],
+      "useNextNotificationsApi": true,
       "intentFilters": [
         {
           "action": "VIEW",
