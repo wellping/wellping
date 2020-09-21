@@ -499,18 +499,16 @@ export default class SurveyScreen extends React.Component<
           break;
       }
     } else {
-      if (prevAnswer === undefined) {
-        throw new Error("prevAnswer !== undefined but it is a user question!");
-      }
-
-      if (prevAnswer.preferNotToAnswer) {
+      if (prevAnswer?.preferNotToAnswer) {
         if (prevQuestion.fallbackNext?.preferNotToAnswer !== undefined) {
           nextQuestionData.questionId =
             prevQuestion.fallbackNext.preferNotToAnswer;
         }
-      } else if (prevAnswer.data === null) {
+      } else if (prevAnswer === undefined || prevAnswer.data === null) {
         // If `prevAnswer.preferNotToAnswer` is not true and `prevAnswer.data
-        // === null`, it means that the user clicked "Next" without answering.
+        // === null` (or if the whole answer is undefined - this might happen
+        // when the user are clicking "Next" to fast), it means that the user
+        // clicked "Next" without answering.
         if (prevQuestion.fallbackNext?.nextWithoutAnswering !== undefined) {
           nextQuestionData.questionId =
             prevQuestion.fallbackNext.nextWithoutAnswering;
