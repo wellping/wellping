@@ -345,7 +345,7 @@ export default class HomeScreen extends React.Component<
             this.setState({ displayDebugView: true });
           }}
         >
-          <View style={{ height: Platform.OS === "ios" ? 20 : 40 }}>
+          <View style={{ height: 20 }}>
             <View
               style={{
                 flexDirection: "row",
