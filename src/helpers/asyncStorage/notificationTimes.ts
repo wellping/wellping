@@ -1,7 +1,6 @@
 import AsyncStorage from "@react-native-community/async-storage";
 
 import { logAndThrowError } from "../debug";
-import { clearSentNotificationsAsync } from "../notifications";
 import { getASKeyAsync } from "./asyncStorage";
 
 const NOTIFICATION_TIMES_KEY = `NotificationTime`;
@@ -19,7 +18,6 @@ export async function storeNotificationTimesAsync(times: Date[]) {
 
 export async function clearNotificationTimesAsync() {
   try {
-    await clearSentNotificationsAsync();
     await AsyncStorage.removeItem(await getASKeyAsync(NOTIFICATION_TIMES_KEY));
   } catch (error) {
     logAndThrowError(error);
