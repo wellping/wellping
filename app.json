@@ -39,7 +39,7 @@
         "backgroundColor": "#FFFFFF"
       },
       "permissions": [
-        "android.permission.ACCESS_NOTIFICATION_POLICY"
+        "ACCESS_NOTIFICATION_POLICY"
       ],
       "useNextNotificationsApi": true,
       "intentFilters": [
