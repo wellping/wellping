@@ -39,6 +39,7 @@
         "backgroundColor": "#FFFFFF"
       },
       "permissions": [],
+      "useNextNotificationsApi": true,
       "intentFilters": [
         {
           "action": "VIEW",
