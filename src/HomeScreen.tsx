@@ -760,12 +760,14 @@ export default class HomeScreen extends React.Component<
           >
             Welcome to Well Ping!
           </Text>
-          <Button
-            title="Click here to start the survey"
-            onPress={() => {
-              this.startSurveyAsync();
-            }}
-          />
+          <View style={{ marginHorizontal: 20 }}>
+            <Button
+              title="Click here to start the survey"
+              onPress={() => {
+                this.startSurveyAsync();
+              }}
+            />
+          </View>
           <DashboardComponent
             firebaseUser={firebaseUser}
             studyInfo={studyInfo}
