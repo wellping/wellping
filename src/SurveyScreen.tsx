@@ -799,6 +799,7 @@ export default class SurveyScreen extends React.Component<
         style={{
           paddingHorizontal: 20,
           marginTop: smallScreen ? 0 : 10,
+          marginBottom: smallScreen ? 0 : 10,
           flex: 1,
           // We use `opacity` so that `QuestionScreen` still loads and are able
           // to call `loadingCompleted` and set `isInTransition`.
