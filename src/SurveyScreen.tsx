@@ -798,7 +798,7 @@ export default class SurveyScreen extends React.Component<
         testID="mainSurveyScreenView"
         style={{
           paddingHorizontal: 20,
-          marginTop: smallScreen ? 0 : 20,
+          marginTop: smallScreen ? 0 : 10,
           flex: 1,
           // We use `opacity` so that `QuestionScreen` still loads and are able
           // to call `loadingCompleted` and set `isInTransition`.
@@ -811,7 +811,7 @@ export default class SurveyScreen extends React.Component<
             testID="questionTitle"
             style={{
               textAlign: "center",
-              fontSize: smallScreen ? 15 : 20,
+              fontSize: smallScreen ? 12 : 18,
             }}
           >
             {this.replacePlaceholders(question.question)}
@@ -890,7 +890,7 @@ export default class SurveyScreen extends React.Component<
           style={{
             flexDirection: "row",
             justifyContent: "space-between",
-            marginTop: smallScreen ? 0 : 20,
+            marginTop: 0,
             flex: 0,
           }}
         >

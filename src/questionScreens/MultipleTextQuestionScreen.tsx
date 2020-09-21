@@ -225,7 +225,7 @@ const MultipleTextQuestionScreen: React.ElementType<MultipleTextQuestionScreenPr
     );
   }
 
-  return <View style={{ paddingTop: 10 }}>{textFields}</View>;
+  return <View style={{ paddingTop: 5 }}>{textFields}</View>;
 };
 
 export default MultipleTextQuestionScreen;
