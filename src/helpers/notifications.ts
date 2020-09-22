@@ -25,7 +25,7 @@ import {
   getStudyEndDate,
 } from "./studyFile";
 
-const ANDROID_CHANNEL_NAME = "ssnlPingChannel";
+export const ANDROID_CHANNEL_NAME = "ssnlPingChannel";
 
 export async function setupNotificationsPermissionAsync(): Promise<boolean> {
   const existingPermission = await Notifications.getPermissionsAsync();
