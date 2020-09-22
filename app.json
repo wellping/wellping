@@ -50,7 +50,7 @@
             {
               "scheme": "https",
               "host": "wellping.github.io",
-              "pathPrefix": "/"
+              "pathPrefix": "/app"
             }
           ],
           "category": [
