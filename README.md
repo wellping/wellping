@@ -40,7 +40,18 @@ yarn start
 
 # Test
 yarn test
+```
 
+## Deployment
+
+Channels should be in the format of `prod-v{VERSION NUMBER}`. For example, Version 1.0.1 uses channel `prod-v1-0-1`.
+
+```bash
 # Publish app
-expo publish
+expo publish --release-channel prod-v1-0-1
+
+# Build iOS
+expo build:ios --release-channel prod-v1-0-1
+# Build Android
+expo build:android --release-channel prod-v1-0-1
 ```
