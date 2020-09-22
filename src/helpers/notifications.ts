@@ -285,8 +285,8 @@ export async function _sendTestNotificationAsync() {
   await Notifications.scheduleNotificationAsync(
     getNotificationRequestInput(
       {
-        title: "TEST!",
-        body: "YOU RECEIVED IT!",
+        title: "Hi there!",
+        body: "You have received a test notification from Well Ping!",
       },
       addSeconds(new Date(), 5),
     ),

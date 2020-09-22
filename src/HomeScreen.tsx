@@ -372,6 +372,12 @@ export default class HomeScreen extends React.Component<
                       `You will receive your next ping on ${nextPingTimeString}.`,
                     [
                       {
+                        text: "Send me a test notification!",
+                        onPress: async () => {
+                          await _sendTestNotificationAsync();
+                        },
+                      },
+                      {
                         text: "OK",
                         onPress: () => {},
                         style: "cancel",
