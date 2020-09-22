@@ -76,13 +76,15 @@ function getNotificationRequestInput(
   content: Notifications.NotificationContentInput,
   date: Date,
 ) {
-  // TODO: https://github.com/expo/expo/issues/9155
   const notification: Notifications.NotificationRequestInput = {
     content: {
       badge: 1,
       ...content,
     },
-    trigger: date,
+    trigger: {
+      date,
+      channelId: ANDROID_CHANNEL_NAME,
+    },
   };
   return notification;
 }
