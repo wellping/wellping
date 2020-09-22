@@ -22,7 +22,7 @@ Log in with the login code
 __debug__ __test__ https://debug.local.wellping.ssnl.stanford.edu/DEBUG_STUDY.json
 ```
 
-Alternatively, click this link on your phone to automatically enter the login code in the app: https://stanfordsocialneurosciencelab.github.io/WellPing/app/login?code=__debug__%20__test__%20https%3A%2F%2Fdebug.local.wellping.ssnl.stanford.edu%2FDEBUG_STUDY.json
+Alternatively, click this link on your phone to automatically enter the login code in the app: https://wellping.github.io/app/login?code=__debug__%20__test__%20https%3A%2F%2Fdebug.local.wellping.ssnl.stanford.edu%2FDEBUG_STUDY.json
 
 > `https://debug.local.wellping.ssnl.stanford.edu/DEBUG_STUDY.json` is a local study file URL (learn more in the [`local/`](./local/) folder). It can be logged in with any non-empty username and password combination and will not upload anything.
 
