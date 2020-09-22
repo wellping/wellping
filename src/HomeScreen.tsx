@@ -362,7 +362,22 @@ export default class HomeScreen extends React.Component<
             >
               <TouchableWithoutFeedback
                 onPress={async () => {
-                  alert("todo: ");
+                  const nextPingTime = await getIncomingNotificationTimeAsync();
+                  const nextPingTimeString = nextPingTime
+                    ? nextPingTime.toString()
+                    : "N/A";
+                  Alert.alert(
+                    "Well Ping",
+                    `Thank you for using Well Ping!\n` +
+                      `You will receive your next ping on ${nextPingTimeString}.`,
+                    [
+                      {
+                        text: "OK",
+                        onPress: () => {},
+                        style: "cancel",
+                      },
+                    ],
+                  );
                 }}
               >
                 {this.state.uploadStatusSymbol.length > 1 ? (
