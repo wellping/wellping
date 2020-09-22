@@ -1,4 +1,4 @@
-import { Notifications } from "expo";
+import * as Notifications from "expo-notifications";
 import * as DateMock from "jest-date-mock";
 
 import * as notificationTimesAsyncStorage from "../../helpers/asyncStorage/notificationTimes";
@@ -11,6 +11,12 @@ import { StudyInfo } from "../../helpers/types";
 import { PINGS_STUDY_INFO } from "../data/pings";
 import { mockCurrentStudyInfo } from "../helper";
 import { FunctionSpyInstance } from "../jestHelper";
+
+// https://stackoverflow.com/a/63374190/2603230
+jest.mock("expo-notifications", () => ({
+  __esModule: true,
+  ...(jest.requireActual("expo-notifications") as any),
+}));
 
 // https://github.com/facebook/jest/issues/6194#issuecomment-419837314
 export const notificationsTest = () => {
@@ -32,11 +38,11 @@ export const notificationsTest = () => {
 
   describe("setNotificationsAsync", () => {
     let spyCancelAllScheduledNotificationsAsync: FunctionSpyInstance<typeof Notifications.cancelAllScheduledNotificationsAsync>;
-    let spyScheduleLocalNotificationAsync: FunctionSpyInstance<typeof Notifications.scheduleLocalNotificationAsync>;
+    let spyScheduleNotificationAsync: FunctionSpyInstance<typeof Notifications.scheduleNotificationAsync>;
     beforeEach(() => {
-      spyScheduleLocalNotificationAsync = jest.spyOn(
+      spyScheduleNotificationAsync = jest.spyOn(
         Notifications,
-        "scheduleLocalNotificationAsync",
+        "scheduleNotificationAsync",
       );
       spyCancelAllScheduledNotificationsAsync = jest.spyOn(
         Notifications,
@@ -51,7 +57,7 @@ export const notificationsTest = () => {
 
       expect(spyCancelAllScheduledNotificationsAsync).toBeCalledTimes(1);
 
-      expect(spyScheduleLocalNotificationAsync).toBeCalledTimes(0);
+      expect(spyScheduleNotificationAsync).toBeCalledTimes(0);
     });
 
     test("before the study starts", async () => {
@@ -62,9 +68,9 @@ export const notificationsTest = () => {
       expect(spyCancelAllScheduledNotificationsAsync).toBeCalledTimes(1);
 
       // 24 = Math.floor(28 / studyInfo.frequency.hoursEveryday.length) * studyInfo.frequency.hoursEveryday.length
-      expect(spyScheduleLocalNotificationAsync).toBeCalledTimes(24);
+      expect(spyScheduleNotificationAsync).toBeCalledTimes(24);
       // TODO: CHECK IF SNAPSHOT IS CORRECT.
-      expect(spyScheduleLocalNotificationAsync.mock.calls).toMatchSnapshot();
+      expect(spyScheduleNotificationAsync.mock.calls).toMatchSnapshot();
     });
 
     test("near study ends", async () => {
@@ -75,9 +81,9 @@ export const notificationsTest = () => {
       expect(spyCancelAllScheduledNotificationsAsync).toBeCalledTimes(1);
 
       // 1 + 6 + 5 = 12 remaining pings
-      expect(spyScheduleLocalNotificationAsync).toBeCalledTimes(12);
+      expect(spyScheduleNotificationAsync).toBeCalledTimes(12);
       // TODO: CHECK IF SNAPSHOT IS CORRECT.
-      expect(spyScheduleLocalNotificationAsync.mock.calls).toMatchSnapshot();
+      expect(spyScheduleNotificationAsync.mock.calls).toMatchSnapshot();
     });
 
     describe("with existing notifications", () => {
@@ -111,16 +117,16 @@ export const notificationsTest = () => {
         expect(spyCancelAllScheduledNotificationsAsync).toBeCalledTimes(1);
 
         // 24 = Math.floor(28 / studyInfo.frequency.hoursEveryday.length) * studyInfo.frequency.hoursEveryday.length - shown notification today (0)
-        expect(spyScheduleLocalNotificationAsync).toBeCalledTimes(24);
+        expect(spyScheduleNotificationAsync).toBeCalledTimes(24);
 
         for (let i = 0; i < 6; i++) {
-          expect(spyScheduleLocalNotificationAsync.mock.calls[i][1]?.time).toBe(
+          expect(spyScheduleNotificationAsync.mock.calls[i]?.[0].trigger).toBe(
             notificationTimes[i],
           );
         }
 
         // TODO: CHECK IF SNAPSHOT IS CORRECT.
-        expect(spyScheduleLocalNotificationAsync.mock.calls).toMatchSnapshot();
+        expect(spyScheduleNotificationAsync.mock.calls).toMatchSnapshot();
       });
 
       test("(in the middle of the day)", async () => {
@@ -131,16 +137,16 @@ export const notificationsTest = () => {
         expect(spyCancelAllScheduledNotificationsAsync).toBeCalledTimes(1);
 
         // 21 = Math.floor(28 / studyInfo.frequency.hoursEveryday.length) * studyInfo.frequency.hoursEveryday.length - shown notification today (3)
-        expect(spyScheduleLocalNotificationAsync).toBeCalledTimes(21);
+        expect(spyScheduleNotificationAsync).toBeCalledTimes(21);
 
         for (let i = 3; i < 6; i++) {
           expect(
-            spyScheduleLocalNotificationAsync.mock.calls[i - 3][1]?.time,
+            spyScheduleNotificationAsync.mock.calls[i - 3][0]?.trigger,
           ).toBe(notificationTimes[i]);
         }
 
         // TODO: CHECK IF SNAPSHOT IS CORRECT.
-        expect(spyScheduleLocalNotificationAsync.mock.calls).toMatchSnapshot();
+        expect(spyScheduleNotificationAsync.mock.calls).toMatchSnapshot();
       });
     });
 
@@ -154,11 +160,9 @@ export const notificationsTest = () => {
           expect(spyCancelAllScheduledNotificationsAsync).toBeCalledTimes(1);
 
           // 22 = Math.floor(28 / studyInfo.frequency.hoursEveryday.length) * studyInfo.frequency.hoursEveryday.length - shown notification today (1)
-          expect(spyScheduleLocalNotificationAsync).toBeCalledTimes(23);
+          expect(spyScheduleNotificationAsync).toBeCalledTimes(23);
           // TODO: CHECK IF SNAPSHOT IS CORRECT.
-          expect(
-            spyScheduleLocalNotificationAsync.mock.calls,
-          ).toMatchSnapshot();
+          expect(spyScheduleNotificationAsync.mock.calls).toMatchSnapshot();
         });
 
         test("(jump to next week)", async () => {
@@ -169,11 +173,9 @@ export const notificationsTest = () => {
           expect(spyCancelAllScheduledNotificationsAsync).toBeCalledTimes(1);
 
           // 22 = Math.floor(28 / studyInfo.frequency.hoursEveryday.length) * studyInfo.frequency.hoursEveryday.length - shown notification today (2)
-          expect(spyScheduleLocalNotificationAsync).toBeCalledTimes(22);
+          expect(spyScheduleNotificationAsync).toBeCalledTimes(22);
           // TODO: CHECK IF SNAPSHOT IS CORRECT.
-          expect(
-            spyScheduleLocalNotificationAsync.mock.calls,
-          ).toMatchSnapshot();
+          expect(spyScheduleNotificationAsync.mock.calls).toMatchSnapshot();
         });
       });
 
@@ -185,9 +187,9 @@ export const notificationsTest = () => {
         expect(spyCancelAllScheduledNotificationsAsync).toBeCalledTimes(1);
 
         // 21 = Math.floor(28 / studyInfo.frequency.hoursEveryday.length) * studyInfo.frequency.hoursEveryday.length - shown notification today (3)
-        expect(spyScheduleLocalNotificationAsync).toBeCalledTimes(21);
+        expect(spyScheduleNotificationAsync).toBeCalledTimes(21);
         // TODO: CHECK IF SNAPSHOT IS CORRECT.
-        expect(spyScheduleLocalNotificationAsync.mock.calls).toMatchSnapshot();
+        expect(spyScheduleNotificationAsync.mock.calls).toMatchSnapshot();
       });
 
       describe("(reached bonus)", () => {
@@ -199,11 +201,9 @@ export const notificationsTest = () => {
           expect(spyCancelAllScheduledNotificationsAsync).toBeCalledTimes(1);
 
           // 20 = Math.floor(28 / studyInfo.frequency.hoursEveryday.length) * studyInfo.frequency.hoursEveryday.length - shown notification today (4)
-          expect(spyScheduleLocalNotificationAsync).toBeCalledTimes(20);
+          expect(spyScheduleNotificationAsync).toBeCalledTimes(20);
           // TODO: CHECK IF SNAPSHOT IS CORRECT.
-          expect(
-            spyScheduleLocalNotificationAsync.mock.calls,
-          ).toMatchSnapshot();
+          expect(spyScheduleNotificationAsync.mock.calls).toMatchSnapshot();
         });
 
         test("(jump to next week)", async () => {
@@ -214,11 +214,9 @@ export const notificationsTest = () => {
           expect(spyCancelAllScheduledNotificationsAsync).toBeCalledTimes(1);
 
           // 21 = Math.floor(28 / studyInfo.frequency.hoursEveryday.length) * studyInfo.frequency.hoursEveryday.length - shown notification today (3)
-          expect(spyScheduleLocalNotificationAsync).toBeCalledTimes(21);
+          expect(spyScheduleNotificationAsync).toBeCalledTimes(21);
           // TODO: CHECK IF SNAPSHOT IS CORRECT.
-          expect(
-            spyScheduleLocalNotificationAsync.mock.calls,
-          ).toMatchSnapshot();
+          expect(spyScheduleNotificationAsync.mock.calls).toMatchSnapshot();
         });
       });
 
@@ -243,24 +241,22 @@ export const notificationsTest = () => {
           expect(spyCancelAllScheduledNotificationsAsync).toBeCalledTimes(1);
 
           // 20 = Math.floor(28 / studyInfo.frequency.hoursEveryday.length) * studyInfo.frequency.hoursEveryday.length - shown notification today (4)
-          expect(spyScheduleLocalNotificationAsync).toBeCalledTimes(20);
+          expect(spyScheduleNotificationAsync).toBeCalledTimes(20);
 
-          for (const eachCall of spyScheduleLocalNotificationAsync.mock.calls) {
+          for (const eachCall of spyScheduleNotificationAsync.mock.calls) {
             expect(
-              eachCall[0].title ===
+              eachCall[0].content.title ===
                 PINGS_STUDY_INFO_WITH_NO_BONUS.notificationContent.default
                   .title,
             );
             expect(
-              eachCall[0].body ===
+              eachCall[0].content.body ===
                 PINGS_STUDY_INFO_WITH_NO_BONUS.notificationContent.default.body,
             );
           }
 
           // TODO: CHECK IF SNAPSHOT IS CORRECT.
-          expect(
-            spyScheduleLocalNotificationAsync.mock.calls,
-          ).toMatchSnapshot();
+          expect(spyScheduleNotificationAsync.mock.calls).toMatchSnapshot();
         });
 
         test("(jump to next week)", async () => {
@@ -271,24 +267,22 @@ export const notificationsTest = () => {
           expect(spyCancelAllScheduledNotificationsAsync).toBeCalledTimes(1);
 
           // 21 = Math.floor(28 / studyInfo.frequency.hoursEveryday.length) * studyInfo.frequency.hoursEveryday.length - shown notification today (3)
-          expect(spyScheduleLocalNotificationAsync).toBeCalledTimes(21);
+          expect(spyScheduleNotificationAsync).toBeCalledTimes(21);
 
-          for (const eachCall of spyScheduleLocalNotificationAsync.mock.calls) {
+          for (const eachCall of spyScheduleNotificationAsync.mock.calls) {
             expect(
-              eachCall[0].title ===
+              eachCall[0].content.title ===
                 PINGS_STUDY_INFO_WITH_NO_BONUS.notificationContent.default
                   .title,
             );
             expect(
-              eachCall[0].body ===
+              eachCall[0].content.body ===
                 PINGS_STUDY_INFO_WITH_NO_BONUS.notificationContent.default.body,
             );
           }
 
           // TODO: CHECK IF SNAPSHOT IS CORRECT.
-          expect(
-            spyScheduleLocalNotificationAsync.mock.calls,
-          ).toMatchSnapshot();
+          expect(spyScheduleNotificationAsync.mock.calls).toMatchSnapshot();
         });
       });
     });

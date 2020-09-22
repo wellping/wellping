@@ -1,6 +1,6 @@
 import cloneDeep from "lodash/cloneDeep";
 import React from "react";
-import { View, Text, TextInput, Alert } from "react-native";
+import { View, Text, TextInput, Alert, Platform } from "react-native";
 
 import {
   QuestionScreenProps,
@@ -131,7 +131,7 @@ const MultipleTextQuestionScreen: React.ElementType<MultipleTextQuestionScreenPr
           placeholder: question.placeholder,
           underlineColorAndroid: "transparent",
           style: {
-            padding: 12,
+            padding: Platform.OS === "android" ? 5 : 10,
             borderWidth: 1,
             borderColor: "#ccc",
             borderRadius: 5,
@@ -225,7 +225,7 @@ const MultipleTextQuestionScreen: React.ElementType<MultipleTextQuestionScreenPr
     );
   }
 
-  return <View style={{ paddingTop: 10 }}>{textFields}</View>;
+  return <View style={{ paddingVertical: 5 }}>{textFields}</View>;
 };
 
 export default MultipleTextQuestionScreen;

@@ -1,6 +1,7 @@
+import { Subscription } from "@unimodules/core";
 import { format, getDay } from "date-fns";
-import { Notifications } from "expo";
 import * as Linking from "expo-linking";
+import * as Notifications from "expo-notifications";
 import * as firebase from "firebase/app";
 import React from "react";
 import {
@@ -49,6 +50,7 @@ import {
   setupNotificationsPermissionAsync,
   getCurrentNotificationTimeAsync,
   getIncomingNotificationTimeAsync,
+  clearSentNotificationsAsync,
   _sendTestNotificationAsync,
 } from "./helpers/notifications";
 import {
@@ -150,6 +152,7 @@ export default class HomeScreen extends React.Component<
     this.setState({ appState: nextAppState });
   };
 
+  notificationResponseReceivedListener: Subscription | null = null;
   unregisterAuthObserver: firebase.Unsubscribe | null = null;
   async componentDidMount() {
     const { studyInfo } = this.props;
@@ -159,11 +162,7 @@ export default class HomeScreen extends React.Component<
       this.setState({ allowsNotifications: false });
     }
 
-    if (Platform.OS === "android") {
-      await Notifications.dismissAllNotificationsAsync();
-    } else {
-      await Notifications.setBadgeNumberAsync(0);
-    }
+    await clearSentNotificationsAsync();
 
     await setNotificationsAsync();
 
@@ -174,9 +173,12 @@ export default class HomeScreen extends React.Component<
     // Do this initially too.
     await this.checkIfPingHasExpiredAsync();
 
-    Notifications.addListener(async () => {
-      await this.checkIfPingHasExpiredAsync();
-    });
+    this.notificationResponseReceivedListener = Notifications.addNotificationResponseReceivedListener(
+      async () => {
+        await this.checkIfPingHasExpiredAsync();
+        await clearSentNotificationsAsync();
+      },
+    );
 
     AppState.addEventListener("change", this._handleAppStateChange);
 
@@ -258,6 +260,10 @@ export default class HomeScreen extends React.Component<
 
     if (this.unregisterAuthObserver) {
       this.unregisterAuthObserver();
+    }
+
+    if (this.notificationResponseReceivedListener) {
+      this.notificationResponseReceivedListener.remove();
     }
   }
 
@@ -342,32 +348,41 @@ export default class HomeScreen extends React.Component<
       <>
         <TouchableWithoutFeedback
           onLongPress={() => {
-            this.setState({ displayDebugView: true });
+            if (__DEV__) {
+              this.setState({ displayDebugView: true });
+            }
           }}
         >
-          <View style={{ height: Platform.OS === "ios" ? 20 : 40 }}>
+          <View style={{ height: 20 }}>
             <View
               style={{
                 flexDirection: "row",
                 justifyContent: "center",
               }}
             >
-              {this.state.uploadStatusSymbol.length > 1 ? (
-                // If it is not a one-character symbol, there is an error.
-                // We will hide the version code to show the error code.
-                <Text style={{ color: "orange" }}>
-                  {this.state.uploadStatusSymbol}
-                </Text>
-              ) : (
-                <Text style={{ color: "lightgray" }}>
-                  {JS_VERSION_NUMBER}
-                  {getSymbolsForServerTypeUsed(studyInfo)}
-                  {useFirebase(studyInfo) && firebaseUser === null
-                    ? HOME_SCREEN_DEBUG_VIEW_SYMBOLS.FIREBASE_AUTH.NOT_LOGGED_IN
-                    : HOME_SCREEN_DEBUG_VIEW_SYMBOLS.FIREBASE_AUTH.LOGGED_IN}
-                  {this.state.uploadStatusSymbol}
-                </Text>
-              )}
+              <TouchableWithoutFeedback
+                onPress={async () => {
+                  alert("todo: ");
+                }}
+              >
+                {this.state.uploadStatusSymbol.length > 1 ? (
+                  // If it is not a one-character symbol, there is an error.
+                  // We will hide the version code to show the error code.
+                  <Text style={{ color: "orange" }}>
+                    {this.state.uploadStatusSymbol}
+                  </Text>
+                ) : (
+                  <Text style={{ color: "lightblue" }}>
+                    {JS_VERSION_NUMBER}
+                    {getSymbolsForServerTypeUsed(studyInfo)}
+                    {useFirebase(studyInfo) && firebaseUser === null
+                      ? HOME_SCREEN_DEBUG_VIEW_SYMBOLS.FIREBASE_AUTH
+                          .NOT_LOGGED_IN
+                      : HOME_SCREEN_DEBUG_VIEW_SYMBOLS.FIREBASE_AUTH.LOGGED_IN}
+                    {this.state.uploadStatusSymbol}
+                  </Text>
+                )}
+              </TouchableWithoutFeedback>
               {studyInfo.contactEmail && (
                 <TouchableWithoutFeedback
                   onPress={async () => {
@@ -398,8 +413,8 @@ export default class HomeScreen extends React.Component<
     ) : (
       <View>
         <Text style={{ color: "red", fontWeight: "bold" }}>
-          If you wish to receive pings, please allow Well Ping to send
-          notifications.
+          If you'd like to receive reminders and updates on your participation,
+          please allow Well Ping to send you notifications.
         </Text>
       </View>
     );
@@ -692,8 +707,8 @@ export default class HomeScreen extends React.Component<
                 textAlign: "center",
               }}
             >
-              The study has concluded on{" "}
-              {format(getStudyEndDate(studyInfo), "PPP")}.{"\n"}
+              The study has concluded on{"\n"}
+              {format(getStudyEndDate(studyInfo), "PPPP")}.{"\n\n"}
               You may now uninstall Well Ping from your phone.
             </Text>
           </View>
@@ -713,8 +728,8 @@ export default class HomeScreen extends React.Component<
                 textAlign: "center",
               }}
             >
-              You will receive your first ping on{" "}
-              {format(getStudyStartDate(studyInfo), "PPP")}.
+              You will receive your first ping on{"\n"}
+              {format(getStudyStartDate(studyInfo), "PPPP")}.
             </Text>
           </View>
         );
@@ -760,12 +775,14 @@ export default class HomeScreen extends React.Component<
           >
             Welcome to Well Ping!
           </Text>
-          <Button
-            title="Click here to start the survey"
-            onPress={() => {
-              this.startSurveyAsync();
-            }}
-          />
+          <View style={{ marginHorizontal: 20 }}>
+            <Button
+              title="Click here to start the survey"
+              onPress={() => {
+                this.startSurveyAsync();
+              }}
+            />
+          </View>
           <DashboardComponent
             firebaseUser={firebaseUser}
             studyInfo={studyInfo}

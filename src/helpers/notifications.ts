@@ -9,9 +9,7 @@ import {
   addSeconds,
   max,
 } from "date-fns";
-import { Notifications } from "expo";
-import * as Permissions from "expo-permissions";
-import { LocalNotification } from "expo/build/Notifications/Notifications.types";
+import * as Notifications from "expo-notifications";
 import { Platform } from "react-native";
 
 import { _DEBUG_CONFIGS } from "../../config/debug";
@@ -30,36 +28,63 @@ import {
 const ANDROID_CHANNEL_NAME = "ssnlPingChannel";
 
 export async function setupNotificationsPermissionAsync(): Promise<boolean> {
-  const { status: existingStatus } = await Permissions.getAsync(
-    Permissions.USER_FACING_NOTIFICATIONS,
-  );
-  let finalStatus = existingStatus;
+  const existingPermission = await Notifications.getPermissionsAsync();
+  let finalPermission = existingPermission;
 
   // only ask if permissions have not already been determined, because
   // iOS won't necessarily prompt the user a second time.
-  if (existingStatus !== "granted") {
-    const { status } = await Permissions.askAsync(
-      Permissions.USER_FACING_NOTIFICATIONS,
-    );
-    finalStatus = status;
+  if (!finalPermission.granted) {
+    const results = await Notifications.requestPermissionsAsync({
+      ios: {
+        allowAlert: true,
+        allowBadge: true,
+        allowSound: true,
+        allowAnnouncements: true,
+      },
+    });
+    finalPermission = results;
   }
 
-  if (finalStatus !== "granted") {
+  let finalGranted = finalPermission.granted;
+  if (Platform.OS === "ios") {
+    finalGranted = !!finalPermission.ios?.allowsAlert;
+  }
+
+  if (!finalGranted) {
     return false;
   } else {
     if (Platform.OS === "android") {
-      Notifications.createChannelAndroidAsync(ANDROID_CHANNEL_NAME, {
-        name: "Pings",
+      await Notifications.setNotificationChannelAsync(ANDROID_CHANNEL_NAME, {
+        name: "Well Pings",
+        importance: Notifications.AndroidImportance.HIGH,
+        bypassDnd: true,
         description: "Pings from WellPing.",
-        sound: true,
-        priority: "high",
-        vibrate: true,
-        badge: true,
+        lockscreenVisibility:
+          Notifications.AndroidNotificationVisibility.PUBLIC,
+        showBadge: true,
+        sound: "default",
+        enableLights: true,
+        enableVibrate: true,
       });
     }
 
     return true;
   }
+}
+
+function getNotificationRequestInput(
+  content: Notifications.NotificationContentInput,
+  date: Date,
+) {
+  // TODO: https://github.com/expo/expo/issues/9155
+  const notification: Notifications.NotificationRequestInput = {
+    content: {
+      badge: 1,
+      ...content,
+    },
+    trigger: date,
+  };
+  return notification;
 }
 
 export async function setNotificationsAsync() {
@@ -180,17 +205,15 @@ export async function setNotificationsAsync() {
 
         //console.warn(`${notificationBody} for ${notificationTime}`);
 
-        const notification: LocalNotification = {
-          title: notificationTitle,
-          body: notificationBody,
-          android: {
-            channelId: ANDROID_CHANNEL_NAME,
+        const notification = getNotificationRequestInput(
+          {
+            title: notificationTitle,
+            body: notificationBody,
           },
-        };
+          notificationTime,
+        );
 
-        await Notifications.scheduleLocalNotificationAsync(notification, {
-          time: notificationTime,
-        });
+        await Notifications.scheduleNotificationAsync(notification);
       }
     }),
   );
@@ -250,18 +273,20 @@ export async function getIncomingNotificationTimeAsync(): Promise<Date | null> {
   return notificationsTimes[currentIndex];
 }
 
+export async function clearSentNotificationsAsync() {
+  await Notifications.dismissAllNotificationsAsync();
+  await Notifications.setBadgeCountAsync(0);
+}
+
 /* istanbul ignore next */
 export async function _sendTestNotificationAsync() {
-  await Notifications.scheduleLocalNotificationAsync(
-    {
-      title: "TEST!",
-      body: "YOU RECEIVED IT!",
-      android: {
-        channelId: ANDROID_CHANNEL_NAME,
+  await Notifications.scheduleNotificationAsync(
+    getNotificationRequestInput(
+      {
+        title: "TEST!",
+        body: "YOU RECEIVED IT!",
       },
-    },
-    {
-      time: addSeconds(new Date(), 5),
-    },
+      addSeconds(new Date(), 5),
+    ),
   );
 }

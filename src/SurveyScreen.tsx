@@ -499,18 +499,16 @@ export default class SurveyScreen extends React.Component<
           break;
       }
     } else {
-      if (prevAnswer === undefined) {
-        throw new Error("prevAnswer !== undefined but it is a user question!");
-      }
-
-      if (prevAnswer.preferNotToAnswer) {
+      if (prevAnswer?.preferNotToAnswer) {
         if (prevQuestion.fallbackNext?.preferNotToAnswer !== undefined) {
           nextQuestionData.questionId =
             prevQuestion.fallbackNext.preferNotToAnswer;
         }
-      } else if (prevAnswer.data === null) {
+      } else if (prevAnswer === undefined || prevAnswer.data === null) {
         // If `prevAnswer.preferNotToAnswer` is not true and `prevAnswer.data
-        // === null`, it means that the user clicked "Next" without answering.
+        // === null` (or if the whole answer is undefined - this might happen
+        // when the user are clicking "Next" to fast), it means that the user
+        // clicked "Next" without answering.
         if (prevQuestion.fallbackNext?.nextWithoutAnswering !== undefined) {
           nextQuestionData.questionId =
             prevQuestion.fallbackNext.nextWithoutAnswering;
@@ -798,7 +796,8 @@ export default class SurveyScreen extends React.Component<
         testID="mainSurveyScreenView"
         style={{
           paddingHorizontal: 20,
-          marginTop: smallScreen ? 0 : 20,
+          marginTop: smallScreen ? 0 : 10,
+          marginBottom: smallScreen ? 0 : 10,
           flex: 1,
           // We use `opacity` so that `QuestionScreen` still loads and are able
           // to call `loadingCompleted` and set `isInTransition`.
@@ -811,7 +810,7 @@ export default class SurveyScreen extends React.Component<
             testID="questionTitle"
             style={{
               textAlign: "center",
-              fontSize: smallScreen ? 15 : 20,
+              fontSize: smallScreen ? 12 : 18,
             }}
           >
             {this.replacePlaceholders(question.question)}
@@ -821,7 +820,7 @@ export default class SurveyScreen extends React.Component<
               <ScrollView
                 style={{
                   marginTop: 10,
-                  maxHeight: 200,
+                  maxHeight: Dimensions.get("window").height / 10,
                   borderWidth: 1,
                   borderColor: "lightgray",
                 }}
@@ -890,7 +889,7 @@ export default class SurveyScreen extends React.Component<
           style={{
             flexDirection: "row",
             justifyContent: "space-between",
-            marginTop: smallScreen ? 0 : 20,
+            marginTop: 0,
             flex: 0,
           }}
         >

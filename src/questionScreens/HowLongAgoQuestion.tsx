@@ -59,7 +59,7 @@ const HowLongAgoQuestionScreen: React.ElementType<HowLongAgoQuestionScreenProps>
   ]);
 
   return (
-    <View style={{ flexDirection: "row" }}>
+    <View style={{ flexDirection: "row", paddingVertical: 5 }}>
       <FlatList
         data={flatListNumberChoices}
         renderItem={({ item }) => (

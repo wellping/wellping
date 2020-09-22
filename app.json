@@ -27,18 +27,21 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "app.wellping",
-      "buildNumber": "15",
+      "buildNumber": "17",
       "associatedDomains": ["applinks:wellping.github.io"]
     },
     "android": {
       "package": "edu.stanford.ssnl.wellping",
-      "versionCode": 15,
+      "versionCode": 17,
       "icon": "./assets/icon.png",
       "adaptiveIcon": {
         "foregroundImage": "./assets/icon-android-foreground.png",
         "backgroundColor": "#FFFFFF"
       },
-      "permissions": [],
+      "permissions": [
+        "ACCESS_NOTIFICATION_POLICY"
+      ],
+      "useNextNotificationsApi": true,
       "intentFilters": [
         {
           "action": "VIEW",

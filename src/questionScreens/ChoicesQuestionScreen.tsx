@@ -159,7 +159,7 @@ const ChoicesQuestionScreen: React.ElementType<ChoicesQuestionScreenProps> = ({
   }, []);
 
   return (
-    <View style={{ paddingTop: 20 }}>
+    <View style={{ paddingVertical: 5 }}>
       <FlatList
         data={flatListData}
         renderItem={({ item, index }) => (
