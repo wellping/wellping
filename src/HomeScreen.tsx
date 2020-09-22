@@ -348,7 +348,9 @@ export default class HomeScreen extends React.Component<
       <>
         <TouchableWithoutFeedback
           onLongPress={() => {
-            this.setState({ displayDebugView: true });
+            if (__DEV__) {
+              this.setState({ displayDebugView: true });
+            }
           }}
         >
           <View style={{ height: 20 }}>
@@ -358,22 +360,29 @@ export default class HomeScreen extends React.Component<
                 justifyContent: "center",
               }}
             >
-              {this.state.uploadStatusSymbol.length > 1 ? (
-                // If it is not a one-character symbol, there is an error.
-                // We will hide the version code to show the error code.
-                <Text style={{ color: "orange" }}>
-                  {this.state.uploadStatusSymbol}
-                </Text>
-              ) : (
-                <Text style={{ color: "lightgray" }}>
-                  {JS_VERSION_NUMBER}
-                  {getSymbolsForServerTypeUsed(studyInfo)}
-                  {useFirebase(studyInfo) && firebaseUser === null
-                    ? HOME_SCREEN_DEBUG_VIEW_SYMBOLS.FIREBASE_AUTH.NOT_LOGGED_IN
-                    : HOME_SCREEN_DEBUG_VIEW_SYMBOLS.FIREBASE_AUTH.LOGGED_IN}
-                  {this.state.uploadStatusSymbol}
-                </Text>
-              )}
+              <TouchableWithoutFeedback
+                onPress={async () => {
+                  alert("todo: ");
+                }}
+              >
+                {this.state.uploadStatusSymbol.length > 1 ? (
+                  // If it is not a one-character symbol, there is an error.
+                  // We will hide the version code to show the error code.
+                  <Text style={{ color: "orange" }}>
+                    {this.state.uploadStatusSymbol}
+                  </Text>
+                ) : (
+                  <Text style={{ color: "lightblue" }}>
+                    {JS_VERSION_NUMBER}
+                    {getSymbolsForServerTypeUsed(studyInfo)}
+                    {useFirebase(studyInfo) && firebaseUser === null
+                      ? HOME_SCREEN_DEBUG_VIEW_SYMBOLS.FIREBASE_AUTH
+                          .NOT_LOGGED_IN
+                      : HOME_SCREEN_DEBUG_VIEW_SYMBOLS.FIREBASE_AUTH.LOGGED_IN}
+                    {this.state.uploadStatusSymbol}
+                  </Text>
+                )}
+              </TouchableWithoutFeedback>
               {studyInfo.contactEmail && (
                 <TouchableWithoutFeedback
                   onPress={async () => {
