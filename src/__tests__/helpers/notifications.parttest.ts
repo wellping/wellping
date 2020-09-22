@@ -6,6 +6,7 @@ import {
   setNotificationsAsync,
   getCurrentNotificationTimeAsync,
   getIncomingNotificationTimeAsync,
+  ANDROID_CHANNEL_NAME,
 } from "../../helpers/notifications";
 import { StudyInfo } from "../../helpers/types";
 import { PINGS_STUDY_INFO } from "../data/pings";
@@ -120,9 +121,12 @@ export const notificationsTest = () => {
         expect(spyScheduleNotificationAsync).toBeCalledTimes(24);
 
         for (let i = 0; i < 6; i++) {
-          expect(spyScheduleNotificationAsync.mock.calls[i]?.[0].trigger).toBe(
-            notificationTimes[i],
-          );
+          expect(
+            spyScheduleNotificationAsync.mock.calls[i]?.[0].trigger,
+          ).toStrictEqual({
+            date: notificationTimes[i],
+            channelId: ANDROID_CHANNEL_NAME,
+          });
         }
 
         // TODO: CHECK IF SNAPSHOT IS CORRECT.
@@ -142,7 +146,10 @@ export const notificationsTest = () => {
         for (let i = 3; i < 6; i++) {
           expect(
             spyScheduleNotificationAsync.mock.calls[i - 3][0]?.trigger,
-          ).toBe(notificationTimes[i]);
+          ).toStrictEqual({
+            date: notificationTimes[i],
+            channelId: ANDROID_CHANNEL_NAME,
+          });
         }
 
         // TODO: CHECK IF SNAPSHOT IS CORRECT.
