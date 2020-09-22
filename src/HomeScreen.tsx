@@ -378,6 +378,29 @@ export default class HomeScreen extends React.Component<
                         },
                       },
                       {
+                        text: "What's my current data?",
+                        onPress: async () => {
+                          const allData = await getAllDataAsync();
+                          alertWithShareButtonContainingDebugInfo(
+                            JSON.stringify(allData),
+                            "Current Data",
+                          );
+                        },
+                      },
+                      {
+                        text: "Force upload my current data!",
+                        onPress: async () => {
+                          const response = await uploadDataAsync(
+                            studyInfo,
+                            this.setUploadStatusSymbol,
+                          );
+                          alertWithShareButtonContainingDebugInfo(
+                            `${response}`,
+                            "Data Upload Response",
+                          );
+                        },
+                      },
+                      {
                         text: "OK",
                         onPress: () => {},
                         style: "cancel",
