@@ -31,7 +31,7 @@
       "associatedDomains": ["applinks:wellping.github.io"]
     },
     "android": {
-      "package": "app.wellping",
+      "package": "edu.stanford.ssnl.wellping",
       "versionCode": 15,
       "icon": "./assets/icon.png",
       "adaptiveIcon": {
