@@ -179,7 +179,7 @@ export default class LoginScreen extends React.Component<
       const loginInfo = LoginSchema.parse({
         username: parsedLoginCode[0] || "",
         password: parsedLoginCode[1] || "",
-        studyFileURL: parsedLoginCode[2] || WELLPING_LOCAL_PRIVATE_URL,
+        studyFileURL: parsedLoginCode[2] || "",
       });
       user = {
         username: loginInfo.username,
