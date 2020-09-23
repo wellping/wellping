@@ -8,7 +8,7 @@ import { Share, Alert } from "react-native";
 // Format: js.[year - 2019].month.day.[the number of version on that day].
 // We use "js." prefix instead of "v." prefix so that it will be not confused
 // with the native version name.
-export const JS_VERSION_NUMBER = "js.1.9.23.3";
+export const JS_VERSION_NUMBER = "js.1.9.23.4";
 export const NATIVE_VERSION_NUMBER = Constants.nativeAppVersion;
 export const NATIVE_BUILD_NUMBER = Constants.nativeBuildVersion;
 export const EXPO_VERSION = Constants.expoVersion;
