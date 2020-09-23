@@ -1,3 +1,4 @@
+import { setStatusBarStyle } from "expo-status-bar";
 import * as firebase from "firebase/app";
 import React from "react";
 import { Text, View } from "react-native";
@@ -96,7 +97,15 @@ const DashboardComponent: React.FunctionComponent<DashboardComponentProps> = ({
   return (
     <View style={{ flex: 1, marginTop: 20 }}>
       {url ? (
-        <WebView source={{ uri: url }} cacheEnabled={false} />
+        <WebView
+          source={{ uri: url }}
+          cacheEnabled={false}
+          // TODO: Use `autoManageStatusBarEnabled` after https://github.com/react-native-community/react-native-webview/pull/914 is in Expo
+          // https://github.com/react-native-community/react-native-webview/issues/735#issuecomment-629073261
+          onNavigationStateChange={(navState) => {
+            setStatusBarStyle("dark");
+          }}
+        />
       ) : (
         <Text style={{ textAlign: "center", fontSize: 16 }}>Loading...</Text>
       )}
