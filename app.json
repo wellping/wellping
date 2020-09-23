@@ -28,12 +28,12 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "app.wellping",
-      "buildNumber": "21",
+      "buildNumber": "22",
       "associatedDomains": ["applinks:wellping.github.io"]
     },
     "android": {
       "package": "edu.stanford.ssnl.wellping",
-      "versionCode": 21,
+      "versionCode": 22,
       "icon": "./assets/icon.png",
       "adaptiveIcon": {
         "foregroundImage": "./assets/icon-android-foreground.png",
