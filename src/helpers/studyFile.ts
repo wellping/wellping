@@ -2,6 +2,7 @@ import { isThisWeek } from "date-fns";
 import * as Crypto from "expo-crypto";
 
 import { _DEBUG_CONFIGS } from "../../config/debug";
+import { STUDY_FILE_URL_PREFIXES_WHITELIST } from "../../config/studyWhitelist";
 import {
   storeCurrentStudyFileAsync,
   clearCurrentStudyFileAsync,
@@ -101,6 +102,17 @@ export async function downloadStudyFileAsync({
         break;
     }
     return rawJsonString;
+  }
+
+  if (
+    !STUDY_FILE_URL_PREFIXES_WHITELIST.some((whitelistPrefix) =>
+      url.startsWith(whitelistPrefix),
+    )
+  ) {
+    throw new Error(
+      "This study file URL is not in the whitelist. Please refer to " +
+        "https://github.com/wellping/wellping for more information.",
+    );
   }
 
   // TODO: Currently the password is hashed this way to make it works with Beiwe default authentication. It certainly does not have to be this way and could be changed later.
