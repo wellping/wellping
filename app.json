@@ -19,6 +19,7 @@
       "backgroundColor": "#ffffff"
     },
     "updates": {
+      "enabled": true,
       "fallbackToCacheTimeout": 0
     },
     "assetBundlePatterns": [
@@ -27,12 +28,12 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "app.wellping",
-      "buildNumber": "18",
+      "buildNumber": "21",
       "associatedDomains": ["applinks:wellping.github.io"]
     },
     "android": {
       "package": "edu.stanford.ssnl.wellping",
-      "versionCode": 18,
+      "versionCode": 21,
       "icon": "./assets/icon.png",
       "adaptiveIcon": {
         "foregroundImage": "./assets/icon-android-foreground.png",
