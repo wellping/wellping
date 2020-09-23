@@ -141,8 +141,6 @@ export async function downloadStudyFileAsync({
     throw e;
   }
 
-  const responseText = await response.text();
-
   if (response.status < 200 || response.status >= 400) {
     if (response.status === 403) {
       throw new Error(
@@ -150,10 +148,12 @@ export async function downloadStudyFileAsync({
       );
     } else {
       throw new Error(
-        `Study file fetch failed - error ${response.status}! (${responseText})`,
+        `Study file fetch failed - error code ${response.status}!`,
       );
     }
   }
+
+  const responseText = await response.text();
 
   const contentType = response.headers.get("content-type");
   if (contentType && contentType.includes("json")) {
