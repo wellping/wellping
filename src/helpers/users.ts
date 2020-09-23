@@ -1,4 +1,5 @@
 import { clearCurrentStudyFileAsync } from "./asyncStorage/studyFile";
+import { clearTempStudyFileAsync } from "./asyncStorage/tempStudyFile";
 import { beiweLoginAsync } from "./beiwe";
 import { clearAllPingsAndAnswersAsync } from "./cleanup";
 import {
@@ -41,6 +42,8 @@ export async function logoutAsync() {
   if (await studyFileExistsAsync()) {
     await clearAllPingsAndAnswersAsync();
   }
+
+  await clearTempStudyFileAsync();
 
   await secureClearUserAsync();
   await clearCurrentStudyFileAsync();
