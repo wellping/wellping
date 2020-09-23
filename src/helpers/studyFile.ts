@@ -98,7 +98,7 @@ export async function downloadStudyFileAsync(url: string): Promise<string> {
   try {
     response = await fetch(url, {
       method: "GET",
-      cache: "no-cache",
+      cache: "no-store",
       headers: {
         Accept: "*/*",
         "Content-Type": "application/json",
