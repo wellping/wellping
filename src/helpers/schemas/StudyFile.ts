@@ -343,6 +343,13 @@ export const StudyInfoSchema = z
     }),
 
     /**
+     * If `true`, the "Next" button will always be enabled.
+     * If `false` or undefined, the "Next" button will only be enabled after the
+     * user has interacted with the question.
+     */
+    alwaysEnableNextButton: z.boolean().optional(),
+
+    /**
      * Special treatments for variable placeholders. The key of each record is
      * the variable name as defined by supported question's `variableName`, or a
      * question ID (if you want to replace the placeholder with a previous

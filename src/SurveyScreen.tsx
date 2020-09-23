@@ -728,7 +728,7 @@ export default class SurveyScreen extends React.Component<
       return <></>;
     }
 
-    const { questions } = this.props;
+    const { questions, studyInfo } = this.props;
 
     const question = questions[questionId] as Question;
     if (question === undefined) {
@@ -904,6 +904,10 @@ export default class SurveyScreen extends React.Component<
             title="Prefer not to answer"
           />
           <Button
+            disabled={
+              !studyInfo.alwaysEnableNextButton &&
+              answers[realQuestionId] == null
+            }
             onPress={async () => {
               if (answers[realQuestionId] == null) {
                 // The user clicks "Next" without answering.
