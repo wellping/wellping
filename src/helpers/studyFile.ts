@@ -143,6 +143,18 @@ export async function downloadStudyFileAsync({
 
   const responseText = await response.text();
 
+  if (response.status < 200 || response.status >= 400) {
+    if (response.status === 403) {
+      throw new Error(
+        "Verification failed. Make sure you have entered the correct login code!",
+      );
+    } else {
+      throw new Error(
+        `Study file fetch failed - error ${response.status}! (${responseText})`,
+      );
+    }
+  }
+
   const contentType = response.headers.get("content-type");
   if (contentType && contentType.includes("json")) {
     // It is a JSON file.
