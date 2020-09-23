@@ -1,4 +1,5 @@
 import { isThisWeek } from "date-fns";
+import * as Crypto from "expo-crypto";
 
 import { _DEBUG_CONFIGS } from "../../config/debug";
 import {
@@ -75,7 +76,15 @@ export async function studyFileExistsAsync() {
  * Throws an error if the download process (or YAML parsing process if any)
  * failed.
  */
-export async function downloadStudyFileAsync(url: string): Promise<string> {
+export async function downloadStudyFileAsync({
+  url,
+  username,
+  password,
+}: {
+  url: string;
+  username: string;
+  password: string;
+}): Promise<string> {
   const localStudyFilePath = getLocalStudyFileType(url);
   if (localStudyFilePath !== null) {
     await new Promise((r) => setTimeout(r, 100)); // Simulate loading.
@@ -94,9 +103,33 @@ export async function downloadStudyFileAsync(url: string): Promise<string> {
     return rawJsonString;
   }
 
+  // TODO: Currently the password is hashed this way to make it works with Beiwe default authentication. It certainly does not have to be this way and could be changed later.
+  function _base64ToBase64URL(input: string): string {
+    return input.replace(/\+/g, "-").replace(/\//g, "_");
+  }
+  const passwordHash = _base64ToBase64URL(
+    await Crypto.digestStringAsync(
+      Crypto.CryptoDigestAlgorithm.SHA256,
+      password,
+      {
+        encoding: Crypto.CryptoEncoding.BASE64,
+      },
+    ),
+  );
+
+  const queryObject: { [key: string]: string } = {
+    username,
+    password: passwordHash,
+  };
+  const query = Object.keys(queryObject)
+    .map(
+      (k) => encodeURIComponent(k) + "=" + encodeURIComponent(queryObject[k]),
+    )
+    .join("&");
+
   let response: Response;
   try {
-    response = await fetch(url, {
+    response = await fetch(`${url}?${query}`, {
       method: "GET",
       cache: "no-store",
       headers: {

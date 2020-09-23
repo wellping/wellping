@@ -32,6 +32,7 @@ let firstTimeLoadingLoginScreen = true;
 
 export type ParamDownloadAndParseStudyFileAsync = {
   url: string;
+  user: User;
   isRedownload: boolean;
   handleNetworkErrorAsync: (error: string) => Promise<void>;
 };
@@ -200,6 +201,7 @@ export default class LoginScreen extends React.Component<
     if (
       !(await this.props.downloadAndParseStudyFileAsync({
         url: studyFileURL,
+        user,
         isRedownload: false,
         handleNetworkErrorAsync: async (errorMessage) => {
           this.setState({

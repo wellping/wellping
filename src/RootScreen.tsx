@@ -77,12 +77,17 @@ export default class RootScreen extends React.Component<
    */
   async downloadAndParseStudyFileAsync({
     url,
+    user,
     isRedownload,
     handleNetworkErrorAsync,
   }: ParamDownloadAndParseStudyFileAsync): Promise<boolean> {
     let rawJsonString: string;
     try {
-      rawJsonString = await downloadStudyFileAsync(url);
+      rawJsonString = await downloadStudyFileAsync({
+        url,
+        username: user.username,
+        password: user.password,
+      });
     } catch (e) {
       let downloadErrorMessage: string;
       if (e instanceof Error) {
@@ -174,6 +179,7 @@ export default class RootScreen extends React.Component<
       // Do it in background because there isn't any urgency to redownload.
       this.downloadAndParseStudyFileAsync({
         url: survey.studyInfo.studyFileURL,
+        user,
         isRedownload: true,
         handleNetworkErrorAsync: async () => {
           // No need to handle network error.
