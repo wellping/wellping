@@ -841,10 +841,14 @@ export default class HomeScreen extends React.Component<
           {ExtraView}
           <DebugView />
           <Text style={styles.onlyTextStyle}>
-            Thank you. You have completed the survey for this ping.{"\n"}You
-            will receive a notification with the next survey soon!
-            {Platform.OS === "ios" && "\nPlease close the app."}
+            Thank you for completing the survey for this ping!{"\n"}
+            Well Ping will send a notification for the next survey soon!{"\n"}
+            Please close the app entirely.
           </Text>
+          <DashboardComponent
+            firebaseUser={firebaseUser}
+            studyInfo={studyInfo}
+          />
         </View>
       );
     }
