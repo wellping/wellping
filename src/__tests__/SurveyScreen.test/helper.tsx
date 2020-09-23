@@ -14,7 +14,7 @@ import {
 import { getPingsListAsync } from "../../helpers/asyncStorage/pingsList";
 import { clearAllPingsAndAnswersAsync } from "../../helpers/cleanup";
 import { insertPingAsync, getPingsAsync } from "../../helpers/pings";
-import { Ping } from "../../helpers/types";
+import { Ping, StudyInfo } from "../../helpers/types";
 import { PINGS_STUDY_INFO } from "../data/pings";
 import { mockCurrentStudyInfo } from "../helper";
 
@@ -24,7 +24,12 @@ export const NEXT_BUTTON_A11YLABEL = "Next question";
 export const PNA_BUTTON_A11YLABEL = "Prefer not to answer the current question";
 
 // Just use a study info - it's not important.
-export const STUDY_INFO = PINGS_STUDY_INFO;
+export const STUDY_INFO: StudyInfo = {
+  ...PINGS_STUDY_INFO,
+  // This doesn't really matter (as we always just call .press()), but we add it
+  // here to make it clearer.
+  alwaysEnableNextButton: true,
+};
 
 export function getBaseProps() {
   return {
