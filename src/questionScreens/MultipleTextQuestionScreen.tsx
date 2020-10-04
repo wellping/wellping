@@ -136,6 +136,8 @@ const MultipleTextQuestionScreen: React.ElementType<MultipleTextQuestionScreenPr
             borderColor: "#ccc",
             borderRadius: 5,
           },
+          autoCorrect: false,
+          keyboardType: question.keyboardType || "default",
           returnKeyType: index === numberOfTextFields - 1 ? "done" : "next",
           onChangeText: (text: string) => {
             updateTextValue(text, index);

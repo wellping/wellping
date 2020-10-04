@@ -264,6 +264,7 @@ export const MultipleTextQuestionSchema = BaseQuestionSchema.extend({
       message: idRegexErrorMessage("variable name"),
     }),
   placeholder: z.string().optional(),
+  keyboardType: z.string().optional(),
   choices: z.union([z.string(), ChoicesListSchema]).optional(),
   forceChoice: z.boolean().optional(),
   max: z.number().int().positive(),
