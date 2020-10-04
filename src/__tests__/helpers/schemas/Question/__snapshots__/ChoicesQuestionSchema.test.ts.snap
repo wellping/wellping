@@ -35,7 +35,7 @@ exports[`ChoicesQuestionSchema choices choices should not be duplicated 2`] = `
 exports[`ChoicesQuestionSchema choices choices string cannot be empty 1`] = `
 "1 validation issue(s)
 
-  Issue #0: too_small at choices./index0
+  Issue #0: too_small at choices.0
   Should be at least 1 characters
 "
 `;
@@ -43,7 +43,7 @@ exports[`ChoicesQuestionSchema choices choices string cannot be empty 1`] = `
 exports[`ChoicesQuestionSchema choices choices string cannot be empty 2`] = `
 "1 validation issue(s)
 
-  Issue #0: too_small at choices./index0
+  Issue #0: too_small at choices.0
   Should be at least 1 characters
 "
 `;

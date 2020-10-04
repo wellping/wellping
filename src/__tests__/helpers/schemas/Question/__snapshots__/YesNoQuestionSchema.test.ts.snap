@@ -43,7 +43,7 @@ exports[`YesNoQuestionSchema addFollowupStream should not contain keys other tha
 exports[`YesNoQuestionSchema addFollowupStream stream name should not be null 1`] = `
 "1 validation issue(s)
 
-  Issue #0: invalid_union at addFollowupStream./indexyes
+  Issue #0: invalid_union at addFollowupStream.yes
   Invalid input
 "
 `;
