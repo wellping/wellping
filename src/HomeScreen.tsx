@@ -22,6 +22,7 @@ import SurveyScreen, { SurveyScreenState } from "./SurveyScreen";
 import DashboardComponent, {
   getDashboardUrlAsync,
 } from "./components/DashboardComponent";
+import HideKeyboardButtonAndWrapper from "./components/HideKeyboardButtonAndWrapper";
 import {
   dequeueFuturePingIfAny,
   getFuturePingsQueue,
@@ -346,15 +347,15 @@ export default class HomeScreen extends React.Component<
     }
 
     const ExtraView = allowsNotifications ? (
-      <>
-        <TouchableWithoutFeedback
-          onLongPress={() => {
-            if (__DEV__) {
-              this.setState({ displayDebugView: true });
-            }
-          }}
-        >
-          <View style={{ height: 20 }}>
+      <TouchableWithoutFeedback
+        onLongPress={() => {
+          if (__DEV__) {
+            this.setState({ displayDebugView: true });
+          }
+        }}
+      >
+        <View style={{ height: 20 }}>
+          <HideKeyboardButtonAndWrapper>
             <View
               style={{
                 flexDirection: "row",
@@ -455,9 +456,9 @@ export default class HomeScreen extends React.Component<
                 </TouchableOpacity>
               )}
             </View>
-          </View>
-        </TouchableWithoutFeedback>
-      </>
+          </HideKeyboardButtonAndWrapper>
+        </View>
+      </TouchableWithoutFeedback>
     ) : (
       <View>
         <Text style={{ color: "red", fontWeight: "bold" }}>
