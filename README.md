@@ -44,7 +44,7 @@ yarn test
 
 ## Deployment
 
-[NOT CURRENTLY USED - SEE https://github.com/expo/expo/issues/10304] Channels should be in the format of `prod-v{VERSION NUMBER}`. For example, Version 1.0.1 uses channel `prod-v1-0-1`.
+Channels should be in the format of `prod-v{VERSION NUMBER}`. For example, Version 1.0.1 uses channel `prod-v1-0-1`.
 
 ```bash
 # Publish app
