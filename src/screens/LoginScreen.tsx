@@ -170,17 +170,14 @@ export default class LoginScreen extends React.Component<
         throw new Error("You have not entered your login code.");
       }
 
-      const parsedLoginCode = loginCode.split(" ");
-      if (parsedLoginCode.length > 3) {
-        throw new Error(
-          "Your login code is not formatted correctly " +
-            "(`parsedLoginCode.length > 3`).",
-        );
-      }
+      const parsedLoginCode = loginCode.split(CONFIG.LOGIN_CODE_SEPARATOR);
       const loginInfo = LoginSchema.parse({
         username: parsedLoginCode[0] || "",
         password: parsedLoginCode[1] || "",
-        studyFileURL: parsedLoginCode[2] || CONFIG.DEFAULT_STUDY_FILE_URL,
+        studyFileURL:
+          // https://stackoverflow.com/a/25177077/2603230
+          parsedLoginCode.splice(2).join(CONFIG.LOGIN_CODE_SEPARATOR) ||
+          CONFIG.DEFAULT_STUDY_FILE_URL,
       });
       user = {
         username: loginInfo.username,
