@@ -63,10 +63,7 @@ export async function beiweUploadDataForUserAsync(
   }
 
   try {
-    let endpoint = "/ssnl_upload";
-    if (Platform.OS === "ios") {
-      endpoint += "/ios/";
-    }
+    const endpoint = "/ssnl_upload";
     const response = await makePostRequestAsync({
       endpoint,
       request: {},
@@ -110,6 +107,7 @@ async function getRequestURLAsync(
   );
   request["password"] = base64ToBase64URL(passwordHash);
   request["device_id"] = `${user.username}-${Constants.installationId}`;
+  request["username"] = user.username;
   request["patient_id"] = user.username;
 
   //console.warn(`request is ${JSON.stringify(request)}`);
@@ -138,7 +136,8 @@ async function makePostRequestAsync({
 }): Promise<any> {
   const headers = {
     "Beiwe-Api-Version": "2",
-    Accept: "application/vnd.beiwe.api.v2, application/json",
+    Accept: "*/*",
+    "Content-Type": "application/json",
   };
 
   const url = await getRequestURLAsync(endpoint, request, user);
