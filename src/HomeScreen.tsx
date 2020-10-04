@@ -141,6 +141,8 @@ export default class HomeScreen extends React.Component<
       // two pings or in a new ping. So we can reset `currentPing` state.
       this.setState({ currentPing: null });
     }
+
+    await clearSentNotificationsAsync();
   }
 
   _handleAppStateChange = (nextAppState: AppStateStatus) => {
@@ -164,8 +166,6 @@ export default class HomeScreen extends React.Component<
       this.setState({ allowsNotifications: false });
     }
 
-    await clearSentNotificationsAsync();
-
     await setNotificationsAsync();
 
     // Check if the current notification expires.
@@ -178,7 +178,6 @@ export default class HomeScreen extends React.Component<
     this.notificationResponseReceivedListener = Notifications.addNotificationResponseReceivedListener(
       async () => {
         await this.checkIfPingHasExpiredAsync();
-        await clearSentNotificationsAsync();
       },
     );
 
