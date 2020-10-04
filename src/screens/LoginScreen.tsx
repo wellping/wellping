@@ -301,7 +301,7 @@ export default class LoginScreen extends React.Component<
           autoCorrect={false}
           autoCapitalize="none"
           autoCompleteType="off"
-          placeholder="Paste your login code here..."
+          placeholder="Paste your login code here…"
           multiline
           textAlignVertical="top" // https://reactnative.dev/docs/textinput#multiline
           blurOnSubmit // https://stackoverflow.com/a/38988668/2603230
