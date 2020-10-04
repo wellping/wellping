@@ -12,6 +12,7 @@ import {
   TouchableWithoutFeedback,
 } from "react-native";
 
+import { CONFIG } from "../../config/config";
 import {
   JS_VERSION_NUMBER,
   alertWithShareButtonContainingDebugInfo,
@@ -179,7 +180,7 @@ export default class LoginScreen extends React.Component<
       const loginInfo = LoginSchema.parse({
         username: parsedLoginCode[0] || "",
         password: parsedLoginCode[1] || "",
-        studyFileURL: parsedLoginCode[2] || "",
+        studyFileURL: parsedLoginCode[2] || CONFIG.DEFAULT_STUDY_FILE_URL,
       });
       user = {
         username: loginInfo.username,
