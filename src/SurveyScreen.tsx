@@ -768,8 +768,6 @@ export default class SurveyScreen extends React.Component<
         return <></>;
     }
 
-    const smallScreen = Dimensions.get("window").height < 600;
-
     const getImageIfAnyForPosition = (
       position: QuestionImageOptions["position"],
     ) =>
@@ -796,8 +794,8 @@ export default class SurveyScreen extends React.Component<
         testID="mainSurveyScreenView"
         style={{
           paddingHorizontal: 20,
-          marginTop: smallScreen ? 0 : 10,
-          marginBottom: smallScreen ? 0 : 10,
+          marginTop: 10,
+          marginBottom: 10,
           flex: 1,
           // We use `opacity` so that `QuestionScreen` still loads and are able
           // to call `loadingCompleted` and set `isInTransition`.
@@ -810,7 +808,7 @@ export default class SurveyScreen extends React.Component<
             testID="questionTitle"
             style={{
               textAlign: "center",
-              fontSize: smallScreen ? 12 : 18,
+              fontSize: 18,
             }}
           >
             {this.replacePlaceholders(question.question)}
