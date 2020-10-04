@@ -98,6 +98,10 @@ const MultipleTextQuestionScreen: React.ElementType<MultipleTextQuestionScreenPr
     onDataChange(data);
   };
 
+  const [isInputEmpty, setIsInputEmpty] = React.useState<{
+    [index: number]: boolean;
+  }>(Array(numberOfTextFields).fill(true));
+
   const textFields: SearchableDropdown[] = [];
   const textFieldsRef: React.RefObject<TextInput>[] = [];
   for (let index = 0; index < numberOfTextFields; index++) {
@@ -123,7 +127,11 @@ const MultipleTextQuestionScreen: React.ElementType<MultipleTextQuestionScreenPr
           borderColor: "#bbb",
           borderWidth: 1,
         }}
-        itemsContainerStyle={{ maxHeight: 100 }}
+        itemsContainerStyle={{
+          maxHeight: 100,
+          ...(!question.alwaysShowChoices &&
+            isInputEmpty[index] && { display: "none" }),
+        }}
         items={textFieldsDropdownItems}
         resetValue={false}
         textInputProps={{
@@ -140,6 +148,11 @@ const MultipleTextQuestionScreen: React.ElementType<MultipleTextQuestionScreenPr
           keyboardType: question.keyboardType || "default",
           returnKeyType: index === numberOfTextFields - 1 ? "done" : "next",
           onChangeText: (text: string) => {
+            setIsInputEmpty({
+              ...isInputEmpty,
+              [index]: text.trim().length === 0,
+            });
+
             updateTextValue(text, index);
           },
           onSubmitEditing: () => {

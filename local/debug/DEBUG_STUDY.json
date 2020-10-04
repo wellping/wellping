@@ -207,6 +207,7 @@
         "placeholder": "Select a category...",
         "choices": "RELATIONSHIPS",
         "forceChoice": true,
+        "alwaysShowChoices": true,
         "max": 3,
         "maxMinus": "SocInteraction_Names",
         "variableName": "TARGET_CATEGORY",

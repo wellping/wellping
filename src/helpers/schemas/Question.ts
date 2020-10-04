@@ -267,6 +267,7 @@ export const MultipleTextQuestionSchema = BaseQuestionSchema.extend({
   keyboardType: z.string().optional(),
   choices: z.union([z.string(), ChoicesListSchema]).optional(),
   forceChoice: z.boolean().optional(),
+  alwaysShowChoices: z.boolean().optional(),
   max: z.number().int().positive(),
   // The max number of text field will be `max` minus the number of text the
   // participant entered in `maxMinus` question.
