@@ -4,6 +4,12 @@ import { Keyboard, Platform, TouchableOpacity, Text } from "react-native";
 interface HideKeyboardButtonAndWrapperProps {
   children: React.ReactElement;
 }
+/**
+ * If the keyboard is active, returns a "button" (Text + TouchableOpacity) that
+ * dismisses the keyboard when clicked.
+ *
+ * If the keyboard is not active, returns `children`.
+ */
 const HideKeyboardButtonAndWrapper: React.FunctionComponent<HideKeyboardButtonAndWrapperProps> = ({
   children,
 }) => {
