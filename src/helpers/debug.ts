@@ -1,6 +1,6 @@
 import Constants from "expo-constants";
 import * as Device from "expo-device";
-import { Share, Alert } from "react-native";
+import { Share, Alert, AlertButton } from "react-native";
 
 // Notice that this version number is different from the app version number
 // which is the number submitted App Store and Google Store.
@@ -95,18 +95,19 @@ export function getCriticalProblemTextForUser(problem: string) {
 export function alertWithShareButtonContainingDebugInfo(
   text: string,
   title: string = "Alert",
+  moreButtons: AlertButton[] = [],
 ) {
   Alert.alert(title, text, [
-    {
-      text: "Close",
-      style: "cancel",
-    },
+    ...moreButtons,
     {
       text: "Share Data with Research Staff",
-      style: "default",
       onPress: () => {
         shareDebugText(text);
       },
+    },
+    {
+      text: "Close",
+      style: "cancel",
     },
   ]);
 }

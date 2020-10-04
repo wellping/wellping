@@ -384,19 +384,21 @@ export default class HomeScreen extends React.Component<
                           alertWithShareButtonContainingDebugInfo(
                             JSON.stringify(allData),
                             "Current Data",
-                          );
-                        },
-                      },
-                      {
-                        text: "Force upload my current data!",
-                        onPress: async () => {
-                          const response = await uploadDataAsync(
-                            studyInfo,
-                            this.setUploadStatusSymbol,
-                          );
-                          alertWithShareButtonContainingDebugInfo(
-                            `${response}`,
-                            "Data Upload Response",
+                            [
+                              {
+                                text: "Force upload my current data!",
+                                onPress: async () => {
+                                  const response = await uploadDataAsync(
+                                    studyInfo,
+                                    this.setUploadStatusSymbol,
+                                  );
+                                  alertWithShareButtonContainingDebugInfo(
+                                    `${response}`,
+                                    "Data Upload Response",
+                                  );
+                                },
+                              },
+                            ],
                           );
                         },
                       },
@@ -406,6 +408,7 @@ export default class HomeScreen extends React.Component<
                         style: "cancel",
                       },
                     ],
+                    { cancelable: true, onDismiss: () => {} },
                   );
                 }}
               >
