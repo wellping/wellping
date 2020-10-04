@@ -160,6 +160,11 @@ const ChoicesQuestionScreen: React.ElementType<ChoicesQuestionScreenProps> = ({
 
   return (
     <View style={{ paddingVertical: 5 }}>
+      {answerType !== ChoicesAnswerType.YESNO && (
+        <Text style={{ textAlign: "center" }}>
+          You may need to scroll to see all options.
+        </Text>
+      )}
       <FlatList
         data={flatListData}
         renderItem={({ item, index }) => (
@@ -211,11 +216,6 @@ const ChoicesQuestionScreen: React.ElementType<ChoicesQuestionScreenProps> = ({
           borderColor: "lightgray",
         }}
       />
-      {answerType !== ChoicesAnswerType.YESNO && (
-        <Text style={{ textAlign: "center" }}>
-          You may need to scroll to see all options.
-        </Text>
-      )}
     </View>
   );
 };
