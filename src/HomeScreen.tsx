@@ -13,6 +13,7 @@ import {
   Clipboard,
   Platform,
   TouchableWithoutFeedback,
+  TouchableOpacity,
   AppState,
   AppStateStatus,
 } from "react-native";
@@ -360,7 +361,7 @@ export default class HomeScreen extends React.Component<
                 justifyContent: "center",
               }}
             >
-              <TouchableWithoutFeedback
+              <TouchableOpacity
                 onPress={async () => {
                   const nextPingTime = await getIncomingNotificationTimeAsync();
                   const nextPingTimeString = nextPingTime
@@ -429,9 +430,9 @@ export default class HomeScreen extends React.Component<
                     {this.state.uploadStatusSymbol}
                   </Text>
                 )}
-              </TouchableWithoutFeedback>
+              </TouchableOpacity>
               {studyInfo.contactEmail && (
-                <TouchableWithoutFeedback
+                <TouchableOpacity
                   onPress={async () => {
                     const user = await secureGetUserAsync();
 
@@ -451,7 +452,7 @@ export default class HomeScreen extends React.Component<
                   <Text style={{ color: "lightblue", marginLeft: 20 }}>
                     Contact Staff
                   </Text>
-                </TouchableWithoutFeedback>
+                </TouchableOpacity>
               )}
             </View>
           </View>
