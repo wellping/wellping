@@ -42,6 +42,7 @@
       "permissions": [
         "ACCESS_NOTIFICATION_POLICY"
       ],
+      "softwareKeyboardLayoutMode": "pan",
       "useNextNotificationsApi": true,
       "intentFilters": [
         {
