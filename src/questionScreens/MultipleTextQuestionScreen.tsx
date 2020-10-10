@@ -94,8 +94,14 @@ const MultipleTextQuestionScreen: React.ElementType<MultipleTextQuestionScreenPr
     setTextValues(newTextValues);
 
     const nonEmptyFields = newTextValues.filter(Boolean);
-    const data: MultipleTextAnswerData = { value: nonEmptyFields };
-    onDataChange(data);
+    if (nonEmptyFields.length > 0) {
+      const data: MultipleTextAnswerData = { value: nonEmptyFields };
+      onDataChange(data);
+    } else {
+      // We set answer data to null so that we can disable Next button when
+      // there is only empty strings.
+      onDataChange(null);
+    }
   };
 
   const [isInputEmpty, setIsInputEmpty] = React.useState<{

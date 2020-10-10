@@ -67,7 +67,7 @@ export type DataValidationFunction = () => boolean;
 export interface QuestionScreenProps {
   question: Question;
   loadingCompleted: () => void;
-  onDataChange: (data: AnswerData) => void;
+  onDataChange: (data: AnswerData | null) => void;
   allAnswers: AnswersList;
   allQuestions: QuestionsList;
   pipeInExtraMetaData: (input: string) => string;

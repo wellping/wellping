@@ -918,7 +918,7 @@ export default class SurveyScreen extends React.Component<
           <Button
             disabled={
               !studyInfo.alwaysEnableNextButton &&
-              answers[realQuestionId] == null
+              answers[realQuestionId]?.data == null
             }
             onPress={async () => {
               if (answers[realQuestionId] == null) {
