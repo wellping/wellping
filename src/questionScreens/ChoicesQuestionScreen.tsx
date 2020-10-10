@@ -161,7 +161,14 @@ const ChoicesQuestionScreen: React.ElementType<ChoicesQuestionScreenProps> = ({
   return (
     <View style={{ paddingVertical: 5 }}>
       {answerType !== ChoicesAnswerType.YESNO && (
-        <Text style={{ textAlign: "center" }}>
+        <Text
+          style={{
+            textAlign: "center",
+            color: "gray",
+            fontSize: 13,
+            marginBottom: 2,
+          }}
+        >
           You may need to scroll to see all options.
         </Text>
       )}

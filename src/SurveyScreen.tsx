@@ -816,9 +816,20 @@ export default class SurveyScreen extends React.Component<
           </Text>
           {(question.description || question.image) && (
             <>
+              <Text
+                style={{
+                  textAlign: "center",
+                  color: "gray",
+                  fontSize: 13,
+                  marginTop: 5,
+                  marginBottom: 2,
+                }}
+              >
+                You may need to scroll to see the full description.
+              </Text>
               <ScrollView
                 style={{
-                  marginTop: 10,
+                  marginBottom: 5,
                   maxHeight: Dimensions.get("window").height / 10,
                   borderWidth: 1,
                   borderColor: "lightgray",
@@ -837,14 +848,6 @@ export default class SurveyScreen extends React.Component<
                 )}
                 {getImageIfAnyForPosition("inDescriptionBox")}
               </ScrollView>
-              <Text
-                style={{
-                  textAlign: "center",
-                  color: "lightgray",
-                }}
-              >
-                You may need to scroll to see the full description.
-              </Text>
             </>
           )}
         </View>
