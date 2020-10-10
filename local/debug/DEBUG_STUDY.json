@@ -182,6 +182,7 @@
         "variableName": "TARGET_NAME",
         "indexName": "INDEX",
         "repeatedItemStartId": "SocInteraction_Names[__INDEX__]_Relationships",
+        "extraCustomNextWithoutAnsweringButton": "Not Interacted!",
         "next": "SocInteraction_NonStudent"
       },
       "SocInteraction_Names[__INDEX__]_Relationships": {

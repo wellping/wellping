@@ -76,6 +76,12 @@ const BaseQuestionSchema = z.object({
   image: QuestionImageOptionsSchema.optional(),
 
   /**
+   * Add a button with custom label above the "Next"/"PNA" buttons.
+   * Clicking this button is equivalent to clicking "Next" without answering.
+   */
+  extraCustomNextWithoutAnsweringButton: z.string().optional(),
+
+  /**
    * The optional fallback next IDs.
    */
   fallbackNext: z
