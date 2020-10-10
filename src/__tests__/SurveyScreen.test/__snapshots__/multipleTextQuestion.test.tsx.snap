@@ -78,9 +78,7 @@ Array [
 exports[`with repeatedItemStartId enter some text and then remove them: getAnswersAsync 1`] = `
 Array [
   Object {
-    "data": Object {
-      "value": Array [],
-    },
+    "data": null,
     "date": 1970-01-01T00:00:00.000Z,
     "pingId": "[removed for snapshot]",
     "preferNotToAnswer": null,
@@ -189,9 +187,7 @@ Array [
 exports[`without repeatedItemStartId enter some text and then remove them: getAnswersAsync 1`] = `
 Array [
   Object {
-    "data": Object {
-      "value": Array [],
-    },
+    "data": null,
     "date": 1970-01-01T00:00:00.000Z,
     "pingId": "[removed for snapshot]",
     "preferNotToAnswer": null,

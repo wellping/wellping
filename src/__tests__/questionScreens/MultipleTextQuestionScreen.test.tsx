@@ -112,6 +112,10 @@ const basicTestForQuestionAsync = async (
   expect(textInputs.length).toMatchSnapshot("text inputs length");
 
   const expectedAnswerData: MultipleTextAnswerData = { value: [] };
+  const getExpectedAnswerData = () => {
+    return expectedAnswerData.value.length === 0 ? null : expectedAnswerData;
+  };
+
   let callCount = 0;
   for (let i = 0; i < textInputsLength; i++) {
     const findIthTextInputAsync = async () =>
@@ -135,7 +139,7 @@ const basicTestForQuestionAsync = async (
     callCount += 1;
     expect(mockOnDataChangeFn).toHaveBeenNthCalledWith(
       callCount,
-      expectedAnswerData,
+      getExpectedAnswerData(),
     );
     expect(mockOnDataChangeFn).toHaveBeenCalledTimes(callCount);
 
@@ -185,7 +189,7 @@ const basicTestForQuestionAsync = async (
         callCount += 1;
         expect(mockOnDataChangeFn).toHaveBeenNthCalledWith(
           callCount,
-          expectedAnswerData,
+          getExpectedAnswerData(),
         );
 
         alertSpy.mockRestore();
@@ -196,7 +200,7 @@ const basicTestForQuestionAsync = async (
       // There should be no extra call.
       expect(mockOnDataChangeFn).toHaveBeenNthCalledWith(
         callCount,
-        expectedAnswerData,
+        getExpectedAnswerData(),
       );
     }
 
@@ -204,7 +208,7 @@ const basicTestForQuestionAsync = async (
   }
 
   // Store the expected data object.
-  expect(expectedAnswerData).toMatchSnapshot();
+  expect(getExpectedAnswerData()).toMatchSnapshot();
 
   return renderResults;
 };

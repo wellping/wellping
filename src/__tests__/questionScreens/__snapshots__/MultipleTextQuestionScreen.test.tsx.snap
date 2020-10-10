@@ -72,19 +72,11 @@ Object {
 
 exports[`input \`["I am typing 1", "I am typing 2", "I am typing 3", "I am typing 4"]\` with max 4 without choices: text inputs length 1`] = `4`;
 
-exports[`input \`["I am typing 1", "I am typing 2"]\` with max 2 and forceChoice true with a choices object 1`] = `
-Object {
-  "value": Array [],
-}
-`;
+exports[`input \`["I am typing 1", "I am typing 2"]\` with max 2 and forceChoice true with a choices object 1`] = `null`;
 
 exports[`input \`["I am typing 1", "I am typing 2"]\` with max 2 and forceChoice true with a choices object: text inputs length 1`] = `2`;
 
-exports[`input \`["I am typing 1", "I am typing 2"]\` with max 2 and forceChoice true with a choices string 1`] = `
-Object {
-  "value": Array [],
-}
-`;
+exports[`input \`["I am typing 1", "I am typing 2"]\` with max 2 and forceChoice true with a choices string 1`] = `null`;
 
 exports[`input \`["I am typing 1", "I am typing 2"]\` with max 2 and forceChoice true with a choices string: text inputs length 1`] = `2`;
 
@@ -189,19 +181,11 @@ Object {
 
 exports[`input \`["Stranger", "Stranger", "Stranger", "Stranger", "RANDOM"]\` with max 5 and forceChoice false with a choices object: text inputs length 1`] = `5`;
 
-exports[`input \`["hello world"]\` with invalid string choices 1`] = `
-Object {
-  "value": Array [],
-}
-`;
+exports[`input \`["hello world"]\` with invalid string choices 1`] = `null`;
 
 exports[`input \`["hello world"]\` with invalid string choices: text inputs length 1`] = `3`;
 
-exports[`input \`["yep", "yep", "yep"]\` with invalid string choices 1`] = `
-Object {
-  "value": Array [],
-}
-`;
+exports[`input \`["yep", "yep", "yep"]\` with invalid string choices 1`] = `null`;
 
 exports[`input \`["yep", "yep", "yep"]\` with invalid string choices: text inputs length 1`] = `3`;
 
@@ -242,19 +226,11 @@ Object {
 
 exports[`input \`["🧐", "🧐", "🧐", "🧐", "RANDOM"]\` with max 5 and forceChoice false with a choices string: text inputs length 1`] = `5`;
 
-exports[`input \`[]\` with invalid string choices 1`] = `
-Object {
-  "value": Array [],
-}
-`;
+exports[`input \`[]\` with invalid string choices 1`] = `null`;
 
 exports[`input \`[]\` with invalid string choices: text inputs length 1`] = `3`;
 
-exports[`input \`[]\` with max 4 and maxMinus "PrevQuestionId" without choices 1`] = `
-Object {
-  "value": Array [],
-}
-`;
+exports[`input \`[]\` with max 4 and maxMinus "PrevQuestionId" without choices 1`] = `null`;
 
 exports[`input \`[]\` with max 4 and maxMinus "PrevQuestionId" without choices: text inputs length 1`] = `4`;
 
