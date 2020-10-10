@@ -795,7 +795,7 @@ export default class SurveyScreen extends React.Component<
         testID="mainSurveyScreenView"
         style={{
           paddingHorizontal: 20,
-          marginTop: 10,
+          marginTop: 5,
           marginBottom: 10,
           flex: 1,
           // We use `opacity` so that `QuestionScreen` still loads and are able
