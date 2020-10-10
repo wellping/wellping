@@ -790,6 +790,31 @@ export default class SurveyScreen extends React.Component<
         />
       );
 
+    const nextButtonIsDisabled = (): boolean => {
+      if (studyInfo.alwaysEnableNextButton) {
+        return false;
+      }
+
+      const answer = answers[realQuestionId];
+      if (answer == null) {
+        return true;
+      }
+
+      switch (question.type) {
+        case QuestionType.MultipleText: {
+          const mtAnswer = answer as MultipleTextAnswer;
+          if (mtAnswer.data) {
+            return mtAnswer.data.value.length === 0;
+          }
+          break;
+        }
+
+        default:
+          break;
+      }
+      return false;
+    };
+
     return (
       <View
         testID="mainSurveyScreenView"
@@ -919,10 +944,7 @@ export default class SurveyScreen extends React.Component<
             title="Prefer not to answer"
           />
           <Button
-            disabled={
-              !studyInfo.alwaysEnableNextButton &&
-              answers[realQuestionId]?.data == null
-            }
+            disabled={nextButtonIsDisabled()}
             onPress={async () => {
               if (answers[realQuestionId] == null) {
                 // The user clicks "Next" without answering.
