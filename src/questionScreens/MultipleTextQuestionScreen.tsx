@@ -145,7 +145,8 @@ const MultipleTextQuestionScreen: React.ElementType<MultipleTextQuestionScreenPr
           placeholder: question.placeholder,
           underlineColorAndroid: "transparent",
           style: {
-            padding: Platform.OS === "android" ? 5 : 10,
+            paddingVertical: Platform.OS === "android" ? 0 : 10,
+            paddingHorizontal: Platform.OS === "android" ? 5 : 10,
             borderWidth: 1,
             borderColor: "#ccc",
             borderRadius: 5,
