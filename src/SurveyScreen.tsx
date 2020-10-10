@@ -883,6 +883,19 @@ export default class SurveyScreen extends React.Component<
             </View>
           </View>
         </View>
+        {question.extraCustomNextWithoutAnsweringButton && (
+          <Button
+            onPress={async () => {
+              // Clicking this button is equivalent to clicking "Next" without answering.
+              await this.addAnswerToAnswersListAsync(question, {
+                data: null,
+              });
+              this.onNextSelect();
+            }}
+            accessibilityLabel={question.extraCustomNextWithoutAnsweringButton}
+            title={question.extraCustomNextWithoutAnsweringButton}
+          />
+        )}
         <View
           style={{
             flexDirection: "row",
