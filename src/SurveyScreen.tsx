@@ -7,6 +7,7 @@ import {
   ScrollView,
   Image,
   Dimensions,
+  Platform,
 } from "react-native";
 
 import { _DEBUG_CONFIGS } from "../config/debug";
@@ -900,7 +901,7 @@ export default class SurveyScreen extends React.Component<
           style={{
             flexDirection: "row",
             justifyContent: "space-between",
-            marginTop: 10,
+            marginTop: Platform.OS === "ios" ? 10 : 20,
             flex: 0,
           }}
         >
