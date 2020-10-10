@@ -136,6 +136,7 @@ async function makePostRequestAsync({
 }): Promise<any> {
   const headers = {
     "Beiwe-Api-Version": "2",
+    "WellPing-JSVersion": JS_VERSION_NUMBER,
     Accept: "*/*",
     "Content-Type": "application/json",
   };
