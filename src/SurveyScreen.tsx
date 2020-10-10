@@ -900,7 +900,7 @@ export default class SurveyScreen extends React.Component<
           style={{
             flexDirection: "row",
             justifyContent: "space-between",
-            marginTop: 0,
+            marginTop: 10,
             flex: 0,
           }}
         >
