@@ -39,9 +39,7 @@
         "foregroundImage": "./assets/icon-android-foreground.png",
         "backgroundColor": "#F4F4F4"
       },
-      "permissions": [
-        "ACCESS_NOTIFICATION_POLICY"
-      ],
+      "permissions": [],
       "softwareKeyboardLayoutMode": "pan",
       "useNextNotificationsApi": true,
       "intentFilters": [
