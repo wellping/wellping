@@ -170,7 +170,8 @@ export default class RootScreen extends React.Component<
         alertWithShareButtonContainingDebugInfo(
           getNonCriticalProblemTextForUser(
             `You have been logged out for an unknown reason. ` +
-              `Please try logging in again.\n\n` +
+              `Please uninstall the app, reinstall the app, and try logging in again. ` +
+              `Your previous responses are still logged in our server after you reinstall the app.\n\n` +
               `(REF: studyFileExistsAsync and user === null).`,
           ),
         );
