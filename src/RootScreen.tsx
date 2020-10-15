@@ -169,7 +169,8 @@ export default class RootScreen extends React.Component<
         this.setState({ isLoading: false });
         alertWithShareButtonContainingDebugInfo(
           getNonCriticalProblemTextForUser(
-            `You have been logged out for an unknown reason.\n\n` +
+            `You have been logged out for an unknown reason. ` +
+              `Please try logging in again.\n\n` +
               `(REF: studyFileExistsAsync and user === null).`,
           ),
         );
