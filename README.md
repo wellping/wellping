@@ -8,6 +8,10 @@
 
 A React Native survey app that pings you once a while to answer questions!
 
+**Download on App Store**: https://apps.apple.com/us/app/id1532364388
+
+**Download on Google Play**: https://play.google.com/store/apps/details?id=edu.stanford.ssnl.wellping
+
 ## Docs
 
 *Work in Progress*
