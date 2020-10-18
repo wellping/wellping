@@ -363,14 +363,9 @@ export default class HomeScreen extends React.Component<
             >
               <TouchableOpacity
                 onPress={async () => {
-                  const nextPingTime = await getIncomingNotificationTimeAsync();
-                  const nextPingTimeString = nextPingTime
-                    ? nextPingTime.toString()
-                    : "N/A";
                   Alert.alert(
                     "Well Ping",
-                    `Thank you for using Well Ping!\n` +
-                      `You will receive your next ping on ${nextPingTimeString}.`,
+                    `Thank you for using Well Ping!`,
                     [
                       {
                         text: "Send me a test notification!",
@@ -420,7 +415,7 @@ export default class HomeScreen extends React.Component<
                     {this.state.uploadStatusSymbol}
                   </Text>
                 ) : (
-                  <Text style={{ color: "lightblue" }}>
+                  <Text style={{ color: "lightgray" }}>
                     {JS_VERSION_NUMBER}
                     {getSymbolsForServerTypeUsed(studyInfo)}
                     {useFirebase(studyInfo) && firebaseUser === null
