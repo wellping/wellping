@@ -161,7 +161,11 @@ export default class RootScreen extends React.Component<
 
       const user = await secureGetUserAsync();
       if (user === null) {
-        // This should never happen. But just in case.
+        // One reason this might happen is that the newly downloaded study file
+        // has changed the study ID in it. It makes `secureClearUserAsync` unable
+        // to get the user info (since the key is based on the study ID) and hence
+        // returns null. (So this is actually this expected behavior.)
+
         // Notice that we have to do this before `downloadAndParseStudyFileAsync`
         // or else the async function in `downloadAndParseStudyFileAsync` will
         // still try to find study file when it is already deleted.
