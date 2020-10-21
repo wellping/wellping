@@ -1,6 +1,6 @@
 import AsyncStorage from "@react-native-community/async-storage";
 
-import { Answer } from "../answerTypes";
+import { AnswersList } from "../answerTypes";
 import { logAndThrowError } from "../debug";
 import { PingId, QuestionId } from "../types";
 import { getASKeyAsync } from "./asyncStorage";
@@ -13,21 +13,15 @@ export type AnswersQuestionIdsListForPing = QuestionId[];
 const ANSWERS_LIST_PREFIX = `answersList/`;
 const getKey = (pingId: PingId) => `${ANSWERS_LIST_PREFIX}/${pingId}`;
 
-export async function addToAnswersQuestionIdsListForPingIfNeededAsync(
-  answer: Answer,
+export async function setAnswersQuestionIdsListForPingIfNeededAsync(
+  answers: AnswersList,
 ) {
   try {
-    const currentAnswersQuestionIdsListForPing = await getAnswersQuestionIdsListForPingAsync(
-      answer.pingId,
-    );
-    if (currentAnswersQuestionIdsListForPing.includes(answer.questionId)) {
-      // Do not add it to the list if it is in the list already.
-      return;
-    }
-
-    currentAnswersQuestionIdsListForPing.push(answer.questionId);
+    const currentAnswersQuestionIdsListForPing = Object.keys(answers);
     await AsyncStorage.setItem(
-      await getASKeyAsync(getKey(answer.pingId)),
+      await getASKeyAsync(
+        getKey(answers[currentAnswersQuestionIdsListForPing[0]].pingId),
+      ),
       JSON.stringify(currentAnswersQuestionIdsListForPing),
     );
   } catch (error) {

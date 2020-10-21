@@ -1,4 +1,4 @@
-import { AnswerData, Answer } from "./answerTypes";
+import { AnswerData, Answer, AnswersList } from "./answerTypes";
 import {
   getAnswersPingIdsQuestionIdsListAsync,
   clearAnswersPingIdsQuestionIdsListAsync,
@@ -33,21 +33,24 @@ export async function getAnswersAsync(): Promise<Answer[]> {
   return answers;
 }
 
-export async function insertAnswerAsync({
-  ping,
-  question,
-  realQuestionId,
-  preferNotToAnswer,
-  data,
-  date,
-}: {
-  ping: Ping;
-  question: Question;
-  realQuestionId: string;
-  preferNotToAnswer: true | null; // See `MARK: WHY_PNA_TRUE_OR_NULL`.
-  data: AnswerData | null;
-  date: Date;
-}): Promise<Answer> {
+export async function insertAnswerAsync(
+  {
+    ping,
+    question,
+    realQuestionId,
+    preferNotToAnswer,
+    data,
+    date,
+  }: {
+    ping: Ping;
+    question: Question;
+    realQuestionId: string;
+    preferNotToAnswer: true | null; // See `MARK: WHY_PNA_TRUE_OR_NULL`.
+    data: AnswerData | null;
+    date: Date;
+  },
+  prevAnswers: AnswersList,
+): Promise<Answer> {
   const answer = AnswerSchema.parse({
     pingId: ping.id,
     questionId: realQuestionId,
@@ -56,7 +59,7 @@ export async function insertAnswerAsync({
     date,
   });
 
-  await secureStoreAnswerAsync(answer);
+  await secureStoreAnswerAsync(answer, prevAnswers);
 
   return answer;
 }

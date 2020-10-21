@@ -695,14 +695,17 @@ export default class SurveyScreen extends React.Component<
   ): Promise<void> {
     const realQuestionId = this.getRealQuestionId(question.id);
 
-    const answer = await insertAnswerAsync({
-      ping: this.props.ping,
-      question,
-      realQuestionId,
-      preferNotToAnswer,
-      data,
-      date,
-    });
+    const answer = await insertAnswerAsync(
+      {
+        ping: this.props.ping,
+        question,
+        realQuestionId,
+        preferNotToAnswer,
+        data,
+        date,
+      },
+      this.state.answers,
+    );
 
     await new Promise((resolve, reject) => {
       this.setState(

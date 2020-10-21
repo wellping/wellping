@@ -1,8 +1,8 @@
 import { parseJSON } from "date-fns";
 import * as SecureStore from "expo-secure-store";
 
-import { Answer } from "../answerTypes";
-import { addToAnswersQuestionIdsListForPingIfNeededAsync } from "../asyncStorage/answersPingIdsQuestionIdsList";
+import { Answer, AnswersList } from "../answerTypes";
+import { setAnswersQuestionIdsListForPingIfNeededAsync } from "../asyncStorage/answersPingIdsQuestionIdsList";
 import { logAndThrowError } from "../debug";
 import { AnswerSchema } from "../schemas/Answer";
 import { PingId, QuestionId } from "../types";
@@ -12,13 +12,19 @@ const ANSWER_PREFIX = `answer.`;
 const getKey = (pingId: PingId, questionId: QuestionId) =>
   `${ANSWER_PREFIX}${pingId}.${questionId}`;
 
-export async function secureStoreAnswerAsync(answer: Answer) {
+export async function secureStoreAnswerAsync(
+  newAnswer: Answer,
+  prevAnswers: AnswersList,
+) {
   try {
     await SecureStore.setItemAsync(
-      await getSSKeyAsync(getKey(answer.pingId, answer.questionId)),
-      JSON.stringify(answer),
+      await getSSKeyAsync(getKey(newAnswer.pingId, newAnswer.questionId)),
+      JSON.stringify(newAnswer),
     );
-    await addToAnswersQuestionIdsListForPingIfNeededAsync(answer);
+    await setAnswersQuestionIdsListForPingIfNeededAsync({
+      ...prevAnswers,
+      [newAnswer.questionId]: newAnswer,
+    });
   } catch (error) {
     logAndThrowError(error);
   }
