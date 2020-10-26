@@ -278,7 +278,8 @@ export default class HomeScreen extends React.Component<
     const newPingNth = pingsList.length + 1;
 
     let newStreamName: StreamName;
-    if (todayPings.length >= studyInfo.frequency.hoursEveryday.length) {
+    // TODO: IS THIS CORRECT?
+    if (todayPings.length > studyInfo.frequency.hoursEveryday.length) {
       alertWithShareButtonContainingDebugInfo(
         getNonCriticalProblemTextForUser(
           `todayPings.length (${todayPings.length}) > ${studyInfo.frequency.hoursEveryday.length}`,
