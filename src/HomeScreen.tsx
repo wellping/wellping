@@ -269,6 +269,8 @@ export default class HomeScreen extends React.Component<
   }
 
   async startSurveyAsync() {
+    await new Promise((resolve) => this.setState({ isLoading: true }, resolve));
+
     const studyInfo = this.props.studyInfo;
 
     const todayWeekday = getDay(new Date());
@@ -278,7 +280,7 @@ export default class HomeScreen extends React.Component<
     const newPingNth = pingsList.length + 1;
 
     let newStreamName: StreamName;
-    // TODO: IS THIS CORRECT?
+    // TODO: IS THIS CORRECT? PROBABLY SHOULD BE >=
     if (todayPings.length > studyInfo.frequency.hoursEveryday.length) {
       alertWithShareButtonContainingDebugInfo(
         getNonCriticalProblemTextForUser(
@@ -308,6 +310,11 @@ export default class HomeScreen extends React.Component<
     }
 
     await this._startSurveyTypeAsync(newStreamName);
+
+    // TODO: should this be after setNotificationsAsync?
+    await new Promise((resolve) =>
+      this.setState({ isLoading: false }, resolve),
+    );
 
     // So that the notification text ("n pings left") can be updated.
     await setNotificationsAsync();
