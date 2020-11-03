@@ -46,6 +46,8 @@ export async function clearAnswersQuestionIdsListForPingAsync(pingId: PingId) {
 export async function getAnswersQuestionIdsListForPingAsync(
   pingId: PingId,
 ): Promise<AnswersQuestionIdsListForPing> {
+    await new Promise((resolve) => setTimeout(resolve, 5000));
+
   try {
     const value = await AsyncStorage.getItem(
       await getASKeyAsync(getKey(pingId)),

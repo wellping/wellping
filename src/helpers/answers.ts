@@ -40,6 +40,7 @@ export async function insertAnswerAsync({
   preferNotToAnswer,
   data,
   date,
+  addToStorage = true,
 }: {
   ping: Ping;
   question: Question;
@@ -47,6 +48,7 @@ export async function insertAnswerAsync({
   preferNotToAnswer: true | null; // See `MARK: WHY_PNA_TRUE_OR_NULL`.
   data: AnswerData | null;
   date: Date;
+  addToStorage?: boolean;
 }): Promise<Answer> {
   const answer = AnswerSchema.parse({
     pingId: ping.id,
@@ -56,7 +58,9 @@ export async function insertAnswerAsync({
     date,
   });
 
-  await secureStoreAnswerAsync(answer);
+  if (addToStorage) {
+    await secureStoreAnswerAsync(answer);
+  }
 
   return answer;
 }

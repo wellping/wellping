@@ -687,10 +687,12 @@ export default class SurveyScreen extends React.Component<
       preferNotToAnswer = null,
       data = null,
       date = new Date(),
+      addToStorage = true,
     }: {
       preferNotToAnswer?: true | null; // See `MARK: WHY_PNA_TRUE_OR_NULL`.
       data?: AnswerData | null;
       date?: Date;
+      addToStorage?: boolean;
     },
   ): Promise<void> {
     const realQuestionId = this.getRealQuestionId(question.id);
@@ -702,6 +704,7 @@ export default class SurveyScreen extends React.Component<
       preferNotToAnswer,
       data,
       date,
+      addToStorage,
     });
 
     await new Promise((resolve, reject) => {
@@ -900,6 +903,7 @@ export default class SurveyScreen extends React.Component<
                 onDataChange={(data) => {
                   this.addAnswerToAnswersListAsync(question, {
                     data,
+                    addToStorage: false,
                   });
                 }}
                 allAnswers={answers}
@@ -958,6 +962,10 @@ export default class SurveyScreen extends React.Component<
                 ) {
                   return;
                 }
+
+                await this.addAnswerToAnswersListAsync(question, {
+                  data: answers[realQuestionId].data,
+                });
               }
               this.onNextSelect();
             }}
