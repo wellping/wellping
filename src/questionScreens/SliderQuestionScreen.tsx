@@ -82,7 +82,6 @@ const SliderQuestionScreen: React.ElementType<SliderQuestionScreenProps> = ({
             // We need to set it only if it is displayed.
             __FOR_DISPLAY_ONLY__setSliderValue(value);
           }
-          onDataChange({ value } as SliderAnswerData);
         }}
         onSlidingComplete={(value) => {
           onDataChange({ value } as SliderAnswerData);
