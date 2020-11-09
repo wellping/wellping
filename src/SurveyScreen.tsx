@@ -573,7 +573,9 @@ export default class SurveyScreen extends React.Component<
 
     const setStateCallback = () => {
       storePingStateAsync(ping.id, this.state).then(() => {
-        const { lastUploadDate } = this.state;
+        // CHANGE 2020-11-09: Do not upload any data when going to the next question to avoid the slowness caused by waiting for the data to upload.
+
+        /*const { lastUploadDate } = this.state;
         const currentTime = new Date();
         if (
           lastUploadDate == null ||
@@ -585,7 +587,7 @@ export default class SurveyScreen extends React.Component<
             this.props.studyInfo,
             this.props.setUploadStatusSymbol,
           );
-        }
+        }*/
       });
 
       const {
