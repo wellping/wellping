@@ -747,20 +747,38 @@ export default class HomeScreen extends React.Component<
           <View style={{ height: "100%" }}>
             {ExtraView}
             <DebugView />
-            <Text style={styles.onlyTextStyle}>
-              Thank you for your participation!
-            </Text>
-            <Text
-              style={{
-                marginTop: 10,
-                marginHorizontal: 10,
-                textAlign: "center",
-              }}
-            >
-              The study has concluded on{"\n"}
-              {format(getStudyEndDate(studyInfo), "PPPP")}.{"\n\n"}
-              You may now uninstall Well Ping from your phone.
-            </Text>
+            <View style={{ marginHorizontal: 20 }}>
+              <Text style={styles.onlyTextStyle}>
+                Thank you for your participation!
+              </Text>
+              <Text
+                style={{
+                  marginVertical: 10,
+                  textAlign: "center",
+                }}
+              >
+                The study has concluded on{"\n"}
+                {format(getStudyEndDate(studyInfo), "PPPP")}.{"\n\n"}
+                If you have any concerns regarding your ping records (or
+                payments), please do not uninstall the app and press the button
+                below to upload all your pings data stored locally. Otherwise,
+                you may now uninstall Well Ping from your phone.
+              </Text>
+              <Button
+                title="Upload Your Data"
+                onPress={async () => {
+                  const response = await uploadDataAsync(
+                    studyInfo,
+                    this.setUploadStatusSymbol,
+                  );
+                  if (response === null) {
+                    alertWithShareButtonContainingDebugInfo(`Data uploaded.`);
+                  } else {
+                    alertWithShareButtonContainingDebugInfo(`${response}`);
+                  }
+                }}
+              />
+            </View>
           </View>
         );
       }
