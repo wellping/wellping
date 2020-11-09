@@ -577,8 +577,8 @@ export default class SurveyScreen extends React.Component<
         const currentTime = new Date();
         if (
           lastUploadDate == null ||
-          // Only upload at most once every two minutes
-          currentTime.getTime() - lastUploadDate.getTime() > 120 * 1000
+          // Only upload at most half a minute
+          currentTime.getTime() - lastUploadDate.getTime() > 30 * 1000
         ) {
           this.setState({ lastUploadDate: currentTime });
           uploadDataAsync(
