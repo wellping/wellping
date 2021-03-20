@@ -6,7 +6,7 @@
 // https://stackoverflow.com/a/41469576/2603230
 
 // Most code is structured from
-// https://github.com/react-native-community/async-storage/blob/b1b5bcf9a1aa4c55590e731535c0af22bd2e71d6/jest/async-storage-mock.js
+// https://github.com/react-native-async-storage/async-storage/blob/b1b5bcf9a1aa4c55590e731535c0af22bd2e71d6/jest/async-storage-mock.js
 
 const mockSecureStore: any = {
   __INTERNAL_MOCK_STORAGE__: {} as { [key: string]: any },

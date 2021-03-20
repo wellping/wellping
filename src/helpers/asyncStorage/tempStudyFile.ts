@@ -6,7 +6,7 @@
  * This is so that the downloaded file will not interfere with the user in the
  * middle of some process.
  */
-import AsyncStorage from "@react-native-community/async-storage";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { logAndThrowError } from "../debug";
 import { getASKeyAsync } from "./asyncStorage";
