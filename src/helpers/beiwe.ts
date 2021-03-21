@@ -11,7 +11,7 @@ import { Platform } from "react-native";
 import { UploadData } from "./dataUpload";
 import { JS_VERSION_NUMBER } from "./debug";
 import { User, secureGetUserAsync } from "./secureStore/user";
-import { getBeiweServerConfig } from "./server";
+import { DataUploadServerResponse, getBeiweServerConfig } from "./server";
 import { getStudyInfoAsync } from "./studyFile";
 
 /**
@@ -47,17 +47,21 @@ export async function beiweLoginAsync(user: User): Promise<void> {
   }
 }
 
+/**
+ * Returns a `DataUploadServerResponse` if successful.
+ * Throws an error otherwise.
+ */
 export async function beiweUploadDataForUserAsync(
   data: UploadData,
   startUploading: () => void,
   endUploading: (errorMessage?: string) => void,
-): Promise<Error | null> {
+): Promise<DataUploadServerResponse> {
   startUploading();
 
   const user = await secureGetUserAsync();
   if (user === null) {
     endUploading("BW: U=N");
-    return new Error(
+    throw new Error(
       "secureGetUserAsync() === null in beiweUploadDataForUserAsync",
     );
   }
@@ -73,10 +77,10 @@ export async function beiweUploadDataForUserAsync(
     });
     //console.log(`${JSON.stringify(response)}`);
     endUploading();
-    return null;
+    return response as DataUploadServerResponse;
   } catch (e) {
     endUploading(`BW: ${e.message}`);
-    return e;
+    throw e;
   }
 }
 

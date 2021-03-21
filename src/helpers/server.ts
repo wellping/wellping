@@ -3,6 +3,14 @@ import { StudyInfo, FirebaseServerConfig, BeiweServerConfig } from "./types";
 
 export type ServerType = "firebase" | "beiwe";
 
+// If the server returns `new_pings_count` and/or `new_answers_count`
+// then we could check them locally to see if the data is consistent.
+export type DataUploadServerResponse = {
+  new_pings_count?: number;
+  new_answers_count?: number;
+  saved_to?: string;
+};
+
 /**
  * If Firebase is used as the backend server.
  */

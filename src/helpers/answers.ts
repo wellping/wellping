@@ -11,8 +11,14 @@ import {
 } from "./secureStore/answer";
 import { Question, Ping } from "./types";
 
-export async function getAnswersAsync(): Promise<Answer[]> {
-  const answersList = await getAnswersPingIdsQuestionIdsListAsync();
+export async function getAnswersAsync({
+  unuploadedOnly = false,
+}: {
+  unuploadedOnly?: boolean;
+} = {}): Promise<Answer[]> {
+  const answersList = await getAnswersPingIdsQuestionIdsListAsync({
+    unuploadedOnly,
+  });
 
   // https://stackoverflow.com/q/28066429/2603230
   const answers: Answer[] = await Promise.all(

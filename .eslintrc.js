@@ -11,5 +11,7 @@ module.exports = {
     "@typescript-eslint/no-unused-vars": "off",
 
     "react/no-did-mount-set-state": "off",
+
+    "no-useless-return": "off",
   },
 };

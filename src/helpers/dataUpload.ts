@@ -1,5 +1,6 @@
 import { Answer } from "./answerTypes";
 import { getAnswersAsync } from "./answers";
+import { removeFromUnuploadedPingsListAsync } from "./asyncStorage/unuploadedPingsList";
 import { beiweUploadDataForUserAsync } from "./beiwe";
 import {
   UserInstallationInfo,
@@ -9,43 +10,93 @@ import {
 import { firebaseUploadDataForUserAsync } from "./firebase";
 import { getPingsAsync } from "./pings";
 import { secureGetUserAsync } from "./secureStore/user";
-import { useFirebase, useServer, useBeiwe } from "./server";
+import {
+  useFirebase,
+  useServer,
+  useBeiwe,
+  DataUploadServerResponse,
+} from "./server";
 import { StudyInfo, Ping } from "./types";
 
-export type UploadData = {
-  user: {
-    username: string;
-    installation: UserInstallationInfo;
-  };
-  pings: Ping[];
-  answers: Answer[];
+type UserData = {
+  username: string;
+  installation: UserInstallationInfo;
 };
 
-export async function getAllDataAsync(): Promise<UploadData> {
-  const user = await secureGetUserAsync();
-  const pings = await getPingsAsync();
-  const answers = await getAnswersAsync();
+export interface UploadData {
+  user: UserData;
+}
+export interface AllData extends UploadData {
+  pings: Ping[];
+  answers: Answer[];
+}
+export interface UnuploadedData extends UploadData {
+  unuploadedPings: Ping[];
+  unuploadedAnswers: Answer[];
+}
 
+async function _getUserDataAsync(): Promise<UserData> {
+  const user = await secureGetUserAsync();
   if (user === null) {
     throw new Error("user === null in getAllDataAsync");
   }
+  return {
+    username: user.username,
+    installation: USER_INSTALLATION_INFO,
+  };
+}
 
-  const data: UploadData = {
-    user: {
-      username: user.username,
-      installation: USER_INSTALLATION_INFO,
-    },
+export async function getAllDataAsync(): Promise<AllData> {
+  const user = await _getUserDataAsync();
+  const pings = await getPingsAsync();
+  const answers = await getAnswersAsync();
+
+  const data: AllData = {
+    user,
     pings,
     answers,
   };
   return data;
 }
 
+export async function getUnuploadedDataAsync(): Promise<UnuploadedData> {
+  const user = await _getUserDataAsync();
+  const unuploadedPings = await getPingsAsync({ unuploadedOnly: true });
+  const unuploadedAnswers = await getAnswersAsync({ unuploadedOnly: true });
+
+  const data: UnuploadedData = {
+    user,
+    unuploadedPings,
+    unuploadedAnswers,
+  };
+  return data;
+}
+
+/**
+ * Returns a `DataUploadServerResponse` if successful.
+ * Throws an error otherwise.
+ */
 export async function uploadDataAsync(
   studyInfo: StudyInfo,
   setUploadStatusSymbol: (symbol: string) => void,
-): Promise<Error | null> {
-  const data = await getAllDataAsync();
+  {
+    unuploadedOnly,
+    prefetchedData,
+  }: {
+    unuploadedOnly: boolean;
+
+    // If we have already gotten the data, we would just use that.
+    prefetchedData?: UploadData;
+  },
+): Promise<DataUploadServerResponse> {
+  let data: UploadData;
+  if (prefetchedData) {
+    data = prefetchedData;
+  } else if (unuploadedOnly) {
+    data = await getUnuploadedDataAsync();
+  } else {
+    data = await getAllDataAsync();
+  }
 
   const startUploading = (): void => {
     setUploadStatusSymbol(HOME_SCREEN_DEBUG_VIEW_SYMBOLS.UPLOAD.UPLOADING);
@@ -64,31 +115,39 @@ export async function uploadDataAsync(
     );
   };
 
+  let response: DataUploadServerResponse = {};
   if (useServer(studyInfo)) {
     if (useFirebase(studyInfo)) {
-      const error = await firebaseUploadDataForUserAsync(
+      response = await firebaseUploadDataForUserAsync(
         data,
         startUploading,
         endUploading,
       );
-      if (error) {
-        return error;
-      }
     }
     if (useBeiwe(studyInfo)) {
-      const error = await beiweUploadDataForUserAsync(
+      response = await beiweUploadDataForUserAsync(
         data,
         startUploading,
         endUploading,
       );
-      if (error) {
-        return error;
-      }
     }
   } else {
     startUploading();
     await new Promise((r) => setTimeout(r, 1000)); // Simulate loading.
     endUploading(`No Server Set`);
+    response = {};
   }
-  return null;
+
+  // Sucessfully uploaded.
+  console.log(`${JSON.stringify(response)}`);
+
+  if (!unuploadedOnly && "pings" in data) {
+    // If we have uploaded all the data, we can remove the uploaded pings from
+    // the unuploaded pings list.
+    const uploadedData = data as AllData;
+    const uploadedPingsList = uploadedData.pings.map((ping) => ping.id);
+    await removeFromUnuploadedPingsListAsync(uploadedPingsList);
+  }
+
+  return response;
 }

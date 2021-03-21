@@ -23,6 +23,7 @@ import DashboardComponent, {
   getDashboardUrlAsync,
 } from "./components/DashboardComponent";
 import HideKeyboardButtonAndWrapper from "./components/HideKeyboardButtonAndWrapper";
+import { getAnswersPingIdsQuestionIdsListAsync } from "./helpers/asyncStorage/answersPingIdsQuestionIdsList";
 import {
   dequeueFuturePingIfAny,
   getFuturePingsQueue,
@@ -37,8 +38,17 @@ import {
   clearPingStateAsync,
 } from "./helpers/asyncStorage/pingState";
 import { getPingsListAsync } from "./helpers/asyncStorage/pingsList";
+import {
+  addToUnuploadedPingsListIfNeededAsync,
+  getUnuploadedPingsListAsync,
+  removeFromUnuploadedPingsListAsync,
+} from "./helpers/asyncStorage/unuploadedPingsList";
 import { clearAllPingsAndAnswersAsync } from "./helpers/cleanup";
-import { uploadDataAsync, getAllDataAsync } from "./helpers/dataUpload";
+import {
+  uploadDataAsync,
+  getAllDataAsync,
+  getUnuploadedDataAsync,
+} from "./helpers/dataUpload";
 import {
   getNonCriticalProblemTextForUser,
   JS_VERSION_NUMBER,
@@ -62,7 +72,11 @@ import {
   getNumbersOfPingsForAllStreamNamesAsync,
 } from "./helpers/pings";
 import { secureGetUserAsync } from "./helpers/secureStore/user";
-import { getSymbolsForServerTypeUsed, useFirebase } from "./helpers/server";
+import {
+  DataUploadServerResponse,
+  getSymbolsForServerTypeUsed,
+  useFirebase,
+} from "./helpers/server";
 import {
   getAllStreamNames,
   getStudyStartDate,
@@ -319,13 +333,48 @@ export default class HomeScreen extends React.Component<
     await setNotificationsAsync();
   }
 
+  async _uploadUnuploadedDataAndRemoveFromThemIfSuccessfulAsync(
+    doAfterResponseAsync: (
+      response: DataUploadServerResponse,
+    ) => Promise<void> = async (_) => {},
+  ) {
+    const { studyInfo } = this.props;
+    // We need to store `prevUnuploaded` beforehand because unuploaded pings list
+    // might be changed during we are doing `uploadDataAsync`. And we don't want
+    // to remove the newly added pings that we haven't uploaded.
+    const prevUnuploaded = await getUnuploadedPingsListAsync();
+    const prevData = await getUnuploadedDataAsync();
+    uploadDataAsync(studyInfo, this.setUploadStatusSymbol, {
+      unuploadedOnly: true,
+      // We do this to avoid the data being modified before being uploaded.
+      prefetchedData: prevData,
+    })
+      .then(async (response) => {
+        // We have to use `.then` here because we don't want to block.
+        await removeFromUnuploadedPingsListAsync(prevUnuploaded);
+        await doAfterResponseAsync(response);
+      })
+      .catch((e) => {
+        // There's some error in uploading.
+        // Do nothing (keep the unuploaded pings list unmodified).
+        console.warn(`Upload error! ${e}`);
+      });
+  }
+
   async _startSurveyTypeAsync(streamName: StreamName) {
+    // Upload and clear old unuploaded pings (should be at most one)
+    await this._uploadUnuploadedDataAndRemoveFromThemIfSuccessfulAsync();
+
+    // Create new ping.
     const { currentNotificationTime } = this.state;
     const newPing = await insertPingAsync({
       notificationTime: currentNotificationTime!,
       startTime: new Date(),
       streamName,
     });
+
+    // Add this ping to unuploaded pings list.
+    await addToUnuploadedPingsListIfNeededAsync(newPing);
 
     this.setState({
       currentPing: newPing,
@@ -336,6 +385,33 @@ export default class HomeScreen extends React.Component<
   setUploadStatusSymbol = (symbol: string) => {
     this.setState({ uploadStatusSymbol: symbol });
   };
+
+  async _forceUploadAllDataAsync({
+    successTitle,
+    getSuccessMessage = (response) => JSON.stringify(response),
+    errorTitle,
+    getErrorMessage = (error) => getNonCriticalProblemTextForUser(`${error}`),
+  }: {
+    successTitle: string;
+    getSuccessMessage?: (response: DataUploadServerResponse) => string;
+    errorTitle: string;
+    getErrorMessage?: (error: any) => string;
+  }) {
+    const { studyInfo } = this.props;
+    try {
+      const response = await uploadDataAsync(
+        studyInfo,
+        this.setUploadStatusSymbol,
+        { unuploadedOnly: false },
+      );
+      alertWithShareButtonContainingDebugInfo(
+        getSuccessMessage(response),
+        successTitle,
+      );
+    } catch (e) {
+      alertWithShareButtonContainingDebugInfo(getErrorMessage(e), errorTitle);
+    }
+  }
 
   render() {
     const { studyInfo, streams } = this.props;
@@ -389,16 +465,12 @@ export default class HomeScreen extends React.Component<
                             "Current Data",
                             [
                               {
-                                text: "Force upload my current data!",
+                                text: "Force upload ALL of my current data!",
                                 onPress: async () => {
-                                  const response = await uploadDataAsync(
-                                    studyInfo,
-                                    this.setUploadStatusSymbol,
-                                  );
-                                  alertWithShareButtonContainingDebugInfo(
-                                    `${response}`,
-                                    "Data Upload Response",
-                                  );
+                                  await this._forceUploadAllDataAsync({
+                                    successTitle: "Data Uploaded Successfully!",
+                                    errorTitle: "Error: Data Upload Error!",
+                                  });
                                 },
                               },
                             ],
@@ -637,13 +709,46 @@ export default class HomeScreen extends React.Component<
           />
           <Button
             color="orange"
-            title="uploadDataAsync()"
+            title="getUnuploadedDataAsync()"
             onPress={async () => {
-              const response = await uploadDataAsync(
-                studyInfo,
-                this.setUploadStatusSymbol,
-              );
-              alertWithShareButtonContainingDebugInfo(`${response}`);
+              const allData = await getUnuploadedDataAsync();
+              alertWithShareButtonContainingDebugInfo(JSON.stringify(allData));
+            }}
+          />
+          <Button
+            color="orange"
+            title="uploadDataAsync(all)"
+            onPress={async () => {
+              try {
+                const response = await uploadDataAsync(
+                  studyInfo,
+                  this.setUploadStatusSymbol,
+                  { unuploadedOnly: false },
+                );
+                alertWithShareButtonContainingDebugInfo(
+                  JSON.stringify(response),
+                );
+              } catch (e) {
+                alertWithShareButtonContainingDebugInfo(`${e}`);
+              }
+            }}
+          />
+          <Button
+            color="orange"
+            title="uploadDataAsync(unuploaded)"
+            onPress={async () => {
+              try {
+                const response = await uploadDataAsync(
+                  studyInfo,
+                  this.setUploadStatusSymbol,
+                  { unuploadedOnly: true },
+                );
+                alertWithShareButtonContainingDebugInfo(
+                  JSON.stringify(response),
+                );
+              } catch (e) {
+                alertWithShareButtonContainingDebugInfo(`${e}`);
+              }
             }}
           />
           <Button
@@ -767,14 +872,17 @@ export default class HomeScreen extends React.Component<
               <Button
                 title="Upload Your Data"
                 onPress={async () => {
-                  const response = await uploadDataAsync(
-                    studyInfo,
-                    this.setUploadStatusSymbol,
-                  );
-                  if (response === null) {
-                    alertWithShareButtonContainingDebugInfo(`Data uploaded.`);
-                  } else {
-                    alertWithShareButtonContainingDebugInfo(`${response}`);
+                  try {
+                    const response = await uploadDataAsync(
+                      studyInfo,
+                      this.setUploadStatusSymbol,
+                      { unuploadedOnly: false },
+                    );
+                    alertWithShareButtonContainingDebugInfo(
+                      `Data uploaded. Response: ${JSON.stringify(response)}`,
+                    );
+                  } catch (e) {
+                    alertWithShareButtonContainingDebugInfo(`${e}`);
                   }
                 }}
               />
@@ -889,7 +997,64 @@ export default class HomeScreen extends React.Component<
           previousState={this.state.storedPingStateAsync}
           onFinish={(finishedPing) => {
             this.setState({ currentPing: finishedPing });
-            uploadDataAsync(studyInfo, this.setUploadStatusSymbol);
+            this._uploadUnuploadedDataAndRemoveFromThemIfSuccessfulAsync(
+              async (response) => {
+                const showDataDiscrepencyAlert = () => {
+                  Alert.alert(
+                    "Data Discrepancy Detected",
+                    "The data on your phone locally does not match the data we have on the server. " +
+                      "To ensure your answers are recorded correctly, please click the “Upload All Data” button below.\n\n" +
+                      "During upload, your phone might be unresponsive for several minutes. " +
+                      "Please do not exit the app until you see a message telling you that the upload is complete.",
+                    [
+                      {
+                        text: "Upload All Data",
+                        onPress: async () => {
+                          await this._forceUploadAllDataAsync({
+                            successTitle: "Data Uploaded Successfully!",
+                            getSuccessMessage: (response) =>
+                              "Thank you for your patience. " +
+                              "You may exit the app now.\n\n" +
+                              `Response: ${JSON.stringify(response)}`,
+                            errorTitle: "Error: Data Upload Error!",
+                            getErrorMessage: (error) =>
+                              "We cannot upload your data at this moment.\n\n" +
+                              "You may exit the app for now, we will alert you again of this problem next time you finished a ping.\n\n" +
+                              `Error message: ${error}`,
+                          });
+                        },
+                      },
+                    ],
+                  );
+                };
+
+                const serverPingsCount = response.new_pings_count;
+                if (serverPingsCount != null) {
+                  const localPingsCount = (await getPingsListAsync()).length;
+                  if (serverPingsCount !== localPingsCount) {
+                    console.warn(
+                      `serverPingsCount (${serverPingsCount}) != localPingsCount (${localPingsCount})!`,
+                    );
+                    showDataDiscrepencyAlert();
+                    return;
+                  }
+                }
+
+                const serverAnswersCount = response.new_answers_count;
+                if (serverAnswersCount != null) {
+                  const localAnswersCount = (
+                    await getAnswersPingIdsQuestionIdsListAsync()
+                  ).length;
+                  if (serverAnswersCount !== localAnswersCount) {
+                    console.warn(
+                      `serverAnswersCount (${serverAnswersCount}) != localAnswersCount (${localAnswersCount})!`,
+                    );
+                    showDataDiscrepencyAlert();
+                    return;
+                  }
+                }
+              },
+            );
           }}
           studyInfo={studyInfo}
           setUploadStatusSymbol={this.setUploadStatusSymbol}
