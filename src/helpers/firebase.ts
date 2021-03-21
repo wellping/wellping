@@ -6,7 +6,7 @@
 import * as firebase from "firebase/app";
 
 import { UploadData } from "./dataUpload";
-import { INSTALLATION_ID } from "./debug";
+import { getLoginSessionID } from "./loginSession";
 import { User } from "./secureStore/user";
 import { DataUploadServerResponse, getFirebaseServerConfig } from "./server";
 import { StudyInfo } from "./types";
@@ -87,6 +87,7 @@ export async function firebaseLogoutAndDeleteAppAsync(): Promise<void> {
  */
 export async function firebaseUploadDataForUserAsync(
   data: UploadData,
+  localUser: User,
   startUploading: () => void,
   endUploading: (errorMessage?: string) => void,
 ): Promise<DataUploadServerResponse> {
@@ -107,7 +108,8 @@ export async function firebaseUploadDataForUserAsync(
     const dataPlain = JSON.parse(JSON.stringify(data));
     await firebase
       .database()
-      .ref(`users/${user.uid}/${INSTALLATION_ID}`)
+      // TODO: verify getLoginSessionID is working correctly here
+      .ref(`users/${user.uid}/${getLoginSessionID(localUser)}`)
       .set(dataPlain);
     endUploading();
     // TODO: support new_pings_count` and `new_answers_count.
