@@ -4,7 +4,7 @@ import React from "react";
 import { Text, View } from "react-native";
 import { WebView } from "react-native-webview";
 
-import { getBeiweDeviceId } from "../helpers/beiwe";
+import { INSTALLATION_ID } from "../helpers/debug";
 import { base64ToBase64URL, getHashedPasswordAsync } from "../helpers/helpers";
 import {
   getPingsAsync,
@@ -15,10 +15,10 @@ import { secureGetUserAsync } from "../helpers/secureStore/user";
 import { StudyInfo } from "../helpers/types";
 
 const TIMEZONE_OFFSET_PLACEHOLDER = "__TIMEZONE_OFFSET__";
+const INSTALLATION_ID_PLACEHOLDER = "__INSTALLATION_ID__";
 const USERNAME_PLACEHOLDER = "__USERNAME__";
 const PASSWORD_HASH_PLACEHOLDER = "__PASSWORD_HASH__";
 const FIREBASE_ID_TOKEN_PLACEHOLDER = "__FIREBASE_ID_TOKEN__";
-const BEIWE_DEVICE_ID_PLACEHOLDER = "__BEIWE_DEVICE_ID__";
 const PINGS_COMPLETED_OVERALL_PLACEHOLDER = "__PINGS_COMPLETED_OVERALL__";
 const PINGS_COMPLETED_THIS_WEEK_PLACEHOLDER = "__PINGS_COMPLETED_THIS_WEEK__";
 const PINGS_COMPLETED_TODAY_PLACEHOLDER = "__PINGS_COMPLETED_TODAY__";
@@ -33,6 +33,12 @@ export async function getDashboardUrlAsync(
     dashboardUrl = dashboardUrl
       .split(TIMEZONE_OFFSET_PLACEHOLDER)
       .join(`${timezoneOffset}`);
+  }
+
+  if (dashboardUrl.includes(INSTALLATION_ID_PLACEHOLDER)) {
+    dashboardUrl = dashboardUrl
+      .split(INSTALLATION_ID_PLACEHOLDER)
+      .join(INSTALLATION_ID);
   }
 
   if (dashboardUrl.includes(USERNAME_PLACEHOLDER)) {
@@ -66,17 +72,6 @@ export async function getDashboardUrlAsync(
     dashboardUrl = dashboardUrl
       .split(FIREBASE_ID_TOKEN_PLACEHOLDER)
       .join(firebaseIdToken);
-  }
-
-  if (dashboardUrl.includes(BEIWE_DEVICE_ID_PLACEHOLDER)) {
-    let beiweDeviceId = "N/A";
-    const user = await secureGetUserAsync();
-    if (user) {
-      beiweDeviceId = getBeiweDeviceId(user.username);
-    }
-    dashboardUrl = dashboardUrl
-      .split(BEIWE_DEVICE_ID_PLACEHOLDER)
-      .join(beiweDeviceId);
   }
 
   if (dashboardUrl.includes(PINGS_COMPLETED_OVERALL_PLACEHOLDER)) {
