@@ -872,18 +872,37 @@ export default class HomeScreen extends React.Component<
               <Button
                 title="Upload Your Data"
                 onPress={async () => {
-                  try {
-                    const response = await uploadDataAsync(
-                      studyInfo,
-                      this.setUploadStatusSymbol,
-                      { unuploadedOnly: false },
-                    );
-                    alertWithShareButtonContainingDebugInfo(
-                      `Data uploaded. Response: ${JSON.stringify(response)}`,
-                    );
-                  } catch (e) {
-                    alertWithShareButtonContainingDebugInfo(`${e}`);
-                  }
+                  Alert.alert(
+                    "Upload All Data",
+                    "During upload, your phone might be unresponsive for several minutes.\n\n" +
+                      "Please do not exit the app until you see a message telling you that the upload is complete.",
+                    [
+                      {
+                        text: "Upload All Data",
+                        onPress: async () => {
+                          await this._forceUploadAllDataAsync({
+                            successTitle: "Data Uploaded Successfully!",
+                            getSuccessMessage: (response) =>
+                              "Thank you for your patience. " +
+                              "Your local data has been successfully uploaded to the server.\n\n" +
+                              `Response: ${JSON.stringify(response)}`,
+                            errorTitle: "Error: Data Upload Error!",
+                            getErrorMessage: (error) =>
+                              "We cannot upload your data at this moment.\n\n" +
+                              "Please try again later or contact the research staff.\n\n" +
+                              `Error message: ${error}`,
+                          });
+                        },
+                      },
+                      {
+                        text: "Cancel",
+                        style: "cancel",
+                        onPress: async () => {
+                          // Do nothing
+                        },
+                      },
+                    ],
+                  );
                 }}
               />
             </View>
