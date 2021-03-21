@@ -999,33 +999,7 @@ export default class HomeScreen extends React.Component<
             this.setState({ currentPing: finishedPing });
             this._uploadUnuploadedDataAndRemoveFromThemIfSuccessfulAsync(
               async (response) => {
-                let isDataDiscrepant = false;
-
-                const serverPingsCount = response.new_pings_count;
-                if (serverPingsCount != null) {
-                  const localPingsCount = (await getPingsListAsync()).length;
-                  if (serverPingsCount !== localPingsCount) {
-                    console.warn(
-                      `serverPingsCount (${serverPingsCount}) != localPingsCount (${localPingsCount})!`,
-                    );
-                    isDataDiscrepant = true;
-                  }
-                }
-
-                const serverAnswersCount = response.new_answers_count;
-                if (serverAnswersCount != null) {
-                  const localAnswersCount = (
-                    await getAnswersPingIdsQuestionIdsListAsync()
-                  ).length;
-                  if (serverAnswersCount !== localAnswersCount) {
-                    console.warn(
-                      `serverAnswersCount (${serverAnswersCount}) != localAnswersCount (${localAnswersCount})!`,
-                    );
-                    isDataDiscrepant = true;
-                  }
-                }
-
-                if (isDataDiscrepant) {
+                const showDataDiscrepencyAlert = () => {
                   Alert.alert(
                     "Data Discrepancy Detected",
                     "The data on your phone locally does not match the data we have on the server. " +
@@ -1052,6 +1026,32 @@ export default class HomeScreen extends React.Component<
                       },
                     ],
                   );
+                };
+
+                const serverPingsCount = response.new_pings_count;
+                if (serverPingsCount != null) {
+                  const localPingsCount = (await getPingsListAsync()).length;
+                  if (serverPingsCount !== localPingsCount) {
+                    console.warn(
+                      `serverPingsCount (${serverPingsCount}) != localPingsCount (${localPingsCount})!`,
+                    );
+                    showDataDiscrepencyAlert();
+                    return;
+                  }
+                }
+
+                const serverAnswersCount = response.new_answers_count;
+                if (serverAnswersCount != null) {
+                  const localAnswersCount = (
+                    await getAnswersPingIdsQuestionIdsListAsync()
+                  ).length;
+                  if (serverAnswersCount !== localAnswersCount) {
+                    console.warn(
+                      `serverAnswersCount (${serverAnswersCount}) != localAnswersCount (${localAnswersCount})!`,
+                    );
+                    showDataDiscrepencyAlert();
+                    return;
+                  }
                 }
               },
             );
