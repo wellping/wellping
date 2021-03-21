@@ -3,7 +3,12 @@ import { isToday } from "date-fns";
 import {
   getPingsListAsync,
   clearPingsListAsync,
+  PingsList,
 } from "./asyncStorage/pingsList";
+import {
+  getUnuploadedPingsListAsync,
+  clearUnuploadedPingsListAsync,
+} from "./asyncStorage/unuploadedPingsList";
 import { PingSchema } from "./schemas/Ping";
 import {
   secureStorePingAsync,
@@ -96,10 +101,19 @@ export async function getLatestPingAsync(): Promise<Ping | null> {
   return await secureGetPingAsync(latestPingId);
 }
 
-export async function getPingsAsync(
-  order: "ASC" | "DESC" = "ASC",
-): Promise<Ping[]> {
-  const pingsList = await getPingsListAsync();
+export async function getPingsAsync({
+  order = "ASC",
+  unuploadedOnly = false,
+}: {
+  order?: "ASC" | "DESC";
+  unuploadedOnly?: boolean;
+} = {}): Promise<Ping[]> {
+  let pingsList: PingsList;
+  if (unuploadedOnly) {
+    pingsList = await getUnuploadedPingsListAsync();
+  } else {
+    pingsList = await getPingsListAsync();
+  }
   if (order === "DESC") {
     // As it is in ascending order by default.
     pingsList.reverse();
@@ -126,7 +140,7 @@ export async function getPingsUntilAsync(
   untilAsync: (ping: Ping) => Promise<boolean> | boolean,
   order: "ASC" | "DESC",
 ): Promise<Ping[]> {
-  const allPings = await getPingsAsync(order);
+  const allPings = await getPingsAsync({ order });
   const resultsPings: Ping[] = [];
   for (const ping of allPings) {
     if (ping.notificationTime > new Date()) {
@@ -171,4 +185,5 @@ export async function clearAllPingsAsync() {
     }),
   );
   await clearPingsListAsync();
+  await clearUnuploadedPingsListAsync();
 }

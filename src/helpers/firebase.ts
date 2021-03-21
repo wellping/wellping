@@ -80,6 +80,7 @@ export async function firebaseLogoutAndDeleteAppAsync(): Promise<void> {
   }
 }
 
+// TODO: support upload unuploaded
 export async function firebaseUploadDataForUserAsync(
   data: UploadData,
   startUploading: () => void,

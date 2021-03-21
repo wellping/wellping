@@ -4,7 +4,8 @@ import { Answer } from "../answerTypes";
 import { logAndThrowError } from "../debug";
 import { PingId, QuestionId } from "../types";
 import { getASKeyAsync } from "./asyncStorage";
-import { getPingsListAsync } from "./pingsList";
+import { getPingsListAsync, PingsList } from "./pingsList";
+import { getUnuploadedPingsListAsync } from "./unuploadedPingsList";
 
 export type AnswerPingIdQuestionId = [PingId, QuestionId];
 export type AnswersPingIdsQuestionIdsList = AnswerPingIdQuestionId[];
@@ -59,10 +60,17 @@ export async function getAnswersQuestionIdsListForPingAsync(
   }
 }
 
-export async function getAnswersPingIdsQuestionIdsListAsync(): Promise<
-  AnswersPingIdsQuestionIdsList
-> {
-  const pingsList = await getPingsListAsync();
+export async function getAnswersPingIdsQuestionIdsListAsync({
+  unuploadedOnly = false,
+}: {
+  unuploadedOnly?: boolean;
+} = {}): Promise<AnswersPingIdsQuestionIdsList> {
+  let pingsList: PingsList;
+  if (unuploadedOnly) {
+    pingsList = await getUnuploadedPingsListAsync();
+  } else {
+    pingsList = await getPingsListAsync();
+  }
 
   // https://stackoverflow.com/q/28066429/2603230
   const answersQuestionIdsNested: AnswersPingIdsQuestionIdsList[] = await Promise.all(

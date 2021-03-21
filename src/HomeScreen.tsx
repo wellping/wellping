@@ -37,8 +37,17 @@ import {
   clearPingStateAsync,
 } from "./helpers/asyncStorage/pingState";
 import { getPingsListAsync } from "./helpers/asyncStorage/pingsList";
+import {
+  addToUnuploadedPingsListIfNeededAsync,
+  getUnuploadedPingsListAsync,
+  removeFromUnuploadedPingsListAsync,
+} from "./helpers/asyncStorage/unuploadedPingsList";
 import { clearAllPingsAndAnswersAsync } from "./helpers/cleanup";
-import { uploadDataAsync, getAllDataAsync } from "./helpers/dataUpload";
+import {
+  uploadDataAsync,
+  getAllDataAsync,
+  getUnuploadedDataAsync,
+} from "./helpers/dataUpload";
 import {
   getNonCriticalProblemTextForUser,
   JS_VERSION_NUMBER,
@@ -319,13 +328,43 @@ export default class HomeScreen extends React.Component<
     await setNotificationsAsync();
   }
 
+  async _uploadUnuploadedDataAndRemoveFromThemIfSuccessfulAsync() {
+    const { studyInfo } = this.props;
+    // We need to store `prevUnuploaded` beforehand because unuploaded pings list
+    // might be changed during we are doing `uploadDataAsync`. And we don't want
+    // to remove the newly added pings that we haven't uploaded.
+    const prevUnuploaded = await getUnuploadedPingsListAsync();
+    const prevData = await getUnuploadedDataAsync();
+    uploadDataAsync(studyInfo, this.setUploadStatusSymbol, {
+      unuploadedOnly: true,
+      // We do this to avoid the data being modified before being uploaded.
+      prefetchedData: prevData,
+    }).then(async (result) => {
+      // We have to use `.then` here because we don't want to block.
+
+      if (result != null) {
+        // There's some error in uploading.
+        // Do nothing (keep them in the unuploaded pings list).
+      } else {
+        await removeFromUnuploadedPingsListAsync(prevUnuploaded);
+      }
+    });
+  }
+
   async _startSurveyTypeAsync(streamName: StreamName) {
+    // Upload and clear old unuploaded pings (should be at most one)
+    await this._uploadUnuploadedDataAndRemoveFromThemIfSuccessfulAsync();
+
+    // Create new ping.
     const { currentNotificationTime } = this.state;
     const newPing = await insertPingAsync({
       notificationTime: currentNotificationTime!,
       startTime: new Date(),
       streamName,
     });
+
+    // Add this ping to unuploaded pings list.
+    await addToUnuploadedPingsListIfNeededAsync(newPing);
 
     this.setState({
       currentPing: newPing,
@@ -389,11 +428,12 @@ export default class HomeScreen extends React.Component<
                             "Current Data",
                             [
                               {
-                                text: "Force upload my current data!",
+                                text: "Force upload ALL of my current data!",
                                 onPress: async () => {
                                   const response = await uploadDataAsync(
                                     studyInfo,
                                     this.setUploadStatusSymbol,
+                                    { unuploadedOnly: false },
                                   );
                                   alertWithShareButtonContainingDebugInfo(
                                     `${response}`,
@@ -637,11 +677,32 @@ export default class HomeScreen extends React.Component<
           />
           <Button
             color="orange"
-            title="uploadDataAsync()"
+            title="getUnuploadedDataAsync()"
+            onPress={async () => {
+              const allData = await getUnuploadedDataAsync();
+              alertWithShareButtonContainingDebugInfo(JSON.stringify(allData));
+            }}
+          />
+          <Button
+            color="orange"
+            title="uploadDataAsync(all)"
             onPress={async () => {
               const response = await uploadDataAsync(
                 studyInfo,
                 this.setUploadStatusSymbol,
+                { unuploadedOnly: false },
+              );
+              alertWithShareButtonContainingDebugInfo(`${response}`);
+            }}
+          />
+          <Button
+            color="orange"
+            title="uploadDataAsync(unuploaded)"
+            onPress={async () => {
+              const response = await uploadDataAsync(
+                studyInfo,
+                this.setUploadStatusSymbol,
+                { unuploadedOnly: true },
               );
               alertWithShareButtonContainingDebugInfo(`${response}`);
             }}
@@ -770,6 +831,7 @@ export default class HomeScreen extends React.Component<
                   const response = await uploadDataAsync(
                     studyInfo,
                     this.setUploadStatusSymbol,
+                    { unuploadedOnly: false },
                   );
                   if (response === null) {
                     alertWithShareButtonContainingDebugInfo(`Data uploaded.`);
@@ -889,7 +951,7 @@ export default class HomeScreen extends React.Component<
           previousState={this.state.storedPingStateAsync}
           onFinish={(finishedPing) => {
             this.setState({ currentPing: finishedPing });
-            uploadDataAsync(studyInfo, this.setUploadStatusSymbol);
+            this._uploadUnuploadedDataAndRemoveFromThemIfSuccessfulAsync();
           }}
           studyInfo={studyInfo}
           setUploadStatusSymbol={this.setUploadStatusSymbol}
