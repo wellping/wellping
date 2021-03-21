@@ -8,6 +8,7 @@ import {
   USER_INSTALLATION_INFO,
 } from "./debug";
 import { firebaseUploadDataForUserAsync } from "./firebase";
+import { getLoginSessionID } from "./loginSession";
 import { getPingsAsync } from "./pings";
 import { secureGetUserAsync } from "./secureStore/user";
 import {
@@ -20,6 +21,7 @@ import { StudyInfo, Ping } from "./types";
 
 type UserData = {
   username: string;
+  loginSessionId: string;
   installation: UserInstallationInfo;
 };
 
@@ -42,6 +44,7 @@ async function _getUserDataAsync(): Promise<UserData> {
   }
   return {
     username: user.username,
+    loginSessionId: getLoginSessionID(user),
     installation: USER_INSTALLATION_INFO,
   };
 }
