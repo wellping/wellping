@@ -150,11 +150,6 @@ export interface SurveyScreenState {
   answers: AnswersList;
 
   /**
-   * The last upload time.
-   */
-  lastUploadDate: Date | null;
-
-  /**
    * Whether we are transitioning from two questions.
    * If true, this sets the whole screen's opacity to 0.
    */
@@ -178,7 +173,6 @@ export default class SurveyScreen extends React.Component<
         },
         nextQuestionsDataStack: [],
         answers: {},
-        lastUploadDate: null,
         isInTransition: false,
       };
     }
@@ -572,21 +566,7 @@ export default class SurveyScreen extends React.Component<
     const { questions, ping } = this.props;
 
     const setStateCallback = () => {
-      storePingStateAsync(ping.id, this.state).then(() => {
-        const { lastUploadDate } = this.state;
-        const currentTime = new Date();
-        if (
-          lastUploadDate == null ||
-          // Only upload at most half a minute
-          currentTime.getTime() - lastUploadDate.getTime() > 30 * 1000
-        ) {
-          this.setState({ lastUploadDate: currentTime });
-          uploadDataAsync(
-            this.props.studyInfo,
-            this.props.setUploadStatusSymbol,
-          );
-        }
-      });
+      storePingStateAsync(ping.id, this.state);
 
       const {
         currentQuestionData: { questionId: currentQuestionid },

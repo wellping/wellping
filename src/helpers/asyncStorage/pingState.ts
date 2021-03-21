@@ -35,14 +35,10 @@ export async function getPingStateAsync(
         },
         nextQuestionsDataStack: [],
         answers: {},
-        lastUploadDate: new Date(0),
         isInTransition: false,
       };
     }
     const state: SurveyScreenState = JSON.parse(value);
-    if (state.lastUploadDate) {
-      state.lastUploadDate = new Date(state.lastUploadDate);
-    }
     return state;
   } catch (error) {
     logAndThrowError(error);
