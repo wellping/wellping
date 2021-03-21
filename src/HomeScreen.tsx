@@ -23,6 +23,7 @@ import DashboardComponent, {
   getDashboardUrlAsync,
 } from "./components/DashboardComponent";
 import HideKeyboardButtonAndWrapper from "./components/HideKeyboardButtonAndWrapper";
+import { getAnswersPingIdsQuestionIdsListAsync } from "./helpers/asyncStorage/answersPingIdsQuestionIdsList";
 import {
   dequeueFuturePingIfAny,
   getFuturePingsQueue,
@@ -1011,21 +1012,26 @@ export default class HomeScreen extends React.Component<
                   }
                 }
 
-                // We do not check `response.new_answers_count` because checking
-                // that might actually be as expensive as just fetching them and
-                // uploading them. And we want this to be as fast as possible.
-                // Furthermore, it is doubtable that we would be in a situation
-                // where pings count is consistent but answers count is not
-                // because we always get the answers from the pings list.
+                const serverAnswersCount = response.new_answers_count;
+                if (serverAnswersCount != null) {
+                  const localAnswersCount = (
+                    await getAnswersPingIdsQuestionIdsListAsync()
+                  ).length;
+                  if (serverAnswersCount !== localAnswersCount) {
+                    console.warn(
+                      `serverAnswersCount (${serverAnswersCount}) != localAnswersCount (${localAnswersCount})!`,
+                    );
+                    isDataDiscrepant = true;
+                  }
+                }
 
                 if (isDataDiscrepant) {
                   Alert.alert(
                     "Data Discrepancy Detected",
                     "The data on your phone locally does not match the data we have on the server. " +
                       "To ensure your answers are recorded correctly, please click the “Upload All Data” button below.\n\n" +
-                      "Your phone might be unresponsive for several minutes. " +
-                      "Please do not exit the app while uploading.\n\n" +
-                      "You will see a message after the upload is complete.",
+                      "During upload, your phone might be unresponsive for several minutes. " +
+                      "Please do not exit the app until you see a message telling you that the upload is complete.",
                     [
                       {
                         text: "Upload All Data",
