@@ -339,16 +339,18 @@ export default class HomeScreen extends React.Component<
       unuploadedOnly: true,
       // We do this to avoid the data being modified before being uploaded.
       prefetchedData: prevData,
-    }).then(async (result) => {
-      // We have to use `.then` here because we don't want to block.
-
-      if (result != null) {
+    })
+      .then(async (result) => {
+        // We have to use `.then` here because we don't want to block.
+        const response = await removeFromUnuploadedPingsListAsync(
+          prevUnuploaded,
+        );
+      })
+      .catch((e) => {
         // There's some error in uploading.
-        // Do nothing (keep them in the unuploaded pings list).
-      } else {
-        await removeFromUnuploadedPingsListAsync(prevUnuploaded);
-      }
-    });
+        // Do nothing (keep the unuploaded pings list unmodified).
+        console.warn(`Upload error! ${e}`);
+      });
   }
 
   async _startSurveyTypeAsync(streamName: StreamName) {
@@ -430,15 +432,22 @@ export default class HomeScreen extends React.Component<
                               {
                                 text: "Force upload ALL of my current data!",
                                 onPress: async () => {
-                                  const response = await uploadDataAsync(
-                                    studyInfo,
-                                    this.setUploadStatusSymbol,
-                                    { unuploadedOnly: false },
-                                  );
-                                  alertWithShareButtonContainingDebugInfo(
-                                    `${response}`,
-                                    "Data Upload Response",
-                                  );
+                                  try {
+                                    const response = await uploadDataAsync(
+                                      studyInfo,
+                                      this.setUploadStatusSymbol,
+                                      { unuploadedOnly: false },
+                                    );
+                                    alertWithShareButtonContainingDebugInfo(
+                                      JSON.stringify(response),
+                                      "Data Upload Response",
+                                    );
+                                  } catch (e) {
+                                    alertWithShareButtonContainingDebugInfo(
+                                      getNonCriticalProblemTextForUser(`${e}`),
+                                      "Error: Data Upload Error",
+                                    );
+                                  }
                                 },
                               },
                             ],
@@ -687,24 +696,36 @@ export default class HomeScreen extends React.Component<
             color="orange"
             title="uploadDataAsync(all)"
             onPress={async () => {
-              const response = await uploadDataAsync(
-                studyInfo,
-                this.setUploadStatusSymbol,
-                { unuploadedOnly: false },
-              );
-              alertWithShareButtonContainingDebugInfo(`${response}`);
+              try {
+                const response = await uploadDataAsync(
+                  studyInfo,
+                  this.setUploadStatusSymbol,
+                  { unuploadedOnly: false },
+                );
+                alertWithShareButtonContainingDebugInfo(
+                  JSON.stringify(response),
+                );
+              } catch (e) {
+                alertWithShareButtonContainingDebugInfo(`${e}`);
+              }
             }}
           />
           <Button
             color="orange"
             title="uploadDataAsync(unuploaded)"
             onPress={async () => {
-              const response = await uploadDataAsync(
-                studyInfo,
-                this.setUploadStatusSymbol,
-                { unuploadedOnly: true },
-              );
-              alertWithShareButtonContainingDebugInfo(`${response}`);
+              try {
+                const response = await uploadDataAsync(
+                  studyInfo,
+                  this.setUploadStatusSymbol,
+                  { unuploadedOnly: true },
+                );
+                alertWithShareButtonContainingDebugInfo(
+                  JSON.stringify(response),
+                );
+              } catch (e) {
+                alertWithShareButtonContainingDebugInfo(`${e}`);
+              }
             }}
           />
           <Button
@@ -828,15 +849,17 @@ export default class HomeScreen extends React.Component<
               <Button
                 title="Upload Your Data"
                 onPress={async () => {
-                  const response = await uploadDataAsync(
-                    studyInfo,
-                    this.setUploadStatusSymbol,
-                    { unuploadedOnly: false },
-                  );
-                  if (response === null) {
-                    alertWithShareButtonContainingDebugInfo(`Data uploaded.`);
-                  } else {
-                    alertWithShareButtonContainingDebugInfo(`${response}`);
+                  try {
+                    const response = await uploadDataAsync(
+                      studyInfo,
+                      this.setUploadStatusSymbol,
+                      { unuploadedOnly: false },
+                    );
+                    alertWithShareButtonContainingDebugInfo(
+                      `Data uploaded. Response: ${JSON.stringify(response)}`,
+                    );
+                  } catch (e) {
+                    alertWithShareButtonContainingDebugInfo(`${e}`);
                   }
                 }}
               />

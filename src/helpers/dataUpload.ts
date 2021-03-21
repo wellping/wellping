@@ -10,7 +10,12 @@ import {
 import { firebaseUploadDataForUserAsync } from "./firebase";
 import { getPingsAsync } from "./pings";
 import { secureGetUserAsync } from "./secureStore/user";
-import { useFirebase, useServer, useBeiwe } from "./server";
+import {
+  useFirebase,
+  useServer,
+  useBeiwe,
+  DataUploadServerResponse,
+} from "./server";
 import { StudyInfo, Ping } from "./types";
 
 type UserData = {
@@ -67,6 +72,10 @@ export async function getUnuploadedDataAsync(): Promise<UnuploadedData> {
   return data;
 }
 
+/**
+ * Returns a `DataUploadServerResponse` if successful.
+ * Throws an error otherwise.
+ */
 export async function uploadDataAsync(
   studyInfo: StudyInfo,
   setUploadStatusSymbol: (symbol: string) => void,
@@ -79,7 +88,7 @@ export async function uploadDataAsync(
     // If we have already gotten the data, we would just use that.
     prefetchedData?: UploadData;
   },
-): Promise<Error | null> {
+): Promise<DataUploadServerResponse> {
   let data: UploadData;
   if (prefetchedData) {
     data = prefetchedData;
@@ -106,34 +115,31 @@ export async function uploadDataAsync(
     );
   };
 
+  let response: DataUploadServerResponse = {};
   if (useServer(studyInfo)) {
     if (useFirebase(studyInfo)) {
-      const error = await firebaseUploadDataForUserAsync(
+      response = await firebaseUploadDataForUserAsync(
         data,
         startUploading,
         endUploading,
       );
-      if (error) {
-        return error;
-      }
     }
     if (useBeiwe(studyInfo)) {
-      const error = await beiweUploadDataForUserAsync(
+      response = await beiweUploadDataForUserAsync(
         data,
         startUploading,
         endUploading,
       );
-      if (error) {
-        return error;
-      }
     }
   } else {
     startUploading();
     await new Promise((r) => setTimeout(r, 1000)); // Simulate loading.
     endUploading(`No Server Set`);
+    response = {};
   }
 
   // Sucessfully uploaded.
+  console.log(`${JSON.stringify(response)}`);
 
   if (!unuploadedOnly && "pings" in data) {
     // If we have uploaded all the data, we can remove the uploaded pings from
@@ -143,5 +149,5 @@ export async function uploadDataAsync(
     await removeFromUnuploadedPingsListAsync(uploadedPingsList);
   }
 
-  return null;
+  return response;
 }
