@@ -84,6 +84,10 @@ export async function beiweUploadDataForUserAsync(
   }
 }
 
+export function getBeiweDeviceId(username: string): string {
+  return `${username}-${Constants.installationId}`;
+}
+
 async function getRequestURLAsync(
   endpoint: string,
   request: { [key: string]: any } = {},
@@ -100,7 +104,7 @@ async function getRequestURLAsync(
 
   const passwordHash = await getHashedPasswordAsync(user.password);
   request["password"] = base64ToBase64URL(passwordHash);
-  request["device_id"] = `${user.username}-${Constants.installationId}`;
+  request["device_id"] = getBeiweDeviceId(user.username);
   request["username"] = user.username;
   request["patient_id"] = user.username;
 
