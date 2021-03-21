@@ -182,6 +182,7 @@ export default class LoginScreen extends React.Component<
       user = {
         username: loginInfo.username,
         password: loginInfo.password,
+        loginDate: new Date().getTime(),
       };
       studyFileURL = loginInfo.studyFileURL;
     } catch (e) {

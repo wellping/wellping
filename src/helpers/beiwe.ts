@@ -3,13 +3,13 @@
  * `useBeiwe(studyInfo) === true`.
  */
 
-import Constants from "expo-constants";
 import * as Device from "expo-device";
 import { Platform } from "react-native";
 
 import { UploadData } from "./dataUpload";
 import { JS_VERSION_NUMBER } from "./debug";
 import { base64ToBase64URL, getHashedPasswordAsync } from "./helpers";
+import { getLoginSessionID } from "./loginSession";
 import { User, secureGetUserAsync } from "./secureStore/user";
 import { DataUploadServerResponse, getBeiweServerConfig } from "./server";
 import { getStudyInfoAsync } from "./studyFile";
@@ -53,18 +53,11 @@ export async function beiweLoginAsync(user: User): Promise<void> {
  */
 export async function beiweUploadDataForUserAsync(
   data: UploadData,
+  user: User,
   startUploading: () => void,
   endUploading: (errorMessage?: string) => void,
 ): Promise<DataUploadServerResponse> {
   startUploading();
-
-  const user = await secureGetUserAsync();
-  if (user === null) {
-    endUploading("BW: U=N");
-    throw new Error(
-      "secureGetUserAsync() === null in beiweUploadDataForUserAsync",
-    );
-  }
 
   try {
     const endpoint = "/ssnl_upload";
@@ -84,10 +77,6 @@ export async function beiweUploadDataForUserAsync(
   }
 }
 
-export function getBeiweDeviceId(username: string): string {
-  return `${username}-${Constants.installationId}`;
-}
-
 async function getRequestURLAsync(
   endpoint: string,
   request: { [key: string]: any } = {},
@@ -104,7 +93,7 @@ async function getRequestURLAsync(
 
   const passwordHash = await getHashedPasswordAsync(user.password);
   request["password"] = base64ToBase64URL(passwordHash);
-  request["device_id"] = getBeiweDeviceId(user.username);
+  request["device_id"] = getLoginSessionID(user);
   request["username"] = user.username;
   request["patient_id"] = user.username;
 

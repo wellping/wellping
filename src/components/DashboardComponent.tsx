@@ -6,6 +6,7 @@ import { WebView } from "react-native-webview";
 
 import { INSTALLATION_ID } from "../helpers/debug";
 import { base64ToBase64URL, getHashedPasswordAsync } from "../helpers/helpers";
+import { getLoginSessionID } from "../helpers/loginSession";
 import {
   getPingsAsync,
   getThisWeekPingsAsync,
@@ -16,6 +17,7 @@ import { StudyInfo } from "../helpers/types";
 
 const TIMEZONE_OFFSET_PLACEHOLDER = "__TIMEZONE_OFFSET__";
 const INSTALLATION_ID_PLACEHOLDER = "__INSTALLATION_ID__";
+const LOGIN_SESSION_ID_PLACEHOLDER = "__LOGIN_SESSION_ID__";
 const USERNAME_PLACEHOLDER = "__USERNAME__";
 const PASSWORD_HASH_PLACEHOLDER = "__PASSWORD_HASH__";
 const FIREBASE_ID_TOKEN_PLACEHOLDER = "__FIREBASE_ID_TOKEN__";
@@ -39,6 +41,17 @@ export async function getDashboardUrlAsync(
     dashboardUrl = dashboardUrl
       .split(INSTALLATION_ID_PLACEHOLDER)
       .join(INSTALLATION_ID);
+  }
+
+  if (dashboardUrl.includes(LOGIN_SESSION_ID_PLACEHOLDER)) {
+    let loginSessionId = "N/A";
+    const user = await secureGetUserAsync();
+    if (user) {
+      loginSessionId = getLoginSessionID(user);
+    }
+    dashboardUrl = dashboardUrl
+      .split(LOGIN_SESSION_ID_PLACEHOLDER)
+      .join(loginSessionId);
   }
 
   if (dashboardUrl.includes(USERNAME_PLACEHOLDER)) {

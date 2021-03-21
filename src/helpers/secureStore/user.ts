@@ -7,6 +7,14 @@ import { getSSKeyAsync } from "./secureStore";
 export type User = {
   username: string;
   password: string;
+  /**
+   * The date when the user first logged in. This will be used in conjuction
+   * with the installation ID to unique determine a user's login session.
+   *
+   * We store `number` (from `.getTime()`) instead of `Date` because we don't
+   * have to convert it back to `Date` when `secureGetUserAsync()`.
+   */
+  loginDate: number;
 };
 
 const USER_KEY = `user`;

@@ -115,11 +115,18 @@ export async function uploadDataAsync(
     );
   };
 
+  const user = await secureGetUserAsync();
+  if (user === null) {
+    endUploading("User===Null");
+    throw new Error("secureGetUserAsync() === null in uploadDataAsync");
+  }
+
   let response: DataUploadServerResponse = {};
   if (useServer(studyInfo)) {
     if (useFirebase(studyInfo)) {
       response = await firebaseUploadDataForUserAsync(
         data,
+        user,
         startUploading,
         endUploading,
       );
@@ -127,6 +134,7 @@ export async function uploadDataAsync(
     if (useBeiwe(studyInfo)) {
       response = await beiweUploadDataForUserAsync(
         data,
+        user,
         startUploading,
         endUploading,
       );
