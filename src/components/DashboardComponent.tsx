@@ -4,6 +4,7 @@ import React from "react";
 import { Text, View } from "react-native";
 import { WebView } from "react-native-webview";
 
+import { base64ToBase64URL, getHashedPasswordAsync } from "../helpers/helpers";
 import {
   getPingsAsync,
   getThisWeekPingsAsync,
@@ -12,7 +13,9 @@ import {
 import { secureGetUserAsync } from "../helpers/secureStore/user";
 import { StudyInfo } from "../helpers/types";
 
+const TIMEZONE_OFFSET_PLACEHOLDER = "__TIMEZONE_OFFSET__";
 const USERNAME_PLACEHOLDER = "__USERNAME__";
+const PASSWORD_HASH_PLACEHOLDER = "__PASSWORD_HASH__";
 const FIREBASE_ID_TOKEN_PLACEHOLDER = "__FIREBASE_ID_TOKEN__";
 const PINGS_COMPLETED_OVERALL_PLACEHOLDER = "__PINGS_COMPLETED_OVERALL__";
 const PINGS_COMPLETED_THIS_WEEK_PLACEHOLDER = "__PINGS_COMPLETED_THIS_WEEK__";
@@ -23,6 +26,13 @@ export async function getDashboardUrlAsync(
 ) {
   let dashboardUrl = dashboardRawURL;
 
+  if (dashboardUrl.includes(TIMEZONE_OFFSET_PLACEHOLDER)) {
+    const timezoneOffset = new Date().getTimezoneOffset();
+    dashboardUrl = dashboardUrl
+      .split(TIMEZONE_OFFSET_PLACEHOLDER)
+      .join(`${timezoneOffset}`);
+  }
+
   if (dashboardUrl.includes(USERNAME_PLACEHOLDER)) {
     let username = "N/A";
     const user = await secureGetUserAsync();
@@ -30,6 +40,19 @@ export async function getDashboardUrlAsync(
       username = user.username;
     }
     dashboardUrl = dashboardUrl.split(USERNAME_PLACEHOLDER).join(username);
+  }
+
+  if (dashboardUrl.includes(PASSWORD_HASH_PLACEHOLDER)) {
+    let passwordHash = "N/A";
+    const user = await secureGetUserAsync();
+    if (user) {
+      passwordHash = base64ToBase64URL(
+        await getHashedPasswordAsync(user.password),
+      );
+    }
+    dashboardUrl = dashboardUrl
+      .split(PASSWORD_HASH_PLACEHOLDER)
+      .join(passwordHash);
   }
 
   if (dashboardUrl.includes(FIREBASE_ID_TOKEN_PLACEHOLDER)) {

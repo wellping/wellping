@@ -1,4 +1,5 @@
 import { addMinutes } from "date-fns";
+import * as Crypto from "expo-crypto";
 
 import { QuestionTypeSchema } from "./schemas/Question";
 import {
@@ -14,6 +15,24 @@ export const NON_USER_QUESTION_TYPES: QuestionTypeType[] = [
   QuestionType.Branch,
   QuestionType.BranchWithRelativeComparison,
 ];
+
+// This is mostly for Beiwe.
+export async function getHashedPasswordAsync(
+  password: string,
+): Promise<string> {
+  return await Crypto.digestStringAsync(
+    Crypto.CryptoDigestAlgorithm.SHA256,
+    password,
+    {
+      encoding: Crypto.CryptoEncoding.BASE64,
+    },
+  );
+}
+
+// This is mostly for Beiwe.
+export function base64ToBase64URL(input: string): string {
+  return input.replace(/\+/g, "-").replace(/\//g, "_");
+}
 
 export const decapitalizeFirstCharacter = (s: string): string => {
   return s.charAt(0).toLowerCase() + s.slice(1);
