@@ -57,6 +57,7 @@ import {
   HOME_SCREEN_DEBUG_VIEW_SYMBOLS,
 } from "./helpers/debug";
 import { firebaseLoginAsync, firebaseInitialized } from "./helpers/firebase";
+import { getLoginSessionID } from "./helpers/loginSession";
 import {
   setNotificationsAsync,
   setupNotificationsPermissionAsync,
@@ -508,7 +509,14 @@ export default class HomeScreen extends React.Component<
               {studyInfo.contactEmail && (
                 <TouchableOpacity
                   onPress={async () => {
-                    const user = await secureGetUserAsync();
+                    let user = await secureGetUserAsync();
+                    if (user === null) {
+                      user = {
+                        username: "UNKNOWN ERROR CANNOT GET USER",
+                        password: "N/A",
+                        loginDate: -1,
+                      };
+                    }
 
                     const emailSubject = encodeURIComponent(
                       `Questions about Well Ping study ${studyInfo.id}`,
@@ -516,7 +524,8 @@ export default class HomeScreen extends React.Component<
                     const emailBody = encodeURIComponent(
                       `Please enter your question here (please attach a screenshot if applicable):\n\n\n\n\n\n` +
                         `====\n` +
-                        `User ID: ${user!.username}\n` +
+                        `User ID: ${user.username}\n` +
+                        `User Login Session ID: ${getLoginSessionID(user)}\n` +
                         getUsefulDebugInfo(),
                     );
                     const mailtoLink = `mailto:${studyInfo.contactEmail}?subject=${emailSubject}&body=${emailBody}`;
