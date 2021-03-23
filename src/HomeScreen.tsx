@@ -334,11 +334,15 @@ export default class HomeScreen extends React.Component<
     await setNotificationsAsync();
   }
 
-  async _uploadUnuploadedDataAndRemoveFromThemIfSuccessfulAsync(
-    doAfterResponseAsync: (
+  async _uploadUnuploadedDataAndRemoveFromThemIfSuccessfulAsync({
+    doAfterResponseAsync = async (_) => {},
+    doAfterErrorAsync = async (_) => {},
+  }: {
+    doAfterResponseAsync?: (
       response: DataUploadServerResponse,
-    ) => Promise<void> = async (_) => {},
-  ) {
+    ) => Promise<void>;
+    doAfterErrorAsync?: (error: any) => Promise<void>;
+  } = {}) {
     const { studyInfo } = this.props;
     // We need to store `prevUnuploaded` beforehand because unuploaded pings list
     // might be changed during we are doing `uploadDataAsync`. And we don't want
@@ -355,15 +359,16 @@ export default class HomeScreen extends React.Component<
         await removeFromUnuploadedPingsListAsync(prevUnuploaded);
         await doAfterResponseAsync(response);
       })
-      .catch((e) => {
+      .catch(async (e) => {
         // There's some error in uploading.
         // Do nothing (keep the unuploaded pings list unmodified).
         console.warn(`Upload error! ${e}`);
+        await doAfterErrorAsync(e);
       });
   }
 
   async _startSurveyTypeAsync(streamName: StreamName) {
-    // Upload and clear old unuploaded pings (should be at most one)
+    // Upload and clear old unuploaded pings.
     await this._uploadUnuploadedDataAndRemoveFromThemIfSuccessfulAsync();
 
     // Create new ping.
@@ -460,21 +465,81 @@ export default class HomeScreen extends React.Component<
                       {
                         text: "What's my current data?",
                         onPress: async () => {
-                          const allData = await getAllDataAsync();
-                          alertWithShareButtonContainingDebugInfo(
-                            JSON.stringify(allData),
-                            "Current Data",
+                          Alert.alert(
+                            "View/Upload Data",
+                            `Please select the type of data you want to view and/or upload.`,
                             [
                               {
-                                text: "Force upload ALL of my current data!",
+                                text: "All Data",
                                 onPress: async () => {
-                                  await this._forceUploadAllDataAsync({
-                                    successTitle: "Data Uploaded Successfully!",
-                                    errorTitle: "Error: Data Upload Error!",
-                                  });
+                                  const allData = await getAllDataAsync();
+                                  alertWithShareButtonContainingDebugInfo(
+                                    JSON.stringify(allData),
+                                    "All Data",
+                                    [
+                                      {
+                                        text: "Force Upload ALL Current Data",
+                                        onPress: async () => {
+                                          await this._forceUploadAllDataAsync({
+                                            successTitle:
+                                              "Data Uploaded Successfully!",
+                                            errorTitle:
+                                              "Error: Data Upload Error!",
+                                          });
+                                        },
+                                      },
+                                    ],
+                                  );
                                 },
                               },
+                              {
+                                text: "Unuploaded Data",
+                                onPress: async () => {
+                                  const unuploadedData = await getUnuploadedDataAsync();
+                                  alertWithShareButtonContainingDebugInfo(
+                                    JSON.stringify(unuploadedData),
+                                    "Unuploaded Data",
+                                    [
+                                      {
+                                        text: "Upload Unuploaded Data",
+                                        onPress: async () => {
+                                          await this._uploadUnuploadedDataAndRemoveFromThemIfSuccessfulAsync(
+                                            {
+                                              doAfterResponseAsync: async (
+                                                response,
+                                              ) => {
+                                                alertWithShareButtonContainingDebugInfo(
+                                                  `Response: ${JSON.stringify(
+                                                    response,
+                                                  )}`,
+                                                  "Data Uploaded Successfully!",
+                                                );
+                                              },
+                                              doAfterErrorAsync: async (
+                                                error,
+                                              ) => {
+                                                alertWithShareButtonContainingDebugInfo(
+                                                  getNonCriticalProblemTextForUser(
+                                                    `Error: ${error}`,
+                                                  ),
+                                                  "Error: Data Upload Error!",
+                                                );
+                                              },
+                                            },
+                                          );
+                                        },
+                                      },
+                                    ],
+                                  );
+                                },
+                              },
+                              {
+                                text: "Cancel",
+                                onPress: () => {},
+                                style: "cancel",
+                              },
                             ],
+                            { cancelable: true, onDismiss: () => {} },
                           );
                         },
                       },
@@ -720,8 +785,10 @@ export default class HomeScreen extends React.Component<
             color="orange"
             title="getUnuploadedDataAsync()"
             onPress={async () => {
-              const allData = await getUnuploadedDataAsync();
-              alertWithShareButtonContainingDebugInfo(JSON.stringify(allData));
+              const unuploadedData = await getUnuploadedDataAsync();
+              alertWithShareButtonContainingDebugInfo(
+                JSON.stringify(unuploadedData),
+              );
             }}
           />
           <Button
@@ -1025,8 +1092,8 @@ export default class HomeScreen extends React.Component<
           previousState={this.state.storedPingStateAsync}
           onFinish={(finishedPing) => {
             this.setState({ currentPing: finishedPing });
-            this._uploadUnuploadedDataAndRemoveFromThemIfSuccessfulAsync(
-              async (response) => {
+            this._uploadUnuploadedDataAndRemoveFromThemIfSuccessfulAsync({
+              doAfterResponseAsync: async (response) => {
                 const showDataDiscrepencyAlert = () => {
                   Alert.alert(
                     "Data Discrepancy Detected",
@@ -1082,7 +1149,7 @@ export default class HomeScreen extends React.Component<
                   }
                 }
               },
-            );
+            });
           }}
           studyInfo={studyInfo}
           setUploadStatusSymbol={this.setUploadStatusSymbol}
