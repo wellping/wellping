@@ -1117,10 +1117,33 @@ export default class HomeScreen extends React.Component<
             // TODO: Maybe also use NetInfo.fetch() before to make sure don't stuck on this page. But that's probably unnecessary.
             this._uploadUnuploadedDataAndRemoveFromThemIfSuccessfulAsync({
               doAfterResponseAsync: async (response) => {
-                const showDataDiscrepencyAlert = () => {
+                const showDataDiscrepancyAlert = ({
+                  serverPingsCount,
+                  localPingsCount,
+                  serverAnswersCount,
+                  localAnswersCount,
+                }: {
+                  serverPingsCount: number;
+                  localPingsCount?: number;
+                  serverAnswersCount?: number;
+                  localAnswersCount?: number;
+                }) => {
+                  let serverInfo = `p${serverPingsCount}`;
+                  if (serverAnswersCount) {
+                    serverInfo += `a${serverAnswersCount}`;
+                  }
+
+                  let localInfo = "";
+                  if (localPingsCount) {
+                    localInfo += `p${localPingsCount}`;
+                  }
+                  if (localAnswersCount) {
+                    localInfo += `a${localAnswersCount}`;
+                  }
+
                   Alert.alert(
                     "Data Discrepancy Detected",
-                    "The data on your phone locally does not match the data we have on the server. " +
+                    `The data on your phone locally (${localInfo}) does not match the data we have on the server (${serverInfo}). ` +
                       "To ensure your answers are recorded correctly, please click the “Upload All Data” button below.\n\n" +
                       "During upload, your phone might be unresponsive for several minutes. " +
                       "Please do not exit the app until you see a message telling you that the upload is complete.",
@@ -1153,7 +1176,10 @@ export default class HomeScreen extends React.Component<
                     console.warn(
                       `serverPingsCount (${serverPingsCount}) != localPingsCount (${localPingsCount})!`,
                     );
-                    showDataDiscrepencyAlert();
+                    showDataDiscrepancyAlert({
+                      serverPingsCount,
+                      localPingsCount,
+                    });
                     return;
                   }
                 }
@@ -1167,7 +1193,11 @@ export default class HomeScreen extends React.Component<
                     console.warn(
                       `serverAnswersCount (${serverAnswersCount}) != localAnswersCount (${localAnswersCount})!`,
                     );
-                    showDataDiscrepencyAlert();
+                    showDataDiscrepancyAlert({
+                      serverPingsCount: serverPingsCount ?? -1,
+                      serverAnswersCount,
+                      localAnswersCount,
+                    });
                     return;
                   }
                 }
