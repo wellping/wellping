@@ -476,71 +476,103 @@ export default class HomeScreen extends React.Component<
                         text: "What's my current data?",
                         onPress: async () => {
                           Alert.alert(
-                            "View/Upload Data",
-                            `Please select the type of data you want to view and/or upload.`,
+                            "Data",
+                            ``,
                             [
                               {
-                                text: "All Data",
+                                text: "View/Upload Data",
                                 onPress: async () => {
-                                  const allData = await getAllDataAsync();
-                                  alertWithShareButtonContainingDebugInfo(
-                                    JSON.stringify(allData),
-                                    "All Data",
+                                  Alert.alert(
+                                    "View/Upload Data",
+                                    `Please select the type of data you want to view and/or upload.`,
                                     [
                                       {
-                                        text: "Force Upload ALL Current Data",
+                                        text: "All Data",
                                         onPress: async () => {
-                                          await this._forceUploadAllDataAsync({
-                                            successTitle:
-                                              "Data Uploaded Successfully!",
-                                            errorTitle:
-                                              "Error: Data Upload Error!",
-                                          });
+                                          const allData = await getAllDataAsync();
+                                          alertWithShareButtonContainingDebugInfo(
+                                            JSON.stringify(allData),
+                                            "All Data",
+                                            [
+                                              {
+                                                text:
+                                                  "Force Upload ALL Current Data",
+                                                onPress: async () => {
+                                                  await this._forceUploadAllDataAsync(
+                                                    {
+                                                      successTitle:
+                                                        "Data Uploaded Successfully!",
+                                                      errorTitle:
+                                                        "Error: Data Upload Error!",
+                                                    },
+                                                  );
+                                                },
+                                              },
+                                            ],
+                                          );
                                         },
                                       },
+                                      {
+                                        text: "Unuploaded Data",
+                                        onPress: async () => {
+                                          const unuploadedData = await getUnuploadedDataAsync();
+                                          alertWithShareButtonContainingDebugInfo(
+                                            JSON.stringify(unuploadedData),
+                                            "Unuploaded Data",
+                                            [
+                                              {
+                                                text: "Upload Unuploaded Data",
+                                                onPress: async () => {
+                                                  await this._uploadUnuploadedDataAndRemoveFromThemIfSuccessfulAsync(
+                                                    {
+                                                      doAfterResponseAsync: async (
+                                                        response,
+                                                      ) => {
+                                                        alertWithShareButtonContainingDebugInfo(
+                                                          `Response: ${JSON.stringify(
+                                                            response,
+                                                          )}`,
+                                                          "Data Uploaded Successfully!",
+                                                        );
+                                                      },
+                                                      doAfterErrorAsync: async (
+                                                        error,
+                                                      ) => {
+                                                        alertWithShareButtonContainingDebugInfo(
+                                                          getNonCriticalProblemTextForUser(
+                                                            `Error: ${error}`,
+                                                          ),
+                                                          "Error: Data Upload Error!",
+                                                        );
+                                                      },
+                                                    },
+                                                  );
+                                                },
+                                              },
+                                            ],
+                                          );
+                                        },
+                                      },
+                                      {
+                                        text: "Cancel",
+                                        onPress: () => {},
+                                        style: "cancel",
+                                      },
                                     ],
+                                    { cancelable: true, onDismiss: () => {} },
                                   );
                                 },
                               },
                               {
-                                text: "Unuploaded Data",
+                                text: "Validate Data",
                                 onPress: async () => {
-                                  const unuploadedData = await getUnuploadedDataAsync();
-                                  alertWithShareButtonContainingDebugInfo(
-                                    JSON.stringify(unuploadedData),
-                                    "Unuploaded Data",
-                                    [
-                                      {
-                                        text: "Upload Unuploaded Data",
-                                        onPress: async () => {
-                                          await this._uploadUnuploadedDataAndRemoveFromThemIfSuccessfulAsync(
-                                            {
-                                              doAfterResponseAsync: async (
-                                                response,
-                                              ) => {
-                                                alertWithShareButtonContainingDebugInfo(
-                                                  `Response: ${JSON.stringify(
-                                                    response,
-                                                  )}`,
-                                                  "Data Uploaded Successfully!",
-                                                );
-                                              },
-                                              doAfterErrorAsync: async (
-                                                error,
-                                              ) => {
-                                                alertWithShareButtonContainingDebugInfo(
-                                                  getNonCriticalProblemTextForUser(
-                                                    `Error: ${error}`,
-                                                  ),
-                                                  "Error: Data Upload Error!",
-                                                );
-                                              },
-                                            },
-                                          );
-                                        },
-                                      },
-                                    ],
-                                  );
+                                  Alert.alert("TODO", "", [
+                                    {
+                                      text: "Cancel",
+                                      onPress: () => {},
+                                      style: "cancel",
+                                    },
+                                  ]);
                                 },
                               },
                               {
