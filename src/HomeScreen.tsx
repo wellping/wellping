@@ -105,6 +105,11 @@ interface HomeScreenState {
   uploadStatusSymbol: string;
 
   /**
+   * Only used for the upload process after a ping has been completed.
+   */
+  afterFinishingPing_isUploading: boolean;
+
+  /**
    * For when Firebase server is used.
    *
    * If Firebase server is not used, it is always `null`.
@@ -337,11 +342,13 @@ export default class HomeScreen extends React.Component<
   async _uploadUnuploadedDataAndRemoveFromThemIfSuccessfulAsync({
     doAfterResponseAsync = async (_) => {},
     doAfterErrorAsync = async (_) => {},
+    doFinally = () => {},
   }: {
     doAfterResponseAsync?: (
       response: DataUploadServerResponse,
     ) => Promise<void>;
     doAfterErrorAsync?: (error: any) => Promise<void>;
+    doFinally?: () => void;
   } = {}) {
     const { studyInfo } = this.props;
     // We need to store `prevUnuploaded` beforehand because unuploaded pings list
@@ -364,6 +371,9 @@ export default class HomeScreen extends React.Component<
         // Do nothing (keep the unuploaded pings list unmodified).
         console.warn(`Upload error! ${e}`);
         await doAfterErrorAsync(e);
+      })
+      .finally(() => {
+        doFinally();
       });
   }
 
@@ -1067,15 +1077,24 @@ export default class HomeScreen extends React.Component<
         <View style={{ height: "100%" }}>
           {ExtraView}
           <DebugView />
-          <Text style={styles.onlyTextStyle}>
-            Thank you for completing the survey for this ping!{"\n"}
-            Well Ping will send a notification for the next survey soon!{"\n"}
-            Please close the app entirely.
-          </Text>
-          <DashboardComponent
-            firebaseUser={firebaseUser}
-            studyInfo={studyInfo}
-          />
+          {this.state.afterFinishingPing_isUploading ? (
+            <Text style={{ ...styles.onlyTextStyle, color: "red" }}>
+              Uploading…{"\n"}Please do not exit the app!
+            </Text>
+          ) : (
+            <>
+              <Text style={styles.onlyTextStyle}>
+                Thank you for completing the survey for this ping!{"\n"}
+                Well Ping will send a notification for the next survey soon!
+                {"\n"}
+                Please close the app entirely.
+              </Text>
+              <DashboardComponent
+                firebaseUser={firebaseUser}
+                studyInfo={studyInfo}
+              />
+            </>
+          )}
         </View>
       );
     }
@@ -1091,7 +1110,11 @@ export default class HomeScreen extends React.Component<
           ping={currentPing}
           previousState={this.state.storedPingStateAsync}
           onFinish={(finishedPing) => {
-            this.setState({ currentPing: finishedPing });
+            this.setState({
+              currentPing: finishedPing,
+              afterFinishingPing_isUploading: true,
+            });
+            // TODO: Maybe also use NetInfo.fetch() before to make sure don't stuck on this page. But that's probably unnecessary.
             this._uploadUnuploadedDataAndRemoveFromThemIfSuccessfulAsync({
               doAfterResponseAsync: async (response) => {
                 const showDataDiscrepencyAlert = () => {
@@ -1148,6 +1171,9 @@ export default class HomeScreen extends React.Component<
                     return;
                   }
                 }
+              },
+              doFinally: () => {
+                this.setState({ afterFinishingPing_isUploading: false });
               },
             });
           }}
