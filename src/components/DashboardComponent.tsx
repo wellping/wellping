@@ -139,7 +139,7 @@ const DashboardComponent: React.FunctionComponent<DashboardComponentProps> = ({
   }, [studyInfo, firebaseUser]);
 
   return (
-    <View style={{ flex: 1, marginTop: 20 }}>
+    <View style={{ flex: 1, marginTop: 20, marginHorizontal: 20 }}>
       {url ? (
         <WebView
           source={{ uri: url }}
