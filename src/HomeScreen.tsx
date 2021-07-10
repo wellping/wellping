@@ -1155,23 +1155,17 @@ export default class HomeScreen extends React.Component<
                   serverAnswersCount,
                   localAnswersCount,
                 }: {
-                  serverPingsCount: number;
+                  serverPingsCount?: number;
                   localPingsCount?: number;
                   serverAnswersCount?: number;
                   localAnswersCount?: number;
                 }) => {
-                  let serverInfo = `p${serverPingsCount}`;
-                  if (serverAnswersCount) {
-                    serverInfo += `a${serverAnswersCount}`;
-                  }
-
-                  let localInfo = "";
-                  if (localPingsCount) {
-                    localInfo += `p${localPingsCount}`;
-                  }
-                  if (localAnswersCount) {
-                    localInfo += `a${localAnswersCount}`;
-                  }
+                  const serverInfo =
+                    `p${serverPingsCount ?? "n"}/` +
+                    `a${serverAnswersCount ?? "n"}`;
+                  const localInfo =
+                    `p${localPingsCount ?? "n"}/` +
+                    `a${localAnswersCount ?? "n"}`;
 
                   Alert.alert(
                     "Data Discrepancy Detected",
@@ -1226,7 +1220,7 @@ export default class HomeScreen extends React.Component<
                       `serverAnswersCount (${serverAnswersCount}) != localAnswersCount (${localAnswersCount})!`,
                     );
                     showDataDiscrepancyAlert({
-                      serverPingsCount: serverPingsCount ?? -1,
+                      serverPingsCount,
                       serverAnswersCount,
                       localAnswersCount,
                     });
