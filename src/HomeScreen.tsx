@@ -1177,6 +1177,9 @@ export default class HomeScreen extends React.Component<
                       {
                         text: "Upload All Data",
                         onPress: async () => {
+                          this.setState({
+                            afterFinishingPing_isUploading: true,
+                          });
                           await this._forceUploadAllDataAsync({
                             successTitle: "Data Uploaded Successfully!",
                             getSuccessMessage: (response) =>
@@ -1188,6 +1191,9 @@ export default class HomeScreen extends React.Component<
                               "We cannot upload your data at this moment.\n\n" +
                               "You may exit the app for now, we will alert you again of this problem next time you finished a ping.\n\n" +
                               `Error message: ${error}`,
+                          });
+                          this.setState({
+                            afterFinishingPing_isUploading: false,
                           });
                         },
                       },
