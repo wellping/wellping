@@ -124,13 +124,13 @@ export default class LoginScreen extends React.Component<
         `Are you at least 18 years of age?`,
         [
           {
-            text: "Yes",
+            text: "Yes, I am at least 18 years of age.",
             onPress: () => {
               resolve(true);
             },
           },
           {
-            text: "No",
+            text: "No, I am not at least 18 years of age.",
             onPress: () => {
               this.setState({ unableToParticipate: true });
               resolve(false);
@@ -278,6 +278,11 @@ export default class LoginScreen extends React.Component<
           <Text style={{ fontSize: 20 }}>Thank you for your interests.</Text>
           <Text style={{ fontSize: 20 }}>
             Unfortunately, you cannot participate in this study.
+          </Text>
+          <Text style={{ fontSize: 15 }}>
+            If you are at least 18 years of age, please fully exit the app,
+            restart the app, and press “Yes, I am at least 18 years of age.”
+            when logging in.
           </Text>
         </View>
       );
