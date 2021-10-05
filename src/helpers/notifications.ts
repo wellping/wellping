@@ -8,6 +8,7 @@ import {
   isSameDay,
   addSeconds,
   max,
+  format,
 } from "date-fns";
 import * as Notifications from "expo-notifications";
 import { Platform } from "react-native";
@@ -18,6 +19,7 @@ import {
   storeNotificationTimesAsync,
 } from "./asyncStorage/notificationTimes";
 import { getThisWeekPingsAsync } from "./pings";
+import { secureGetUserAsync } from "./secureStore/user";
 import {
   isTimeThisWeekAsync,
   getStudyInfoAsync,
@@ -89,7 +91,11 @@ function getNotificationRequestInput(
   return notification;
 }
 
+const seedrandom = require("seedrandom");
 export async function setNotificationsAsync() {
+  const user = await secureGetUserAsync();
+  const seedValue_username = user?.username ?? "defaultusername";
+
   const studyInfo = await getStudyInfoAsync();
 
   await Notifications.cancelAllScheduledNotificationsAsync();
@@ -128,12 +134,18 @@ export async function setNotificationsAsync() {
     date < setNotificationsUntil;
     date = addDays(date, 1)
   ) {
+    const seedValue_date = format(date, "yyyy-MM-dd");
     for (const hour of hoursEveryday) {
       let notificationTime = setHours(setMinutes(date, 0), hour);
 
       if (notificationTime >= studyEndDate) {
         break;
       }
+
+      const seedValue_hour = hour;
+      const seedValue = seedValue_username + seedValue_date + seedValue_hour;
+
+      const rng = seedrandom(seedValue);
 
       // Randomly add `randomMinMinuteAddition` to `randomMaxMinuteAddition` minutes (inclusive) to the notification time.
       const randomMinMinuteAddition =
@@ -142,12 +154,11 @@ export async function setNotificationsAsync() {
         studyInfo.frequency.randomMinuteAddition.max;
       const randomMinuteAddition =
         Math.floor(
-          Math.random() *
-            (randomMaxMinuteAddition + 1 - randomMinMinuteAddition),
+          rng() * (randomMaxMinuteAddition + 1 - randomMinMinuteAddition),
         ) + randomMinMinuteAddition;
       notificationTime = addMinutes(notificationTime, randomMinuteAddition);
 
-      const randomSecond = Math.floor(Math.random() * 60) + 1;
+      const randomSecond = Math.floor(rng() * 60) + 1;
       notificationTime = setSeconds(notificationTime, randomSecond);
 
       if (notificationTime < new Date()) {

@@ -24,9 +24,12 @@ export const notificationsTest = () => {
   let mathRandomSpy: FunctionSpyInstance<typeof global.Math.random>;
 
   beforeEach(() => {
+    /*
+    // TODO: we no longer use Math.random (https://github.com/wellping/wellping/pull/92). Instead, we should mock `seedrandom`.
     mathRandomSpy = jest
       .spyOn(global.Math, "random")
       .mockReturnValue(0.123456789);
+    */
 
     mockCurrentStudyInfo(PINGS_STUDY_INFO);
   });
@@ -187,7 +190,7 @@ export const notificationsTest = () => {
       });
 
       test("(1 ping from reaching bonus)", async () => {
-        DateMock.advanceTo(+new Date("2010-05-11T13:01:00Z"));
+        DateMock.advanceTo(+new Date("2010-05-11T13:29:30Z"));
 
         await setNotificationsAsync();
 
@@ -201,7 +204,7 @@ export const notificationsTest = () => {
 
       describe("(reached bonus)", () => {
         test("(stay in current week)", async () => {
-          DateMock.advanceTo(+new Date("2010-05-11T17:01:00Z"));
+          DateMock.advanceTo(+new Date("2010-05-11T17:29:30Z"));
 
           await setNotificationsAsync();
 
@@ -241,7 +244,7 @@ export const notificationsTest = () => {
         });
 
         test("(stay in current week)", async () => {
-          DateMock.advanceTo(+new Date("2010-05-11T17:01:00Z"));
+          DateMock.advanceTo(+new Date("2010-05-11T17:29:30Z"));
 
           await setNotificationsAsync();
 
