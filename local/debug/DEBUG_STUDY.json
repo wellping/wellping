@@ -16,7 +16,7 @@
     },
     "streamsStartingQuestionIds": {
       "welcomeStream": "Hello",
-      "myStream": "Feel_Current",
+      "myStream": "SocInteraction_Names",
       "errorStream": "firstQuestion"
     },
     "streamsOrder": {
@@ -183,6 +183,10 @@
         "indexName": "INDEX",
         "repeatedItemStartId": "SocInteraction_Names[__INDEX__]_Relationships",
         "extraCustomNextWithoutAnsweringButton": "Not Interacted!",
+        "fallbackNext": {
+          "nextWithoutAnswering": "SocInteraction_Names[__INDEX__]_Relationships",
+          "preferNotToAnswer": "SocInteraction_Names[__INDEX__]_Relationships"
+        },
         "next": "SocInteraction_NonStudent"
       },
       "SocInteraction_Names[__INDEX__]_Relationships": {
@@ -192,6 +196,10 @@
         "choices": "RELATIONSHIPS",
         "randomizeChoicesOrder": true,
         "randomizeExceptForChoiceIds": ["Other"],
+        "defaultPlaceholderValues": {
+          "INDEX": "RECENT",
+          "TARGET_NAME": "your recent interaction partner"
+        },
         "next": "SocInteraction_Names[__INDEX__]_Liking"
       },
       "SocInteraction_Names[__INDEX__]_Liking": {

@@ -82,6 +82,11 @@ const BaseQuestionSchema = z.object({
   extraCustomNextWithoutAnsweringButton: z.string().optional(),
 
   /**
+   * Default values to replace placeholder variables like `[__NAME__]`.
+   */
+  defaultPlaceholderValues: z.record(z.any()).optional(),
+
+  /**
    * The optional fallback next IDs.
    */
   fallbackNext: z
