@@ -14,6 +14,7 @@ export const QuestionType = QuestionTypeSchema.enum;
 export const NON_USER_QUESTION_TYPES: QuestionTypeType[] = [
   QuestionType.Branch,
   QuestionType.BranchWithRelativeComparison,
+  QuestionType.Wrapper,
 ];
 
 // This is mostly for Beiwe.

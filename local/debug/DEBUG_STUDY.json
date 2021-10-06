@@ -184,9 +184,16 @@
         "repeatedItemStartId": "SocInteraction_Names[__INDEX__]_Relationships",
         "extraCustomNextWithoutAnsweringButton": "Not Interacted!",
         "fallbackNext": {
-          "nextWithoutAnswering": "SocInteraction_Names[__INDEX__]_Relationships",
-          "preferNotToAnswer": "SocInteraction_Names[__INDEX__]_Relationships"
+          "nextWithoutAnswering": "SocInteraction_Names_WRAPPER",
+          "preferNotToAnswer": "SocInteraction_Names_WRAPPER"
         },
+        "next": "SocInteraction_NonStudent"
+      },
+      "SocInteraction_Names_WRAPPER": {
+        "id": "SocInteraction_Names_WRAPPER",
+        "type": "Wrapper",
+        "question": "INTERNAL WRAPPER",
+        "innerNext": "SocInteraction_Names[__INDEX__]_Relationships",
         "next": "SocInteraction_NonStudent"
       },
       "SocInteraction_Names[__INDEX__]_Relationships": {
@@ -207,6 +214,10 @@
         "type": "ChoicesWithSingleAnswer",
         "question": "Do you like this interaction?",
         "choices": ["Yes!", "Probably?", "No!"],
+        "defaultPlaceholderValues": {
+          "INDEX": "RECENT",
+          "TARGET_NAME": "your recent interaction partner"
+        },
         "next": null
       },
       "SocInteraction_NonStudent": {

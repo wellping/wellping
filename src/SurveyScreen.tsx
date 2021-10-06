@@ -58,6 +58,7 @@ import {
   StudyInfo,
   Ping,
   QuestionImageOptions,
+  WrapperQuestion,
 } from "./helpers/types";
 import ChoicesQuestionScreen from "./questionScreens/ChoicesQuestionScreen";
 import HowLongAgoQuestionScreen from "./questionScreens/HowLongAgoQuestion";
@@ -489,6 +490,14 @@ export default class SurveyScreen extends React.Component<
       considerConditionalQuestionId(nextQuestionId);
     };
 
+    const handleWrapper = (wQuestion: WrapperQuestion) => {
+      // Do the inner next first.
+      jumpQuestionsDataStack.push({
+        questionId: wQuestion.innerNext,
+        extraData: prevExtraData,
+      });
+    };
+
     if (NON_USER_QUESTION_TYPES.includes(prevQuestion.type)) {
       // Handle branching questions.
       switch (prevQuestion.type) {
@@ -500,6 +509,10 @@ export default class SurveyScreen extends React.Component<
           handleBranchWithRelativeComparison(
             prevQuestion as BranchWithRelativeComparisonQuestion,
           );
+          break;
+
+        case QuestionType.Wrapper:
+          handleWrapper(prevQuestion as WrapperQuestion);
           break;
 
         default:
@@ -586,9 +599,7 @@ export default class SurveyScreen extends React.Component<
 
       if (
         currentQuestionid &&
-        (questions[currentQuestionid].type === QuestionType.Branch ||
-          questions[currentQuestionid].type ===
-            QuestionType.BranchWithRelativeComparison)
+        NON_USER_QUESTION_TYPES.includes(questions[currentQuestionid].type)
       ) {
         // Directly calculates and goes to next if it's a branching question as
         // they are not actually a user question.
@@ -760,9 +771,12 @@ export default class SurveyScreen extends React.Component<
         QuestionScreen = HowLongAgoQuestionScreen as QuestionScreenType;
         break;
 
-      case QuestionType.Branch:
-      case QuestionType.BranchWithRelativeComparison:
-        return <></>;
+      default:
+        if (NON_USER_QUESTION_TYPES.includes(question.type)) {
+          return <></>;
+        } else {
+          console.error("Cannot find the appropriate question screen!");
+        }
     }
 
     const getImageIfAnyForPosition = (
