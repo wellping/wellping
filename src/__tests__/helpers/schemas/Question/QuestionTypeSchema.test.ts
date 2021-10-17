@@ -15,6 +15,7 @@ describe("QuestionTypeSchema", () => {
           "HowLongAgo",
           "Branch",
           "BranchWithRelativeComparison",
+          "Wrapper",
         ],
       }
     `);
