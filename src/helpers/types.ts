@@ -15,6 +15,7 @@ import {
   BranchWithRelativeComparisonQuestionSchema,
   QuestionTypeSchema,
   QuestionImageOptionsSchema,
+  WrapperQuestionSchema,
 } from "./schemas/Question";
 import { StreamsSchema } from "./schemas/Stream";
 import {
@@ -71,6 +72,8 @@ export type BranchQuestion = z.infer<typeof BranchQuestionSchema>;
 export type BranchWithRelativeComparisonQuestion = z.infer<
   typeof BranchWithRelativeComparisonQuestionSchema
 >;
+
+export type WrapperQuestion = z.infer<typeof WrapperQuestionSchema>;
 
 export type PingId = z.infer<typeof PingIdSchema>;
 

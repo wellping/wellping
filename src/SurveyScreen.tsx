@@ -58,6 +58,7 @@ import {
   StudyInfo,
   Ping,
   QuestionImageOptions,
+  WrapperQuestion,
 } from "./helpers/types";
 import ChoicesQuestionScreen from "./questionScreens/ChoicesQuestionScreen";
 import HowLongAgoQuestionScreen from "./questionScreens/HowLongAgoQuestion";
@@ -195,20 +196,30 @@ export default class SurveyScreen extends React.Component<
   replacePlaceholders(
     input: string,
     state: SurveyScreenState = this.state,
+    defaultExtraData?: ExtraData,
   ): string {
     const { questions, studyInfo } = this.props;
     const { currentQuestionData, answers } = state;
 
     let output = input;
-    for (const [key, value] of Object.entries(currentQuestionData.extraData)) {
-      const treatedValue = treatPlaceholderReplacementValue(
-        key,
-        value,
-        studyInfo,
-      );
+    function _replaceWithExtraData(extraData: ExtraData) {
+      for (const [key, value] of Object.entries(extraData)) {
+        const treatedValue = treatPlaceholderReplacementValue(
+          key,
+          value,
+          studyInfo,
+        );
 
-      // https://stackoverflow.com/a/56136657/2603230
-      output = output.split(withVariable(key)).join(treatedValue);
+        // https://stackoverflow.com/a/56136657/2603230
+        output = output.split(withVariable(key)).join(treatedValue);
+      }
+    }
+    _replaceWithExtraData(currentQuestionData.extraData);
+
+    if (defaultExtraData != null) {
+      // Replace the remaining placeholders (that have not been replaced by
+      // current data in state) with the default extra data.
+      _replaceWithExtraData(defaultExtraData);
     }
 
     output = replacePreviousAnswerPlaceholdersWithActualContent(
@@ -426,6 +437,8 @@ export default class SurveyScreen extends React.Component<
     const handleBranchQuestion = (bQ: BranchQuestion) => {
       let selectedBranchId = bQ.branchStartId.false;
 
+      // TODO: consider the implication of not providing `defaultPlaceholderValues` to `replacePlaceholders` here.
+
       switch (bQ.condition.questionType) {
         case QuestionType.MultipleText: {
           const targetQuestionAnswer = answers[
@@ -477,6 +490,14 @@ export default class SurveyScreen extends React.Component<
       considerConditionalQuestionId(nextQuestionId);
     };
 
+    const handleWrapper = (wQuestion: WrapperQuestion) => {
+      // Do the inner next first.
+      jumpQuestionsDataStack.push({
+        questionId: wQuestion.innerNext,
+        extraData: prevExtraData,
+      });
+    };
+
     if (NON_USER_QUESTION_TYPES.includes(prevQuestion.type)) {
       // Handle branching questions.
       switch (prevQuestion.type) {
@@ -488,6 +509,10 @@ export default class SurveyScreen extends React.Component<
           handleBranchWithRelativeComparison(
             prevQuestion as BranchWithRelativeComparisonQuestion,
           );
+          break;
+
+        case QuestionType.Wrapper:
+          handleWrapper(prevQuestion as WrapperQuestion);
           break;
 
         default:
@@ -574,9 +599,7 @@ export default class SurveyScreen extends React.Component<
 
       if (
         currentQuestionid &&
-        (questions[currentQuestionid].type === QuestionType.Branch ||
-          questions[currentQuestionid].type ===
-            QuestionType.BranchWithRelativeComparison)
+        NON_USER_QUESTION_TYPES.includes(questions[currentQuestionid].type)
       ) {
         // Directly calculates and goes to next if it's a branching question as
         // they are not actually a user question.
@@ -608,7 +631,7 @@ export default class SurveyScreen extends React.Component<
 
       const prevQuestion = questions[prevQuestionId];
       const prevAnswer =
-        answers[this.getRealQuestionId(prevQuestionId, prevState)];
+        answers[this.getRealQuestionId(prevQuestion, prevState)];
 
       const newNextQuestionsStack = this.getNewNextQuestionsDataStack({
         prevQuestion,
@@ -655,10 +678,14 @@ export default class SurveyScreen extends React.Component<
   }
 
   getRealQuestionId(
-    questionId: QuestionId,
+    question: Question,
     state: SurveyScreenState = this.state,
   ): string {
-    return this.replacePlaceholders(questionId, state);
+    return this.replacePlaceholders(
+      question.id,
+      state,
+      question.defaultPlaceholderValues,
+    );
   }
 
   async addAnswerToAnswersListAsync(
@@ -673,7 +700,7 @@ export default class SurveyScreen extends React.Component<
       date?: Date;
     },
   ): Promise<void> {
-    const realQuestionId = this.getRealQuestionId(question.id);
+    const realQuestionId = this.getRealQuestionId(question);
 
     const answer = await insertAnswerAsync({
       ping: this.props.ping,
@@ -721,7 +748,7 @@ export default class SurveyScreen extends React.Component<
         </Text>
       );
     }
-    const realQuestionId = this.getRealQuestionId(question.id);
+    const realQuestionId = this.getRealQuestionId(question);
 
     type QuestionScreenType = React.ElementType<QuestionScreenProps>;
     let QuestionScreen: QuestionScreenType;
@@ -744,9 +771,12 @@ export default class SurveyScreen extends React.Component<
         QuestionScreen = HowLongAgoQuestionScreen as QuestionScreenType;
         break;
 
-      case QuestionType.Branch:
-      case QuestionType.BranchWithRelativeComparison:
-        return <></>;
+      default:
+        if (NON_USER_QUESTION_TYPES.includes(question.type)) {
+          return <></>;
+        } else {
+          console.error("Cannot find the appropriate question screen!");
+        }
     }
 
     const getImageIfAnyForPosition = (
@@ -817,7 +847,11 @@ export default class SurveyScreen extends React.Component<
               fontSize: 18,
             }}
           >
-            {this.replacePlaceholders(question.question)}
+            {this.replacePlaceholders(
+              question.question,
+              this.state,
+              question.defaultPlaceholderValues,
+            )}
           </Text>
           {(question.description || question.image) && (
             <>
@@ -848,7 +882,11 @@ export default class SurveyScreen extends React.Component<
                       padding: 5,
                     }}
                   >
-                    {this.replacePlaceholders(question.description)}
+                    {this.replacePlaceholders(
+                      question.description,
+                      this.state,
+                      question.defaultPlaceholderValues,
+                    )}
                   </Text>
                 )}
                 {getImageIfAnyForPosition("inDescriptionBox")}
@@ -884,7 +922,13 @@ export default class SurveyScreen extends React.Component<
                 }}
                 allAnswers={answers}
                 allQuestions={questions}
-                pipeInExtraMetaData={(input) => this.replacePlaceholders(input)}
+                pipeInExtraMetaData={(input) =>
+                  this.replacePlaceholders(
+                    input,
+                    this.state,
+                    question.defaultPlaceholderValues,
+                  )
+                }
                 setDataValidationFunction={(func) => {
                   this.dataValidationFunction = func;
                 }}

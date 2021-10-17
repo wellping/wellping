@@ -18,6 +18,7 @@ export const QuestionTypeSchema = z.enum([
   "HowLongAgo",
   "Branch",
   "BranchWithRelativeComparison",
+  "Wrapper",
 ]);
 
 export const QuestionImageOptionsSchema = z.object({
@@ -80,6 +81,11 @@ const BaseQuestionSchema = z.object({
    * Clicking this button is equivalent to clicking "Next" without answering.
    */
   extraCustomNextWithoutAnsweringButton: z.string().optional(),
+
+  /**
+   * Default values to replace placeholder variables like `[__NAME__]`.
+   */
+  defaultPlaceholderValues: z.record(z.any()).optional(),
 
   /**
    * The optional fallback next IDs.
@@ -324,6 +330,16 @@ export const BranchWithRelativeComparisonQuestionSchema = BaseQuestionSchema.ext
   },
 );
 
+/**
+ * This question is used so that we could first follow the `innerNext` until
+ * we are at a `null` `next`. Then we execute the `next` of this question.
+ */
+export const WrapperQuestionSchema = BaseQuestionSchema.extend({
+  // This is not actually a question (it will not be displayed to the user)
+  type: z.literal(QuestionTypeSchema.enum.Wrapper),
+  innerNext: QuestionIdSchema,
+});
+
 export const QuestionSchema = z
   .union([
     SliderQuestionSchema,
@@ -334,6 +350,7 @@ export const QuestionSchema = z
     HowLongAgoQuestionSchema,
     BranchQuestionSchema,
     BranchWithRelativeComparisonQuestionSchema,
+    WrapperQuestionSchema,
   ])
   .refine((question) => {
     /**
@@ -375,6 +392,10 @@ export const QuestionSchema = z
 
       case QuestionTypeSchema.enum.BranchWithRelativeComparison:
         BranchWithRelativeComparisonQuestionSchema.parse(question);
+        break;
+
+      case QuestionTypeSchema.enum.Wrapper:
+        WrapperQuestionSchema.parse(question);
         break;
 
       default:
