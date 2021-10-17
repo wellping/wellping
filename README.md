@@ -52,10 +52,10 @@ Channels should be in the format of `prod-v{VERSION NUMBER}`. For example, Versi
 
 ```bash
 # Publish app
-expo publish --release-channel prod-v1-1
+expo publish --release-channel prod-v1-1-1
 
 # Build iOS
-expo build:ios --release-channel prod-v1-1
+expo build:ios --release-channel prod-v1-1-1
 # Build Android
-expo build:android --release-channel prod-v1-1
+expo build:android --release-channel prod-v1-1-1
 ```
