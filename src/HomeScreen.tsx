@@ -609,6 +609,7 @@ export default class HomeScreen extends React.Component<
                       ? HOME_SCREEN_DEBUG_VIEW_SYMBOLS.FIREBASE_AUTH
                           .NOT_LOGGED_IN
                       : HOME_SCREEN_DEBUG_VIEW_SYMBOLS.FIREBASE_AUTH.LOGGED_IN}
+                    {studyInfo.version && `(${studyInfo.version})`}
                     {this.state.uploadStatusSymbol}
                   </Text>
                 )}
@@ -880,11 +881,9 @@ export default class HomeScreen extends React.Component<
             color="orange"
             title="copy dashboard url"
             onPress={async () => {
-              const url = await getDashboardUrlAsync(
-                studyInfo.dashboardURL ||
-                  "studyInfo.dashboardURL === undefined",
-                firebaseUser,
-              );
+              const url =
+                (await getDashboardUrlAsync(studyInfo, firebaseUser)) ??
+                "No dashboard URL.";
               Clipboard.setString(url);
               alertWithShareButtonContainingDebugInfo(url);
             }}

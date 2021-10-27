@@ -72,6 +72,13 @@ export const StudyInfoSchema = z
     id: StudyIdSchema,
 
     /**
+     * The version of the study.
+     *
+     * https://github.com/wellping/wellping/issues/94
+     */
+    version: z.string().optional(),
+
+    /**
      * The URL that host this study file (which could be a JSON or a YAML file).
      *
      * The app fetches this URL in the background at every start and loads the

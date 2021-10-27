@@ -1,10 +1,11 @@
 {
   "studyInfo": {
     "id": "debug_study_for_v_1_0",
+    "version": "a",
     "studyFileURL": "https://debug.local.wellping.ssnl.stanford.edu/DEBUG_STUDY.json",
     "consentFormUrl": "http://ssnl.stanford.edu/research",
     "contactEmail": "testEmail@example.com",
-    "dashboardURL": "http://ssnl.stanford.edu/test_dashbord?overall_completed_pings=__PINGS_COMPLETED_OVERALL__&overall_completed_this_week=__PINGS_COMPLETED_THIS_WEEK__&overall_completed_today=__PINGS_COMPLETED_TODAY__&id_token=__ID_TOKEN__",
+    "dashboardURL": "https://wellping.github.io/example-dashboard/demonstration-mode.html?username=__USERNAME__&timezone_offset=__TIMEZONE_OFFSET__&completed_pings_overall=__PINGS_COMPLETED_OVERALL__&completed_pings_this_week=__PINGS_COMPLETED_THIS_WEEK__&completed_pings_today=__PINGS_COMPLETED_TODAY__&firebase_id_token=__FIREBASE_ID_TOKEN__&installation_id=__INSTALLATION_ID__&login_session_id=__LOGIN_SESSION_ID__&study_id=__STUDY_ID__&study_version=__STUDY_VERSION__",
     "server": {},
     "startDate": "2020-03-10T08:00:00.000Z",
     "endDate": "2030-04-25T08:00:00.000Z",

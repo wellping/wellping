@@ -17,6 +17,8 @@ import { StudyInfo } from "../helpers/types";
 
 const TIMEZONE_OFFSET_PLACEHOLDER = "__TIMEZONE_OFFSET__";
 const INSTALLATION_ID_PLACEHOLDER = "__INSTALLATION_ID__";
+const STUDY_ID_PLACEHOLDER = "__STUDY_ID__";
+const STUDY_VERSION_PLACEHOLDER = "__STUDY_VERSION__";
 const LOGIN_SESSION_ID_PLACEHOLDER = "__LOGIN_SESSION_ID__";
 const USERNAME_PLACEHOLDER = "__USERNAME__";
 const PASSWORD_HASH_PLACEHOLDER = "__PASSWORD_HASH__";
@@ -25,10 +27,14 @@ const PINGS_COMPLETED_OVERALL_PLACEHOLDER = "__PINGS_COMPLETED_OVERALL__";
 const PINGS_COMPLETED_THIS_WEEK_PLACEHOLDER = "__PINGS_COMPLETED_THIS_WEEK__";
 const PINGS_COMPLETED_TODAY_PLACEHOLDER = "__PINGS_COMPLETED_TODAY__";
 export async function getDashboardUrlAsync(
-  dashboardRawURL: string,
+  studyInfo: StudyInfo,
   firebaseUser: firebase.User | null,
-) {
-  let dashboardUrl = dashboardRawURL;
+): Promise<string | null> {
+  if (studyInfo.dashboardURL === undefined) {
+    return null;
+  }
+
+  let dashboardUrl = studyInfo.dashboardURL;
 
   if (dashboardUrl.includes(TIMEZONE_OFFSET_PLACEHOLDER)) {
     const timezoneOffset = new Date().getTimezoneOffset();
@@ -41,6 +47,16 @@ export async function getDashboardUrlAsync(
     dashboardUrl = dashboardUrl
       .split(INSTALLATION_ID_PLACEHOLDER)
       .join(INSTALLATION_ID);
+  }
+
+  if (dashboardUrl.includes(STUDY_ID_PLACEHOLDER)) {
+    dashboardUrl = dashboardUrl.split(STUDY_ID_PLACEHOLDER).join(studyInfo.id);
+  }
+
+  if (dashboardUrl.includes(STUDY_VERSION_PLACEHOLDER)) {
+    dashboardUrl = dashboardUrl
+      .split(STUDY_VERSION_PLACEHOLDER)
+      .join(studyInfo.version ?? "STUDY_VERSION_NOT_SPECIFIED");
   }
 
   if (dashboardUrl.includes(LOGIN_SESSION_ID_PLACEHOLDER)) {
@@ -124,15 +140,10 @@ const DashboardComponent: React.FunctionComponent<DashboardComponentProps> = ({
     return <></>;
   }
 
-  const dashboardRawURL = studyInfo.dashboardURL;
-
   const [url, setUrl] = React.useState<string | null>(null);
   React.useEffect(() => {
     async function setDashboardUrlAsync() {
-      const dashboardUrl = await getDashboardUrlAsync(
-        dashboardRawURL,
-        firebaseUser,
-      );
+      const dashboardUrl = await getDashboardUrlAsync(studyInfo, firebaseUser);
       setUrl(dashboardUrl);
     }
     setDashboardUrlAsync();
