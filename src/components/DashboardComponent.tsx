@@ -1,5 +1,5 @@
 import { setStatusBarStyle } from "expo-status-bar";
-import firebase from "firebase/app";
+import { User as FirebaseUser } from "firebase/auth";
 import React from "react";
 import { Text, View } from "react-native";
 import { WebView } from "react-native-webview";
@@ -28,7 +28,7 @@ const PINGS_COMPLETED_THIS_WEEK_PLACEHOLDER = "__PINGS_COMPLETED_THIS_WEEK__";
 const PINGS_COMPLETED_TODAY_PLACEHOLDER = "__PINGS_COMPLETED_TODAY__";
 export async function getDashboardUrlAsync(
   studyInfo: StudyInfo,
-  firebaseUser: firebase.User | null,
+  firebaseUser: FirebaseUser | null,
 ): Promise<string | null> {
   if (studyInfo.dashboardURL === undefined) {
     return null;
@@ -130,7 +130,7 @@ export async function getDashboardUrlAsync(
 
 interface DashboardComponentProps {
   studyInfo: StudyInfo;
-  firebaseUser: firebase.User | null;
+  firebaseUser: FirebaseUser | null;
 }
 const DashboardComponent: React.FunctionComponent<DashboardComponentProps> = ({
   studyInfo,
