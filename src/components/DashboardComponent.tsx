@@ -4,7 +4,7 @@ import React from "react";
 import { Text, View } from "react-native";
 import { WebView } from "react-native-webview";
 
-import { INSTALLATION_ID } from "../helpers/debug";
+import { getInstallationIDAsync } from "../helpers/debug";
 import { base64ToBase64URL, getHashedPasswordAsync } from "../helpers/helpers";
 import { getLoginSessionIDAsync } from "../helpers/loginSession";
 import {
@@ -46,7 +46,7 @@ export async function getDashboardUrlAsync(
   if (dashboardUrl.includes(INSTALLATION_ID_PLACEHOLDER)) {
     dashboardUrl = dashboardUrl
       .split(INSTALLATION_ID_PLACEHOLDER)
-      .join(INSTALLATION_ID);
+      .join(await getInstallationIDAsync());
   }
 
   if (dashboardUrl.includes(STUDY_ID_PLACEHOLDER)) {

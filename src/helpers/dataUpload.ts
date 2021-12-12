@@ -5,7 +5,7 @@ import { beiweUploadDataForUserAsync } from "./beiwe";
 import {
   UserInstallationInfo,
   HOME_SCREEN_DEBUG_VIEW_SYMBOLS,
-  USER_INSTALLATION_INFO,
+  getUserInstallationInfoAsync,
 } from "./debug";
 import { firebaseUploadDataForUserAsync } from "./firebase";
 import { getLoginSessionIDAsync } from "./loginSession";
@@ -45,7 +45,7 @@ async function _getUserDataAsync(): Promise<UserData> {
   return {
     username: user.username,
     loginSessionId: await getLoginSessionIDAsync(user),
-    installation: USER_INSTALLATION_INFO,
+    installation: await getUserInstallationInfoAsync(),
   };
 }
 
