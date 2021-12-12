@@ -1,6 +1,10 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import Constants from "expo-constants";
 import * as Device from "expo-device";
 import { Share, Alert, AlertButton } from "react-native";
+import uuid from "react-native-uuid";
+
+import { ASYNC_STORAGE_WELLPING_PREFIX } from "./asyncStorage/asyncStorageConfig";
 
 // Notice that this version number is different from the app version number
 // which is the number submitted App Store and Google Store.
@@ -12,11 +16,30 @@ export const JS_VERSION_NUMBER = "js.2.10.27.1";
 export const NATIVE_VERSION_NUMBER = Constants.nativeAppVersion;
 export const NATIVE_BUILD_NUMBER = Constants.nativeBuildVersion;
 export const EXPO_VERSION = Constants.expoVersion;
-export const INSTALLATION_ID = Constants.installationId;
+
+/**
+ * A random ID for the device.
+ */
+export const getInstallationIDAsync: () => Promise<string> = async () => {
+  let result = "ASYNCGETINSTALLATIONIDERROR";
+  try {
+    const key = `${ASYNC_STORAGE_WELLPING_PREFIX}InstallationID`;
+    const value = await AsyncStorage.getItem(key);
+    if (value === null) {
+      result = `${uuid.v4()}`;
+      await AsyncStorage.setItem(key, result);
+    } else {
+      result = value;
+    }
+  } catch (e) {
+    // error
+  }
+  return result;
+};
 
 export type UserInstallationInfo = {
   app: {
-    installationId: typeof INSTALLATION_ID;
+    installationId: string;
     jsVersion: typeof JS_VERSION_NUMBER;
     nativeVersion: typeof NATIVE_VERSION_NUMBER;
     nativeBuild: typeof NATIVE_BUILD_NUMBER;
@@ -33,24 +56,28 @@ export type UserInstallationInfo = {
     osVersion: typeof Device.osVersion;
   };
 };
-export const USER_INSTALLATION_INFO: UserInstallationInfo = {
-  app: {
-    installationId: INSTALLATION_ID,
-    jsVersion: JS_VERSION_NUMBER,
-    nativeVersion: NATIVE_VERSION_NUMBER,
-    nativeBuild: NATIVE_BUILD_NUMBER,
-    expoVersion: EXPO_VERSION,
-  },
-  device: {
-    brand: Device.brand,
-    manufacturer: Device.manufacturer,
-    modelName: Device.modelName,
-    modelId: Device.modelId,
-    designName: Device.designName,
-    productName: Device.productName,
-    osName: Device.osName,
-    osVersion: Device.osVersion,
-  },
+export const getUserInstallationInfoAsync: () => Promise<
+  UserInstallationInfo
+> = async () => {
+  return {
+    app: {
+      installationId: await getInstallationIDAsync(),
+      jsVersion: JS_VERSION_NUMBER,
+      nativeVersion: NATIVE_VERSION_NUMBER,
+      nativeBuild: NATIVE_BUILD_NUMBER,
+      expoVersion: EXPO_VERSION,
+    },
+    device: {
+      brand: Device.brand,
+      manufacturer: Device.manufacturer,
+      modelName: Device.modelName,
+      modelId: Device.modelId,
+      designName: Device.designName,
+      productName: Device.productName,
+      osName: Device.osName,
+      osVersion: Device.osVersion,
+    },
+  };
 };
 
 export const HOME_SCREEN_DEBUG_VIEW_SYMBOLS = {
@@ -92,7 +119,7 @@ export function getCriticalProblemTextForUser(problem: string) {
   return `[CRITICAL ERROR (Please screenshot this page and send it to the study staff as soon as possible): ${problem}]`;
 }
 
-export function alertWithShareButtonContainingDebugInfo(
+export async function alertWithShareButtonContainingDebugInfoAsync(
   text: string,
   title: string = "Alert",
   moreButtons: AlertButton[] = [],
@@ -101,8 +128,8 @@ export function alertWithShareButtonContainingDebugInfo(
     ...moreButtons,
     {
       text: "Share Data with Research Staff",
-      onPress: () => {
-        shareDebugText(text);
+      onPress: async () => {
+        await shareDebugTextAsync(text);
       },
     },
     {
@@ -112,14 +139,14 @@ export function alertWithShareButtonContainingDebugInfo(
   ]);
 }
 
-export function getUsefulDebugInfo(): string {
-  return JSON.stringify(USER_INSTALLATION_INFO);
+export async function getUsefulDebugInfoAsync(): Promise<string> {
+  return JSON.stringify(await getUserInstallationInfoAsync());
 }
 
-export function shareDebugText(debugText: string) {
+export async function shareDebugTextAsync(debugText: string) {
   Share.share({
     message:
       `Please enter any additional information here:\n\n\n\n` +
-      `====\n${debugText}\n\n====\n${getUsefulDebugInfo()}`,
+      `====\n${debugText}\n\n====\n${await getUsefulDebugInfoAsync()}`,
   });
 }

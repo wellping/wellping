@@ -29,6 +29,7 @@
     "react-native": "0.64.3",
     "react-native-safe-area-context": "3.3.2",
     "react-native-sqlite-storage": "^5.0.0",
+    "react-native-uuid": "^2.0.1",
     "react-native-webview": "11.13.0",
     "reflect-metadata": "^0.1.13",
     "seedrandom": "^3.0.5",

@@ -1,7 +1,7 @@
 import React from "react";
 import { View, Text, Button } from "react-native";
 
-import { JS_VERSION_NUMBER, shareDebugText } from "../helpers/debug";
+import { JS_VERSION_NUMBER, shareDebugTextAsync } from "../helpers/debug";
 import { styles } from "../helpers/styles";
 
 const TEXT_COLOR = "#ededed";
@@ -25,8 +25,8 @@ const LoadingScreen: React.FunctionComponent = () => {
       <Button
         title="Share Error"
         color={TEXT_COLOR}
-        onPress={() => {
-          shareDebugText("Stuck on the loading page.");
+        onPress={async () => {
+          await shareDebugTextAsync("Stuck on the loading page.");
         }}
       />
       <Text

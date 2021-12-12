@@ -6,7 +6,7 @@
 import firebase from "firebase/app";
 
 import { UploadData } from "./dataUpload";
-import { getLoginSessionID } from "./loginSession";
+import { getLoginSessionIDAsync } from "./loginSession";
 import { User } from "./secureStore/user";
 import { DataUploadServerResponse, getFirebaseServerConfig } from "./server";
 import { StudyInfo } from "./types";
@@ -108,8 +108,8 @@ export async function firebaseUploadDataForUserAsync(
     const dataPlain = JSON.parse(JSON.stringify(data));
     await firebase
       .database()
-      // TODO: verify getLoginSessionID is working correctly here
-      .ref(`users/${user.uid}/${getLoginSessionID(localUser)}`)
+      // TODO: verify getLoginSessionIDAsync is working correctly here
+      .ref(`users/${user.uid}/${await getLoginSessionIDAsync(localUser)}`)
       .set(dataPlain);
     endUploading();
     // TODO: support new_pings_count` and `new_answers_count.

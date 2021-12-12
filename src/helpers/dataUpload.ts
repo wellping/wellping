@@ -5,10 +5,10 @@ import { beiweUploadDataForUserAsync } from "./beiwe";
 import {
   UserInstallationInfo,
   HOME_SCREEN_DEBUG_VIEW_SYMBOLS,
-  USER_INSTALLATION_INFO,
+  getUserInstallationInfoAsync,
 } from "./debug";
 import { firebaseUploadDataForUserAsync } from "./firebase";
-import { getLoginSessionID } from "./loginSession";
+import { getLoginSessionIDAsync } from "./loginSession";
 import { getPingsAsync } from "./pings";
 import { secureGetUserAsync } from "./secureStore/user";
 import {
@@ -44,8 +44,8 @@ async function _getUserDataAsync(): Promise<UserData> {
   }
   return {
     username: user.username,
-    loginSessionId: getLoginSessionID(user),
-    installation: USER_INSTALLATION_INFO,
+    loginSessionId: await getLoginSessionIDAsync(user),
+    installation: await getUserInstallationInfoAsync(),
   };
 }
 

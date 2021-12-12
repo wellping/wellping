@@ -4,9 +4,9 @@ import React from "react";
 import { Text, View } from "react-native";
 import { WebView } from "react-native-webview";
 
-import { INSTALLATION_ID } from "../helpers/debug";
+import { getInstallationIDAsync } from "../helpers/debug";
 import { base64ToBase64URL, getHashedPasswordAsync } from "../helpers/helpers";
-import { getLoginSessionID } from "../helpers/loginSession";
+import { getLoginSessionIDAsync } from "../helpers/loginSession";
 import {
   getPingsAsync,
   getThisWeekPingsAsync,
@@ -46,7 +46,7 @@ export async function getDashboardUrlAsync(
   if (dashboardUrl.includes(INSTALLATION_ID_PLACEHOLDER)) {
     dashboardUrl = dashboardUrl
       .split(INSTALLATION_ID_PLACEHOLDER)
-      .join(INSTALLATION_ID);
+      .join(await getInstallationIDAsync());
   }
 
   if (dashboardUrl.includes(STUDY_ID_PLACEHOLDER)) {
@@ -63,7 +63,7 @@ export async function getDashboardUrlAsync(
     let loginSessionId = "N/A";
     const user = await secureGetUserAsync();
     if (user) {
-      loginSessionId = getLoginSessionID(user);
+      loginSessionId = await getLoginSessionIDAsync(user);
     }
     dashboardUrl = dashboardUrl
       .split(LOGIN_SESSION_ID_PLACEHOLDER)

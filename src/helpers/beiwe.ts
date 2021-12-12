@@ -9,7 +9,7 @@ import { Platform } from "react-native";
 import { UploadData } from "./dataUpload";
 import { JS_VERSION_NUMBER } from "./debug";
 import { base64ToBase64URL, getHashedPasswordAsync } from "./helpers";
-import { getLoginSessionID } from "./loginSession";
+import { getLoginSessionIDAsync } from "./loginSession";
 import { User, secureGetUserAsync } from "./secureStore/user";
 import { DataUploadServerResponse, getBeiweServerConfig } from "./server";
 import { getStudyInfoAsync } from "./studyFile";
@@ -93,7 +93,7 @@ async function getRequestURLAsync(
 
   const passwordHash = await getHashedPasswordAsync(user.password);
   request["password"] = base64ToBase64URL(passwordHash);
-  request["device_id"] = getLoginSessionID(user);
+  request["device_id"] = await getLoginSessionIDAsync(user);
   request["username"] = user.username;
   request["patient_id"] = user.username;
 
