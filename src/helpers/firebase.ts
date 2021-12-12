@@ -3,7 +3,26 @@
  * `useFirebase(studyInfo) === true`.
  */
 
-import firebase from "firebase/app";
+import {
+  initializeApp as firebaseInitializeApp,
+  getApp as firebaseGetApp,
+  deleteApp as firebaseDeleteApp,
+  FirebaseApp,
+  FirebaseError,
+} from "firebase/app";
+import {
+  getAuth as firebaseGetAuth,
+  signInWithEmailAndPassword as firebaseSignInWithEmailAndPassword,
+  signOut as firebaseSignOut,
+  Auth as FirebaseAuth,
+  UserCredential as FirebaseUserCredential,
+} from "firebase/auth";
+import {
+  getDatabase as firebaseGetDatabase,
+  ref as firebaseRef,
+  set as firebaseSet,
+  Database as FirebaseDatabase,
+} from "firebase/database";
 
 import { UploadData } from "./dataUpload";
 import { getLoginSessionIDAsync } from "./loginSession";
@@ -19,14 +38,33 @@ const FIREBASE_LOGIN_EMAIL_DOMAIN = "@user.wellpingssnl";
 const getFirebaseLoginEmail = (username: string): string =>
   username + FIREBASE_LOGIN_EMAIL_DOMAIN;
 
+export function getFirebaseApp(): FirebaseApp {
+  try {
+    return firebaseGetApp();
+  } catch (e) {
+    throw new Error(`firebaseApp not initialized!`);
+  }
+}
+async function deleteFirebaseAppAsync(): Promise<void> {
+  await firebaseDeleteApp(getFirebaseApp());
+}
+
+export function getFirebaseAuth(): FirebaseAuth {
+  return firebaseGetAuth(getFirebaseApp());
+}
+
+export function getFirebaseDatabase(): FirebaseDatabase {
+  return firebaseGetDatabase();
+}
+
 export function validateAndInitializeFirebaseWithConfig(studyInfo: StudyInfo) {
-  if (firebase.apps.length === 0) {
-    firebase.initializeApp(getFirebaseServerConfig(studyInfo).config);
+  if (!firebaseInitialized()) {
+    firebaseInitializeApp(getFirebaseServerConfig(studyInfo).config);
   }
 
   try {
     // Just running an arbitrary to check if the Firebase config is correct.
-    firebase.auth();
+    const _ = getFirebaseAuth();
   } catch (e) {
     const message = `**Firebase config object is incorrect.**\n\n${e}`;
     throw new Error(message);
@@ -35,7 +73,7 @@ export function validateAndInitializeFirebaseWithConfig(studyInfo: StudyInfo) {
 
 export function firebaseInitialized(): boolean {
   try {
-    firebase.app();
+    firebaseGetApp();
     return true;
   } catch (e) {
     return false;
@@ -44,14 +82,14 @@ export function firebaseInitialized(): boolean {
 
 export async function firebaseLoginAsync(
   user: User,
-): Promise<firebase.auth.UserCredential> {
+): Promise<FirebaseUserCredential> {
   try {
-    const userCredential = await firebase
-      .auth()
-      .signInWithEmailAndPassword(
-        getFirebaseLoginEmail(user.username),
-        user.password,
-      );
+    const auth = getFirebaseAuth();
+    const userCredential = await firebaseSignInWithEmailAndPassword(
+      auth,
+      getFirebaseLoginEmail(user.username),
+      user.password,
+    );
     if (!userCredential.user?.emailVerified) {
       // If the email is not verified, we know that this is not a pre-imported
       // user (as all pre-imported users have a verified fictional email
@@ -71,10 +109,11 @@ export async function firebaseLoginAsync(
  */
 export async function firebaseLogoutAndDeleteAppAsync(): Promise<void> {
   try {
-    if (firebase.auth().currentUser !== null) {
-      await firebase.auth().signOut();
+    const auth = getFirebaseAuth();
+    if (auth.currentUser !== null) {
+      await firebaseSignOut(auth);
     }
-    await firebase.app().delete();
+    await deleteFirebaseAppAsync();
   } catch (error) {
     throw error;
   }
@@ -93,29 +132,34 @@ export async function firebaseUploadDataForUserAsync(
 ): Promise<DataUploadServerResponse> {
   startUploading();
 
-  const user = firebase.auth().currentUser;
+  const user = getFirebaseAuth().currentUser;
   if (user === null) {
     // Stops if the user is not logged in to Firebase as they won't have
     // permission to upload.
     endUploading("FDB: U=N");
     throw new Error(
-      "firebase.auth().currentUser === null in firebaseUploadDataForUserAsync",
+      "getFirebaseAuth().currentUser === null in firebaseUploadDataForUserAsync",
     );
   }
 
   try {
     // We need to store plain object in Firebase.
     const dataPlain = JSON.parse(JSON.stringify(data));
-    await firebase
-      .database()
-      // TODO: verify getLoginSessionIDAsync is working correctly here
-      .ref(`users/${user.uid}/${await getLoginSessionIDAsync(localUser)}`)
-      .set(dataPlain);
+    const database = getFirebaseDatabase();
+    // TODO: verify getLoginSessionIDAsync is working correctly here
+    firebaseSet(
+      firebaseRef(
+        database,
+        `users/${user.uid}/${await getLoginSessionIDAsync(localUser)}`,
+      ),
+      dataPlain,
+    );
+
     endUploading();
     // TODO: support new_pings_count` and `new_answers_count.
     return {};
   } catch (e) {
-    const error = e as firebase.FirebaseError;
+    const error = e as FirebaseError;
     endUploading(`FDB: ${error.code}`);
     throw error;
   }

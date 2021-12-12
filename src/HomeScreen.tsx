@@ -2,7 +2,11 @@ import { format, getDay } from "date-fns";
 import * as Linking from "expo-linking";
 import { Subscription } from "expo-modules-core";
 import * as Notifications from "expo-notifications";
-import firebase from "firebase/app";
+import {
+  onAuthStateChanged as firebaseOnAuthStateChanged,
+  Unsubscribe as FirebaseUnsubscribe,
+  User as FirebaseUser,
+} from "firebase/auth";
 import React from "react";
 import {
   Button,
@@ -56,7 +60,11 @@ import {
   alertWithShareButtonContainingDebugInfoAsync,
   HOME_SCREEN_DEBUG_VIEW_SYMBOLS,
 } from "./helpers/debug";
-import { firebaseLoginAsync, firebaseInitialized } from "./helpers/firebase";
+import {
+  firebaseLoginAsync,
+  firebaseInitialized,
+  getFirebaseAuth,
+} from "./helpers/firebase";
 import { getLoginSessionIDAsync } from "./helpers/loginSession";
 import {
   setNotificationsAsync,
@@ -114,7 +122,7 @@ interface HomeScreenState {
    *
    * If Firebase server is not used, it is always `null`.
    */
-  firebaseUser: firebase.User | null;
+  firebaseUser: FirebaseUser | null;
 
   // DEBUG
   displayDebugView: boolean;
@@ -178,7 +186,7 @@ export default class HomeScreen extends React.Component<
   };
 
   notificationResponseReceivedListener: Subscription | null = null;
-  unregisterAuthObserver: firebase.Unsubscribe | null = null;
+  unregisterAuthObserver: FirebaseUnsubscribe | null = null;
   async componentDidMount() {
     const { studyInfo } = this.props;
 
@@ -222,7 +230,8 @@ export default class HomeScreen extends React.Component<
     }
 
     if (useFirebase(studyInfo) && firebaseInitialized()) {
-      this.unregisterAuthObserver = firebase.auth().onAuthStateChanged(
+      this.unregisterAuthObserver = firebaseOnAuthStateChanged(
+        getFirebaseAuth(),
         async (firebaseUser) => {
           if (firebaseUser) {
             // The user is signed in to Firebase.

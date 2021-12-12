@@ -30,9 +30,6 @@ import LoginScreen, {
 } from "./screens/LoginScreen";
 import StudyFileErrorScreen from "./screens/StudyFileErrorScreen";
 
-import "firebase/auth";
-import "firebase/database";
-
 interface RootScreenProps {}
 
 interface RootScreenState {
