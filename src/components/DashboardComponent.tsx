@@ -6,7 +6,7 @@ import { WebView } from "react-native-webview";
 
 import { INSTALLATION_ID } from "../helpers/debug";
 import { base64ToBase64URL, getHashedPasswordAsync } from "../helpers/helpers";
-import { getLoginSessionID } from "../helpers/loginSession";
+import { getLoginSessionIDAsync } from "../helpers/loginSession";
 import {
   getPingsAsync,
   getThisWeekPingsAsync,
@@ -63,7 +63,7 @@ export async function getDashboardUrlAsync(
     let loginSessionId = "N/A";
     const user = await secureGetUserAsync();
     if (user) {
-      loginSessionId = getLoginSessionID(user);
+      loginSessionId = await getLoginSessionIDAsync(user);
     }
     dashboardUrl = dashboardUrl
       .split(LOGIN_SESSION_ID_PLACEHOLDER)

@@ -57,7 +57,7 @@ import {
   HOME_SCREEN_DEBUG_VIEW_SYMBOLS,
 } from "./helpers/debug";
 import { firebaseLoginAsync, firebaseInitialized } from "./helpers/firebase";
-import { getLoginSessionID } from "./helpers/loginSession";
+import { getLoginSessionIDAsync } from "./helpers/loginSession";
 import {
   setNotificationsAsync,
   setupNotificationsPermissionAsync,
@@ -636,7 +636,9 @@ export default class HomeScreen extends React.Component<
                       `Please enter your question here (please attach a screenshot if applicable):\n\n\n\n\n\n` +
                         `====\n` +
                         `User ID: ${user.username}\n` +
-                        `User Login Session ID: ${getLoginSessionID(user)}\n` +
+                        `User Login Session ID: ${await getLoginSessionIDAsync(
+                          user,
+                        )}\n` +
                         getUsefulDebugInfo(),
                     );
                     const mailtoLink = `mailto:${studyInfo.contactEmail}?subject=${emailSubject}&body=${emailBody}`;
