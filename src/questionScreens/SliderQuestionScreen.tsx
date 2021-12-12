@@ -9,7 +9,7 @@ import {
 } from "../helpers/answerTypes";
 import {
   getNonCriticalProblemTextForUser,
-  alertWithShareButtonContainingDebugInfo,
+  alertWithShareButtonContainingDebugInfoAsync,
 } from "../helpers/debug";
 import { SliderQuestion } from "../helpers/types";
 import { SLIDER_DEFAULTS } from "./constants";
@@ -51,7 +51,7 @@ const SliderQuestionScreen: React.ElementType<SliderQuestionScreenProps> = ({
         question.defaultValueFromQuestionId
       ] as SliderQuestion;
       if (prevQuestion == null) {
-        alertWithShareButtonContainingDebugInfo(
+        alertWithShareButtonContainingDebugInfoAsync(
           getNonCriticalProblemTextForUser(
             `defaultValueFromQuestionId ${question.defaultValueFromQuestionId} prevQuestion == null`,
           ),

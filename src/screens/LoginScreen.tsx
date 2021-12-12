@@ -15,9 +15,9 @@ import {
 import { CONFIG } from "../../config/config";
 import {
   JS_VERSION_NUMBER,
-  alertWithShareButtonContainingDebugInfo,
+  alertWithShareButtonContainingDebugInfoAsync,
   getCriticalProblemTextForUser,
-  shareDebugText,
+  shareDebugTextAsync,
 } from "../helpers/debug";
 import { LoginSchema } from "../helpers/schemas/Login";
 import { User } from "../helpers/secureStore/user";
@@ -343,8 +343,8 @@ export default class LoginScreen extends React.Component<
             </Text>
             <Text style={{ marginTop: 20 }}>{errorText}</Text>
             <Button
-              onPress={() => {
-                shareDebugText(errorText);
+              onPress={async () => {
+                await shareDebugTextAsync(errorText);
               }}
               title="Share Error"
             />
@@ -366,7 +366,7 @@ export default class LoginScreen extends React.Component<
         <TouchableWithoutFeedback
           onLongPress={async () => {
             //this.setState({ displayDebugView: true });
-            alertWithShareButtonContainingDebugInfo(
+            await alertWithShareButtonContainingDebugInfoAsync(
               `parseInitialURLAsync:\n${JSON.stringify(
                 await Linking.parseInitialURLAsync(),
               )}`,

@@ -1,7 +1,7 @@
 import React from "react";
 import { Button, TextInput, Text, View } from "react-native";
 
-import { shareDebugText } from "../helpers/debug";
+import { shareDebugTextAsync } from "../helpers/debug";
 
 interface StudyFileErrorScreenProps {
   errorText: string;
@@ -47,8 +47,8 @@ export default class StudyFileErrorScreen extends React.Component<
               (Restart the app to try again.)
             </Text>
             <Button
-              onPress={() => {
-                shareDebugText(errorText);
+              onPress={async () => {
+                shareDebugTextAsync(errorText);
               }}
               title="Send the error message to the research staff"
             />

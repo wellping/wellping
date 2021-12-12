@@ -92,7 +92,7 @@ export function getCriticalProblemTextForUser(problem: string) {
   return `[CRITICAL ERROR (Please screenshot this page and send it to the study staff as soon as possible): ${problem}]`;
 }
 
-export function alertWithShareButtonContainingDebugInfo(
+export async function alertWithShareButtonContainingDebugInfoAsync(
   text: string,
   title: string = "Alert",
   moreButtons: AlertButton[] = [],
@@ -101,8 +101,8 @@ export function alertWithShareButtonContainingDebugInfo(
     ...moreButtons,
     {
       text: "Share Data with Research Staff",
-      onPress: () => {
-        shareDebugText(text);
+      onPress: async () => {
+        await shareDebugTextAsync(text);
       },
     },
     {
@@ -112,14 +112,14 @@ export function alertWithShareButtonContainingDebugInfo(
   ]);
 }
 
-export function getUsefulDebugInfo(): string {
+export async function getUsefulDebugInfoAsync(): Promise<string> {
   return JSON.stringify(USER_INSTALLATION_INFO);
 }
 
-export function shareDebugText(debugText: string) {
+export async function shareDebugTextAsync(debugText: string) {
   Share.share({
     message:
       `Please enter any additional information here:\n\n\n\n` +
-      `====\n${debugText}\n\n====\n${getUsefulDebugInfo()}`,
+      `====\n${debugText}\n\n====\n${await getUsefulDebugInfoAsync()}`,
   });
 }

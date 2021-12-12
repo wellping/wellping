@@ -10,7 +10,7 @@ import {
 } from "./helpers/asyncStorage/tempStudyFile";
 import {
   getCriticalProblemTextForUser,
-  alertWithShareButtonContainingDebugInfo,
+  alertWithShareButtonContainingDebugInfoAsync,
   getNonCriticalProblemTextForUser,
 } from "./helpers/debug";
 import { validateAndInitializeFirebaseWithConfig } from "./helpers/firebase";
@@ -150,7 +150,7 @@ export default class RootScreen extends React.Component<
         } catch (e) {
           await this.logoutFnAsync();
           this.setState({ isLoading: false });
-          alertWithShareButtonContainingDebugInfo(
+          await alertWithShareButtonContainingDebugInfoAsync(
             getCriticalProblemTextForUser(
               `componentDidMount validateAndInitializeFirebaseWithConfig: ${e}`,
             ),
@@ -171,7 +171,7 @@ export default class RootScreen extends React.Component<
         // still try to find study file when it is already deleted.
         await this.logoutFnAsync();
         this.setState({ isLoading: false });
-        alertWithShareButtonContainingDebugInfo(
+        await alertWithShareButtonContainingDebugInfoAsync(
           getNonCriticalProblemTextForUser(
             `You have been logged out for an unknown reason. ` +
               `Please uninstall the app, reinstall the app, and try logging in again. ` +
