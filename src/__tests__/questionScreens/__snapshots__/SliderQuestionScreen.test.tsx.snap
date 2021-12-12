@@ -29,15 +29,8 @@ exports[`with constant default value 1`] = `
         "height": 40,
       }
     }
-    thumbImage={
-      Object {
-        "__packager_asset": true,
-        "height": 1,
-        "scale": 1,
-        "uri": "file://assets/full/path/to/directory/name.type",
-        "width": 1,
-      }
-    }
+    tapToSeek={false}
+    thumbImage={null}
     value={25}
   />
   <View
@@ -99,15 +92,8 @@ exports[`with default value from a question with default value with data \`{ val
         "height": 40,
       }
     }
-    thumbImage={
-      Object {
-        "__packager_asset": true,
-        "height": 1,
-        "scale": 1,
-        "uri": "file://assets/full/path/to/directory/name.type",
-        "width": 1,
-      }
-    }
+    tapToSeek={false}
+    thumbImage={null}
     value={61}
   />
   <View
@@ -169,15 +155,8 @@ exports[`with default value from a question with default value with data \`null\
         "height": 40,
       }
     }
-    thumbImage={
-      Object {
-        "__packager_asset": true,
-        "height": 1,
-        "scale": 1,
-        "uri": "file://assets/full/path/to/directory/name.type",
-        "width": 1,
-      }
-    }
+    tapToSeek={false}
+    thumbImage={null}
     value={100}
   />
   <View
@@ -239,15 +218,8 @@ exports[`with default value from a question without default value with data \`{ 
         "height": 40,
       }
     }
-    thumbImage={
-      Object {
-        "__packager_asset": true,
-        "height": 1,
-        "scale": 1,
-        "uri": "file://assets/full/path/to/directory/name.type",
-        "width": 1,
-      }
-    }
+    tapToSeek={false}
+    thumbImage={null}
     value={31}
   />
   <View
@@ -309,15 +281,8 @@ exports[`with default value from a question without default value with data \`nu
         "height": 40,
       }
     }
-    thumbImage={
-      Object {
-        "__packager_asset": true,
-        "height": 1,
-        "scale": 1,
-        "uri": "file://assets/full/path/to/directory/name.type",
-        "width": 1,
-      }
-    }
+    tapToSeek={false}
+    thumbImage={null}
     value={50}
   />
   <View
@@ -379,15 +344,8 @@ exports[`without default value 1`] = `
         "height": 40,
       }
     }
-    thumbImage={
-      Object {
-        "__packager_asset": true,
-        "height": 1,
-        "scale": 1,
-        "uri": "file://assets/full/path/to/directory/name.type",
-        "width": 1,
-      }
-    }
+    tapToSeek={false}
+    thumbImage={null}
     value={50}
   />
   <View
