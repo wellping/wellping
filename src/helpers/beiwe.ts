@@ -6,7 +6,7 @@
 import * as Device from "expo-device";
 import { Platform } from "react-native";
 
-import { UploadData } from "./dataUpload";
+import { UploadData } from "./dataUploadType";
 import { JS_VERSION_NUMBER } from "./debug";
 import { base64ToBase64URL, getHashedPasswordAsync } from "./helpers";
 import { getLoginSessionIDAsync } from "./loginSession";
