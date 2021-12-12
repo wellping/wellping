@@ -1,6 +1,6 @@
-import { Subscription } from "@unimodules/core";
 import { format, getDay } from "date-fns";
 import * as Linking from "expo-linking";
+import { Subscription } from "expo-modules-core";
 import * as Notifications from "expo-notifications";
 import firebase from "firebase/app";
 import React from "react";
