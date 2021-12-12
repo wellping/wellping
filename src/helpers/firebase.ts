@@ -3,7 +3,7 @@
  * `useFirebase(studyInfo) === true`.
  */
 
-import * as firebase from "firebase/app";
+import firebase from "firebase/app";
 
 import { UploadData } from "./dataUpload";
 import { getLoginSessionID } from "./loginSession";

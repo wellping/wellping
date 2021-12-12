@@ -1,5 +1,5 @@
 import { setStatusBarStyle } from "expo-status-bar";
-import * as firebase from "firebase/app";
+import firebase from "firebase/app";
 import React from "react";
 import { Text, View } from "react-native";
 import { WebView } from "react-native-webview";

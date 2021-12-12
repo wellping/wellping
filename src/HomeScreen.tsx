@@ -2,7 +2,7 @@ import { Subscription } from "@unimodules/core";
 import { format, getDay } from "date-fns";
 import * as Linking from "expo-linking";
 import * as Notifications from "expo-notifications";
-import * as firebase from "firebase/app";
+import firebase from "firebase/app";
 import React from "react";
 import {
   Button,
