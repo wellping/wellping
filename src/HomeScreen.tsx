@@ -140,6 +140,7 @@ export default class HomeScreen extends React.Component<
       storedPingStateAsync: null,
       uploadStatusSymbol: HOME_SCREEN_DEBUG_VIEW_SYMBOLS.UPLOAD.INITIAL,
       firebaseUser: null,
+      afterFinishingPing_isUploading: false,
     };
   }
 
@@ -289,7 +290,9 @@ export default class HomeScreen extends React.Component<
   }
 
   async startSurveyAsync() {
-    await new Promise((resolve) => this.setState({ isLoading: true }, resolve));
+    await new Promise<void>((resolve) =>
+      this.setState({ isLoading: true }, resolve),
+    );
 
     const studyInfo = this.props.studyInfo;
 
@@ -331,7 +334,7 @@ export default class HomeScreen extends React.Component<
     await this._startSurveyTypeAsync(newStreamName);
 
     // TODO: should this be after setNotificationsAsync?
-    await new Promise((resolve) =>
+    await new Promise<void>((resolve) =>
       this.setState({ isLoading: false }, resolve),
     );
 

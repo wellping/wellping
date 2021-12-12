@@ -711,7 +711,7 @@ export default class SurveyScreen extends React.Component<
       date,
     });
 
-    await new Promise((resolve, reject) => {
+    await new Promise<void>((resolve, reject) => {
       this.setState(
         (prevState) => ({
           answers: {
@@ -776,6 +776,9 @@ export default class SurveyScreen extends React.Component<
           return <></>;
         } else {
           console.error("Cannot find the appropriate question screen!");
+
+          // TODO: better error displaying.
+          return <></>;
         }
     }
 

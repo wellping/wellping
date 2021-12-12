@@ -182,7 +182,7 @@ export async function testCurrentQuestionAsync({
 
   // For some reason we have to do this to ensure `fireEvent` works in
   // `expectCurrentQuestionAsync`.
-  await new Promise((resolve, reject) => {
+  await new Promise<void>((resolve, reject) => {
     setTimeout(() => {
       resolve();
     }, 0);

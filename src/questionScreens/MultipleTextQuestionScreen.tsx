@@ -114,6 +114,7 @@ const MultipleTextQuestionScreen: React.ElementType<MultipleTextQuestionScreenPr
     textFieldsRef.push(React.useRef<TextInput>(null));
 
     textFields.push(
+      // @ts-ignore
       <SearchableDropdown
         key={index}
         onItemSelect={(item: DropdownItem) => {

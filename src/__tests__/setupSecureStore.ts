@@ -13,7 +13,7 @@ const mockSecureStore: any = {
 
   setItemAsync: jest.fn((key, value) => {
     //console.log(`expo-secure-store setItemAsync(${key}, ${value})`);
-    return new Promise((resolve, reject) => {
+    return new Promise<void>((resolve, reject) => {
       if (typeof key !== "string" || typeof value !== "string") {
         reject(new Error("key and value must be string"));
       } else {
