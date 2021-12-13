@@ -228,15 +228,24 @@ export const ChoicesQuestionSchema = BaseQuestionSchema.extend({
     },
   );
 
-export const ChoicesWithSingleAnswerQuestionSchema = ChoicesQuestionSchema.extend(
+// https://github.com/colinhacks/zod/issues/454
+export const ChoicesWithSingleAnswerQuestionSchema = ChoicesQuestionSchema.refine(
+  (question) => {
+    return question.type === QuestionTypeSchema.enum.ChoicesWithSingleAnswer;
+  },
   {
-    type: z.literal(QuestionTypeSchema.enum.ChoicesWithSingleAnswer),
+    message: `The type of ChoicesWithSingleAnswerQuestionSchema must be ${QuestionTypeSchema.enum.ChoicesWithSingleAnswer}`,
+    path: ["type"],
   },
 );
 
-export const ChoicesWithMultipleAnswersQuestionSchema = ChoicesQuestionSchema.extend(
+export const ChoicesWithMultipleAnswersQuestionSchema = ChoicesQuestionSchema.refine(
+  (question) => {
+    return question.type === QuestionTypeSchema.enum.ChoicesWithMultipleAnswers;
+  },
   {
-    type: z.literal(QuestionTypeSchema.enum.ChoicesWithMultipleAnswers),
+    message: `The type of ChoicesWithMultipleAnswersQuestionSchema must be ${QuestionTypeSchema.enum.ChoicesWithMultipleAnswers}`,
+    path: ["type"],
   },
 );
 
