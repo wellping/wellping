@@ -48,7 +48,7 @@ export const QuestionImageOptionsSchema = z.object({
   position: z.union([z.literal("inDescriptionBox"), z.literal("left")]),
 });
 
-const BaseQuestionSchema = z.object({
+const _BaseQuestionSchema = z.object({
   /**
    * The question ID.
    */
@@ -112,6 +112,9 @@ const BaseQuestionSchema = z.object({
    */
   next: QuestionIdSchema.nullable(),
 });
+const BaseQuestionSchema = __DEV__
+  ? _BaseQuestionSchema.strict()
+  : _BaseQuestionSchema;
 
 export const SliderQuestionSchema = BaseQuestionSchema.extend({
   type: z.literal(QuestionTypeSchema.enum.Slider),
