@@ -20,6 +20,7 @@ import {
 import {
   getDatabase as firebaseGetDatabase,
   ref as firebaseRef,
+  get as firebaseGet,
   set as firebaseSet,
   update as firebaseUpdate,
   push as firebasePush,
@@ -213,10 +214,24 @@ export async function firebaseUploadDataForUserAsync(
       makePlain(data.user),
     );
 
-    // TODO: support new_pings_count` and `new_answers_count by sending a request.
+    const returnValues: DataUploadServerResponse = {};
+    const serverInfoSnapshot = await firebaseGet(
+      firebaseRef(database, firebaseUserRootKey),
+    );
+    if (serverInfoSnapshot.exists()) {
+      console.warn(serverInfoSnapshot.size);
+      returnValues.new_pings_count = serverInfoSnapshot.child(
+        firebaseUserPingsKey,
+      ).size;
+      returnValues.new_answers_count = serverInfoSnapshot.child(
+        firebaseUserAnswersKey,
+      ).size;
+    } else {
+      // Do nothing. Let's hope next time it will work.
+    }
 
     endUploading();
-    return {};
+    return returnValues;
   } catch (e) {
     const error = e as FirebaseError;
     endUploading(`FDB: ${error.code}`);
