@@ -364,6 +364,17 @@ const _StudyInfoSchema = z.object({
   specialVariablePlaceholderTreatments: z
     .record(PlaceholderReplacementValueTreatmentOptionsSchema)
     .optional(),
+
+  /**
+   * Show an alert each time the app launches.
+   */
+  specialAlertOnLaunch: z
+    .object({
+      title: z.string().default(""),
+      message: z.string(),
+      buttonText: z.string().default("Close"),
+    })
+    .optional(),
 });
 export const StudyInfoSchema = (__DEV__
   ? _StudyInfoSchema.strict()

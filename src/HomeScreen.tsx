@@ -282,6 +282,19 @@ export default class HomeScreen extends React.Component<
     }
 
     this.setState({ isLoading: false });
+
+    if (studyInfo.specialAlertOnLaunch) {
+      Alert.alert(
+        studyInfo.specialAlertOnLaunch.title,
+        studyInfo.specialAlertOnLaunch.message,
+        [
+          {
+            text: studyInfo.specialAlertOnLaunch.buttonText,
+            style: "cancel",
+          },
+        ],
+      );
+    }
   }
 
   componentWillUnmount() {
