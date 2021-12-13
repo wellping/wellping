@@ -256,6 +256,7 @@ export const YesNoQuestionSchema = BaseQuestionSchema.extend({
       yes: QuestionIdSchema.nullable().optional(),
       no: QuestionIdSchema.nullable().optional(),
     })
+    .strict()
     .optional(),
   // Currently only `yes` is supported and also can only followup after 3 days
   // and 7 days with the same stream.
@@ -264,6 +265,7 @@ export const YesNoQuestionSchema = BaseQuestionSchema.extend({
       yes: StreamNameSchema.optional(),
       // TODO: no: StreamNameSchema.optional(),
     })
+    .strict()
     .optional(),
 });
 
