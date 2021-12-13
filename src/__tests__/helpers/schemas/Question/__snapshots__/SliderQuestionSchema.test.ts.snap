@@ -1,76 +1,130 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`SliderQuestionSchema default value range 0 - 100: <0 1`] = `
-"1 validation issue(s)
-
-  Issue #0: custom_error at 
-  \`defaultValue\` (default: 50) should be in the range of \`minimumValue\` (default: 0) and \`maximumValue\` (default: 100)
-"
+"[
+  {
+    \\"code\\": \\"custom\\",
+    \\"message\\": \\"\`defaultValue\` (default: 50) should be in the range of \`minimumValue\` (default: 0) and \`maximumValue\` (default: 100)\\",
+    \\"path\\": []
+  }
+]"
 `;
 
 exports[`SliderQuestionSchema default value range 0 - 100: >100 1`] = `
-"1 validation issue(s)
-
-  Issue #0: custom_error at 
-  \`defaultValue\` (default: 50) should be in the range of \`minimumValue\` (default: 0) and \`maximumValue\` (default: 100)
-"
+"[
+  {
+    \\"code\\": \\"custom\\",
+    \\"message\\": \\"\`defaultValue\` (default: 50) should be in the range of \`minimumValue\` (default: 0) and \`maximumValue\` (default: 100)\\",
+    \\"path\\": []
+  }
+]"
 `;
 
 exports[`SliderQuestionSchema defaultValueFromQuestionId cannot be null 1`] = `
-"1 validation issue(s)
-
-  Issue #0: invalid_union at defaultValueFromQuestionId
-  Invalid input
-"
+"[
+  {
+    \\"code\\": \\"invalid_type\\",
+    \\"expected\\": \\"string\\",
+    \\"received\\": \\"null\\",
+    \\"path\\": [
+      \\"defaultValueFromQuestionId\\"
+    ],
+    \\"message\\": \\"Expected string, received null\\"
+  }
+]"
 `;
 
 exports[`SliderQuestionSchema defaultValueFromQuestionId is question ID: empty id 1`] = `
-"2 validation issue(s)
-
-  Issue #0: too_small at defaultValueFromQuestionId
-  Should be at least 1 characters
-
-  Issue #1: invalid_string at defaultValueFromQuestionId
-  Question ID can only include letters, numbers, \\"_\\", \\"[\\", and \\"]\\".
-"
+"[
+  {
+    \\"code\\": \\"too_small\\",
+    \\"minimum\\": 1,
+    \\"type\\": \\"string\\",
+    \\"inclusive\\": true,
+    \\"message\\": \\"Should be at least 1 characters\\",
+    \\"path\\": [
+      \\"defaultValueFromQuestionId\\"
+    ]
+  },
+  {
+    \\"validation\\": \\"regex\\",
+    \\"code\\": \\"invalid_string\\",
+    \\"message\\": \\"Question ID can only include letters, numbers, \\\\\\"_\\\\\\", \\\\\\"[\\\\\\", and \\\\\\"]\\\\\\".\\",
+    \\"path\\": [
+      \\"defaultValueFromQuestionId\\"
+    ]
+  }
+]"
 `;
 
 exports[`SliderQuestionSchema defaultValueFromQuestionId is question ID: invalid id 1`] = `
-"1 validation issue(s)
-
-  Issue #0: invalid_string at defaultValueFromQuestionId
-  Question ID can only include letters, numbers, \\"_\\", \\"[\\", and \\"]\\".
-"
+"[
+  {
+    \\"validation\\": \\"regex\\",
+    \\"code\\": \\"invalid_string\\",
+    \\"message\\": \\"Question ID can only include letters, numbers, \\\\\\"_\\\\\\", \\\\\\"[\\\\\\", and \\\\\\"]\\\\\\".\\",
+    \\"path\\": [
+      \\"defaultValueFromQuestionId\\"
+    ]
+  }
+]"
 `;
 
 exports[`SliderQuestionSchema slider tuple: one item 1`] = `
-"1 validation issue(s)
-
-  Issue #0: too_small at slider
-  Should have at least 2 items
-"
+"[
+  {
+    \\"code\\": \\"too_small\\",
+    \\"minimum\\": 2,
+    \\"inclusive\\": true,
+    \\"type\\": \\"array\\",
+    \\"path\\": [
+      \\"slider\\"
+    ],
+    \\"message\\": \\"Should have at least 2 items\\"
+  }
+]"
 `;
 
 exports[`SliderQuestionSchema slider tuple: three items 1`] = `
-"1 validation issue(s)
-
-  Issue #0: too_big at slider
-  Should have at most 2 items
-"
+"[
+  {
+    \\"code\\": \\"too_big\\",
+    \\"maximum\\": 2,
+    \\"inclusive\\": true,
+    \\"type\\": \\"array\\",
+    \\"path\\": [
+      \\"slider\\"
+    ],
+    \\"message\\": \\"Should have at most 2 items\\"
+  }
+]"
 `;
 
 exports[`SliderQuestionSchema slider tuple: zero item 1`] = `
-"1 validation issue(s)
-
-  Issue #0: too_small at slider
-  Should have at least 2 items
-"
+"[
+  {
+    \\"code\\": \\"too_small\\",
+    \\"minimum\\": 2,
+    \\"inclusive\\": true,
+    \\"type\\": \\"array\\",
+    \\"path\\": [
+      \\"slider\\"
+    ],
+    \\"message\\": \\"Should have at least 2 items\\"
+  }
+]"
 `;
 
 exports[`SliderQuestionSchema type 1`] = `
-"1 validation issue(s)
-
-  Issue #0: invalid_literal_value at type
-  Input must be \\"Slider\\"
-"
+"[
+  {
+    \\"code\\": \\"invalid_type\\",
+    \\"expected\\": \\"Slider\\",
+    \\"received\\": \\"HowLongAgo\\",
+    \\"path\\": [
+      \\"type\\"
+    ],
+    \\"message\\": \\"Expected Slider, received HowLongAgo\\"
+  }
+]"
 `;

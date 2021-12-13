@@ -1,169 +1,471 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`ChoicesQuestionSchema choices can be a string 1`] = `
-"1 validation issue(s)
-
-  Issue #0: invalid_union at choices
-  Invalid input
-"
+"[
+  {
+    \\"code\\": \\"invalid_union\\",
+    \\"unionErrors\\": [
+      {
+        \\"issues\\": [
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"string\\",
+            \\"received\\": \\"number\\",
+            \\"path\\": [
+              \\"choices\\"
+            ],
+            \\"message\\": \\"Expected string, received number\\"
+          }
+        ],
+        \\"name\\": \\"ZodError\\"
+      },
+      {
+        \\"issues\\": [
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"array\\",
+            \\"received\\": \\"number\\",
+            \\"path\\": [
+              \\"choices\\"
+            ],
+            \\"message\\": \\"Expected array, received number\\"
+          }
+        ],
+        \\"name\\": \\"ZodError\\"
+      }
+    ],
+    \\"path\\": [
+      \\"choices\\"
+    ],
+    \\"message\\": \\"Invalid input\\"
+  }
+]"
 `;
 
 exports[`ChoicesQuestionSchema choices can be an array of strings 1`] = `
-"1 validation issue(s)
-
-  Issue #0: invalid_union at choices
-  Invalid input
-"
+"[
+  {
+    \\"code\\": \\"invalid_union\\",
+    \\"unionErrors\\": [
+      {
+        \\"issues\\": [
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"string\\",
+            \\"received\\": \\"array\\",
+            \\"path\\": [
+              \\"choices\\"
+            ],
+            \\"message\\": \\"Expected string, received array\\"
+          }
+        ],
+        \\"name\\": \\"ZodError\\"
+      },
+      {
+        \\"issues\\": [
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"string\\",
+            \\"received\\": \\"number\\",
+            \\"path\\": [
+              \\"choices\\",
+              0
+            ],
+            \\"message\\": \\"Expected string, received number\\"
+          },
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"string\\",
+            \\"received\\": \\"number\\",
+            \\"path\\": [
+              \\"choices\\",
+              1
+            ],
+            \\"message\\": \\"Expected string, received number\\"
+          },
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"string\\",
+            \\"received\\": \\"number\\",
+            \\"path\\": [
+              \\"choices\\",
+              2
+            ],
+            \\"message\\": \\"Expected string, received number\\"
+          }
+        ],
+        \\"name\\": \\"ZodError\\"
+      }
+    ],
+    \\"path\\": [
+      \\"choices\\"
+    ],
+    \\"message\\": \\"Invalid input\\"
+  }
+]"
 `;
 
 exports[`ChoicesQuestionSchema choices choices should not be duplicated 1`] = `
-"1 validation issue(s)
-
-  Issue #0: custom_error at choices
-  There should not be duplicate elements in the choices list.
-"
+"[
+  {
+    \\"code\\": \\"custom\\",
+    \\"message\\": \\"There should not be duplicate elements in the choices list.\\",
+    \\"path\\": [
+      \\"choices\\"
+    ]
+  }
+]"
 `;
 
 exports[`ChoicesQuestionSchema choices choices should not be duplicated 2`] = `
-"1 validation issue(s)
-
-  Issue #0: custom_error at choices
-  There should not be duplicate elements in the choices list.
-"
+"[
+  {
+    \\"code\\": \\"custom\\",
+    \\"message\\": \\"There should not be duplicate elements in the choices list.\\",
+    \\"path\\": [
+      \\"choices\\"
+    ]
+  }
+]"
 `;
 
 exports[`ChoicesQuestionSchema choices choices string cannot be empty 1`] = `
-"1 validation issue(s)
-
-  Issue #0: too_small at choices.0
-  Should be at least 1 characters
-"
+"[
+  {
+    \\"code\\": \\"too_small\\",
+    \\"minimum\\": 1,
+    \\"type\\": \\"string\\",
+    \\"inclusive\\": true,
+    \\"message\\": \\"Should be at least 1 characters\\",
+    \\"path\\": [
+      \\"choices\\",
+      0
+    ]
+  }
+]"
 `;
 
 exports[`ChoicesQuestionSchema choices choices string cannot be empty 2`] = `
-"1 validation issue(s)
-
-  Issue #0: too_small at choices.0
-  Should be at least 1 characters
-"
+"[
+  {
+    \\"code\\": \\"too_small\\",
+    \\"minimum\\": 1,
+    \\"type\\": \\"string\\",
+    \\"inclusive\\": true,
+    \\"message\\": \\"Should be at least 1 characters\\",
+    \\"path\\": [
+      \\"choices\\",
+      0
+    ]
+  }
+]"
 `;
 
 exports[`ChoicesQuestionSchema choices should not be empty 1`] = `
-"1 validation issue(s)
-
-  Issue #0: nonempty_array_is_empty at choices
-  List must contain at least one item
-"
+"[
+  {
+    \\"code\\": \\"too_small\\",
+    \\"minimum\\": 1,
+    \\"type\\": \\"array\\",
+    \\"inclusive\\": true,
+    \\"message\\": \\"Should have at least 1 items\\",
+    \\"path\\": [
+      \\"choices\\"
+    ]
+  }
+]"
 `;
 
 exports[`ChoicesQuestionSchema choices should not be undefined 1`] = `
-"1 validation issue(s)
-
-  Issue #0: invalid_union at choices
-  Invalid input
-"
+"[
+  {
+    \\"code\\": \\"invalid_union\\",
+    \\"unionErrors\\": [
+      {
+        \\"issues\\": [
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"string\\",
+            \\"received\\": \\"undefined\\",
+            \\"path\\": [
+              \\"choices\\"
+            ],
+            \\"message\\": \\"Required\\"
+          }
+        ],
+        \\"name\\": \\"ZodError\\"
+      },
+      {
+        \\"issues\\": [
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"array\\",
+            \\"received\\": \\"undefined\\",
+            \\"path\\": [
+              \\"choices\\"
+            ],
+            \\"message\\": \\"Required\\"
+          }
+        ],
+        \\"name\\": \\"ZodError\\"
+      }
+    ],
+    \\"path\\": [
+      \\"choices\\"
+    ],
+    \\"message\\": \\"Invalid input\\"
+  }
+]"
 `;
 
 exports[`ChoicesQuestionSchema randomizeChoicesOrder should not be null 1`] = `
-"1 validation issue(s)
-
-  Issue #0: invalid_union at randomizeChoicesOrder
-  Invalid input
-"
+"[
+  {
+    \\"code\\": \\"invalid_type\\",
+    \\"expected\\": \\"boolean\\",
+    \\"received\\": \\"null\\",
+    \\"path\\": [
+      \\"randomizeChoicesOrder\\"
+    ],
+    \\"message\\": \\"Expected boolean, received null\\"
+  }
+]"
 `;
 
 exports[`ChoicesQuestionSchema randomizeExceptForChoiceIds should not be non-choices keys: with choice keys 1`] = `
-"1 validation issue(s)
-
-  Issue #0: custom_error at randomizeExceptForChoiceIds
-  Keys in \`randomizeExceptForChoiceIds\` should also be present in \`choices\`.
-"
+"[
+  {
+    \\"code\\": \\"custom\\",
+    \\"message\\": \\"Keys in \`randomizeExceptForChoiceIds\` should also be present in \`choices\`.\\",
+    \\"path\\": [
+      \\"randomizeExceptForChoiceIds\\"
+    ]
+  }
+]"
 `;
 
 exports[`ChoicesQuestionSchema randomizeExceptForChoiceIds should not be non-choices keys: without choice keys 1`] = `
-"1 validation issue(s)
-
-  Issue #0: custom_error at randomizeExceptForChoiceIds
-  Keys in \`randomizeExceptForChoiceIds\` should also be present in \`choices\`.
-"
+"[
+  {
+    \\"code\\": \\"custom\\",
+    \\"message\\": \\"Keys in \`randomizeExceptForChoiceIds\` should also be present in \`choices\`.\\",
+    \\"path\\": [
+      \\"randomizeExceptForChoiceIds\\"
+    ]
+  }
+]"
 `;
 
 exports[`ChoicesQuestionSchema randomizeExceptForChoiceIds should not be null 1`] = `
-"1 validation issue(s)
-
-  Issue #0: invalid_union at randomizeExceptForChoiceIds
-  Invalid input
-"
+"[
+  {
+    \\"code\\": \\"invalid_type\\",
+    \\"expected\\": \\"array\\",
+    \\"received\\": \\"null\\",
+    \\"path\\": [
+      \\"randomizeExceptForChoiceIds\\"
+    ],
+    \\"message\\": \\"Expected array, received null\\"
+  }
+]"
 `;
 
 exports[`ChoicesQuestionSchema randomizeExceptForChoiceIds should not be set if \`randomizeChoicesOrder\` is false 1`] = `
-"1 validation issue(s)
-
-  Issue #0: custom_error at randomizeExceptForChoiceIds
-  \`randomizeExceptForChoiceIds\` should only be set when \`randomizeChoicesOrder\` is set to \`true\`.
-"
+"[
+  {
+    \\"code\\": \\"custom\\",
+    \\"message\\": \\"\`randomizeExceptForChoiceIds\` should only be set when \`randomizeChoicesOrder\` is set to \`true\`.\\",
+    \\"path\\": [
+      \\"randomizeExceptForChoiceIds\\"
+    ]
+  }
+]"
 `;
 
 exports[`ChoicesQuestionSchema specialCasesStartId cannot include non-choices key: non-choices key only 1`] = `
-"1 validation issue(s)
-
-  Issue #0: custom_error at specialCasesStartId
-  Choices keys in \`specialCasesStartId\` must also be in \`choices\`.
-"
+"[
+  {
+    \\"code\\": \\"custom\\",
+    \\"message\\": \\"Choices keys in \`specialCasesStartId\` must also be in \`choices\`.\\",
+    \\"path\\": [
+      \\"specialCasesStartId\\"
+    ]
+  }
+]"
 `;
 
 exports[`ChoicesQuestionSchema specialCasesStartId cannot include non-choices key: non-choices key with choice key 1`] = `
-"1 validation issue(s)
-
-  Issue #0: custom_error at specialCasesStartId
-  Choices keys in \`specialCasesStartId\` must also be in \`choices\`.
-"
+"[
+  {
+    \\"code\\": \\"custom\\",
+    \\"message\\": \\"Choices keys in \`specialCasesStartId\` must also be in \`choices\`.\\",
+    \\"path\\": [
+      \\"specialCasesStartId\\"
+    ]
+  }
+]"
 `;
 
 exports[`ChoicesQuestionSchema specialCasesStartId should not be null 1`] = `
-"1 validation issue(s)
-
-  Issue #0: invalid_union at specialCasesStartId
-  Invalid input
-"
+"[
+  {
+    \\"code\\": \\"invalid_type\\",
+    \\"expected\\": \\"array\\",
+    \\"received\\": \\"null\\",
+    \\"path\\": [
+      \\"specialCasesStartId\\"
+    ],
+    \\"message\\": \\"Expected array, received null\\"
+  }
+]"
 `;
 
 exports[`ChoicesQuestionSchema type 1`] = `
-"1 validation issue(s)
-
-  Issue #0: invalid_union at type
-  Invalid input
-"
+"[
+  {
+    \\"code\\": \\"invalid_union\\",
+    \\"unionErrors\\": [
+      {
+        \\"issues\\": [
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"ChoicesWithSingleAnswer\\",
+            \\"received\\": \\"HowLongAgo\\",
+            \\"path\\": [
+              \\"type\\"
+            ],
+            \\"message\\": \\"Expected ChoicesWithSingleAnswer, received HowLongAgo\\"
+          }
+        ],
+        \\"name\\": \\"ZodError\\"
+      },
+      {
+        \\"issues\\": [
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"ChoicesWithMultipleAnswers\\",
+            \\"received\\": \\"HowLongAgo\\",
+            \\"path\\": [
+              \\"type\\"
+            ],
+            \\"message\\": \\"Expected ChoicesWithMultipleAnswers, received HowLongAgo\\"
+          }
+        ],
+        \\"name\\": \\"ZodError\\"
+      }
+    ],
+    \\"path\\": [
+      \\"type\\"
+    ],
+    \\"message\\": \\"Invalid input\\"
+  }
+]"
 `;
 
 exports[`ChoicesWithMultipleAnswersQuestionSchema type: ChoicesWithSingleAnswer 1`] = `
-"1 validation issue(s)
-
-  Issue #0: invalid_literal_value at type
-  Input must be \\"ChoicesWithMultipleAnswers\\"
-"
+"[
+  {
+    \\"code\\": \\"custom\\",
+    \\"message\\": \\"The type of ChoicesWithMultipleAnswersQuestionSchema must be ChoicesWithMultipleAnswers\\",
+    \\"path\\": [
+      \\"type\\"
+    ]
+  }
+]"
 `;
 
 exports[`ChoicesWithMultipleAnswersQuestionSchema type: other 1`] = `
-"1 validation issue(s)
-
-  Issue #0: invalid_literal_value at type
-  Input must be \\"ChoicesWithMultipleAnswers\\"
-"
+"[
+  {
+    \\"code\\": \\"invalid_union\\",
+    \\"unionErrors\\": [
+      {
+        \\"issues\\": [
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"ChoicesWithSingleAnswer\\",
+            \\"received\\": \\"YesNo\\",
+            \\"path\\": [
+              \\"type\\"
+            ],
+            \\"message\\": \\"Expected ChoicesWithSingleAnswer, received YesNo\\"
+          }
+        ],
+        \\"name\\": \\"ZodError\\"
+      },
+      {
+        \\"issues\\": [
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"ChoicesWithMultipleAnswers\\",
+            \\"received\\": \\"YesNo\\",
+            \\"path\\": [
+              \\"type\\"
+            ],
+            \\"message\\": \\"Expected ChoicesWithMultipleAnswers, received YesNo\\"
+          }
+        ],
+        \\"name\\": \\"ZodError\\"
+      }
+    ],
+    \\"path\\": [
+      \\"type\\"
+    ],
+    \\"message\\": \\"Invalid input\\"
+  }
+]"
 `;
 
 exports[`ChoicesWithSingleAnswerQuestionSchema type: ChoicesWithMultipleAnswers 1`] = `
-"1 validation issue(s)
-
-  Issue #0: invalid_literal_value at type
-  Input must be \\"ChoicesWithSingleAnswer\\"
-"
+"[
+  {
+    \\"code\\": \\"custom\\",
+    \\"message\\": \\"The type of ChoicesWithSingleAnswerQuestionSchema must be ChoicesWithSingleAnswer\\",
+    \\"path\\": [
+      \\"type\\"
+    ]
+  }
+]"
 `;
 
 exports[`ChoicesWithSingleAnswerQuestionSchema type: other 1`] = `
-"1 validation issue(s)
-
-  Issue #0: invalid_literal_value at type
-  Input must be \\"ChoicesWithSingleAnswer\\"
-"
+"[
+  {
+    \\"code\\": \\"invalid_union\\",
+    \\"unionErrors\\": [
+      {
+        \\"issues\\": [
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"ChoicesWithSingleAnswer\\",
+            \\"received\\": \\"YesNo\\",
+            \\"path\\": [
+              \\"type\\"
+            ],
+            \\"message\\": \\"Expected ChoicesWithSingleAnswer, received YesNo\\"
+          }
+        ],
+        \\"name\\": \\"ZodError\\"
+      },
+      {
+        \\"issues\\": [
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"ChoicesWithMultipleAnswers\\",
+            \\"received\\": \\"YesNo\\",
+            \\"path\\": [
+              \\"type\\"
+            ],
+            \\"message\\": \\"Expected ChoicesWithMultipleAnswers, received YesNo\\"
+          }
+        ],
+        \\"name\\": \\"ZodError\\"
+      }
+    ],
+    \\"path\\": [
+      \\"type\\"
+    ],
+    \\"message\\": \\"Invalid input\\"
+  }
+]"
 `;

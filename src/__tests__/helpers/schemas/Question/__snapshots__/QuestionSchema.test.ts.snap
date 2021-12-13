@@ -1,75 +1,2247 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`QuestionSchema empty 1`] = `
-"4 validation issue(s)
-
-  Issue #0: invalid_type at id
-  Required
-
-  Issue #1: invalid_enum_value at type
-  Input must be one of these values: Slider, ChoicesWithSingleAnswer, ChoicesWithMultipleAnswers, YesNo, MultipleText, HowLongAgo, Branch, BranchWithRelativeComparison, Wrapper
-
-  Issue #2: invalid_type at question
-  Required
-
-  Issue #3: invalid_union at next
-  Invalid input
-"
+"[
+  {
+    \\"code\\": \\"invalid_union\\",
+    \\"unionErrors\\": [
+      {
+        \\"issues\\": [
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"string\\",
+            \\"received\\": \\"undefined\\",
+            \\"path\\": [
+              \\"id\\"
+            ],
+            \\"message\\": \\"Required\\"
+          },
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"Slider\\",
+            \\"path\\": [
+              \\"type\\"
+            ],
+            \\"message\\": \\"Expected Slider, received undefined\\"
+          },
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"string\\",
+            \\"received\\": \\"undefined\\",
+            \\"path\\": [
+              \\"question\\"
+            ],
+            \\"message\\": \\"Required\\"
+          },
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"string\\",
+            \\"received\\": \\"undefined\\",
+            \\"path\\": [
+              \\"next\\"
+            ],
+            \\"message\\": \\"Required\\"
+          },
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"array\\",
+            \\"received\\": \\"undefined\\",
+            \\"path\\": [
+              \\"slider\\"
+            ],
+            \\"message\\": \\"Required\\"
+          }
+        ],
+        \\"name\\": \\"ZodError\\"
+      },
+      {
+        \\"issues\\": [
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"string\\",
+            \\"received\\": \\"undefined\\",
+            \\"path\\": [
+              \\"id\\"
+            ],
+            \\"message\\": \\"Required\\"
+          },
+          {
+            \\"code\\": \\"invalid_union\\",
+            \\"unionErrors\\": [
+              {
+                \\"issues\\": [
+                  {
+                    \\"code\\": \\"invalid_type\\",
+                    \\"expected\\": \\"ChoicesWithSingleAnswer\\",
+                    \\"path\\": [
+                      \\"type\\"
+                    ],
+                    \\"message\\": \\"Expected ChoicesWithSingleAnswer, received undefined\\"
+                  }
+                ],
+                \\"name\\": \\"ZodError\\"
+              },
+              {
+                \\"issues\\": [
+                  {
+                    \\"code\\": \\"invalid_type\\",
+                    \\"expected\\": \\"ChoicesWithMultipleAnswers\\",
+                    \\"path\\": [
+                      \\"type\\"
+                    ],
+                    \\"message\\": \\"Expected ChoicesWithMultipleAnswers, received undefined\\"
+                  }
+                ],
+                \\"name\\": \\"ZodError\\"
+              }
+            ],
+            \\"path\\": [
+              \\"type\\"
+            ],
+            \\"message\\": \\"Invalid input\\"
+          },
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"string\\",
+            \\"received\\": \\"undefined\\",
+            \\"path\\": [
+              \\"question\\"
+            ],
+            \\"message\\": \\"Required\\"
+          },
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"string\\",
+            \\"received\\": \\"undefined\\",
+            \\"path\\": [
+              \\"next\\"
+            ],
+            \\"message\\": \\"Required\\"
+          },
+          {
+            \\"code\\": \\"invalid_union\\",
+            \\"unionErrors\\": [
+              {
+                \\"issues\\": [
+                  {
+                    \\"code\\": \\"invalid_type\\",
+                    \\"expected\\": \\"string\\",
+                    \\"received\\": \\"undefined\\",
+                    \\"path\\": [
+                      \\"choices\\"
+                    ],
+                    \\"message\\": \\"Required\\"
+                  }
+                ],
+                \\"name\\": \\"ZodError\\"
+              },
+              {
+                \\"issues\\": [
+                  {
+                    \\"code\\": \\"invalid_type\\",
+                    \\"expected\\": \\"array\\",
+                    \\"received\\": \\"undefined\\",
+                    \\"path\\": [
+                      \\"choices\\"
+                    ],
+                    \\"message\\": \\"Required\\"
+                  }
+                ],
+                \\"name\\": \\"ZodError\\"
+              }
+            ],
+            \\"path\\": [
+              \\"choices\\"
+            ],
+            \\"message\\": \\"Invalid input\\"
+          }
+        ],
+        \\"name\\": \\"ZodError\\"
+      },
+      {
+        \\"issues\\": [
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"string\\",
+            \\"received\\": \\"undefined\\",
+            \\"path\\": [
+              \\"id\\"
+            ],
+            \\"message\\": \\"Required\\"
+          },
+          {
+            \\"code\\": \\"invalid_union\\",
+            \\"unionErrors\\": [
+              {
+                \\"issues\\": [
+                  {
+                    \\"code\\": \\"invalid_type\\",
+                    \\"expected\\": \\"ChoicesWithSingleAnswer\\",
+                    \\"path\\": [
+                      \\"type\\"
+                    ],
+                    \\"message\\": \\"Expected ChoicesWithSingleAnswer, received undefined\\"
+                  }
+                ],
+                \\"name\\": \\"ZodError\\"
+              },
+              {
+                \\"issues\\": [
+                  {
+                    \\"code\\": \\"invalid_type\\",
+                    \\"expected\\": \\"ChoicesWithMultipleAnswers\\",
+                    \\"path\\": [
+                      \\"type\\"
+                    ],
+                    \\"message\\": \\"Expected ChoicesWithMultipleAnswers, received undefined\\"
+                  }
+                ],
+                \\"name\\": \\"ZodError\\"
+              }
+            ],
+            \\"path\\": [
+              \\"type\\"
+            ],
+            \\"message\\": \\"Invalid input\\"
+          },
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"string\\",
+            \\"received\\": \\"undefined\\",
+            \\"path\\": [
+              \\"question\\"
+            ],
+            \\"message\\": \\"Required\\"
+          },
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"string\\",
+            \\"received\\": \\"undefined\\",
+            \\"path\\": [
+              \\"next\\"
+            ],
+            \\"message\\": \\"Required\\"
+          },
+          {
+            \\"code\\": \\"invalid_union\\",
+            \\"unionErrors\\": [
+              {
+                \\"issues\\": [
+                  {
+                    \\"code\\": \\"invalid_type\\",
+                    \\"expected\\": \\"string\\",
+                    \\"received\\": \\"undefined\\",
+                    \\"path\\": [
+                      \\"choices\\"
+                    ],
+                    \\"message\\": \\"Required\\"
+                  }
+                ],
+                \\"name\\": \\"ZodError\\"
+              },
+              {
+                \\"issues\\": [
+                  {
+                    \\"code\\": \\"invalid_type\\",
+                    \\"expected\\": \\"array\\",
+                    \\"received\\": \\"undefined\\",
+                    \\"path\\": [
+                      \\"choices\\"
+                    ],
+                    \\"message\\": \\"Required\\"
+                  }
+                ],
+                \\"name\\": \\"ZodError\\"
+              }
+            ],
+            \\"path\\": [
+              \\"choices\\"
+            ],
+            \\"message\\": \\"Invalid input\\"
+          }
+        ],
+        \\"name\\": \\"ZodError\\"
+      },
+      {
+        \\"issues\\": [
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"string\\",
+            \\"received\\": \\"undefined\\",
+            \\"path\\": [
+              \\"id\\"
+            ],
+            \\"message\\": \\"Required\\"
+          },
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"YesNo\\",
+            \\"path\\": [
+              \\"type\\"
+            ],
+            \\"message\\": \\"Expected YesNo, received undefined\\"
+          },
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"string\\",
+            \\"received\\": \\"undefined\\",
+            \\"path\\": [
+              \\"question\\"
+            ],
+            \\"message\\": \\"Required\\"
+          },
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"string\\",
+            \\"received\\": \\"undefined\\",
+            \\"path\\": [
+              \\"next\\"
+            ],
+            \\"message\\": \\"Required\\"
+          }
+        ],
+        \\"name\\": \\"ZodError\\"
+      },
+      {
+        \\"issues\\": [
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"string\\",
+            \\"received\\": \\"undefined\\",
+            \\"path\\": [
+              \\"id\\"
+            ],
+            \\"message\\": \\"Required\\"
+          },
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"MultipleText\\",
+            \\"path\\": [
+              \\"type\\"
+            ],
+            \\"message\\": \\"Expected MultipleText, received undefined\\"
+          },
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"string\\",
+            \\"received\\": \\"undefined\\",
+            \\"path\\": [
+              \\"question\\"
+            ],
+            \\"message\\": \\"Required\\"
+          },
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"string\\",
+            \\"received\\": \\"undefined\\",
+            \\"path\\": [
+              \\"next\\"
+            ],
+            \\"message\\": \\"Required\\"
+          },
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"string\\",
+            \\"received\\": \\"undefined\\",
+            \\"path\\": [
+              \\"indexName\\"
+            ],
+            \\"message\\": \\"Required\\"
+          },
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"string\\",
+            \\"received\\": \\"undefined\\",
+            \\"path\\": [
+              \\"variableName\\"
+            ],
+            \\"message\\": \\"Required\\"
+          },
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"number\\",
+            \\"received\\": \\"undefined\\",
+            \\"path\\": [
+              \\"max\\"
+            ],
+            \\"message\\": \\"Required\\"
+          }
+        ],
+        \\"name\\": \\"ZodError\\"
+      },
+      {
+        \\"issues\\": [
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"string\\",
+            \\"received\\": \\"undefined\\",
+            \\"path\\": [
+              \\"id\\"
+            ],
+            \\"message\\": \\"Required\\"
+          },
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"HowLongAgo\\",
+            \\"path\\": [
+              \\"type\\"
+            ],
+            \\"message\\": \\"Expected HowLongAgo, received undefined\\"
+          },
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"string\\",
+            \\"received\\": \\"undefined\\",
+            \\"path\\": [
+              \\"question\\"
+            ],
+            \\"message\\": \\"Required\\"
+          },
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"string\\",
+            \\"received\\": \\"undefined\\",
+            \\"path\\": [
+              \\"next\\"
+            ],
+            \\"message\\": \\"Required\\"
+          }
+        ],
+        \\"name\\": \\"ZodError\\"
+      },
+      {
+        \\"issues\\": [
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"string\\",
+            \\"received\\": \\"undefined\\",
+            \\"path\\": [
+              \\"id\\"
+            ],
+            \\"message\\": \\"Required\\"
+          },
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"Branch\\",
+            \\"path\\": [
+              \\"type\\"
+            ],
+            \\"message\\": \\"Expected Branch, received undefined\\"
+          },
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"string\\",
+            \\"received\\": \\"undefined\\",
+            \\"path\\": [
+              \\"question\\"
+            ],
+            \\"message\\": \\"Required\\"
+          },
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"string\\",
+            \\"received\\": \\"undefined\\",
+            \\"path\\": [
+              \\"next\\"
+            ],
+            \\"message\\": \\"Required\\"
+          },
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"object\\",
+            \\"received\\": \\"undefined\\",
+            \\"path\\": [
+              \\"condition\\"
+            ],
+            \\"message\\": \\"Required\\"
+          },
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"object\\",
+            \\"received\\": \\"undefined\\",
+            \\"path\\": [
+              \\"branchStartId\\"
+            ],
+            \\"message\\": \\"Required\\"
+          }
+        ],
+        \\"name\\": \\"ZodError\\"
+      },
+      {
+        \\"issues\\": [
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"string\\",
+            \\"received\\": \\"undefined\\",
+            \\"path\\": [
+              \\"id\\"
+            ],
+            \\"message\\": \\"Required\\"
+          },
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"BranchWithRelativeComparison\\",
+            \\"path\\": [
+              \\"type\\"
+            ],
+            \\"message\\": \\"Expected BranchWithRelativeComparison, received undefined\\"
+          },
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"string\\",
+            \\"received\\": \\"undefined\\",
+            \\"path\\": [
+              \\"question\\"
+            ],
+            \\"message\\": \\"Required\\"
+          },
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"string\\",
+            \\"received\\": \\"undefined\\",
+            \\"path\\": [
+              \\"next\\"
+            ],
+            \\"message\\": \\"Required\\"
+          },
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"object\\",
+            \\"received\\": \\"undefined\\",
+            \\"path\\": [
+              \\"branchStartId\\"
+            ],
+            \\"message\\": \\"Required\\"
+          }
+        ],
+        \\"name\\": \\"ZodError\\"
+      },
+      {
+        \\"issues\\": [
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"string\\",
+            \\"received\\": \\"undefined\\",
+            \\"path\\": [
+              \\"id\\"
+            ],
+            \\"message\\": \\"Required\\"
+          },
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"Wrapper\\",
+            \\"path\\": [
+              \\"type\\"
+            ],
+            \\"message\\": \\"Expected Wrapper, received undefined\\"
+          },
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"string\\",
+            \\"received\\": \\"undefined\\",
+            \\"path\\": [
+              \\"question\\"
+            ],
+            \\"message\\": \\"Required\\"
+          },
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"string\\",
+            \\"received\\": \\"undefined\\",
+            \\"path\\": [
+              \\"next\\"
+            ],
+            \\"message\\": \\"Required\\"
+          },
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"string\\",
+            \\"received\\": \\"undefined\\",
+            \\"path\\": [
+              \\"innerNext\\"
+            ],
+            \\"message\\": \\"Required\\"
+          }
+        ],
+        \\"name\\": \\"ZodError\\"
+      }
+    ],
+    \\"path\\": [],
+    \\"message\\": \\"Invalid input\\"
+  }
+]"
 `;
 
 exports[`QuestionSchema id should not be empty 1`] = `
-"2 validation issue(s)
-
-  Issue #0: too_small at id
-  Should be at least 1 characters
-
-  Issue #1: invalid_string at id
-  Question ID can only include letters, numbers, \\"_\\", \\"[\\", and \\"]\\".
-"
+"[
+  {
+    \\"code\\": \\"too_small\\",
+    \\"minimum\\": 1,
+    \\"type\\": \\"string\\",
+    \\"inclusive\\": true,
+    \\"message\\": \\"Should be at least 1 characters\\",
+    \\"path\\": [
+      \\"id\\"
+    ]
+  },
+  {
+    \\"validation\\": \\"regex\\",
+    \\"code\\": \\"invalid_string\\",
+    \\"message\\": \\"Question ID can only include letters, numbers, \\\\\\"_\\\\\\", \\\\\\"[\\\\\\", and \\\\\\"]\\\\\\".\\",
+    \\"path\\": [
+      \\"id\\"
+    ]
+  }
+]"
 `;
 
 exports[`QuestionSchema incomplete fields 1`] = `
-"1 validation issue(s)
-
-  Issue #0: invalid_type at slider
-  Required
-"
+"[
+  {
+    \\"code\\": \\"invalid_union\\",
+    \\"unionErrors\\": [
+      {
+        \\"issues\\": [
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"array\\",
+            \\"received\\": \\"undefined\\",
+            \\"path\\": [
+              \\"slider\\"
+            ],
+            \\"message\\": \\"Required\\"
+          }
+        ],
+        \\"name\\": \\"ZodError\\"
+      },
+      {
+        \\"issues\\": [
+          {
+            \\"code\\": \\"invalid_union\\",
+            \\"unionErrors\\": [
+              {
+                \\"issues\\": [
+                  {
+                    \\"code\\": \\"invalid_type\\",
+                    \\"expected\\": \\"ChoicesWithSingleAnswer\\",
+                    \\"received\\": \\"Slider\\",
+                    \\"path\\": [
+                      \\"type\\"
+                    ],
+                    \\"message\\": \\"Expected ChoicesWithSingleAnswer, received Slider\\"
+                  }
+                ],
+                \\"name\\": \\"ZodError\\"
+              },
+              {
+                \\"issues\\": [
+                  {
+                    \\"code\\": \\"invalid_type\\",
+                    \\"expected\\": \\"ChoicesWithMultipleAnswers\\",
+                    \\"received\\": \\"Slider\\",
+                    \\"path\\": [
+                      \\"type\\"
+                    ],
+                    \\"message\\": \\"Expected ChoicesWithMultipleAnswers, received Slider\\"
+                  }
+                ],
+                \\"name\\": \\"ZodError\\"
+              }
+            ],
+            \\"path\\": [
+              \\"type\\"
+            ],
+            \\"message\\": \\"Invalid input\\"
+          },
+          {
+            \\"code\\": \\"invalid_union\\",
+            \\"unionErrors\\": [
+              {
+                \\"issues\\": [
+                  {
+                    \\"code\\": \\"invalid_type\\",
+                    \\"expected\\": \\"string\\",
+                    \\"received\\": \\"undefined\\",
+                    \\"path\\": [
+                      \\"choices\\"
+                    ],
+                    \\"message\\": \\"Required\\"
+                  }
+                ],
+                \\"name\\": \\"ZodError\\"
+              },
+              {
+                \\"issues\\": [
+                  {
+                    \\"code\\": \\"invalid_type\\",
+                    \\"expected\\": \\"array\\",
+                    \\"received\\": \\"undefined\\",
+                    \\"path\\": [
+                      \\"choices\\"
+                    ],
+                    \\"message\\": \\"Required\\"
+                  }
+                ],
+                \\"name\\": \\"ZodError\\"
+              }
+            ],
+            \\"path\\": [
+              \\"choices\\"
+            ],
+            \\"message\\": \\"Invalid input\\"
+          }
+        ],
+        \\"name\\": \\"ZodError\\"
+      },
+      {
+        \\"issues\\": [
+          {
+            \\"code\\": \\"invalid_union\\",
+            \\"unionErrors\\": [
+              {
+                \\"issues\\": [
+                  {
+                    \\"code\\": \\"invalid_type\\",
+                    \\"expected\\": \\"ChoicesWithSingleAnswer\\",
+                    \\"received\\": \\"Slider\\",
+                    \\"path\\": [
+                      \\"type\\"
+                    ],
+                    \\"message\\": \\"Expected ChoicesWithSingleAnswer, received Slider\\"
+                  }
+                ],
+                \\"name\\": \\"ZodError\\"
+              },
+              {
+                \\"issues\\": [
+                  {
+                    \\"code\\": \\"invalid_type\\",
+                    \\"expected\\": \\"ChoicesWithMultipleAnswers\\",
+                    \\"received\\": \\"Slider\\",
+                    \\"path\\": [
+                      \\"type\\"
+                    ],
+                    \\"message\\": \\"Expected ChoicesWithMultipleAnswers, received Slider\\"
+                  }
+                ],
+                \\"name\\": \\"ZodError\\"
+              }
+            ],
+            \\"path\\": [
+              \\"type\\"
+            ],
+            \\"message\\": \\"Invalid input\\"
+          },
+          {
+            \\"code\\": \\"invalid_union\\",
+            \\"unionErrors\\": [
+              {
+                \\"issues\\": [
+                  {
+                    \\"code\\": \\"invalid_type\\",
+                    \\"expected\\": \\"string\\",
+                    \\"received\\": \\"undefined\\",
+                    \\"path\\": [
+                      \\"choices\\"
+                    ],
+                    \\"message\\": \\"Required\\"
+                  }
+                ],
+                \\"name\\": \\"ZodError\\"
+              },
+              {
+                \\"issues\\": [
+                  {
+                    \\"code\\": \\"invalid_type\\",
+                    \\"expected\\": \\"array\\",
+                    \\"received\\": \\"undefined\\",
+                    \\"path\\": [
+                      \\"choices\\"
+                    ],
+                    \\"message\\": \\"Required\\"
+                  }
+                ],
+                \\"name\\": \\"ZodError\\"
+              }
+            ],
+            \\"path\\": [
+              \\"choices\\"
+            ],
+            \\"message\\": \\"Invalid input\\"
+          }
+        ],
+        \\"name\\": \\"ZodError\\"
+      },
+      {
+        \\"issues\\": [
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"YesNo\\",
+            \\"received\\": \\"Slider\\",
+            \\"path\\": [
+              \\"type\\"
+            ],
+            \\"message\\": \\"Expected YesNo, received Slider\\"
+          }
+        ],
+        \\"name\\": \\"ZodError\\"
+      },
+      {
+        \\"issues\\": [
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"MultipleText\\",
+            \\"received\\": \\"Slider\\",
+            \\"path\\": [
+              \\"type\\"
+            ],
+            \\"message\\": \\"Expected MultipleText, received Slider\\"
+          },
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"string\\",
+            \\"received\\": \\"undefined\\",
+            \\"path\\": [
+              \\"indexName\\"
+            ],
+            \\"message\\": \\"Required\\"
+          },
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"string\\",
+            \\"received\\": \\"undefined\\",
+            \\"path\\": [
+              \\"variableName\\"
+            ],
+            \\"message\\": \\"Required\\"
+          },
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"number\\",
+            \\"received\\": \\"undefined\\",
+            \\"path\\": [
+              \\"max\\"
+            ],
+            \\"message\\": \\"Required\\"
+          }
+        ],
+        \\"name\\": \\"ZodError\\"
+      },
+      {
+        \\"issues\\": [
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"HowLongAgo\\",
+            \\"received\\": \\"Slider\\",
+            \\"path\\": [
+              \\"type\\"
+            ],
+            \\"message\\": \\"Expected HowLongAgo, received Slider\\"
+          }
+        ],
+        \\"name\\": \\"ZodError\\"
+      },
+      {
+        \\"issues\\": [
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"Branch\\",
+            \\"received\\": \\"Slider\\",
+            \\"path\\": [
+              \\"type\\"
+            ],
+            \\"message\\": \\"Expected Branch, received Slider\\"
+          },
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"object\\",
+            \\"received\\": \\"undefined\\",
+            \\"path\\": [
+              \\"condition\\"
+            ],
+            \\"message\\": \\"Required\\"
+          },
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"object\\",
+            \\"received\\": \\"undefined\\",
+            \\"path\\": [
+              \\"branchStartId\\"
+            ],
+            \\"message\\": \\"Required\\"
+          }
+        ],
+        \\"name\\": \\"ZodError\\"
+      },
+      {
+        \\"issues\\": [
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"BranchWithRelativeComparison\\",
+            \\"received\\": \\"Slider\\",
+            \\"path\\": [
+              \\"type\\"
+            ],
+            \\"message\\": \\"Expected BranchWithRelativeComparison, received Slider\\"
+          },
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"object\\",
+            \\"received\\": \\"undefined\\",
+            \\"path\\": [
+              \\"branchStartId\\"
+            ],
+            \\"message\\": \\"Required\\"
+          }
+        ],
+        \\"name\\": \\"ZodError\\"
+      },
+      {
+        \\"issues\\": [
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"Wrapper\\",
+            \\"received\\": \\"Slider\\",
+            \\"path\\": [
+              \\"type\\"
+            ],
+            \\"message\\": \\"Expected Wrapper, received Slider\\"
+          },
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"string\\",
+            \\"received\\": \\"undefined\\",
+            \\"path\\": [
+              \\"innerNext\\"
+            ],
+            \\"message\\": \\"Required\\"
+          }
+        ],
+        \\"name\\": \\"ZodError\\"
+      }
+    ],
+    \\"path\\": [],
+    \\"message\\": \\"Invalid input\\"
+  }
+]"
 `;
 
 exports[`QuestionSchema invalid type 1`] = `
-"1 validation issue(s)
-
-  Issue #0: invalid_enum_value at type
-  Input must be one of these values: Slider, ChoicesWithSingleAnswer, ChoicesWithMultipleAnswers, YesNo, MultipleText, HowLongAgo, Branch, BranchWithRelativeComparison, Wrapper
-"
+"[
+  {
+    \\"code\\": \\"invalid_union\\",
+    \\"unionErrors\\": [
+      {
+        \\"issues\\": [
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"Slider\\",
+            \\"received\\": \\"OwO\\",
+            \\"path\\": [
+              \\"type\\"
+            ],
+            \\"message\\": \\"Expected Slider, received OwO\\"
+          },
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"array\\",
+            \\"received\\": \\"undefined\\",
+            \\"path\\": [
+              \\"slider\\"
+            ],
+            \\"message\\": \\"Required\\"
+          }
+        ],
+        \\"name\\": \\"ZodError\\"
+      },
+      {
+        \\"issues\\": [
+          {
+            \\"code\\": \\"invalid_union\\",
+            \\"unionErrors\\": [
+              {
+                \\"issues\\": [
+                  {
+                    \\"code\\": \\"invalid_type\\",
+                    \\"expected\\": \\"ChoicesWithSingleAnswer\\",
+                    \\"received\\": \\"OwO\\",
+                    \\"path\\": [
+                      \\"type\\"
+                    ],
+                    \\"message\\": \\"Expected ChoicesWithSingleAnswer, received OwO\\"
+                  }
+                ],
+                \\"name\\": \\"ZodError\\"
+              },
+              {
+                \\"issues\\": [
+                  {
+                    \\"code\\": \\"invalid_type\\",
+                    \\"expected\\": \\"ChoicesWithMultipleAnswers\\",
+                    \\"received\\": \\"OwO\\",
+                    \\"path\\": [
+                      \\"type\\"
+                    ],
+                    \\"message\\": \\"Expected ChoicesWithMultipleAnswers, received OwO\\"
+                  }
+                ],
+                \\"name\\": \\"ZodError\\"
+              }
+            ],
+            \\"path\\": [
+              \\"type\\"
+            ],
+            \\"message\\": \\"Invalid input\\"
+          },
+          {
+            \\"code\\": \\"invalid_union\\",
+            \\"unionErrors\\": [
+              {
+                \\"issues\\": [
+                  {
+                    \\"code\\": \\"invalid_type\\",
+                    \\"expected\\": \\"string\\",
+                    \\"received\\": \\"undefined\\",
+                    \\"path\\": [
+                      \\"choices\\"
+                    ],
+                    \\"message\\": \\"Required\\"
+                  }
+                ],
+                \\"name\\": \\"ZodError\\"
+              },
+              {
+                \\"issues\\": [
+                  {
+                    \\"code\\": \\"invalid_type\\",
+                    \\"expected\\": \\"array\\",
+                    \\"received\\": \\"undefined\\",
+                    \\"path\\": [
+                      \\"choices\\"
+                    ],
+                    \\"message\\": \\"Required\\"
+                  }
+                ],
+                \\"name\\": \\"ZodError\\"
+              }
+            ],
+            \\"path\\": [
+              \\"choices\\"
+            ],
+            \\"message\\": \\"Invalid input\\"
+          }
+        ],
+        \\"name\\": \\"ZodError\\"
+      },
+      {
+        \\"issues\\": [
+          {
+            \\"code\\": \\"invalid_union\\",
+            \\"unionErrors\\": [
+              {
+                \\"issues\\": [
+                  {
+                    \\"code\\": \\"invalid_type\\",
+                    \\"expected\\": \\"ChoicesWithSingleAnswer\\",
+                    \\"received\\": \\"OwO\\",
+                    \\"path\\": [
+                      \\"type\\"
+                    ],
+                    \\"message\\": \\"Expected ChoicesWithSingleAnswer, received OwO\\"
+                  }
+                ],
+                \\"name\\": \\"ZodError\\"
+              },
+              {
+                \\"issues\\": [
+                  {
+                    \\"code\\": \\"invalid_type\\",
+                    \\"expected\\": \\"ChoicesWithMultipleAnswers\\",
+                    \\"received\\": \\"OwO\\",
+                    \\"path\\": [
+                      \\"type\\"
+                    ],
+                    \\"message\\": \\"Expected ChoicesWithMultipleAnswers, received OwO\\"
+                  }
+                ],
+                \\"name\\": \\"ZodError\\"
+              }
+            ],
+            \\"path\\": [
+              \\"type\\"
+            ],
+            \\"message\\": \\"Invalid input\\"
+          },
+          {
+            \\"code\\": \\"invalid_union\\",
+            \\"unionErrors\\": [
+              {
+                \\"issues\\": [
+                  {
+                    \\"code\\": \\"invalid_type\\",
+                    \\"expected\\": \\"string\\",
+                    \\"received\\": \\"undefined\\",
+                    \\"path\\": [
+                      \\"choices\\"
+                    ],
+                    \\"message\\": \\"Required\\"
+                  }
+                ],
+                \\"name\\": \\"ZodError\\"
+              },
+              {
+                \\"issues\\": [
+                  {
+                    \\"code\\": \\"invalid_type\\",
+                    \\"expected\\": \\"array\\",
+                    \\"received\\": \\"undefined\\",
+                    \\"path\\": [
+                      \\"choices\\"
+                    ],
+                    \\"message\\": \\"Required\\"
+                  }
+                ],
+                \\"name\\": \\"ZodError\\"
+              }
+            ],
+            \\"path\\": [
+              \\"choices\\"
+            ],
+            \\"message\\": \\"Invalid input\\"
+          }
+        ],
+        \\"name\\": \\"ZodError\\"
+      },
+      {
+        \\"issues\\": [
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"YesNo\\",
+            \\"received\\": \\"OwO\\",
+            \\"path\\": [
+              \\"type\\"
+            ],
+            \\"message\\": \\"Expected YesNo, received OwO\\"
+          }
+        ],
+        \\"name\\": \\"ZodError\\"
+      },
+      {
+        \\"issues\\": [
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"MultipleText\\",
+            \\"received\\": \\"OwO\\",
+            \\"path\\": [
+              \\"type\\"
+            ],
+            \\"message\\": \\"Expected MultipleText, received OwO\\"
+          },
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"string\\",
+            \\"received\\": \\"undefined\\",
+            \\"path\\": [
+              \\"indexName\\"
+            ],
+            \\"message\\": \\"Required\\"
+          },
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"string\\",
+            \\"received\\": \\"undefined\\",
+            \\"path\\": [
+              \\"variableName\\"
+            ],
+            \\"message\\": \\"Required\\"
+          },
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"number\\",
+            \\"received\\": \\"undefined\\",
+            \\"path\\": [
+              \\"max\\"
+            ],
+            \\"message\\": \\"Required\\"
+          }
+        ],
+        \\"name\\": \\"ZodError\\"
+      },
+      {
+        \\"issues\\": [
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"HowLongAgo\\",
+            \\"received\\": \\"OwO\\",
+            \\"path\\": [
+              \\"type\\"
+            ],
+            \\"message\\": \\"Expected HowLongAgo, received OwO\\"
+          }
+        ],
+        \\"name\\": \\"ZodError\\"
+      },
+      {
+        \\"issues\\": [
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"Branch\\",
+            \\"received\\": \\"OwO\\",
+            \\"path\\": [
+              \\"type\\"
+            ],
+            \\"message\\": \\"Expected Branch, received OwO\\"
+          },
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"object\\",
+            \\"received\\": \\"undefined\\",
+            \\"path\\": [
+              \\"condition\\"
+            ],
+            \\"message\\": \\"Required\\"
+          },
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"object\\",
+            \\"received\\": \\"undefined\\",
+            \\"path\\": [
+              \\"branchStartId\\"
+            ],
+            \\"message\\": \\"Required\\"
+          }
+        ],
+        \\"name\\": \\"ZodError\\"
+      },
+      {
+        \\"issues\\": [
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"BranchWithRelativeComparison\\",
+            \\"received\\": \\"OwO\\",
+            \\"path\\": [
+              \\"type\\"
+            ],
+            \\"message\\": \\"Expected BranchWithRelativeComparison, received OwO\\"
+          },
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"object\\",
+            \\"received\\": \\"undefined\\",
+            \\"path\\": [
+              \\"branchStartId\\"
+            ],
+            \\"message\\": \\"Required\\"
+          }
+        ],
+        \\"name\\": \\"ZodError\\"
+      },
+      {
+        \\"issues\\": [
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"Wrapper\\",
+            \\"received\\": \\"OwO\\",
+            \\"path\\": [
+              \\"type\\"
+            ],
+            \\"message\\": \\"Expected Wrapper, received OwO\\"
+          },
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"string\\",
+            \\"received\\": \\"undefined\\",
+            \\"path\\": [
+              \\"innerNext\\"
+            ],
+            \\"message\\": \\"Required\\"
+          }
+        ],
+        \\"name\\": \\"ZodError\\"
+      }
+    ],
+    \\"path\\": [],
+    \\"message\\": \\"Invalid input\\"
+  }
+]"
 `;
 
 exports[`QuestionSchema mismatch type 1`] = `
-"2 validation issue(s)
-
-  Issue #0: unrecognized_keys at 
-  Unrecognized key(s) in object: 'defaultValueFromQuestionId', 'slider'
-
-  Issue #1: invalid_union at choices
-  Invalid input
-"
+"[
+  {
+    \\"code\\": \\"invalid_union\\",
+    \\"unionErrors\\": [
+      {
+        \\"issues\\": [
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"Slider\\",
+            \\"received\\": \\"ChoicesWithSingleAnswer\\",
+            \\"path\\": [
+              \\"type\\"
+            ],
+            \\"message\\": \\"Expected Slider, received ChoicesWithSingleAnswer\\"
+          }
+        ],
+        \\"name\\": \\"ZodError\\"
+      },
+      {
+        \\"issues\\": [
+          {
+            \\"code\\": \\"invalid_union\\",
+            \\"unionErrors\\": [
+              {
+                \\"issues\\": [
+                  {
+                    \\"code\\": \\"invalid_type\\",
+                    \\"expected\\": \\"string\\",
+                    \\"received\\": \\"undefined\\",
+                    \\"path\\": [
+                      \\"choices\\"
+                    ],
+                    \\"message\\": \\"Required\\"
+                  }
+                ],
+                \\"name\\": \\"ZodError\\"
+              },
+              {
+                \\"issues\\": [
+                  {
+                    \\"code\\": \\"invalid_type\\",
+                    \\"expected\\": \\"array\\",
+                    \\"received\\": \\"undefined\\",
+                    \\"path\\": [
+                      \\"choices\\"
+                    ],
+                    \\"message\\": \\"Required\\"
+                  }
+                ],
+                \\"name\\": \\"ZodError\\"
+              }
+            ],
+            \\"path\\": [
+              \\"choices\\"
+            ],
+            \\"message\\": \\"Invalid input\\"
+          }
+        ],
+        \\"name\\": \\"ZodError\\"
+      },
+      {
+        \\"issues\\": [
+          {
+            \\"code\\": \\"invalid_union\\",
+            \\"unionErrors\\": [
+              {
+                \\"issues\\": [
+                  {
+                    \\"code\\": \\"invalid_type\\",
+                    \\"expected\\": \\"string\\",
+                    \\"received\\": \\"undefined\\",
+                    \\"path\\": [
+                      \\"choices\\"
+                    ],
+                    \\"message\\": \\"Required\\"
+                  }
+                ],
+                \\"name\\": \\"ZodError\\"
+              },
+              {
+                \\"issues\\": [
+                  {
+                    \\"code\\": \\"invalid_type\\",
+                    \\"expected\\": \\"array\\",
+                    \\"received\\": \\"undefined\\",
+                    \\"path\\": [
+                      \\"choices\\"
+                    ],
+                    \\"message\\": \\"Required\\"
+                  }
+                ],
+                \\"name\\": \\"ZodError\\"
+              }
+            ],
+            \\"path\\": [
+              \\"choices\\"
+            ],
+            \\"message\\": \\"Invalid input\\"
+          }
+        ],
+        \\"name\\": \\"ZodError\\"
+      },
+      {
+        \\"issues\\": [
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"YesNo\\",
+            \\"received\\": \\"ChoicesWithSingleAnswer\\",
+            \\"path\\": [
+              \\"type\\"
+            ],
+            \\"message\\": \\"Expected YesNo, received ChoicesWithSingleAnswer\\"
+          }
+        ],
+        \\"name\\": \\"ZodError\\"
+      },
+      {
+        \\"issues\\": [
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"MultipleText\\",
+            \\"received\\": \\"ChoicesWithSingleAnswer\\",
+            \\"path\\": [
+              \\"type\\"
+            ],
+            \\"message\\": \\"Expected MultipleText, received ChoicesWithSingleAnswer\\"
+          },
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"string\\",
+            \\"received\\": \\"undefined\\",
+            \\"path\\": [
+              \\"indexName\\"
+            ],
+            \\"message\\": \\"Required\\"
+          },
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"string\\",
+            \\"received\\": \\"undefined\\",
+            \\"path\\": [
+              \\"variableName\\"
+            ],
+            \\"message\\": \\"Required\\"
+          },
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"number\\",
+            \\"received\\": \\"undefined\\",
+            \\"path\\": [
+              \\"max\\"
+            ],
+            \\"message\\": \\"Required\\"
+          }
+        ],
+        \\"name\\": \\"ZodError\\"
+      },
+      {
+        \\"issues\\": [
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"HowLongAgo\\",
+            \\"received\\": \\"ChoicesWithSingleAnswer\\",
+            \\"path\\": [
+              \\"type\\"
+            ],
+            \\"message\\": \\"Expected HowLongAgo, received ChoicesWithSingleAnswer\\"
+          }
+        ],
+        \\"name\\": \\"ZodError\\"
+      },
+      {
+        \\"issues\\": [
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"Branch\\",
+            \\"received\\": \\"ChoicesWithSingleAnswer\\",
+            \\"path\\": [
+              \\"type\\"
+            ],
+            \\"message\\": \\"Expected Branch, received ChoicesWithSingleAnswer\\"
+          },
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"object\\",
+            \\"received\\": \\"undefined\\",
+            \\"path\\": [
+              \\"condition\\"
+            ],
+            \\"message\\": \\"Required\\"
+          },
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"object\\",
+            \\"received\\": \\"undefined\\",
+            \\"path\\": [
+              \\"branchStartId\\"
+            ],
+            \\"message\\": \\"Required\\"
+          }
+        ],
+        \\"name\\": \\"ZodError\\"
+      },
+      {
+        \\"issues\\": [
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"BranchWithRelativeComparison\\",
+            \\"received\\": \\"ChoicesWithSingleAnswer\\",
+            \\"path\\": [
+              \\"type\\"
+            ],
+            \\"message\\": \\"Expected BranchWithRelativeComparison, received ChoicesWithSingleAnswer\\"
+          },
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"object\\",
+            \\"received\\": \\"undefined\\",
+            \\"path\\": [
+              \\"branchStartId\\"
+            ],
+            \\"message\\": \\"Required\\"
+          }
+        ],
+        \\"name\\": \\"ZodError\\"
+      },
+      {
+        \\"issues\\": [
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"Wrapper\\",
+            \\"received\\": \\"ChoicesWithSingleAnswer\\",
+            \\"path\\": [
+              \\"type\\"
+            ],
+            \\"message\\": \\"Expected Wrapper, received ChoicesWithSingleAnswer\\"
+          },
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"string\\",
+            \\"received\\": \\"undefined\\",
+            \\"path\\": [
+              \\"innerNext\\"
+            ],
+            \\"message\\": \\"Required\\"
+          }
+        ],
+        \\"name\\": \\"ZodError\\"
+      }
+    ],
+    \\"path\\": [],
+    \\"message\\": \\"Invalid input\\"
+  }
+]"
 `;
 
 exports[`QuestionSchema missing type 1`] = `
-"2 validation issue(s)
-
-  Issue #0: unrecognized_keys at 
-  Unrecognized key(s) in object: 'defaultValueFromQuestionId', 'slider'
-
-  Issue #1: invalid_enum_value at type
-  Input must be one of these values: Slider, ChoicesWithSingleAnswer, ChoicesWithMultipleAnswers, YesNo, MultipleText, HowLongAgo, Branch, BranchWithRelativeComparison, Wrapper
-"
+"[
+  {
+    \\"code\\": \\"invalid_union\\",
+    \\"unionErrors\\": [
+      {
+        \\"issues\\": [
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"Slider\\",
+            \\"path\\": [
+              \\"type\\"
+            ],
+            \\"message\\": \\"Expected Slider, received undefined\\"
+          }
+        ],
+        \\"name\\": \\"ZodError\\"
+      },
+      {
+        \\"issues\\": [
+          {
+            \\"code\\": \\"invalid_union\\",
+            \\"unionErrors\\": [
+              {
+                \\"issues\\": [
+                  {
+                    \\"code\\": \\"invalid_type\\",
+                    \\"expected\\": \\"ChoicesWithSingleAnswer\\",
+                    \\"path\\": [
+                      \\"type\\"
+                    ],
+                    \\"message\\": \\"Expected ChoicesWithSingleAnswer, received undefined\\"
+                  }
+                ],
+                \\"name\\": \\"ZodError\\"
+              },
+              {
+                \\"issues\\": [
+                  {
+                    \\"code\\": \\"invalid_type\\",
+                    \\"expected\\": \\"ChoicesWithMultipleAnswers\\",
+                    \\"path\\": [
+                      \\"type\\"
+                    ],
+                    \\"message\\": \\"Expected ChoicesWithMultipleAnswers, received undefined\\"
+                  }
+                ],
+                \\"name\\": \\"ZodError\\"
+              }
+            ],
+            \\"path\\": [
+              \\"type\\"
+            ],
+            \\"message\\": \\"Invalid input\\"
+          },
+          {
+            \\"code\\": \\"invalid_union\\",
+            \\"unionErrors\\": [
+              {
+                \\"issues\\": [
+                  {
+                    \\"code\\": \\"invalid_type\\",
+                    \\"expected\\": \\"string\\",
+                    \\"received\\": \\"undefined\\",
+                    \\"path\\": [
+                      \\"choices\\"
+                    ],
+                    \\"message\\": \\"Required\\"
+                  }
+                ],
+                \\"name\\": \\"ZodError\\"
+              },
+              {
+                \\"issues\\": [
+                  {
+                    \\"code\\": \\"invalid_type\\",
+                    \\"expected\\": \\"array\\",
+                    \\"received\\": \\"undefined\\",
+                    \\"path\\": [
+                      \\"choices\\"
+                    ],
+                    \\"message\\": \\"Required\\"
+                  }
+                ],
+                \\"name\\": \\"ZodError\\"
+              }
+            ],
+            \\"path\\": [
+              \\"choices\\"
+            ],
+            \\"message\\": \\"Invalid input\\"
+          }
+        ],
+        \\"name\\": \\"ZodError\\"
+      },
+      {
+        \\"issues\\": [
+          {
+            \\"code\\": \\"invalid_union\\",
+            \\"unionErrors\\": [
+              {
+                \\"issues\\": [
+                  {
+                    \\"code\\": \\"invalid_type\\",
+                    \\"expected\\": \\"ChoicesWithSingleAnswer\\",
+                    \\"path\\": [
+                      \\"type\\"
+                    ],
+                    \\"message\\": \\"Expected ChoicesWithSingleAnswer, received undefined\\"
+                  }
+                ],
+                \\"name\\": \\"ZodError\\"
+              },
+              {
+                \\"issues\\": [
+                  {
+                    \\"code\\": \\"invalid_type\\",
+                    \\"expected\\": \\"ChoicesWithMultipleAnswers\\",
+                    \\"path\\": [
+                      \\"type\\"
+                    ],
+                    \\"message\\": \\"Expected ChoicesWithMultipleAnswers, received undefined\\"
+                  }
+                ],
+                \\"name\\": \\"ZodError\\"
+              }
+            ],
+            \\"path\\": [
+              \\"type\\"
+            ],
+            \\"message\\": \\"Invalid input\\"
+          },
+          {
+            \\"code\\": \\"invalid_union\\",
+            \\"unionErrors\\": [
+              {
+                \\"issues\\": [
+                  {
+                    \\"code\\": \\"invalid_type\\",
+                    \\"expected\\": \\"string\\",
+                    \\"received\\": \\"undefined\\",
+                    \\"path\\": [
+                      \\"choices\\"
+                    ],
+                    \\"message\\": \\"Required\\"
+                  }
+                ],
+                \\"name\\": \\"ZodError\\"
+              },
+              {
+                \\"issues\\": [
+                  {
+                    \\"code\\": \\"invalid_type\\",
+                    \\"expected\\": \\"array\\",
+                    \\"received\\": \\"undefined\\",
+                    \\"path\\": [
+                      \\"choices\\"
+                    ],
+                    \\"message\\": \\"Required\\"
+                  }
+                ],
+                \\"name\\": \\"ZodError\\"
+              }
+            ],
+            \\"path\\": [
+              \\"choices\\"
+            ],
+            \\"message\\": \\"Invalid input\\"
+          }
+        ],
+        \\"name\\": \\"ZodError\\"
+      },
+      {
+        \\"issues\\": [
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"YesNo\\",
+            \\"path\\": [
+              \\"type\\"
+            ],
+            \\"message\\": \\"Expected YesNo, received undefined\\"
+          }
+        ],
+        \\"name\\": \\"ZodError\\"
+      },
+      {
+        \\"issues\\": [
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"MultipleText\\",
+            \\"path\\": [
+              \\"type\\"
+            ],
+            \\"message\\": \\"Expected MultipleText, received undefined\\"
+          },
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"string\\",
+            \\"received\\": \\"undefined\\",
+            \\"path\\": [
+              \\"indexName\\"
+            ],
+            \\"message\\": \\"Required\\"
+          },
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"string\\",
+            \\"received\\": \\"undefined\\",
+            \\"path\\": [
+              \\"variableName\\"
+            ],
+            \\"message\\": \\"Required\\"
+          },
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"number\\",
+            \\"received\\": \\"undefined\\",
+            \\"path\\": [
+              \\"max\\"
+            ],
+            \\"message\\": \\"Required\\"
+          }
+        ],
+        \\"name\\": \\"ZodError\\"
+      },
+      {
+        \\"issues\\": [
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"HowLongAgo\\",
+            \\"path\\": [
+              \\"type\\"
+            ],
+            \\"message\\": \\"Expected HowLongAgo, received undefined\\"
+          }
+        ],
+        \\"name\\": \\"ZodError\\"
+      },
+      {
+        \\"issues\\": [
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"Branch\\",
+            \\"path\\": [
+              \\"type\\"
+            ],
+            \\"message\\": \\"Expected Branch, received undefined\\"
+          },
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"object\\",
+            \\"received\\": \\"undefined\\",
+            \\"path\\": [
+              \\"condition\\"
+            ],
+            \\"message\\": \\"Required\\"
+          },
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"object\\",
+            \\"received\\": \\"undefined\\",
+            \\"path\\": [
+              \\"branchStartId\\"
+            ],
+            \\"message\\": \\"Required\\"
+          }
+        ],
+        \\"name\\": \\"ZodError\\"
+      },
+      {
+        \\"issues\\": [
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"BranchWithRelativeComparison\\",
+            \\"path\\": [
+              \\"type\\"
+            ],
+            \\"message\\": \\"Expected BranchWithRelativeComparison, received undefined\\"
+          },
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"object\\",
+            \\"received\\": \\"undefined\\",
+            \\"path\\": [
+              \\"branchStartId\\"
+            ],
+            \\"message\\": \\"Required\\"
+          }
+        ],
+        \\"name\\": \\"ZodError\\"
+      },
+      {
+        \\"issues\\": [
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"Wrapper\\",
+            \\"path\\": [
+              \\"type\\"
+            ],
+            \\"message\\": \\"Expected Wrapper, received undefined\\"
+          },
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"string\\",
+            \\"received\\": \\"undefined\\",
+            \\"path\\": [
+              \\"innerNext\\"
+            ],
+            \\"message\\": \\"Required\\"
+          }
+        ],
+        \\"name\\": \\"ZodError\\"
+      }
+    ],
+    \\"path\\": [],
+    \\"message\\": \\"Invalid input\\"
+  }
+]"
 `;
 
 exports[`QuestionSchema next should not be undefined 1`] = `
-"1 validation issue(s)
-
-  Issue #0: invalid_union at next
-  Invalid input
-"
+"[
+  {
+    \\"code\\": \\"invalid_union\\",
+    \\"unionErrors\\": [
+      {
+        \\"issues\\": [
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"string\\",
+            \\"received\\": \\"undefined\\",
+            \\"path\\": [
+              \\"next\\"
+            ],
+            \\"message\\": \\"Required\\"
+          }
+        ],
+        \\"name\\": \\"ZodError\\"
+      },
+      {
+        \\"issues\\": [
+          {
+            \\"code\\": \\"invalid_union\\",
+            \\"unionErrors\\": [
+              {
+                \\"issues\\": [
+                  {
+                    \\"code\\": \\"invalid_type\\",
+                    \\"expected\\": \\"ChoicesWithSingleAnswer\\",
+                    \\"received\\": \\"Slider\\",
+                    \\"path\\": [
+                      \\"type\\"
+                    ],
+                    \\"message\\": \\"Expected ChoicesWithSingleAnswer, received Slider\\"
+                  }
+                ],
+                \\"name\\": \\"ZodError\\"
+              },
+              {
+                \\"issues\\": [
+                  {
+                    \\"code\\": \\"invalid_type\\",
+                    \\"expected\\": \\"ChoicesWithMultipleAnswers\\",
+                    \\"received\\": \\"Slider\\",
+                    \\"path\\": [
+                      \\"type\\"
+                    ],
+                    \\"message\\": \\"Expected ChoicesWithMultipleAnswers, received Slider\\"
+                  }
+                ],
+                \\"name\\": \\"ZodError\\"
+              }
+            ],
+            \\"path\\": [
+              \\"type\\"
+            ],
+            \\"message\\": \\"Invalid input\\"
+          },
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"string\\",
+            \\"received\\": \\"undefined\\",
+            \\"path\\": [
+              \\"next\\"
+            ],
+            \\"message\\": \\"Required\\"
+          },
+          {
+            \\"code\\": \\"invalid_union\\",
+            \\"unionErrors\\": [
+              {
+                \\"issues\\": [
+                  {
+                    \\"code\\": \\"invalid_type\\",
+                    \\"expected\\": \\"string\\",
+                    \\"received\\": \\"undefined\\",
+                    \\"path\\": [
+                      \\"choices\\"
+                    ],
+                    \\"message\\": \\"Required\\"
+                  }
+                ],
+                \\"name\\": \\"ZodError\\"
+              },
+              {
+                \\"issues\\": [
+                  {
+                    \\"code\\": \\"invalid_type\\",
+                    \\"expected\\": \\"array\\",
+                    \\"received\\": \\"undefined\\",
+                    \\"path\\": [
+                      \\"choices\\"
+                    ],
+                    \\"message\\": \\"Required\\"
+                  }
+                ],
+                \\"name\\": \\"ZodError\\"
+              }
+            ],
+            \\"path\\": [
+              \\"choices\\"
+            ],
+            \\"message\\": \\"Invalid input\\"
+          }
+        ],
+        \\"name\\": \\"ZodError\\"
+      },
+      {
+        \\"issues\\": [
+          {
+            \\"code\\": \\"invalid_union\\",
+            \\"unionErrors\\": [
+              {
+                \\"issues\\": [
+                  {
+                    \\"code\\": \\"invalid_type\\",
+                    \\"expected\\": \\"ChoicesWithSingleAnswer\\",
+                    \\"received\\": \\"Slider\\",
+                    \\"path\\": [
+                      \\"type\\"
+                    ],
+                    \\"message\\": \\"Expected ChoicesWithSingleAnswer, received Slider\\"
+                  }
+                ],
+                \\"name\\": \\"ZodError\\"
+              },
+              {
+                \\"issues\\": [
+                  {
+                    \\"code\\": \\"invalid_type\\",
+                    \\"expected\\": \\"ChoicesWithMultipleAnswers\\",
+                    \\"received\\": \\"Slider\\",
+                    \\"path\\": [
+                      \\"type\\"
+                    ],
+                    \\"message\\": \\"Expected ChoicesWithMultipleAnswers, received Slider\\"
+                  }
+                ],
+                \\"name\\": \\"ZodError\\"
+              }
+            ],
+            \\"path\\": [
+              \\"type\\"
+            ],
+            \\"message\\": \\"Invalid input\\"
+          },
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"string\\",
+            \\"received\\": \\"undefined\\",
+            \\"path\\": [
+              \\"next\\"
+            ],
+            \\"message\\": \\"Required\\"
+          },
+          {
+            \\"code\\": \\"invalid_union\\",
+            \\"unionErrors\\": [
+              {
+                \\"issues\\": [
+                  {
+                    \\"code\\": \\"invalid_type\\",
+                    \\"expected\\": \\"string\\",
+                    \\"received\\": \\"undefined\\",
+                    \\"path\\": [
+                      \\"choices\\"
+                    ],
+                    \\"message\\": \\"Required\\"
+                  }
+                ],
+                \\"name\\": \\"ZodError\\"
+              },
+              {
+                \\"issues\\": [
+                  {
+                    \\"code\\": \\"invalid_type\\",
+                    \\"expected\\": \\"array\\",
+                    \\"received\\": \\"undefined\\",
+                    \\"path\\": [
+                      \\"choices\\"
+                    ],
+                    \\"message\\": \\"Required\\"
+                  }
+                ],
+                \\"name\\": \\"ZodError\\"
+              }
+            ],
+            \\"path\\": [
+              \\"choices\\"
+            ],
+            \\"message\\": \\"Invalid input\\"
+          }
+        ],
+        \\"name\\": \\"ZodError\\"
+      },
+      {
+        \\"issues\\": [
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"YesNo\\",
+            \\"received\\": \\"Slider\\",
+            \\"path\\": [
+              \\"type\\"
+            ],
+            \\"message\\": \\"Expected YesNo, received Slider\\"
+          },
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"string\\",
+            \\"received\\": \\"undefined\\",
+            \\"path\\": [
+              \\"next\\"
+            ],
+            \\"message\\": \\"Required\\"
+          }
+        ],
+        \\"name\\": \\"ZodError\\"
+      },
+      {
+        \\"issues\\": [
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"MultipleText\\",
+            \\"received\\": \\"Slider\\",
+            \\"path\\": [
+              \\"type\\"
+            ],
+            \\"message\\": \\"Expected MultipleText, received Slider\\"
+          },
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"string\\",
+            \\"received\\": \\"undefined\\",
+            \\"path\\": [
+              \\"next\\"
+            ],
+            \\"message\\": \\"Required\\"
+          },
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"string\\",
+            \\"received\\": \\"undefined\\",
+            \\"path\\": [
+              \\"indexName\\"
+            ],
+            \\"message\\": \\"Required\\"
+          },
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"string\\",
+            \\"received\\": \\"undefined\\",
+            \\"path\\": [
+              \\"variableName\\"
+            ],
+            \\"message\\": \\"Required\\"
+          },
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"number\\",
+            \\"received\\": \\"undefined\\",
+            \\"path\\": [
+              \\"max\\"
+            ],
+            \\"message\\": \\"Required\\"
+          }
+        ],
+        \\"name\\": \\"ZodError\\"
+      },
+      {
+        \\"issues\\": [
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"HowLongAgo\\",
+            \\"received\\": \\"Slider\\",
+            \\"path\\": [
+              \\"type\\"
+            ],
+            \\"message\\": \\"Expected HowLongAgo, received Slider\\"
+          },
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"string\\",
+            \\"received\\": \\"undefined\\",
+            \\"path\\": [
+              \\"next\\"
+            ],
+            \\"message\\": \\"Required\\"
+          }
+        ],
+        \\"name\\": \\"ZodError\\"
+      },
+      {
+        \\"issues\\": [
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"Branch\\",
+            \\"received\\": \\"Slider\\",
+            \\"path\\": [
+              \\"type\\"
+            ],
+            \\"message\\": \\"Expected Branch, received Slider\\"
+          },
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"string\\",
+            \\"received\\": \\"undefined\\",
+            \\"path\\": [
+              \\"next\\"
+            ],
+            \\"message\\": \\"Required\\"
+          },
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"object\\",
+            \\"received\\": \\"undefined\\",
+            \\"path\\": [
+              \\"condition\\"
+            ],
+            \\"message\\": \\"Required\\"
+          },
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"object\\",
+            \\"received\\": \\"undefined\\",
+            \\"path\\": [
+              \\"branchStartId\\"
+            ],
+            \\"message\\": \\"Required\\"
+          }
+        ],
+        \\"name\\": \\"ZodError\\"
+      },
+      {
+        \\"issues\\": [
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"BranchWithRelativeComparison\\",
+            \\"received\\": \\"Slider\\",
+            \\"path\\": [
+              \\"type\\"
+            ],
+            \\"message\\": \\"Expected BranchWithRelativeComparison, received Slider\\"
+          },
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"string\\",
+            \\"received\\": \\"undefined\\",
+            \\"path\\": [
+              \\"next\\"
+            ],
+            \\"message\\": \\"Required\\"
+          },
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"object\\",
+            \\"received\\": \\"undefined\\",
+            \\"path\\": [
+              \\"branchStartId\\"
+            ],
+            \\"message\\": \\"Required\\"
+          }
+        ],
+        \\"name\\": \\"ZodError\\"
+      },
+      {
+        \\"issues\\": [
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"Wrapper\\",
+            \\"received\\": \\"Slider\\",
+            \\"path\\": [
+              \\"type\\"
+            ],
+            \\"message\\": \\"Expected Wrapper, received Slider\\"
+          },
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"string\\",
+            \\"received\\": \\"undefined\\",
+            \\"path\\": [
+              \\"next\\"
+            ],
+            \\"message\\": \\"Required\\"
+          },
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"string\\",
+            \\"received\\": \\"undefined\\",
+            \\"path\\": [
+              \\"innerNext\\"
+            ],
+            \\"message\\": \\"Required\\"
+          }
+        ],
+        \\"name\\": \\"ZodError\\"
+      }
+    ],
+    \\"path\\": [],
+    \\"message\\": \\"Invalid input\\"
+  }
+]"
 `;

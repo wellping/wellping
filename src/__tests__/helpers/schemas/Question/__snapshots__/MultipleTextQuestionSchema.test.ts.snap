@@ -1,290 +1,596 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`MultipleTextQuestionSchema choices choices should not be duplicated 1`] = `
-"1 validation issue(s)
-
-  Issue #0: custom_error at choices
-  There should not be duplicate elements in the choices list.
-"
+"[
+  {
+    \\"code\\": \\"custom\\",
+    \\"message\\": \\"There should not be duplicate elements in the choices list.\\",
+    \\"path\\": [
+      \\"choices\\"
+    ]
+  }
+]"
 `;
 
 exports[`MultipleTextQuestionSchema choices choices should not be duplicated 2`] = `
-"1 validation issue(s)
-
-  Issue #0: custom_error at choices
-  There should not be duplicate elements in the choices list.
-"
+"[
+  {
+    \\"code\\": \\"custom\\",
+    \\"message\\": \\"There should not be duplicate elements in the choices list.\\",
+    \\"path\\": [
+      \\"choices\\"
+    ]
+  }
+]"
 `;
 
 exports[`MultipleTextQuestionSchema choices choices string cannot be empty 1`] = `
-"1 validation issue(s)
-
-  Issue #0: too_small at choices.0
-  Should be at least 1 characters
-"
+"[
+  {
+    \\"code\\": \\"too_small\\",
+    \\"minimum\\": 1,
+    \\"type\\": \\"string\\",
+    \\"inclusive\\": true,
+    \\"message\\": \\"Should be at least 1 characters\\",
+    \\"path\\": [
+      \\"choices\\",
+      0
+    ]
+  }
+]"
 `;
 
 exports[`MultipleTextQuestionSchema choices choices string cannot be empty 2`] = `
-"1 validation issue(s)
-
-  Issue #0: too_small at choices.0
-  Should be at least 1 characters
-"
+"[
+  {
+    \\"code\\": \\"too_small\\",
+    \\"minimum\\": 1,
+    \\"type\\": \\"string\\",
+    \\"inclusive\\": true,
+    \\"message\\": \\"Should be at least 1 characters\\",
+    \\"path\\": [
+      \\"choices\\",
+      0
+    ]
+  }
+]"
 `;
 
 exports[`MultipleTextQuestionSchema choices should not be anything besides array and string: number 1`] = `
-"1 validation issue(s)
-
-  Issue #0: invalid_union at choices
-  Invalid input
-"
+"[
+  {
+    \\"code\\": \\"invalid_union\\",
+    \\"unionErrors\\": [
+      {
+        \\"issues\\": [
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"string\\",
+            \\"received\\": \\"number\\",
+            \\"path\\": [
+              \\"choices\\"
+            ],
+            \\"message\\": \\"Expected string, received number\\"
+          }
+        ],
+        \\"name\\": \\"ZodError\\"
+      },
+      {
+        \\"issues\\": [
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"array\\",
+            \\"received\\": \\"number\\",
+            \\"path\\": [
+              \\"choices\\"
+            ],
+            \\"message\\": \\"Expected array, received number\\"
+          }
+        ],
+        \\"name\\": \\"ZodError\\"
+      }
+    ],
+    \\"path\\": [
+      \\"choices\\"
+    ],
+    \\"message\\": \\"Invalid input\\"
+  }
+]"
 `;
 
 exports[`MultipleTextQuestionSchema choices should not be anything besides array and string: object 1`] = `
-"1 validation issue(s)
-
-  Issue #0: invalid_union at choices
-  Invalid input
-"
+"[
+  {
+    \\"code\\": \\"invalid_union\\",
+    \\"unionErrors\\": [
+      {
+        \\"issues\\": [
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"string\\",
+            \\"received\\": \\"object\\",
+            \\"path\\": [
+              \\"choices\\"
+            ],
+            \\"message\\": \\"Expected string, received object\\"
+          }
+        ],
+        \\"name\\": \\"ZodError\\"
+      },
+      {
+        \\"issues\\": [
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"array\\",
+            \\"received\\": \\"object\\",
+            \\"path\\": [
+              \\"choices\\"
+            ],
+            \\"message\\": \\"Expected array, received object\\"
+          }
+        ],
+        \\"name\\": \\"ZodError\\"
+      }
+    ],
+    \\"path\\": [
+      \\"choices\\"
+    ],
+    \\"message\\": \\"Invalid input\\"
+  }
+]"
 `;
 
 exports[`MultipleTextQuestionSchema choices should not be empty array 1`] = `
-"1 validation issue(s)
-
-  Issue #0: nonempty_array_is_empty at choices
-  List must contain at least one item
-"
+"[
+  {
+    \\"code\\": \\"too_small\\",
+    \\"minimum\\": 1,
+    \\"type\\": \\"array\\",
+    \\"inclusive\\": true,
+    \\"message\\": \\"Should have at least 1 items\\",
+    \\"path\\": [
+      \\"choices\\"
+    ]
+  }
+]"
 `;
 
 exports[`MultipleTextQuestionSchema choices should not be null 1`] = `
-"1 validation issue(s)
-
-  Issue #0: invalid_union at choices
-  Invalid input
-"
+"[
+  {
+    \\"code\\": \\"invalid_union\\",
+    \\"unionErrors\\": [
+      {
+        \\"issues\\": [
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"string\\",
+            \\"received\\": \\"null\\",
+            \\"path\\": [
+              \\"choices\\"
+            ],
+            \\"message\\": \\"Expected string, received null\\"
+          }
+        ],
+        \\"name\\": \\"ZodError\\"
+      },
+      {
+        \\"issues\\": [
+          {
+            \\"code\\": \\"invalid_type\\",
+            \\"expected\\": \\"array\\",
+            \\"received\\": \\"null\\",
+            \\"path\\": [
+              \\"choices\\"
+            ],
+            \\"message\\": \\"Expected array, received null\\"
+          }
+        ],
+        \\"name\\": \\"ZodError\\"
+      }
+    ],
+    \\"path\\": [
+      \\"choices\\"
+    ],
+    \\"message\\": \\"Invalid input\\"
+  }
+]"
 `;
 
 exports[`MultipleTextQuestionSchema forceChoice should not be anything other than boolean: number 1`] = `
-"1 validation issue(s)
-
-  Issue #0: invalid_union at forceChoice
-  Invalid input
-"
+"[
+  {
+    \\"code\\": \\"invalid_type\\",
+    \\"expected\\": \\"boolean\\",
+    \\"received\\": \\"number\\",
+    \\"path\\": [
+      \\"forceChoice\\"
+    ],
+    \\"message\\": \\"Expected boolean, received number\\"
+  }
+]"
 `;
 
 exports[`MultipleTextQuestionSchema forceChoice should not be anything other than boolean: string true 1`] = `
-"1 validation issue(s)
-
-  Issue #0: invalid_union at forceChoice
-  Invalid input
-"
+"[
+  {
+    \\"code\\": \\"invalid_type\\",
+    \\"expected\\": \\"boolean\\",
+    \\"received\\": \\"string\\",
+    \\"path\\": [
+      \\"forceChoice\\"
+    ],
+    \\"message\\": \\"Expected boolean, received string\\"
+  }
+]"
 `;
 
 exports[`MultipleTextQuestionSchema forceChoice should not be null 1`] = `
-"1 validation issue(s)
-
-  Issue #0: invalid_union at forceChoice
-  Invalid input
-"
+"[
+  {
+    \\"code\\": \\"invalid_type\\",
+    \\"expected\\": \\"boolean\\",
+    \\"received\\": \\"null\\",
+    \\"path\\": [
+      \\"forceChoice\\"
+    ],
+    \\"message\\": \\"Expected boolean, received null\\"
+  }
+]"
 `;
 
 exports[`MultipleTextQuestionSchema forceChoice should not be set if choices is not set: false 1`] = `
-"1 validation issue(s)
-
-  Issue #0: custom_error at forceChoice
-  \`forceChoice\` can only be set if \`choices\` is set.
-"
+"[
+  {
+    \\"code\\": \\"custom\\",
+    \\"message\\": \\"\`forceChoice\` can only be set if \`choices\` is set.\\",
+    \\"path\\": [
+      \\"forceChoice\\"
+    ]
+  }
+]"
 `;
 
 exports[`MultipleTextQuestionSchema forceChoice should not be set if choices is not set: true 1`] = `
-"1 validation issue(s)
-
-  Issue #0: custom_error at forceChoice
-  \`forceChoice\` can only be set if \`choices\` is set.
-"
+"[
+  {
+    \\"code\\": \\"custom\\",
+    \\"message\\": \\"\`forceChoice\` can only be set if \`choices\` is set.\\",
+    \\"path\\": [
+      \\"forceChoice\\"
+    ]
+  }
+]"
 `;
 
 exports[`MultipleTextQuestionSchema indexName should be question ID-compatible string: space 1`] = `
-"1 validation issue(s)
-
-  Issue #0: invalid_string at indexName
-  index name can only include letters, numbers, and \\"_\\".
-"
+"[
+  {
+    \\"validation\\": \\"regex\\",
+    \\"code\\": \\"invalid_string\\",
+    \\"message\\": \\"index name can only include letters, numbers, and \\\\\\"_\\\\\\".\\",
+    \\"path\\": [
+      \\"indexName\\"
+    ]
+  }
+]"
 `;
 
 exports[`MultipleTextQuestionSchema indexName should be question ID-compatible string: special characters 1`] = `
-"1 validation issue(s)
-
-  Issue #0: invalid_string at indexName
-  index name can only include letters, numbers, and \\"_\\".
-"
+"[
+  {
+    \\"validation\\": \\"regex\\",
+    \\"code\\": \\"invalid_string\\",
+    \\"message\\": \\"index name can only include letters, numbers, and \\\\\\"_\\\\\\".\\",
+    \\"path\\": [
+      \\"indexName\\"
+    ]
+  }
+]"
 `;
 
 exports[`MultipleTextQuestionSchema indexName should not be empty 1`] = `
-"2 validation issue(s)
-
-  Issue #0: too_small at indexName
-  Should be at least 1 characters
-
-  Issue #1: invalid_string at indexName
-  index name can only include letters, numbers, and \\"_\\".
-"
+"[
+  {
+    \\"code\\": \\"too_small\\",
+    \\"minimum\\": 1,
+    \\"type\\": \\"string\\",
+    \\"inclusive\\": true,
+    \\"message\\": \\"Should be at least 1 characters\\",
+    \\"path\\": [
+      \\"indexName\\"
+    ]
+  },
+  {
+    \\"validation\\": \\"regex\\",
+    \\"code\\": \\"invalid_string\\",
+    \\"message\\": \\"index name can only include letters, numbers, and \\\\\\"_\\\\\\".\\",
+    \\"path\\": [
+      \\"indexName\\"
+    ]
+  }
+]"
 `;
 
 exports[`MultipleTextQuestionSchema indexName should not be null 1`] = `
-"1 validation issue(s)
-
-  Issue #0: invalid_type at indexName
-  Expected string, received null
-"
+"[
+  {
+    \\"code\\": \\"invalid_type\\",
+    \\"expected\\": \\"string\\",
+    \\"received\\": \\"null\\",
+    \\"path\\": [
+      \\"indexName\\"
+    ],
+    \\"message\\": \\"Expected string, received null\\"
+  }
+]"
 `;
 
 exports[`MultipleTextQuestionSchema indexName should not be undefined 1`] = `
-"1 validation issue(s)
-
-  Issue #0: invalid_type at indexName
-  Required
-"
+"[
+  {
+    \\"code\\": \\"invalid_type\\",
+    \\"expected\\": \\"string\\",
+    \\"received\\": \\"undefined\\",
+    \\"path\\": [
+      \\"indexName\\"
+    ],
+    \\"message\\": \\"Required\\"
+  }
+]"
 `;
 
 exports[`MultipleTextQuestionSchema max should not be decimal 1`] = `
-"1 validation issue(s)
-
-  Issue #0: invalid_type at max
-  Expected integer, received number
-"
+"[
+  {
+    \\"code\\": \\"invalid_type\\",
+    \\"expected\\": \\"integer\\",
+    \\"received\\": \\"float\\",
+    \\"message\\": \\"Expected integer, received float\\",
+    \\"path\\": [
+      \\"max\\"
+    ]
+  }
+]"
 `;
 
 exports[`MultipleTextQuestionSchema max should not be null 1`] = `
-"1 validation issue(s)
-
-  Issue #0: invalid_type at max
-  Expected number, received null
-"
+"[
+  {
+    \\"code\\": \\"invalid_type\\",
+    \\"expected\\": \\"number\\",
+    \\"received\\": \\"null\\",
+    \\"path\\": [
+      \\"max\\"
+    ],
+    \\"message\\": \\"Expected number, received null\\"
+  }
+]"
 `;
 
 exports[`MultipleTextQuestionSchema max should not be undefined 1`] = `
-"1 validation issue(s)
-
-  Issue #0: invalid_type at max
-  Required
-"
+"[
+  {
+    \\"code\\": \\"invalid_type\\",
+    \\"expected\\": \\"number\\",
+    \\"received\\": \\"undefined\\",
+    \\"path\\": [
+      \\"max\\"
+    ],
+    \\"message\\": \\"Required\\"
+  }
+]"
 `;
 
 exports[`MultipleTextQuestionSchema max should not be zero or negative: negative decimal 1`] = `
-"2 validation issue(s)
-
-  Issue #0: invalid_type at max
-  Expected integer, received number
-
-  Issue #1: too_small at max
-  Value should be greater than 0
-"
+"[
+  {
+    \\"code\\": \\"invalid_type\\",
+    \\"expected\\": \\"integer\\",
+    \\"received\\": \\"float\\",
+    \\"message\\": \\"Expected integer, received float\\",
+    \\"path\\": [
+      \\"max\\"
+    ]
+  },
+  {
+    \\"code\\": \\"too_small\\",
+    \\"minimum\\": 0,
+    \\"type\\": \\"number\\",
+    \\"inclusive\\": false,
+    \\"message\\": \\"Value should be greater than 0\\",
+    \\"path\\": [
+      \\"max\\"
+    ]
+  }
+]"
 `;
 
 exports[`MultipleTextQuestionSchema max should not be zero or negative: negative integer 1`] = `
-"1 validation issue(s)
-
-  Issue #0: too_small at max
-  Value should be greater than 0
-"
+"[
+  {
+    \\"code\\": \\"too_small\\",
+    \\"minimum\\": 0,
+    \\"type\\": \\"number\\",
+    \\"inclusive\\": false,
+    \\"message\\": \\"Value should be greater than 0\\",
+    \\"path\\": [
+      \\"max\\"
+    ]
+  }
+]"
 `;
 
 exports[`MultipleTextQuestionSchema max should not be zero or negative: zero 1`] = `
-"1 validation issue(s)
-
-  Issue #0: too_small at max
-  Value should be greater than 0
-"
+"[
+  {
+    \\"code\\": \\"too_small\\",
+    \\"minimum\\": 0,
+    \\"type\\": \\"number\\",
+    \\"inclusive\\": false,
+    \\"message\\": \\"Value should be greater than 0\\",
+    \\"path\\": [
+      \\"max\\"
+    ]
+  }
+]"
 `;
 
 exports[`MultipleTextQuestionSchema maxMinus should be question ID 1`] = `
-"1 validation issue(s)
-
-  Issue #0: invalid_string at maxMinus
-  Question ID can only include letters, numbers, \\"_\\", \\"[\\", and \\"]\\".
-"
+"[
+  {
+    \\"validation\\": \\"regex\\",
+    \\"code\\": \\"invalid_string\\",
+    \\"message\\": \\"Question ID can only include letters, numbers, \\\\\\"_\\\\\\", \\\\\\"[\\\\\\", and \\\\\\"]\\\\\\".\\",
+    \\"path\\": [
+      \\"maxMinus\\"
+    ]
+  }
+]"
 `;
 
 exports[`MultipleTextQuestionSchema maxMinus should not be null 1`] = `
-"1 validation issue(s)
-
-  Issue #0: invalid_union at maxMinus
-  Invalid input
-"
+"[
+  {
+    \\"code\\": \\"invalid_type\\",
+    \\"expected\\": \\"string\\",
+    \\"received\\": \\"null\\",
+    \\"path\\": [
+      \\"maxMinus\\"
+    ],
+    \\"message\\": \\"Expected string, received null\\"
+  }
+]"
 `;
 
 exports[`MultipleTextQuestionSchema placeholder should not be null 1`] = `
-"1 validation issue(s)
-
-  Issue #0: invalid_union at placeholder
-  Invalid input
-"
+"[
+  {
+    \\"code\\": \\"invalid_type\\",
+    \\"expected\\": \\"string\\",
+    \\"received\\": \\"null\\",
+    \\"path\\": [
+      \\"placeholder\\"
+    ],
+    \\"message\\": \\"Expected string, received null\\"
+  }
+]"
 `;
 
 exports[`MultipleTextQuestionSchema repeatedItemStartId should be question ID 1`] = `
-"1 validation issue(s)
-
-  Issue #0: invalid_string at repeatedItemStartId
-  Question ID can only include letters, numbers, \\"_\\", \\"[\\", and \\"]\\".
-"
+"[
+  {
+    \\"validation\\": \\"regex\\",
+    \\"code\\": \\"invalid_string\\",
+    \\"message\\": \\"Question ID can only include letters, numbers, \\\\\\"_\\\\\\", \\\\\\"[\\\\\\", and \\\\\\"]\\\\\\".\\",
+    \\"path\\": [
+      \\"repeatedItemStartId\\"
+    ]
+  }
+]"
 `;
 
 exports[`MultipleTextQuestionSchema repeatedItemStartId should not be null 1`] = `
-"1 validation issue(s)
-
-  Issue #0: invalid_union at repeatedItemStartId
-  Invalid input
-"
+"[
+  {
+    \\"code\\": \\"invalid_type\\",
+    \\"expected\\": \\"string\\",
+    \\"received\\": \\"null\\",
+    \\"path\\": [
+      \\"repeatedItemStartId\\"
+    ],
+    \\"message\\": \\"Expected string, received null\\"
+  }
+]"
 `;
 
 exports[`MultipleTextQuestionSchema type 1`] = `
-"1 validation issue(s)
-
-  Issue #0: invalid_literal_value at type
-  Input must be \\"MultipleText\\"
-"
+"[
+  {
+    \\"code\\": \\"invalid_type\\",
+    \\"expected\\": \\"MultipleText\\",
+    \\"received\\": \\"HowLongAgo\\",
+    \\"path\\": [
+      \\"type\\"
+    ],
+    \\"message\\": \\"Expected MultipleText, received HowLongAgo\\"
+  }
+]"
 `;
 
 exports[`MultipleTextQuestionSchema variableName should be question ID-compatible string: space 1`] = `
-"1 validation issue(s)
-
-  Issue #0: invalid_string at variableName
-  variable name can only include letters, numbers, and \\"_\\".
-"
+"[
+  {
+    \\"validation\\": \\"regex\\",
+    \\"code\\": \\"invalid_string\\",
+    \\"message\\": \\"variable name can only include letters, numbers, and \\\\\\"_\\\\\\".\\",
+    \\"path\\": [
+      \\"variableName\\"
+    ]
+  }
+]"
 `;
 
 exports[`MultipleTextQuestionSchema variableName should be question ID-compatible string: special characters 1`] = `
-"1 validation issue(s)
-
-  Issue #0: invalid_string at variableName
-  variable name can only include letters, numbers, and \\"_\\".
-"
+"[
+  {
+    \\"validation\\": \\"regex\\",
+    \\"code\\": \\"invalid_string\\",
+    \\"message\\": \\"variable name can only include letters, numbers, and \\\\\\"_\\\\\\".\\",
+    \\"path\\": [
+      \\"variableName\\"
+    ]
+  }
+]"
 `;
 
 exports[`MultipleTextQuestionSchema variableName should not be empty 1`] = `
-"2 validation issue(s)
-
-  Issue #0: too_small at variableName
-  Should be at least 1 characters
-
-  Issue #1: invalid_string at variableName
-  variable name can only include letters, numbers, and \\"_\\".
-"
+"[
+  {
+    \\"code\\": \\"too_small\\",
+    \\"minimum\\": 1,
+    \\"type\\": \\"string\\",
+    \\"inclusive\\": true,
+    \\"message\\": \\"Should be at least 1 characters\\",
+    \\"path\\": [
+      \\"variableName\\"
+    ]
+  },
+  {
+    \\"validation\\": \\"regex\\",
+    \\"code\\": \\"invalid_string\\",
+    \\"message\\": \\"variable name can only include letters, numbers, and \\\\\\"_\\\\\\".\\",
+    \\"path\\": [
+      \\"variableName\\"
+    ]
+  }
+]"
 `;
 
 exports[`MultipleTextQuestionSchema variableName should not be null 1`] = `
-"1 validation issue(s)
-
-  Issue #0: invalid_type at variableName
-  Expected string, received null
-"
+"[
+  {
+    \\"code\\": \\"invalid_type\\",
+    \\"expected\\": \\"string\\",
+    \\"received\\": \\"null\\",
+    \\"path\\": [
+      \\"variableName\\"
+    ],
+    \\"message\\": \\"Expected string, received null\\"
+  }
+]"
 `;
 
 exports[`MultipleTextQuestionSchema variableName should not be undefined 1`] = `
-"1 validation issue(s)
-
-  Issue #0: invalid_type at variableName
-  Required
-"
+"[
+  {
+    \\"code\\": \\"invalid_type\\",
+    \\"expected\\": \\"string\\",
+    \\"received\\": \\"undefined\\",
+    \\"path\\": [
+      \\"variableName\\"
+    ],
+    \\"message\\": \\"Required\\"
+  }
+]"
 `;
