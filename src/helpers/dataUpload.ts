@@ -1,9 +1,13 @@
-import { Answer } from "./answerTypes";
 import { getAnswersAsync } from "./answers";
 import { removeFromUnuploadedPingsListAsync } from "./asyncStorage/unuploadedPingsList";
 import { beiweUploadDataForUserAsync } from "./beiwe";
 import {
-  UserInstallationInfo,
+  UserData,
+  UploadData,
+  AllData,
+  UnuploadedData,
+} from "./dataUploadType";
+import {
   HOME_SCREEN_DEBUG_VIEW_SYMBOLS,
   getUserInstallationInfoAsync,
 } from "./debug";
@@ -17,25 +21,7 @@ import {
   useBeiwe,
   DataUploadServerResponse,
 } from "./server";
-import { StudyInfo, Ping } from "./types";
-
-type UserData = {
-  username: string;
-  loginSessionId: string;
-  installation: UserInstallationInfo;
-};
-
-export interface UploadData {
-  user: UserData;
-}
-export interface AllData extends UploadData {
-  pings: Ping[];
-  answers: Answer[];
-}
-export interface UnuploadedData extends UploadData {
-  unuploadedPings: Ping[];
-  unuploadedAnswers: Answer[];
-}
+import { StudyInfo } from "./types";
 
 async function _getUserDataAsync(): Promise<UserData> {
   const user = await secureGetUserAsync();

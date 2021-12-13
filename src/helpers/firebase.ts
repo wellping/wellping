@@ -20,11 +20,20 @@ import {
 import {
   getDatabase as firebaseGetDatabase,
   ref as firebaseRef,
+  get as firebaseGet,
   set as firebaseSet,
+  update as firebaseUpdate,
+  push as firebasePush,
   Database as FirebaseDatabase,
 } from "firebase/database";
 
-import { UploadData } from "./dataUpload";
+import {
+  UploadData,
+  getUploadDataType,
+  UploadDataType,
+  AllData,
+  UnuploadedData,
+} from "./dataUploadType";
 import { getLoginSessionIDAsync } from "./loginSession";
 import { User } from "./secureStore/user";
 import { DataUploadServerResponse, getFirebaseServerConfig } from "./server";
@@ -143,21 +152,85 @@ export async function firebaseUploadDataForUserAsync(
   }
 
   try {
-    // We need to store plain object in Firebase.
-    const dataPlain = JSON.parse(JSON.stringify(data));
     const database = getFirebaseDatabase();
-    // TODO: verify getLoginSessionIDAsync is working correctly here
-    firebaseSet(
-      firebaseRef(
-        database,
-        `users/${user.uid}/${await getLoginSessionIDAsync(localUser)}`,
-      ),
-      dataPlain,
+
+    const firebaseUserRootKey = `users/${
+      user.uid
+    }/${await getLoginSessionIDAsync(localUser)}/`;
+    const firebaseUserUserKey = `user`;
+    const firebaseUserPingsKey = `pings`;
+    const firebaseUserAnswersKey = `answers`;
+
+    const makePlain = (input: any) => {
+      // We need to store plain object in Firebase.
+      return JSON.parse(JSON.stringify(input));
+    };
+
+    let pingsToUpload: any[];
+    let answersToUpload: any[];
+    if (getUploadDataType(data) === UploadDataType.UNUPLOADED_DATA) {
+      const unuploadedData = data as UnuploadedData;
+      pingsToUpload = unuploadedData.unuploadedPings;
+      answersToUpload = unuploadedData.unuploadedAnswers;
+    } else {
+      const allData = data as AllData;
+      pingsToUpload = allData.pings;
+      answersToUpload = allData.answers;
+    }
+
+    // https://stackoverflow.com/a/43119367/2603230
+    const updates: { [key: string]: { [itemKey: string]: any } } = {
+      [firebaseUserPingsKey]: {},
+      [firebaseUserAnswersKey]: {},
+    };
+    pingsToUpload.forEach((ping) => {
+      const newPingKey = firebasePush(
+        firebaseRef(database, firebaseUserRootKey + firebaseUserPingsKey),
+      ).key as string;
+      updates[firebaseUserPingsKey][newPingKey] = makePlain(ping);
+    });
+    answersToUpload.forEach((answer) => {
+      const newAnswerKey = firebasePush(
+        firebaseRef(database, firebaseUserRootKey + firebaseUserAnswersKey),
+      ).key as string;
+      updates[firebaseUserAnswersKey][newAnswerKey] = makePlain(answer);
+    });
+
+    if (getUploadDataType(data) === UploadDataType.UNUPLOADED_DATA) {
+      await firebaseUpdate(
+        firebaseRef(database, firebaseUserRootKey + firebaseUserPingsKey),
+        updates[firebaseUserPingsKey],
+      );
+      await firebaseUpdate(
+        firebaseRef(database, firebaseUserRootKey + firebaseUserAnswersKey),
+        updates[firebaseUserAnswersKey],
+      );
+    } else {
+      // Replace previous data.
+      await firebaseSet(firebaseRef(database, firebaseUserRootKey), updates);
+    }
+    await firebaseSet(
+      firebaseRef(database, firebaseUserRootKey + firebaseUserUserKey),
+      makePlain(data.user),
     );
 
+    const returnValues: DataUploadServerResponse = {};
+    const serverInfoSnapshot = await firebaseGet(
+      firebaseRef(database, firebaseUserRootKey),
+    );
+    if (serverInfoSnapshot.exists()) {
+      returnValues.new_pings_count = serverInfoSnapshot.child(
+        firebaseUserPingsKey,
+      ).size;
+      returnValues.new_answers_count = serverInfoSnapshot.child(
+        firebaseUserAnswersKey,
+      ).size;
+    } else {
+      // Do nothing. Let's hope next time it will work.
+    }
+
     endUploading();
-    // TODO: support new_pings_count` and `new_answers_count.
-    return {};
+    return returnValues;
   } catch (e) {
     const error = e as FirebaseError;
     endUploading(`FDB: ${error.code}`);
