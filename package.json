@@ -19,6 +19,7 @@
     "expo-linking": "~2.4.2",
     "expo-notifications": "~0.13.3",
     "expo-secure-store": "~11.0.3",
+    "expo-splash-screen": "~0.13.5",
     "expo-sqlite": "~10.0.3",
     "expo-status-bar": "~1.1.0",
     "expo-web-browser": "~10.0.3",
