@@ -1,8 +1,8 @@
-The app uses **[React Native](https://reactnative.dev/)** (with **[Expo](https://expo.dev/)**) and is written purely in **[TypeScript](https://www.typescriptlang.org/)**.
+Well Ping uses **[React Native](https://reactnative.dev/)** (with **[Expo](https://expo.dev/)**) and is written purely in **[TypeScript](https://www.typescriptlang.org/)**.
 
 The main benefit of using React Native is we could write only one set of TypeScript code to support both iOS and Android devices. With Expo, it also allows easy setup and development without needing to worry about any native iOS or Android code.
 
-The app's source code could be found at [https://github.com/wellping/wellping](https://github.com/wellping/wellping).
+Well Ping's source code could be found at [https://github.com/wellping/wellping](https://github.com/wellping/wellping).
 
 ## Publishing Code Updates & Versioning
 
@@ -21,4 +21,4 @@ After you upgrade the SDK, you should check to make sure the app still works as 
 - Read through the SDK upgrade's change list (e.g., [blog post for Expo SDK 43](https://blog.expo.dev/expo-sdk-43-aa9b3c7d5541)), and especially pay close attention to the "Deprecations, renamings, and removals" section.
 - Manually test the basic functionalities of the app such as logging in, receiving pings, completing pings, and uploading data.
 
-One important thing to notice is that over-the-air updates (through `expo publish`) will not apply to the app built with an older SDK version after you upgrade the SDK version. Learn more about different options to publish app changes [here](TODO).
+One important thing to notice is that over-the-air updates (through `expo publish`) will not apply to the app built with an older SDK version after you upgrade the SDK version even if you publish in the same Release Channel. In another word, if you upgrade the SDK version, you have to publish a new version on App Store and Google Play; OTA updates published after an SDK update will not be reflected in the user's existing app. Learn more about different options to publish app changes in [Publishing Code Updates & Versioning](./publishing-updates-and-versioning.md).
