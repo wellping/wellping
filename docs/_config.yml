@@ -1,4 +1,4 @@
-title: Well Ping DEV 🧑‍💻
-subtitle: 'All the technical details about Well Ping!'
+title: 'Well Ping DEV 🧑‍💻'
+description: 'All the technical details of Well Ping!'
 exclude: ["./README.md"]
 theme: jekyll-theme-midnight
