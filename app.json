@@ -2,6 +2,7 @@
   "expo": {
     "name": "Well Ping",
     "slug": "wellping-app",
+    "owner": "ssnl",
     "privacy": "public",
     "platforms": [
       "ios",
