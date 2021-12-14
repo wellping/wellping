@@ -4,6 +4,13 @@ The main benefit of using React Native is we could write only one set of TypeScr
 
 The app's source code could be found at [https://github.com/wellping/wellping](https://github.com/wellping/wellping).
 
+## Publishing Code Updates & Versioning
+
+Learn more about [Publishing Code Updates & Versioning](./publishing-updates-and-versioning.md).
+
+## How/When is the Study File Downloaded and Updated?
+
+
 ## Upgrading Expo
 
 Expo frequently upgrades its SDK. You should regularly check if new SDK version has been published at Expo's [website](https://docs.expo.dev/workflow/upgrading-expo-sdk-walkthrough/) and follow the upgrade instruction. By upgrading regularly, you can avoid having deal with massive changes across multiple SDK upgrades.
