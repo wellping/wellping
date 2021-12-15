@@ -27,19 +27,12 @@ export const WELLPING_LOCAL_DEBUG_URL =
   "https://debug.local.wellping.ssnl.stanford.edu/DEBUG_STUDY.json";
 const WELLPING_LOCAL_DEBUG_FILEPATH = "../../local/debug/DEBUG_STUDY.json";
 
-export const WELLPING_LOCAL_PRIVATE_URL =
-  "https://local.wellping.ssnl.stanford.edu/study.json";
-const WELLPING_LOCAL_PRIVATE_FILEPATH = "../../local/private/study.json";
-
-export type LocalStudyFileType = "debug" | "private";
+export type LocalStudyFileType = "debug";
 export function getLocalStudyFileType(
   studyFileURL: string,
 ): LocalStudyFileType | null {
   if (studyFileURL === WELLPING_LOCAL_DEBUG_URL) {
     return "debug";
-  }
-  if (studyFileURL === WELLPING_LOCAL_PRIVATE_URL) {
-    return "private";
   }
   return null;
 }
@@ -93,12 +86,6 @@ export async function downloadStudyFileAsync({
     switch (localStudyFilePath) {
       case "debug":
         rawJsonString = JSON.stringify(require(WELLPING_LOCAL_DEBUG_FILEPATH));
-        break;
-
-      case "private":
-        rawJsonString = JSON.stringify(
-          require(WELLPING_LOCAL_PRIVATE_FILEPATH),
-        );
         break;
     }
     return rawJsonString;
