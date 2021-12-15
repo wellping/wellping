@@ -22,3 +22,7 @@ After you upgrade the SDK, you should check to make sure the app still works as 
 - Manually test the basic functionalities of the app such as logging in, receiving pings, completing pings, and uploading data.
 
 One important thing to notice is that over-the-air updates (through `expo publish`) will not apply to the app built with an older SDK version after you upgrade the SDK version even if you publish in the same Release Channel. In another word, if you upgrade the SDK version, you have to publish a new version on App Store and Google Play; OTA updates published after an SDK update will not be reflected in the user's existing app. Learn more about different options to publish app changes in [Publishing Code Updates & Versioning](./publishing-updates-and-versioning.md).
+
+## FAQ
+
+Read [FAQ](./faq.md)!
