@@ -86,7 +86,9 @@ Now we know when we should publish updates and what we need to consider, we can 
 
 ### Publishing Over-the-Air Updates
 
-To publish over-the-air updates to a specific Release Channel (see [Build Version](#build-version) above), use
+First, update the `JS_VERSION_NUMBER` in the `src/helpers/debug.ts` file.
+
+Then, to publish over-the-air updates to a specific Release Channel (see [Build Version](#build-version) above), use
 ```bash
 expo publish --release-channel [Release Channel ID]
 ```
@@ -101,9 +103,11 @@ expo publish --release-channel prod-v1-0-1
 
 You will need to upload a binary to App Store and a binary to Google Play in order to publishing updates to App Store and Google Play.
 
-First, change `build.production.releaseChannel` in the `eas.json` file to the new release channel (matching the new Build Version).
+First, update the `version` (the Build Version) as well as the `ios.buildNumber` and `android.versionCode` fields in the `app.json` file. (Also update the `JS_VERSION_NUMBER` in the `src/helpers/debug.ts` file if necessary.)
 
-Then, use
+Then, change the `build.production.releaseChannel` field in the `eas.json` file to the new Release Channel (matching the new Build Version).
+
+Finally, run
 ```bash
 eas build --platform all --profile production
 ```

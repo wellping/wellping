@@ -51,20 +51,4 @@ yarn test
 
 ## Deployment
 
-Channels should be in the format of `prod-v[Build Version]`. For example, Version 1.0.1 uses channel `prod-v1-0-1`.
-
-### OTA
-
-```bash
-# Publish app
-expo publish --release-channel prod-v1-1-1
-```
-
-### App Store & Google Play
-
-First, change `build.production.releaseChannel` in the `eas.json` file to the new release channel (matching the new Build Version).
-
-Then, run
-```bash
-eas build --platform all --profile production
-```
+See https://wellping.github.io/wellping/publishing-updates-and-versioning.html.
