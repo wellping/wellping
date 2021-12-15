@@ -101,18 +101,52 @@ expo publish --release-channel prod-v1-0-1
 
 ### Publishing App Store & Google Play Updates
 
+#### Building Binaries
+
 You will need to upload a binary to App Store and a binary to Google Play in order to publishing updates to App Store and Google Play.
 
 First, update the `version` (the Build Version) as well as the `ios.buildNumber` and `android.versionCode` fields in the `app.json` file. (Also update the `JS_VERSION_NUMBER` in the `src/helpers/debug.ts` file if necessary.)
 
-Then, change the `build.production.releaseChannel` field in the `eas.json` file to the new Release Channel (matching the new Build Version).
+Then, change the `build.production.releaseChannel` field in the `eas.json` file to the new Release Channel (matching the new Build Version). For example, if the new Build Version is `1.0.2`, we set the `build.production.releaseChannel` field to `"prod-v1-0-2"`
 
 Finally, run
 ```bash
 eas build --platform all --profile production
 ```
-in the project folder to build binaries for iOS and Android.
+in the project folder to build binaries for iOS and Android. Wait until both builds are finished.
 
-Then you could follow [https://docs.expo.dev/submit/introduction/](https://docs.expo.dev/submit/introduction/) to upload the app to App Store and Google Play.
+#### Submitting the iOS Binary to App Store
 
-TODO: actual submit step
+First, log in to App Store Connect and create a new version for Well Ping by clicking the "+" button near "iOS App". Enter the new Build Version in the "Store Version Number" field.
+
+![Clicking the "+" button](assets/images/publishing-updates-and-versioning/1-plus-button.png)
+
+![Setting the Store Version Number](assets/images/publishing-updates-and-versioning/2-store-version-number.png)
+
+![After creating a new Store Version](assets/images/publishing-updates-and-versioning/3-after-create.png)
+
+Then, run
+```bash
+eas submit --platform ios
+```
+in the project folder to upload the latest binary you built to App Store Connect.
+
+Now wait until App Store Connect finishes processing the new binary. You will receive an email when the processing finishes. You can also check it in the "TestFlight" tab.
+
+![Checking the binary's processing status](assets/images/publishing-updates-and-versioning/4-processing.png)
+
+When the processing finishes, you should be able to associate this binary with this new Store Version by pressing the "+" button next to the "Build" section in the "App Store" tab under your new Store Version. (It will also ask about "Export Compliance Information". As of now, Well Ping uses encryption and qualifies for the exemptions.)
+
+![Clicking the "+" button](assets/images/publishing-updates-and-versioning/5-ready-to-add-build.png)
+
+![Associating the new binary](assets/images/publishing-updates-and-versioning/6-add-build.png)
+
+![After associating the new binary](assets/images/publishing-updates-and-versioning/7-after-add-build.png)
+
+After associating the binary, you just have to write "What's New in This Version" at the top, and click "Save" and then "Submit for Review" to submit the new version for App Store to review.
+
+![Adding "What's New in This Version" and clicking "Save" and "Submit for Review"](assets/images/publishing-updates-and-versioning/8-ready-to-submit-for-review.png)
+
+!["Waiting for Review"](assets/images/publishing-updates-and-versioning/9-waiting-for-review.png)
+
+#### Submitting the Android Binary to Google Play
