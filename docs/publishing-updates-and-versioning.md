@@ -115,38 +115,70 @@ eas build --platform all --profile production
 ```
 in the project folder to build binaries for iOS and Android. Wait until both builds are finished.
 
+#### Submitting the Android Binary to Google Play
+
+After the Android binary finishes building from the `eas build` command, you should see a link like this
+```
+🤖 Android app:
+https://expo.dev/artifacts/eas/xxxxxxxxxxxx.aab
+```
+
+Visit that link to download a `.aab` file. This is the file that we will upload to Google Play.
+
+Log in to [Google Play Console](https://play.google.com/console/), select "Well Ping", and click "Production" under the "Release" menu.
+
+![Clicking "Production"](assets/images/publishing-updates-and-versioning/google-play-console/1-click-production.png)
+
+Click "Create new release" at the top right corner.
+
+![Clicking "Create new release"](assets/images/publishing-updates-and-versioning/google-play-console/2-click-create-new-release.png)
+
+Drag the downloaded `.aab` file to "App bundles" to upload it.
+
+![Uploading the .aab file](assets/images/publishing-updates-and-versioning/google-play-console/3-uploading-aab.png)
+
+![The .aab file is uploaded](assets/images/publishing-updates-and-versioning/google-play-console/4-abb-uploaded.png)
+
+After the `.aab` file is uploaded, under the "Release details" section, the "Release name" should be filled for you. You just have to write "Release notes", click "Save", and then click "Review release".
+
+![Writing "Release notes"](assets/images/publishing-updates-and-versioning/google-play-console/5-release-notes.png)
+
+Review the page, and click "Start rollout to Production" to submit for Google Play's review.
+
+![Clicking "Start rollout to Production"](assets/images/publishing-updates-and-versioning/google-play-console/6-start-rollout-to-production.png)
+
+!["In review"](assets/images/publishing-updates-and-versioning/google-play-console/7-in-review.png)
+
 #### Submitting the iOS Binary to App Store
 
-First, log in to App Store Connect and create a new version for Well Ping by clicking the "+" button near "iOS App". Enter the new Build Version in the "Store Version Number" field.
+First, log in to [App Store Connect](https://appstoreconnect.apple.com/), select "Well Ping", and create a new version for Well Ping by clicking the "+" button near "iOS App". Enter the new Build Version in the "Store Version Number" field.
 
-![Clicking the "+" button](assets/images/publishing-updates-and-versioning/1-plus-button.png)
+![Clicking the "+" button](assets/images/publishing-updates-and-versioning/app-store-connect/1-plus-button.png)
 
-![Setting the Store Version Number](assets/images/publishing-updates-and-versioning/2-store-version-number.png)
+![Setting the Store Version Number](assets/images/publishing-updates-and-versioning/app-store-connect/2-store-version-number.png)
 
-![After creating a new Store Version](assets/images/publishing-updates-and-versioning/3-after-create.png)
+![After creating a new Store Version](assets/images/publishing-updates-and-versioning/app-store-connect/3-after-create.png)
 
 Then, run
 ```bash
-eas submit --platform ios
+eas submit --platform ios --latest
 ```
 in the project folder to upload the latest binary you built to App Store Connect.
 
-Now wait until App Store Connect finishes processing the new binary. You will receive an email when the processing finishes. You can also check it in the "TestFlight" tab.
+Now wait until App Store Connect finishes processing the new binary. You will receive an email when the processing finishes. You can also check the status in the "TestFlight" tab.
 
-![Checking the binary's processing status](assets/images/publishing-updates-and-versioning/4-processing.png)
+![Checking the binary's processing status](assets/images/publishing-updates-and-versioning/app-store-connect/4-processing.png)
 
 When the processing finishes, you should be able to associate this binary with this new Store Version by pressing the "+" button next to the "Build" section in the "App Store" tab under your new Store Version. (It will also ask about "Export Compliance Information". As of now, Well Ping uses encryption and qualifies for the exemptions.)
 
-![Clicking the "+" button](assets/images/publishing-updates-and-versioning/5-ready-to-add-build.png)
+![Clicking the "+" button](assets/images/publishing-updates-and-versioning/app-store-connect/5-ready-to-add-build.png)
 
-![Associating the new binary](assets/images/publishing-updates-and-versioning/6-add-build.png)
+![Associating the new binary](assets/images/publishing-updates-and-versioning/app-store-connect/6-add-build.png)
 
-![After associating the new binary](assets/images/publishing-updates-and-versioning/7-after-add-build.png)
+![After associating the new binary](assets/images/publishing-updates-and-versioning/app-store-connect/7-after-add-build.png)
 
 After associating the binary, you just have to write "What's New in This Version" at the top, and click "Save" and then "Submit for Review" to submit the new version for App Store to review.
 
-![Adding "What's New in This Version" and clicking "Save" and "Submit for Review"](assets/images/publishing-updates-and-versioning/8-ready-to-submit-for-review.png)
+![Adding "What's New in This Version" and clicking "Save" and "Submit for Review"](assets/images/publishing-updates-and-versioning/app-store-connect/8-ready-to-submit-for-review.png)
 
-!["Waiting for Review"](assets/images/publishing-updates-and-versioning/9-waiting-for-review.png)
-
-#### Submitting the Android Binary to Google Play
+!["Waiting for Review"](assets/images/publishing-updates-and-versioning/app-store-connect/9-waiting-for-review.png)
