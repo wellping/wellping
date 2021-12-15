@@ -101,15 +101,14 @@ expo publish --release-channel prod-v1-0-1
 
 You will need to upload a binary to App Store and a binary to Google Play in order to publishing updates to App Store and Google Play.
 
-To build the binaries, use
+First, change `build.production.releaseChannel` in the `eas.json` file to the new release channel (matching the new Build Version).
+
+Then, use
 ```bash
-# Build a binary for iOS
-expo build:ios --release-channel [Release Channel ID]
-# Build a binary for Android
-expo build:android --release-channel [Release Channel ID]
+eas build --platform all --profile production
 ```
-in the project folder. Notice that iOS, you would want to select "archive - Deploy the build to the store" and for Android, you would want to select "app-bundle - Build an optimized bundle for the store".
+in the project folder to build binaries for iOS and Android.
 
-Then you could follow [https://docs.expo.dev/distribution/uploading-apps/](https://docs.expo.dev/distribution/uploading-apps/) to upload the app to App Store and Google Play.
+Then you could follow [https://docs.expo.dev/submit/introduction/](https://docs.expo.dev/submit/introduction/) to upload the app to App Store and Google Play.
 
-TODO: consider the new EAS Build
+TODO: actual submit step

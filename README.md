@@ -33,6 +33,9 @@ Alternatively, click this link on your phone to automatically enter the login co
 ## Development
 
 ```bash
+npm install -g expo-cli
+npm install -g eas-cli
+
 # Installation
 yarn
 
@@ -48,14 +51,20 @@ yarn test
 
 ## Deployment
 
-Channels should be in the format of `prod-v{VERSION NUMBER}`. For example, Version 1.0.1 uses channel `prod-v1-0-1`.
+Channels should be in the format of `prod-v[Build Version]`. For example, Version 1.0.1 uses channel `prod-v1-0-1`.
+
+### OTA
 
 ```bash
 # Publish app
 expo publish --release-channel prod-v1-1-1
+```
 
-# Build iOS
-expo build:ios --release-channel prod-v1-1-1
-# Build Android
-expo build:android --release-channel prod-v1-1-1
+### App Store & Google Play
+
+First, change `build.production.releaseChannel` in the `eas.json` file to the new release channel (matching the new Build Version).
+
+Then, run
+```bash
+eas build --platform all --profile production
 ```
