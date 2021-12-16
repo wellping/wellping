@@ -8,9 +8,6 @@ Well Ping's source code could be found at [https://github.com/wellping/wellping]
 
 Learn more about [Publishing Code Updates & Versioning](./publishing-updates-and-versioning.md).
 
-## How/When is the Study File Downloaded and Updated?
-
-
 ## Upgrading Expo
 
 Learn more about [Upgrading Expo](./upgrading-expo.md).
