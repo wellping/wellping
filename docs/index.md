@@ -15,3 +15,7 @@ Learn more about [Upgrading Expo](./upgrading-expo.md).
 ## FAQ
 
 Read [FAQ](./faq.md)!
+
+## History
+
+Read Well Ping's [History](./history.md)!
