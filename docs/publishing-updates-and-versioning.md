@@ -59,7 +59,7 @@ The JS Version's format is `js.[year - 2019].month.day.[the number of version on
 
 ### Build Version
 
-The Build Version is the `version` field in the `app.json` file. Its value is a conventional version number like `1.1.2`. This is updated each time we publish a new update on App Stores.
+The Build Version is the `version` field in the `app.json` file (and the `version` field in the `package.json` file). Its value is a conventional version number like `1.1.2`. This is updated each time we publish a new update on App Stores.
 
 Along with the `version` field in the `app.json` file, we also have `ios.buildNumber` and `android.versionCode` in the same file. Those are used by App Store and Google Play respectively to uniquely identify a build. For our purpose, we just need to keep `ios.buildNumber` and `android.versionCode` the same and make sure we increment them every time we change the `version` field (or when we, for some reason, want to upload a new binary to App Stores with the smae `version`).
 
@@ -105,7 +105,10 @@ expo publish --release-channel prod-v1-0-1
 
 You will need to upload a binary to App Store and a binary to Google Play in order to publishing updates to App Store and Google Play.
 
-First, update the `version` (the Build Version) as well as the `ios.buildNumber` and `android.versionCode` fields in the `app.json` file. (Also update the `JS_VERSION_NUMBER` in the `src/helpers/debug.ts` file if necessary.)
+First, update
+- the `version` (the Build Version) as well as the `ios.buildNumber` and `android.versionCode` fields in the `app.json` file;
+- the `version` (the Build Version) field in the `package.json` file; and
+- the `JS_VERSION_NUMBER` (the JS Version) in the `src/helpers/debug.ts` file if necessary.
 
 Then, change the `build.production.releaseChannel` field in the `eas.json` file to the new Release Channel (matching the new Build Version). For example, if the new Build Version is `1.0.2`, we set the `build.production.releaseChannel` field to `"prod-v1-0-2"`
 
