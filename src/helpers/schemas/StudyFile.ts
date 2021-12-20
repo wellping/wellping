@@ -1,4 +1,4 @@
-import { differenceInSeconds, parse, parseJSON } from "date-fns";
+import { differenceInSeconds, isValid, parse, parseJSON } from "date-fns";
 import * as z from "zod";
 
 import { StudyFile, StudyInfo, ExtraData } from "../types";
@@ -70,9 +70,13 @@ function parseHourMinuteSecondStringToSeconds(
 ): number {
   const referenceDate = new Date(2010, 0, 1, 0, 0, 0, 0);
   const userDate = parse(hourMinuteSecondString, "HH:mm:ss", referenceDate);
+
+  if (!isValid(userDate)) {
+    throw new Error(`parse produces ${userDate}`);
+  }
   return differenceInSeconds(userDate, referenceDate);
 }
-export const HourMinuteSecondSchema = z
+const HourMinuteSecondSchema = z
   .string()
   .superRefine((val, ctx) => {
     try {
@@ -80,7 +84,7 @@ export const HourMinuteSecondSchema = z
     } catch (error) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
-        message: `Hour-minute-second string parse error: ${error}`,
+        message: `Hour-minute-second string parse error: ${error}.\nPlease format your time in the format "HH:mm:ss".`,
       });
     }
   })
@@ -248,16 +252,22 @@ const _StudyInfoSchema = z.object({
            */
           expireAfterTime: HourMinuteSecondSchema,
         })
-        .refine(
-          (data) =>
-            data.latestPingNotificationTime === undefined ||
-            data.latestPingNotificationTime > data.earliestPingNotificationTime,
-          {
-            message:
-              "`latestPingNotificationTime` needs to be greater than " +
-              "`earliestPingNotificationTime` (or undefined if the notification should be sent at an exact time).",
-          },
-        ),
+        .superRefine((val, ctx) => {
+          if (
+            val.latestPingNotificationTime === undefined ||
+            val.latestPingNotificationTime > val.earliestPingNotificationTime
+          ) {
+            // All good.
+          } else {
+            ctx.addIssue({
+              code: z.ZodIssueCode.custom,
+              message:
+                `\`latestPingNotificationTime\` (${val.latestPingNotificationTime}) needs to be greater than ` +
+                `\`earliestPingNotificationTime\` (${val.earliestPingNotificationTime}) ` +
+                `(or undefined if the notification should be sent at an exact time).`,
+            });
+          }
+        }),
     )
     .min(1),
 
