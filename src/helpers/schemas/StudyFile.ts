@@ -76,19 +76,26 @@ function parseHourMinuteSecondStringToSeconds(
   }
   return differenceInSeconds(userDate, referenceDate);
 }
-const HourMinuteSecondSchema = z
-  .string()
-  .superRefine((val, ctx) => {
-    try {
-      parseHourMinuteSecondStringToSeconds(val);
-    } catch (error) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: `Hour-minute-second string parse error: ${error}.\nPlease format your time in the format "HH:mm:ss".`,
-      });
-    }
-  })
-  .transform((val) => parseHourMinuteSecondStringToSeconds(val));
+const HourMinuteSecondSchema = z.union([
+  z
+    .string()
+    .superRefine((val, ctx) => {
+      try {
+        parseHourMinuteSecondStringToSeconds(val);
+      } catch (error) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: `Hour-minute-second string parse error: ${error}.\nPlease format your time in the format "HH:mm:ss".`,
+        });
+      }
+    })
+    .transform((val) => parseHourMinuteSecondStringToSeconds(val)),
+
+  // Notice that this could also just be a number.
+  // This is mainly added so that we could correctly load the stored study file
+  // which is already parsed (transformed) before.
+  z.number().int().nonnegative(),
+]);
 
 const _StudyInfoSchema = z.object({
   /**
