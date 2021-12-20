@@ -5,7 +5,14 @@ import { getASKeyAsync } from "./asyncStorage";
 
 const NOTIFICATION_TIMES_KEY = `NotificationTime`;
 
-export async function storeNotificationTimesAsync(times: Date[]) {
+export type NotificationDateWithExpirationDate = {
+  notificationDate: Date;
+  expirationDate: Date;
+};
+
+export async function storeNotificationTimesAsync(
+  times: NotificationDateWithExpirationDate[],
+) {
   try {
     await AsyncStorage.setItem(
       await getASKeyAsync(NOTIFICATION_TIMES_KEY),
@@ -24,7 +31,9 @@ export async function clearNotificationTimesAsync() {
   }
 }
 
-export async function getNotificationTimesAsync(): Promise<Date[] | null> {
+export async function getNotificationTimesAsync(): Promise<
+  NotificationDateWithExpirationDate[] | null
+> {
   try {
     const value = await AsyncStorage.getItem(
       await getASKeyAsync(NOTIFICATION_TIMES_KEY),
@@ -32,9 +41,19 @@ export async function getNotificationTimesAsync(): Promise<Date[] | null> {
     if (value == null) {
       return null;
     }
-    const timesString: string[] = JSON.parse(value);
-    const times = timesString.map((dateString) => new Date(dateString));
-    return times;
+    const timesInfoString: {
+      notificationDate: string;
+      expirationDate: string;
+    }[] = JSON.parse(value);
+    const timesInfo: NotificationDateWithExpirationDate[] = timesInfoString.map(
+      (dateInfoString) => {
+        return {
+          notificationDate: new Date(dateInfoString.notificationDate),
+          expirationDate: new Date(dateInfoString.expirationDate),
+        };
+      },
+    );
+    return timesInfo;
   } catch (error) {
     logAndThrowError(error);
   }

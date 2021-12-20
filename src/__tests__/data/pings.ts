@@ -1,3 +1,4 @@
+import { StudyInfoSchema } from "../../helpers/schemas/StudyFile";
 import { StudyInfo } from "../../helpers/types";
 import { BASE_STUDY_INFO } from "./studyInfo";
 
@@ -106,7 +107,7 @@ export const PINGS_DICT = PINGS.reduce((map, value) => {
   return map;
 }, {} as any);
 
-export const PINGS_STUDY_INFO: StudyInfo = {
+export const PINGS_STUDY_INFO: StudyInfo = StudyInfoSchema.parse({
   ...BASE_STUDY_INFO,
   startDate: new Date("2010-05-01T06:00:00Z"),
   endDate: new Date("2010-05-30T21:00:00Z"),
@@ -122,11 +123,38 @@ export const PINGS_STUDY_INFO: StudyInfo = {
       numberOfCompletionEachWeek: 5,
     },
   },
-  frequency: {
-    expireAfterMinutes: 30,
-    hoursEveryday: [8, 10, 12, 16, 18, 22],
-    randomMinuteAddition: { min: 0, max: 89 },
-  },
+  pingsFrequency: [
+    {
+      earliestPingNotificationTime: "08:00:00",
+      latestPingNotificationTime: "09:29:59",
+      expireAfterTime: "00:30:00",
+    },
+    {
+      earliestPingNotificationTime: "10:00:00",
+      latestPingNotificationTime: "11:29:59",
+      expireAfterTime: "00:30:00",
+    },
+    {
+      earliestPingNotificationTime: "12:00:00",
+      latestPingNotificationTime: "13:29:59",
+      expireAfterTime: "00:30:00",
+    },
+    {
+      earliestPingNotificationTime: "16:00:00",
+      latestPingNotificationTime: "17:29:59",
+      expireAfterTime: "00:30:00",
+    },
+    {
+      earliestPingNotificationTime: "18:00:00",
+      latestPingNotificationTime: "19:29:59",
+      expireAfterTime: "00:30:00",
+    },
+    {
+      earliestPingNotificationTime: "22:00:00",
+      latestPingNotificationTime: "23:29:59",
+      expireAfterTime: "00:30:00",
+    },
+  ],
   streamsStartingQuestionIds: {
     cat: "hello_cat",
     dog: "hello_dog",
@@ -143,4 +171,4 @@ export const PINGS_STUDY_INFO: StudyInfo = {
     6: ["cat", "dog", "wolf", "lynx", "cat", "dog"],
   },
   streamsNotReplacedByFollowupStream: [],
-};
+});

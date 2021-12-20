@@ -4,6 +4,7 @@ import {
   setHours,
   setMinutes,
   setSeconds,
+  setMilliseconds,
   min,
   isSameDay,
   addSeconds,
@@ -17,6 +18,7 @@ import { _DEBUG_CONFIGS } from "../../config/debug";
 import {
   getNotificationTimesAsync,
   storeNotificationTimesAsync,
+  NotificationDateWithExpirationDate,
 } from "./asyncStorage/notificationTimes";
 import { getThisWeekPingsAsync } from "./pings";
 import { secureGetUserAsync } from "./secureStore/user";
@@ -100,7 +102,7 @@ export async function setNotificationsAsync() {
 
   await Notifications.cancelAllScheduledNotificationsAsync();
 
-  const hoursEveryday = studyInfo.frequency.hoursEveryday;
+  const pingsFrequency = studyInfo.pingsFrequency;
 
   // https://stackoverflow.com/a/3894087/2603230
   const thisMorning = new Date();
@@ -112,15 +114,17 @@ export async function setNotificationsAsync() {
   // Some say on Android, the limit is even lower: 50 (https://stackoverflow.com/a/36677835/2603230)
   // To be safe, we schedule at most 28 notifications, which means (28 / hoursEveryday.length) days.
   const setNotificationsUntil = min([
-    addDays(startDate, Math.floor(28 / hoursEveryday.length)),
+    addDays(startDate, Math.floor(28 / pingsFrequency.length)),
     studyEndDate,
   ]);
-  const notificationTimes: Date[] = [];
+  const notificationTimes: NotificationDateWithExpirationDate[] = [];
 
   const currentlySetNotifications = (await getNotificationTimesAsync()) || [];
-  for (const currentlySetNotificationTime of currentlySetNotifications) {
+  for (const currentlySetNotificationTimeInfo of currentlySetNotifications) {
+    const currentlySetNotificationTime =
+      currentlySetNotificationTimeInfo.notificationDate;
     if (isSameDay(currentlySetNotificationTime, startDate)) {
-      notificationTimes.push(currentlySetNotificationTime);
+      notificationTimes.push(currentlySetNotificationTimeInfo);
     } else if (currentlySetNotificationTime > startDate) {
       break;
     }
@@ -134,38 +138,64 @@ export async function setNotificationsAsync() {
     date < setNotificationsUntil;
     date = addDays(date, 1)
   ) {
+    const dateMidnight = setHours(
+      setMinutes(setSeconds(setMilliseconds(date, 0), 0), 0),
+      0,
+    );
+
     const seedValue_date = format(date, "yyyy-MM-dd");
-    for (const hour of hoursEveryday) {
-      let notificationTime = setHours(setMinutes(date, 0), hour);
+    for (const pingTimeInfo of pingsFrequency) {
+      const earliestPingNotificationTimeSinceMidnight =
+        pingTimeInfo.earliestPingNotificationTime;
+
+      const seedValue_secondsSinceMidnight = earliestPingNotificationTimeSinceMidnight;
+      const seedValue =
+        seedValue_username + seedValue_date + seedValue_secondsSinceMidnight;
+      const rng = seedrandom(seedValue);
+
+      let selectedNotificationTimeSinceMidnight: number;
+      if (pingTimeInfo.latestPingNotificationTime !== undefined) {
+        const latestPingNotificationTimeSinceMidnight =
+          pingTimeInfo.latestPingNotificationTime;
+
+        // Randomly select a time between
+        // `earliestPingNotificationTimeSinceMidnight` and
+        // `latestPingNotificationTimeSinceMidnight` (inclusive).
+        // https://stackoverflow.com/a/1527834/2603230
+        selectedNotificationTimeSinceMidnight =
+          Math.floor(
+            rng() *
+              (latestPingNotificationTimeSinceMidnight -
+                earliestPingNotificationTimeSinceMidnight +
+                1),
+          ) + earliestPingNotificationTimeSinceMidnight;
+      } else {
+        selectedNotificationTimeSinceMidnight =
+          pingTimeInfo.earliestPingNotificationTime;
+      }
+
+      const notificationTime: Date = addSeconds(
+        dateMidnight,
+        selectedNotificationTimeSinceMidnight,
+      );
 
       if (notificationTime >= studyEndDate) {
         break;
       }
 
-      const seedValue_hour = hour;
-      const seedValue = seedValue_username + seedValue_date + seedValue_hour;
-
-      const rng = seedrandom(seedValue);
-
-      // Randomly add `randomMinMinuteAddition` to `randomMaxMinuteAddition` minutes (inclusive) to the notification time.
-      const randomMinMinuteAddition =
-        studyInfo.frequency.randomMinuteAddition.min;
-      const randomMaxMinuteAddition =
-        studyInfo.frequency.randomMinuteAddition.max;
-      const randomMinuteAddition =
-        Math.floor(
-          rng() * (randomMaxMinuteAddition + 1 - randomMinMinuteAddition),
-        ) + randomMinMinuteAddition;
-      notificationTime = addMinutes(notificationTime, randomMinuteAddition);
-
-      const randomSecond = Math.floor(rng() * 60) + 1;
-      notificationTime = setSeconds(notificationTime, randomSecond);
-
       if (notificationTime < new Date()) {
         continue;
       }
 
-      notificationTimes.push(notificationTime);
+      const expirationTime: Date = addSeconds(
+        notificationTime,
+        pingTimeInfo.expireAfterTime,
+      );
+
+      notificationTimes.push({
+        notificationDate: notificationTime,
+        expirationDate: expirationTime,
+      });
     }
   }
 
@@ -173,7 +203,8 @@ export async function setNotificationsAsync() {
   const numberOfPingsStartedThisWeek = startedPingsThisWeek.length;
 
   await Promise.all(
-    notificationTimes.map(async (notificationTime) => {
+    notificationTimes.map(async (notificationTimeInfo) => {
+      const notificationTime = notificationTimeInfo.notificationDate;
       if (notificationTime >= new Date()) {
         const configNotificationContent = studyInfo.notificationContent;
 
@@ -245,8 +276,6 @@ export async function getCurrentNotificationTimeAsync(): Promise<Date | null> {
     return fakeNotificationTime;
   }
 
-  const studyInfo = await getStudyInfoAsync();
-
   const notificationsTimes = (await getNotificationTimesAsync()) || [];
 
   // DEBUG
@@ -254,11 +283,9 @@ export async function getCurrentNotificationTimeAsync(): Promise<Date | null> {
     console.log(format(element, "yyyy-MM-dd'T'HH:mm:ss.SSSxxx"));
   });*/
 
-  for (const notificationsTime of notificationsTimes) {
-    const expirationTime = addMinutes(
-      notificationsTime,
-      studyInfo.frequency.expireAfterMinutes,
-    );
+  for (const notificationsTimeInfo of notificationsTimes) {
+    const notificationsTime = notificationsTimeInfo.notificationDate;
+    const expirationTime = notificationsTimeInfo.expirationDate;
     const currentTime = new Date();
 
     if (currentTime >= notificationsTime && currentTime <= expirationTime) {
@@ -276,14 +303,15 @@ export async function getIncomingNotificationTimeAsync(): Promise<Date | null> {
   const currentTime = new Date();
 
   const currentIndex = notificationsTimes.findIndex(
-    (notificationsTime) => currentTime < notificationsTime,
+    (notificationsTimeInfo) =>
+      currentTime < notificationsTimeInfo.notificationDate,
   );
 
   if (currentIndex === -1) {
     return null;
   }
 
-  return notificationsTimes[currentIndex];
+  return notificationsTimes[currentIndex].notificationDate;
 }
 
 export async function clearSentNotificationsAsync() {
