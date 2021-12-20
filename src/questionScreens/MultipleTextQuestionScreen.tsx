@@ -209,7 +209,7 @@ const MultipleTextQuestionScreen: React.ElementType<
       textValues.indexOf(value),
     );
     invalidValuesIndices.forEach((index) => {
-      textFieldsRef[index].current && textFieldsRef[index].current!.clear();
+      textFieldsRef.current[index]?.clear();
       // Because `clear()` does not call `onChangeText`.
       updateTextValue("", index);
     });
@@ -226,7 +226,7 @@ const MultipleTextQuestionScreen: React.ElementType<
         {
           text: "OK",
           onPress: () => {
-            textFieldsRef[invalidValuesIndices[0]].current!.focus();
+            textFieldsRef.current[invalidValuesIndices[0]]!.focus();
             alertDisplaying = false;
           },
           style: "cancel",
