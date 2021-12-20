@@ -1,12 +1,17 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-
-import { logAndThrowError } from "../debug";
-import { parseJsonToStreams } from "../schemas/Stream";
+import { parseJsonToStreams } from "wellping-study-file/lib/schemas/Stream";
 import {
   parseJsonToStudyInfo,
   parseJsonToExtraData,
-} from "../schemas/StudyFile";
-import { StudyFile, Streams, StudyInfo, ExtraData } from "../types";
+} from "wellping-study-file/lib/schemas/StudyFile";
+import {
+  StudyFile,
+  Streams,
+  StudyInfo,
+  ExtraData,
+} from "wellping-study-file/lib/types";
+
+import { logAndThrowError } from "../debug";
 
 const STUDY_INFO_KEY = `currentStudyFile_StudyInfo`;
 const STREAMS_KEY = `currentStudyFile_Streams`;

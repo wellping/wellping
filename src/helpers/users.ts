@@ -1,3 +1,5 @@
+import { StudyInfo } from "wellping-study-file/lib/types";
+
 import { clearCurrentStudyFileAsync } from "./asyncStorage/studyFile";
 import { clearTempStudyFileAsync } from "./asyncStorage/tempStudyFile";
 import { beiweLoginAsync } from "./beiwe";
@@ -14,7 +16,6 @@ import {
 } from "./secureStore/user";
 import { isUsingFirebase, isUsingBeiwe, isUsingServer } from "./server";
 import { getStudyInfoAsync, studyFileExistsAsync } from "./studyFile";
-import { StudyInfo } from "./types";
 
 /**
  * Throws an error if the login is unsuccessful.

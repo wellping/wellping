@@ -1,15 +1,16 @@
-import { AnswerData, Answer } from "./answerTypes";
+import { AnswerData, Answer } from "wellping-study-file/lib/answerTypes";
+import { AnswerSchema } from "wellping-study-file/lib/schemas/Answer";
+import { Question, Ping } from "wellping-study-file/lib/types";
+
 import {
   getAnswersPingIdsQuestionIdsListAsync,
   clearAnswersPingIdsQuestionIdsListAsync,
 } from "./asyncStorage/answersPingIdsQuestionIdsList";
-import { AnswerSchema } from "./schemas/Answer";
 import {
   secureGetAnswerAsync,
   secureStoreAnswerAsync,
   secureRemoveAnswerAsync,
 } from "./secureStore/answer";
-import { Question, Ping } from "./types";
 
 export async function getAnswersAsync({
   unuploadedOnly = false,

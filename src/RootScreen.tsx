@@ -1,5 +1,6 @@
 import React from "react";
 import { Text } from "react-native";
+import { StudyFile } from "wellping-study-file/lib/types";
 
 import HomeScreen from "./HomeScreen";
 import { clearCurrentStudyFileAsync } from "./helpers/asyncStorage/studyFile";
@@ -22,7 +23,6 @@ import {
   parseAndStoreStudyFileAsync,
   studyFileExistsAsync,
 } from "./helpers/studyFile";
-import { StudyFile } from "./helpers/types";
 import { logoutAsync } from "./helpers/users";
 import LoadingScreen from "./screens/LoadingScreen";
 import LoginScreen, {

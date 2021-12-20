@@ -9,8 +9,6 @@ import {
   Dimensions,
   Platform,
 } from "react-native";
-
-import { _DEBUG_CONFIGS } from "../config/debug";
 import {
   AnswersList,
   QuestionScreenProps,
@@ -24,7 +22,25 @@ import {
   MultipleTextAnswer,
   SliderAnswer,
   DataValidationFunction,
-} from "./helpers/answerTypes";
+} from "wellping-study-file/lib/answerTypes";
+import {
+  Question,
+  ChoicesWithSingleAnswerQuestion,
+  YesNoQuestion,
+  MultipleTextQuestion,
+  QuestionsList,
+  QuestionId,
+  BranchQuestion,
+  BranchWithRelativeComparisonQuestion,
+  ChoicesQuestion,
+  StreamName,
+  StudyInfo,
+  Ping,
+  QuestionImageOptions,
+  WrapperQuestion,
+} from "wellping-study-file/lib/types";
+
+import { _DEBUG_CONFIGS } from "../config/debug";
 import { insertAnswerAsync } from "./helpers/answers";
 import {
   getFuturePingsQueue,
@@ -44,22 +60,6 @@ import {
   NON_USER_QUESTION_TYPES,
 } from "./helpers/helpers";
 import { addEndTimeToPingAsync } from "./helpers/pings";
-import {
-  Question,
-  ChoicesWithSingleAnswerQuestion,
-  YesNoQuestion,
-  MultipleTextQuestion,
-  QuestionsList,
-  QuestionId,
-  BranchQuestion,
-  BranchWithRelativeComparisonQuestion,
-  ChoicesQuestion,
-  StreamName,
-  StudyInfo,
-  Ping,
-  QuestionImageOptions,
-  WrapperQuestion,
-} from "./helpers/types";
 import ChoicesQuestionScreen from "./questionScreens/ChoicesQuestionScreen";
 import HowLongAgoQuestionScreen from "./questionScreens/HowLongAgoQuestion";
 import MultipleTextQuestionScreen from "./questionScreens/MultipleTextQuestionScreen";

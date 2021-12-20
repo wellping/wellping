@@ -26,6 +26,7 @@ import {
   push as firebasePush,
   Database as FirebaseDatabase,
 } from "firebase/database";
+import { StudyInfo } from "wellping-study-file/lib/types";
 
 import {
   UploadData,
@@ -37,7 +38,6 @@ import {
 import { getLoginSessionIDAsync } from "./loginSession";
 import { User } from "./secureStore/user";
 import { DataUploadServerResponse, getFirebaseServerConfig } from "./server";
-import { StudyInfo } from "./types";
 
 /**
  * Firebase requires to use an email as the user's login name.

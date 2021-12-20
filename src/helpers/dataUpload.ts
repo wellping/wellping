@@ -1,3 +1,5 @@
+import { StudyInfo } from "wellping-study-file/lib/types";
+
 import { getAnswersAsync } from "./answers";
 import { removeFromUnuploadedPingsListAsync } from "./asyncStorage/unuploadedPingsList";
 import { beiweUploadDataForUserAsync } from "./beiwe";
@@ -21,7 +23,6 @@ import {
   isUsingBeiwe,
   DataUploadServerResponse,
 } from "./server";
-import { StudyInfo } from "./types";
 
 async function _getUserDataAsync(): Promise<UserData> {
   const user = await secureGetUserAsync();

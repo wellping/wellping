@@ -21,6 +21,12 @@ import {
   AppState,
   AppStateStatus,
 } from "react-native";
+import {
+  Streams,
+  StreamName,
+  StudyInfo,
+  Ping,
+} from "wellping-study-file/lib/types";
 
 import SurveyScreen, { SurveyScreenState } from "./SurveyScreen";
 import DashboardComponent, {
@@ -93,7 +99,6 @@ import {
   getStudyInfoAsync,
 } from "./helpers/studyFile";
 import { styles } from "./helpers/styles";
-import { Streams, StreamName, StudyInfo, Ping } from "./helpers/types";
 import LoadingScreen from "./screens/LoadingScreen";
 
 interface HomeScreenProps {

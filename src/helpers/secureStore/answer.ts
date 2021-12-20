@@ -1,11 +1,11 @@
 import { parseJSON } from "date-fns";
 import * as SecureStore from "expo-secure-store";
+import { Answer } from "wellping-study-file/lib/answerTypes";
+import { AnswerSchema } from "wellping-study-file/lib/schemas/Answer";
+import { PingId, QuestionId } from "wellping-study-file/lib/types";
 
-import { Answer } from "../answerTypes";
 import { addToAnswersQuestionIdsListForPingIfNeededAsync } from "../asyncStorage/answersPingIdsQuestionIdsList";
 import { logAndThrowError } from "../debug";
-import { AnswerSchema } from "../schemas/Answer";
-import { PingId, QuestionId } from "../types";
 import { getSSKeyAsync } from "./secureStore";
 
 const ANSWER_PREFIX = `answer.`;

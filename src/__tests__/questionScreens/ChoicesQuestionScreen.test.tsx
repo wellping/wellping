@@ -9,20 +9,20 @@ import {
   RenderAPI,
 } from "react-native-testing-library";
 import { ReactTestInstance } from "react-test-renderer";
-
 import {
   YesNoAnswerData,
   ChoicesWithSingleAnswerAnswerData,
   ChoicesWithMultipleAnswersAnswerData,
   ChoicesWithMultipleAnswersAnswerChoices,
-} from "../../helpers/answerTypes";
-import { QuestionType } from "../../helpers/helpers";
+} from "wellping-study-file/lib/answerTypes";
 import {
   YesNoQuestion,
   ChoicesWithSingleAnswerQuestion,
   ChoicesWithMultipleAnswersQuestion,
   ChoicesList,
-} from "../../helpers/types";
+} from "wellping-study-file/lib/types";
+
+import { QuestionType } from "../../helpers/helpers";
 import ChoicesQuestionScreen from "../../questionScreens/ChoicesQuestionScreen";
 import {
   simplePipeInExtraMetaData,

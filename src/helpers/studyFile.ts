@@ -1,5 +1,14 @@
 import { isThisWeek } from "date-fns";
 import * as Crypto from "expo-crypto";
+import { parseJsonToStudyFile } from "wellping-study-file/lib/schemas/StudyFile";
+import {
+  StudyFile,
+  StudyInfo,
+  StreamName,
+  Streams,
+  ExtraData,
+  ChoicesList,
+} from "wellping-study-file/lib/types";
 
 import { _DEBUG_CONFIGS } from "../../config/debug";
 import { STUDY_FILE_URL_PREFIXES_WHITELIST } from "../../config/studyWhitelist";
@@ -12,16 +21,7 @@ import {
 } from "./asyncStorage/studyFile";
 import { validateAndInitializeFirebaseWithConfig } from "./firebase";
 import { ignoreTimeObjectTimezone } from "./helpers";
-import { parseJsonToStudyFile } from "./schemas/StudyFile";
 import { isUsingFirebase } from "./server";
-import {
-  StudyFile,
-  StudyInfo,
-  StreamName,
-  Streams,
-  ExtraData,
-  ChoicesList,
-} from "./types";
 
 export const WELLPING_LOCAL_DEBUG_URL =
   "https://debug.local.wellping.ssnl.stanford.edu/DEBUG_STUDY.json";

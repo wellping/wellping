@@ -8,15 +8,18 @@ import {
   RenderAPI,
 } from "react-native-testing-library";
 import waitForExpect from "wait-for-expect";
-
 import {
   AnswersList,
   MultipleTextAnswerData,
   MultipleTextAnswer,
-} from "../../helpers/answerTypes";
+} from "wellping-study-file/lib/answerTypes";
+import {
+  MultipleTextQuestion,
+  ChoicesList,
+} from "wellping-study-file/lib/types";
+
 import { QuestionType } from "../../helpers/helpers";
 import * as studyFileHelper from "../../helpers/studyFile";
-import { MultipleTextQuestion, ChoicesList } from "../../helpers/types";
 import MultipleTextQuestionScreen from "../../questionScreens/MultipleTextQuestionScreen";
 import { simplePipeInExtraMetaData, mockCurrentExtraData } from "../helper";
 import { changeTextAndWaitForUpdateAsync } from "../reactNativeTestingLibraryHelper";

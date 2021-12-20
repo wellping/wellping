@@ -9,14 +9,14 @@ import {
   waitFor,
   RenderAPI,
 } from "react-native-testing-library";
-
-import SurveyScreen, { SurveyScreenProps } from "../../SurveyScreen";
-import { QuestionType } from "../../helpers/helpers";
 import {
   ChoicesQuestion,
   QuestionTypeType,
   PlaceholderReplacementValueTreatmentOptions,
-} from "../../helpers/types";
+} from "wellping-study-file/lib/types";
+
+import SurveyScreen, { SurveyScreenProps } from "../../SurveyScreen";
+import { QuestionType } from "../../helpers/helpers";
 import {
   setUpSurveyScreenTestAsync,
   tearDownSurveyScreenTestAsync,

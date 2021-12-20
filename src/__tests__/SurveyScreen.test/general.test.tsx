@@ -1,9 +1,13 @@
 import React from "react";
 import { render } from "react-native-testing-library";
+import {
+  QuestionsList,
+  Question,
+  QuestionTypeType,
+} from "wellping-study-file/lib/types";
 
 import SurveyScreen, { SurveyScreenProps } from "../../SurveyScreen";
 import { QuestionType } from "../../helpers/helpers";
-import { QuestionsList, Question, QuestionTypeType } from "../../helpers/types";
 import {
   getBaseProps,
   testQuestionsSequenceAsync,

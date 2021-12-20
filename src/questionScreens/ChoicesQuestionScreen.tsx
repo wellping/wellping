@@ -7,17 +7,21 @@ import {
   FlatList,
   StyleSheet,
 } from "react-native";
-
 import {
   QuestionScreenProps,
   ChoicesWithMultipleAnswersAnswerChoices,
   YesNoAnswerData,
   ChoicesWithSingleAnswerAnswerData,
   ChoicesWithMultipleAnswersAnswerData,
-} from "../helpers/answerTypes";
+} from "wellping-study-file/lib/answerTypes";
+import {
+  ChoicesQuestion,
+  YesNoQuestion,
+  Choice,
+} from "wellping-study-file/lib/types";
+
 import { QuestionType, shuffle } from "../helpers/helpers";
 import { getReusableChoicesIncludeErrorAsync } from "../helpers/studyFile";
-import { ChoicesQuestion, YesNoQuestion, Choice } from "../helpers/types";
 
 export interface ChoiceItemProps {
   id: string;

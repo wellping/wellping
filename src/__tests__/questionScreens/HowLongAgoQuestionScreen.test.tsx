@@ -8,13 +8,13 @@ import {
   waitFor,
 } from "react-native-testing-library";
 import { ReactTestInstance } from "react-test-renderer";
-
 import {
   HowLongAgoAnswerDataType,
   HowLongAgoAnswerData,
-} from "../../helpers/answerTypes";
+} from "wellping-study-file/lib/answerTypes";
+import { HowLongAgoQuestion } from "wellping-study-file/lib/types";
+
 import { QuestionType } from "../../helpers/helpers";
-import { HowLongAgoQuestion } from "../../helpers/types";
 import HowLongAgoQuestionScreen from "../../questionScreens/HowLongAgoQuestion";
 import { simplePipeInExtraMetaData } from "../helper";
 
