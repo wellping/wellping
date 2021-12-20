@@ -103,15 +103,16 @@ const MultipleTextQuestionScreen: React.ElementType<MultipleTextQuestionScreenPr
   }>(Array(numberOfTextFields).fill(true));
 
   const textFields: SearchableDropdown[] = [];
-  const textFieldsRef: React.RefObject<TextInput>[] = [];
+  // https://stackoverflow.com/a/56063129/2603230
+  const textFieldsRef = React.useRef<(TextInput | null)[]>([]);
   for (let index = 0; index < numberOfTextFields; index++) {
     const focusOnNextIfNotLast = () => {
       if (index !== numberOfTextFields - 1) {
-        textFieldsRef[index + 1].current!.focus();
+        textFieldsRef.current[index + 1]!.focus();
       }
     };
 
-    textFieldsRef.push(React.useRef<TextInput>(null));
+    textFieldsRef.current.push(null);
 
     textFields.push(
       // @ts-ignore
@@ -136,7 +137,9 @@ const MultipleTextQuestionScreen: React.ElementType<MultipleTextQuestionScreenPr
         items={textFieldsDropdownItems}
         resetValue={false}
         textInputProps={{
-          ref: textFieldsRef[index],
+          ref: (ref: TextInput) => {
+            textFieldsRef.current[index] = ref;
+          },
           placeholder: question.placeholder,
           underlineColorAndroid: "transparent",
           style: {

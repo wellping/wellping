@@ -136,10 +136,6 @@ const DashboardComponent: React.FunctionComponent<DashboardComponentProps> = ({
   studyInfo,
   firebaseUser,
 }) => {
-  if (studyInfo.dashboardURL === undefined) {
-    return <></>;
-  }
-
   const [url, setUrl] = React.useState<string | null>(null);
   React.useEffect(() => {
     async function setDashboardUrlAsync() {
@@ -148,6 +144,10 @@ const DashboardComponent: React.FunctionComponent<DashboardComponentProps> = ({
     }
     setDashboardUrlAsync();
   }, [studyInfo, firebaseUser]);
+
+  if (studyInfo.dashboardURL === undefined) {
+    return <></>;
+  }
 
   return (
     <View style={{ flex: 1, marginTop: 20, marginHorizontal: 20 }}>
