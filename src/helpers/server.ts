@@ -14,7 +14,7 @@ export type DataUploadServerResponse = {
 /**
  * If Firebase is used as the backend server.
  */
-export function useFirebase(studyInfo: StudyInfo): boolean {
+export function isUsingFirebase(studyInfo: StudyInfo): boolean {
   return studyInfo.server.firebase !== undefined;
 }
 
@@ -26,7 +26,7 @@ export function useFirebase(studyInfo: StudyInfo): boolean {
 export function getFirebaseServerConfig(
   studyInfo: StudyInfo,
 ): FirebaseServerConfig {
-  if (!useFirebase(studyInfo)) {
+  if (!isUsingFirebase(studyInfo)) {
     throw new Error("getFirebaseServerConfig: Firebase is not used.");
   }
   return studyInfo.server.firebase!;
@@ -35,7 +35,7 @@ export function getFirebaseServerConfig(
 /**
  * If Beiwe is used as the backend server.
  */
-export function useBeiwe(studyInfo: StudyInfo): boolean {
+export function isUsingBeiwe(studyInfo: StudyInfo): boolean {
   return studyInfo.server.beiwe !== undefined;
 }
 
@@ -45,7 +45,7 @@ export function useBeiwe(studyInfo: StudyInfo): boolean {
  * Throws an error if Beiwe is not the server type used.
  */
 export function getBeiweServerConfig(studyInfo: StudyInfo): BeiweServerConfig {
-  if (!useBeiwe(studyInfo)) {
+  if (!isUsingBeiwe(studyInfo)) {
     throw new Error("getBeiweServerConfig: Beiwe is not used.");
   }
   return studyInfo.server.beiwe!;
@@ -56,7 +56,7 @@ export function getBeiweServerConfig(studyInfo: StudyInfo): BeiweServerConfig {
  *
  * See `MARK: NO_SERVER_NOTE`.
  */
-export function useServer(studyInfo: StudyInfo): boolean {
+export function isUsingServer(studyInfo: StudyInfo): boolean {
   return Object.keys(studyInfo.server).length > 0;
 }
 
@@ -65,11 +65,11 @@ export function useServer(studyInfo: StudyInfo): boolean {
  */
 export function getServerTypeUsed(studyInfo: StudyInfo): ServerType[] {
   const serverTypes: ServerType[] = [];
-  if (useServer(studyInfo)) {
-    if (useFirebase(studyInfo)) {
+  if (isUsingServer(studyInfo)) {
+    if (isUsingFirebase(studyInfo)) {
       serverTypes.push("firebase");
     }
-    if (useBeiwe(studyInfo)) {
+    if (isUsingBeiwe(studyInfo)) {
       serverTypes.push("beiwe");
     }
   }

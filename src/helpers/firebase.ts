@@ -1,6 +1,6 @@
 /**
  * Unless otherwise noted, precondition for every function in the file is:
- * `useFirebase(studyInfo) === true`.
+ * `isUsingFirebase(studyInfo) === true`.
  */
 
 import {
@@ -114,7 +114,7 @@ export async function firebaseLoginAsync(
 
 /**
  * Special precondition: `firebaseInitialized() === true`. We don't need to
- * check for `useFirebase(studyInfo)` for this function.
+ * check for `isUsingFirebase(studyInfo)` for this function.
  */
 export async function firebaseLogoutAndDeleteAppAsync(): Promise<void> {
   try {

@@ -13,7 +13,7 @@ import {
 import { validateAndInitializeFirebaseWithConfig } from "./firebase";
 import { ignoreTimeObjectTimezone } from "./helpers";
 import { parseJsonToStudyFile } from "./schemas/StudyFile";
-import { useFirebase } from "./server";
+import { isUsingFirebase } from "./server";
 import {
   StudyFile,
   StudyInfo,
@@ -186,7 +186,7 @@ export async function parseAndStoreStudyFileAsync(
 ): Promise<string | null> {
   try {
     const parsedStudy = parseJsonToStudyFile(JSON.parse(rawJsonString));
-    if (useFirebase(parsedStudy.studyInfo)) {
+    if (isUsingFirebase(parsedStudy.studyInfo)) {
       validateAndInitializeFirebaseWithConfig(parsedStudy.studyInfo);
     }
     await storeCurrentStudyFileAsync(parsedStudy);

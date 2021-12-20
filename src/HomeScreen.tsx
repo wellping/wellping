@@ -84,7 +84,7 @@ import { secureGetUserAsync } from "./helpers/secureStore/user";
 import {
   DataUploadServerResponse,
   getSymbolsForServerTypeUsed,
-  useFirebase,
+  isUsingFirebase,
 } from "./helpers/server";
 import {
   getAllStreamNames,
@@ -229,7 +229,7 @@ export default class HomeScreen extends React.Component<
       });
     }
 
-    if (useFirebase(studyInfo) && firebaseInitialized()) {
+    if (isUsingFirebase(studyInfo) && firebaseInitialized()) {
       this.unregisterAuthObserver = firebaseOnAuthStateChanged(
         getFirebaseAuth(),
         async (firebaseUser) => {
@@ -633,7 +633,7 @@ export default class HomeScreen extends React.Component<
                   <Text style={{ color: "lightgray" }}>
                     {JS_VERSION_NUMBER}
                     {getSymbolsForServerTypeUsed(studyInfo)}
-                    {useFirebase(studyInfo) && firebaseUser === null
+                    {isUsingFirebase(studyInfo) && firebaseUser === null
                       ? HOME_SCREEN_DEBUG_VIEW_SYMBOLS.FIREBASE_AUTH
                           .NOT_LOGGED_IN
                       : HOME_SCREEN_DEBUG_VIEW_SYMBOLS.FIREBASE_AUTH.LOGGED_IN}

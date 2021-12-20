@@ -12,7 +12,7 @@ import {
   secureClearUserAsync,
   User,
 } from "./secureStore/user";
-import { useFirebase, useBeiwe, useServer } from "./server";
+import { isUsingFirebase, isUsingBeiwe, isUsingServer } from "./server";
 import { getStudyInfoAsync, studyFileExistsAsync } from "./studyFile";
 import { StudyInfo } from "./types";
 
@@ -20,11 +20,11 @@ import { StudyInfo } from "./types";
  * Throws an error if the login is unsuccessful.
  */
 export async function loginAsync(user: User, studyInfo: StudyInfo) {
-  if (useServer(studyInfo)) {
-    if (useFirebase(studyInfo)) {
+  if (isUsingServer(studyInfo)) {
+    if (isUsingFirebase(studyInfo)) {
       await firebaseLoginAsync(user);
     }
-    if (useBeiwe(studyInfo)) {
+    if (isUsingBeiwe(studyInfo)) {
       await beiweLoginAsync(user);
     }
   } else {

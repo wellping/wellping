@@ -1,6 +1,6 @@
 /**
  * Unless otherwise noted, precondition for every function in the file is:
- * `useBeiwe(studyInfo) === true`.
+ * `isUsingBeiwe(studyInfo) === true`.
  */
 
 import * as Device from "expo-device";

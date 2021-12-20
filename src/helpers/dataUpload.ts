@@ -16,9 +16,9 @@ import { getLoginSessionIDAsync } from "./loginSession";
 import { getPingsAsync } from "./pings";
 import { secureGetUserAsync } from "./secureStore/user";
 import {
-  useFirebase,
-  useServer,
-  useBeiwe,
+  isUsingFirebase,
+  isUsingServer,
+  isUsingBeiwe,
   DataUploadServerResponse,
 } from "./server";
 import { StudyInfo } from "./types";
@@ -111,8 +111,8 @@ export async function uploadDataAsync(
   }
 
   let response: DataUploadServerResponse = {};
-  if (useServer(studyInfo)) {
-    if (useFirebase(studyInfo)) {
+  if (isUsingServer(studyInfo)) {
+    if (isUsingFirebase(studyInfo)) {
       response = await firebaseUploadDataForUserAsync(
         data,
         user,
@@ -120,7 +120,7 @@ export async function uploadDataAsync(
         endUploading,
       );
     }
-    if (useBeiwe(studyInfo)) {
+    if (isUsingBeiwe(studyInfo)) {
       response = await beiweUploadDataForUserAsync(
         data,
         user,

@@ -15,7 +15,7 @@ import {
 } from "./helpers/debug";
 import { validateAndInitializeFirebaseWithConfig } from "./helpers/firebase";
 import { secureGetUserAsync, User } from "./helpers/secureStore/user";
-import { useFirebase } from "./helpers/server";
+import { isUsingFirebase } from "./helpers/server";
 import {
   getStudyFileAsync,
   downloadStudyFileAsync,
@@ -141,7 +141,7 @@ export default class RootScreen extends React.Component<
 
       const survey = await getStudyFileAsync();
 
-      if (useFirebase(survey.studyInfo)) {
+      if (isUsingFirebase(survey.studyInfo)) {
         try {
           validateAndInitializeFirebaseWithConfig(survey.studyInfo);
         } catch (e) {
