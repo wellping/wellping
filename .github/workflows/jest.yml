@@ -24,5 +24,7 @@ jobs:
 
     - name: Install modules
       run: yarn
+    - name: tsc
+      run: tsc --noEmit
     - name: Run tests
       run: yarn test
