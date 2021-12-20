@@ -10,11 +10,28 @@
     "startDate": "2020-03-10T08:00:00.000Z",
     "endDate": "2030-04-25T08:00:00.000Z",
     "weekStartsOn": 1,
-    "frequency": {
-      "expireAfterMinutes": 120,
-      "hoursEveryday": [9, 13, 17, 21],
-      "randomMinuteAddition": { "min": 0, "max": 119 }
-    },
+    "pingsFrequency": [
+      {
+        "earliestPingNotificationTime": "09:00:00",
+        "latestPingNotificationTime": "10:59:59",
+        "expireAfterTime": "02:00:00"
+      },
+      {
+        "earliestPingNotificationTime": "13:00:00",
+        "latestPingNotificationTime": "14:59:59",
+        "expireAfterTime": "02:00:00"
+      },
+      {
+        "earliestPingNotificationTime": "17:00:00",
+        "latestPingNotificationTime": "18:59:59",
+        "expireAfterTime": "02:00:00"
+      },
+      {
+        "earliestPingNotificationTime": "21:00:00",
+        "latestPingNotificationTime": "22:59:59",
+        "expireAfterTime": "02:00:00"
+      }
+    ],
     "streamsStartingQuestionIds": {
       "welcomeStream": "Hello",
       "myStream": "SocInteraction_Names",

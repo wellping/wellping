@@ -1,4 +1,4 @@
-import { parseJSON } from "date-fns";
+import { differenceInSeconds, isValid, parse, parseJSON } from "date-fns";
 import * as z from "zod";
 
 import { StudyFile, StudyInfo, ExtraData } from "../types";
@@ -61,6 +61,41 @@ export const PlaceholderReplacementValueTreatmentOptionsSchema = z.object({
     })
     .optional(),
 });
+
+/**
+ * Parse an hour-minute-second string to number of seconds since 00:00:00.
+ */
+function parseHourMinuteSecondStringToSeconds(
+  hourMinuteSecondString: string,
+): number {
+  const referenceDate = new Date(2010, 0, 1, 0, 0, 0, 0);
+  const userDate = parse(hourMinuteSecondString, "HH:mm:ss", referenceDate);
+
+  if (!isValid(userDate)) {
+    throw new Error(`parse produces ${userDate}`);
+  }
+  return differenceInSeconds(userDate, referenceDate);
+}
+const HourMinuteSecondSchema = z.union([
+  z
+    .string()
+    .superRefine((val, ctx) => {
+      try {
+        parseHourMinuteSecondStringToSeconds(val);
+      } catch (error) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: `Hour-minute-second string parse error: ${error}.\nPlease format your time in the format "HH:mm:ss".`,
+        });
+      }
+    })
+    .transform((val) => parseHourMinuteSecondStringToSeconds(val)),
+
+  // Notice that this could also just be a number.
+  // This is mainly added so that we could correctly load the stored study file
+  // which is already parsed (transformed) before.
+  z.number().int().nonnegative(),
+]);
 
 const _StudyInfoSchema = z.object({
   /**
@@ -185,54 +220,63 @@ const _StudyInfoSchema = z.object({
    */
   endDate: z.date(),
 
-  frequency: z.object({
-    /**
-     * A ping will expire after this amount of minutes (after the notification
-     * time).
-     *
-     * For example, if the user receives a ping notification on 10:00AM, and
-     * `expireAfterMinutes` is set to `45`, the user will no longer be able to
-     * complete this ping after 10:45AM.
-     */
-    expireAfterMinutes: z.number().positive(),
+  /**
+   * The time every day that ping notifications will be sent.
+   *
+   * Notice that the duration between every
+   * `pingsFrequency[i].latestPingNotificationTime` and
+   * `pingsFrequency[i+1].earliestPingNotificationTime`
+   * should be greater than
+   * `pingsFrequency[i].expireAfterTime`
+   * so that the user will always have enough time to complete the ping no matter
+   * what time they receive the ping.
+   */
+  pingsFrequency: z
+    .array(
+      z
+        .object({
+          /**
+           * The earliest time that the ping will be sent (inclusive).
+           */
+          earliestPingNotificationTime: HourMinuteSecondSchema,
 
-    /**
-     * The hours (between 0 to 23) every day that ping notifications will be
-     * sent.
-     *
-     * Notice that the duration between every
-     * `(hoursEveryday[i] + randomMinuteAddition.max)` and
-     * `(hoursEveryday[i+1] + randomMinuteAddition.min)`
-     * should be greater than `expireAfterMinutes` so that the user will
-     * always have enough time to complete the ping no matter what time they
-     * receive the ping.
-     */
-    hoursEveryday: z.array(z.number().min(0).max(23)),
+          /**
+           * The latest time that the ping will be sent (inclusive).
+           * If this is not specified, the ping will be sent exactly at
+           * `earliestPingNotificationTime`.
+           * If this is specified, the ping will be sent at a random time between
+           * `earliestPingNotificationTime` and `latestPingNotificationTime`.
+           */
+          latestPingNotificationTime: HourMinuteSecondSchema.optional(),
 
-    /**
-     * Randomly add a number of minutes between `min` to `max` minutes
-     * (inclusive) to the notification hour (`hoursEveryday`).
-     *
-     * For example, if
-     * - `hoursEveryday` is `[8, 12, 16]`,
-     * - `randomMinuteAddition.min` is `0`, and
-     * - `randomMinuteAddition.max` is `119`,
-     * then notifications will be sent at random times between
-     * - 8:00AM - 9:59AM,
-     * - 12:00PM - 1:59PM, and
-     * - 4:00PM - 5:59PM.
-     */
-    randomMinuteAddition: z
-      .object({
-        min: z.number().nonnegative(),
-        max: z.number().nonnegative(),
-      })
-      .refine((data) => data.max >= data.min, {
-        message:
-          "`randomMinuteAddition.max` needs to be greater than or equal to " +
-          "`randomMinuteAddition.min`.",
-      }),
-  }),
+          /**
+           * A ping will expire after this amount of time (after the notification
+           * time).
+           *
+           * For example, if the user receives a ping notification on 10:00:00AM,
+           * and `expireAfterTime` is set to `00:45:00`, the user will no longer
+           * be able to complete this ping after 10:45:00AM.
+           */
+          expireAfterTime: HourMinuteSecondSchema,
+        })
+        .superRefine((val, ctx) => {
+          if (
+            val.latestPingNotificationTime === undefined ||
+            val.latestPingNotificationTime > val.earliestPingNotificationTime
+          ) {
+            // All good.
+          } else {
+            ctx.addIssue({
+              code: z.ZodIssueCode.custom,
+              message:
+                `\`latestPingNotificationTime\` (${val.latestPingNotificationTime}) needs to be greater than ` +
+                `\`earliestPingNotificationTime\` (${val.earliestPingNotificationTime}) ` +
+                `(or undefined if the notification should be sent at an exact time).`,
+            });
+          }
+        }),
+    )
+    .min(1),
 
   /**
    * The question ID of the first question of each stream.
@@ -386,7 +430,7 @@ export const StudyInfoSchema = (__DEV__
   .refine(
     (data) => {
       for (const dayStreams of Object.values(data.streamsOrder)) {
-        if (dayStreams.length !== data.frequency.hoursEveryday.length) {
+        if (dayStreams.length !== data.pingsFrequency.length) {
           return false;
         }
       }
@@ -395,7 +439,7 @@ export const StudyInfoSchema = (__DEV__
     {
       message:
         "The number of each day's streams in `streamsOrder` needs to be equal " +
-        "to the length of `frequency.hoursEveryday`.",
+        "to the length of `pingsFrequency`.",
     },
   );
 // TODO: REFINE IF streams in e.g. streamsOrder, etc. is found in `streamsStartingQuestionIds`'s key

@@ -325,10 +325,10 @@ export default class HomeScreen extends React.Component<
     const newPingNth = pingsList.length + 1;
 
     let newStreamName: StreamName;
-    if (todayPings.length >= studyInfo.frequency.hoursEveryday.length) {
+    if (todayPings.length >= studyInfo.pingsFrequency.length) {
       await alertWithShareButtonContainingDebugInfoAsync(
         getNonCriticalProblemTextForUser(
-          `todayPings.length (${todayPings.length}) >= ${studyInfo.frequency.hoursEveryday.length}`,
+          `todayPings.length (${todayPings.length}) >= ${studyInfo.pingsFrequency.length}`,
         ),
       );
 
@@ -806,7 +806,17 @@ export default class HomeScreen extends React.Component<
               const notificationsTimes = await getNotificationTimesAsync();
               let text = "";
               notificationsTimes!.forEach((element) => {
-                text += format(element, "yyyy-MM-dd'T'HH:mm:ss.SSSxxx") + `\n`;
+                text +=
+                  format(
+                    element.notificationDate,
+                    "yyyy-MM-dd'T'HH:mm:ss.SSSxxx",
+                  ) +
+                  ", expire at " +
+                  format(
+                    element.expirationDate,
+                    "yyyy-MM-dd'T'HH:mm:ss.SSSxxx",
+                  ) +
+                  `\n`;
               });
               await alertWithShareButtonContainingDebugInfoAsync(text);
             }}

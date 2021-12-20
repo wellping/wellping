@@ -1,3 +1,4 @@
+import { addSeconds } from "date-fns";
 import * as Notifications from "expo-notifications";
 import * as DateMock from "jest-date-mock";
 
@@ -19,13 +20,32 @@ jest.mock("expo-notifications", () => ({
   ...(jest.requireActual("expo-notifications") as any),
 }));
 
+function getMockNotificationTimesInfo(
+  notificationTime: Date,
+  expireAfterSeconds: number = 30 * 60, // 00:30:00 is defined in `PINGS_STUDY_INFO`.
+): notificationTimesAsyncStorage.NotificationDateWithExpirationDate {
+  return {
+    notificationDate: notificationTime,
+    expirationDate: addSeconds(notificationTime, expireAfterSeconds),
+  };
+}
+function getMockNotificationTimesInfos(
+  notificationTimes: Date[],
+  expireAfterSeconds?: number,
+): notificationTimesAsyncStorage.NotificationDateWithExpirationDate[] {
+  return notificationTimes.map((notificationTime) =>
+    getMockNotificationTimesInfo(notificationTime),
+  );
+}
+
 // https://github.com/facebook/jest/issues/6194#issuecomment-419837314
 export const notificationsTest = () => {
   let mathRandomSpy: FunctionSpyInstance<typeof global.Math.random>;
 
   beforeEach(() => {
+    // We no longer use Math.random (https://github.com/wellping/wellping/pull/92).
+    // Also, we don't need to mock `seedrandom` because it is random based on fixed seeds anyway.
     /*
-    // TODO: we no longer use Math.random (https://github.com/wellping/wellping/pull/92). Instead, we should mock `seedrandom`.
     mathRandomSpy = jest
       .spyOn(global.Math, "random")
       .mockReturnValue(0.123456789);
@@ -71,7 +91,7 @@ export const notificationsTest = () => {
 
       expect(spyCancelAllScheduledNotificationsAsync).toBeCalledTimes(1);
 
-      // 24 = Math.floor(28 / studyInfo.frequency.hoursEveryday.length) * studyInfo.frequency.hoursEveryday.length
+      // 24 = Math.floor(28 / studyInfo.pingsFrequency.length) * studyInfo.pingsFrequency.length
       expect(spyScheduleNotificationAsync).toBeCalledTimes(24);
       // TODO: CHECK IF SNAPSHOT IS CORRECT.
       expect(spyScheduleNotificationAsync.mock.calls).toMatchSnapshot();
@@ -91,7 +111,7 @@ export const notificationsTest = () => {
     });
 
     describe("with existing notifications", () => {
-      const notificationTimes = [
+      const notificationTimes = getMockNotificationTimesInfos([
         new Date("2010-05-11T08:11:07Z"),
         new Date("2010-05-11T10:22:07Z"),
         new Date("2010-05-11T12:33:07Z"),
@@ -104,7 +124,7 @@ export const notificationsTest = () => {
         new Date("2010-05-12T16:56:07Z"),
         new Date("2010-05-12T18:55:07Z"),
         new Date("2010-05-12T22:54:07Z"),
-      ];
+      ]);
 
       let spyGetNotificationTimesAsync: FunctionSpyInstance<typeof notificationTimesAsyncStorage.getNotificationTimesAsync>;
       beforeEach(() => {
@@ -120,14 +140,14 @@ export const notificationsTest = () => {
 
         expect(spyCancelAllScheduledNotificationsAsync).toBeCalledTimes(1);
 
-        // 24 = Math.floor(28 / studyInfo.frequency.hoursEveryday.length) * studyInfo.frequency.hoursEveryday.length - shown notification today (0)
+        // 24 = Math.floor(28 / studyInfo.pingsFrequency.length) * studyInfo.pingsFrequency.length - shown notification today (0)
         expect(spyScheduleNotificationAsync).toBeCalledTimes(24);
 
         for (let i = 0; i < 6; i++) {
           expect(
             spyScheduleNotificationAsync.mock.calls[i]?.[0].trigger,
           ).toStrictEqual({
-            date: notificationTimes[i],
+            date: notificationTimes[i].notificationDate,
             channelId: ANDROID_CHANNEL_NAME,
           });
         }
@@ -143,14 +163,14 @@ export const notificationsTest = () => {
 
         expect(spyCancelAllScheduledNotificationsAsync).toBeCalledTimes(1);
 
-        // 21 = Math.floor(28 / studyInfo.frequency.hoursEveryday.length) * studyInfo.frequency.hoursEveryday.length - shown notification today (3)
+        // 21 = Math.floor(28 / studyInfo.pingsFrequency.length) * studyInfo.pingsFrequency.length - shown notification today (3)
         expect(spyScheduleNotificationAsync).toBeCalledTimes(21);
 
         for (let i = 3; i < 6; i++) {
           expect(
             spyScheduleNotificationAsync.mock.calls[i - 3][0]?.trigger,
           ).toStrictEqual({
-            date: notificationTimes[i],
+            date: notificationTimes[i].notificationDate,
             channelId: ANDROID_CHANNEL_NAME,
           });
         }
@@ -169,7 +189,7 @@ export const notificationsTest = () => {
 
           expect(spyCancelAllScheduledNotificationsAsync).toBeCalledTimes(1);
 
-          // 22 = Math.floor(28 / studyInfo.frequency.hoursEveryday.length) * studyInfo.frequency.hoursEveryday.length - shown notification today (1)
+          // 22 = Math.floor(28 / studyInfo.pingsFrequency.length) * studyInfo.pingsFrequency.length - shown notification today (1)
           expect(spyScheduleNotificationAsync).toBeCalledTimes(23);
           // TODO: CHECK IF SNAPSHOT IS CORRECT.
           expect(spyScheduleNotificationAsync.mock.calls).toMatchSnapshot();
@@ -182,7 +202,7 @@ export const notificationsTest = () => {
 
           expect(spyCancelAllScheduledNotificationsAsync).toBeCalledTimes(1);
 
-          // 22 = Math.floor(28 / studyInfo.frequency.hoursEveryday.length) * studyInfo.frequency.hoursEveryday.length - shown notification today (2)
+          // 22 = Math.floor(28 / studyInfo.pingsFrequency.length) * studyInfo.pingsFrequency.length - shown notification today (2)
           expect(spyScheduleNotificationAsync).toBeCalledTimes(22);
           // TODO: CHECK IF SNAPSHOT IS CORRECT.
           expect(spyScheduleNotificationAsync.mock.calls).toMatchSnapshot();
@@ -196,7 +216,7 @@ export const notificationsTest = () => {
 
         expect(spyCancelAllScheduledNotificationsAsync).toBeCalledTimes(1);
 
-        // 21 = Math.floor(28 / studyInfo.frequency.hoursEveryday.length) * studyInfo.frequency.hoursEveryday.length - shown notification today (3)
+        // 21 = Math.floor(28 / studyInfo.pingsFrequency.length) * studyInfo.pingsFrequency.length - shown notification today (3)
         expect(spyScheduleNotificationAsync).toBeCalledTimes(21);
         // TODO: CHECK IF SNAPSHOT IS CORRECT.
         expect(spyScheduleNotificationAsync.mock.calls).toMatchSnapshot();
@@ -210,7 +230,7 @@ export const notificationsTest = () => {
 
           expect(spyCancelAllScheduledNotificationsAsync).toBeCalledTimes(1);
 
-          // 20 = Math.floor(28 / studyInfo.frequency.hoursEveryday.length) * studyInfo.frequency.hoursEveryday.length - shown notification today (4)
+          // 20 = Math.floor(28 / studyInfo.pingsFrequency.length) * studyInfo.pingsFrequency.length - shown notification today (4)
           expect(spyScheduleNotificationAsync).toBeCalledTimes(20);
           // TODO: CHECK IF SNAPSHOT IS CORRECT.
           expect(spyScheduleNotificationAsync.mock.calls).toMatchSnapshot();
@@ -223,7 +243,7 @@ export const notificationsTest = () => {
 
           expect(spyCancelAllScheduledNotificationsAsync).toBeCalledTimes(1);
 
-          // 21 = Math.floor(28 / studyInfo.frequency.hoursEveryday.length) * studyInfo.frequency.hoursEveryday.length - shown notification today (3)
+          // 21 = Math.floor(28 / studyInfo.pingsFrequency.length) * studyInfo.pingsFrequency.length - shown notification today (3)
           expect(spyScheduleNotificationAsync).toBeCalledTimes(21);
           // TODO: CHECK IF SNAPSHOT IS CORRECT.
           expect(spyScheduleNotificationAsync.mock.calls).toMatchSnapshot();
@@ -250,7 +270,7 @@ export const notificationsTest = () => {
 
           expect(spyCancelAllScheduledNotificationsAsync).toBeCalledTimes(1);
 
-          // 20 = Math.floor(28 / studyInfo.frequency.hoursEveryday.length) * studyInfo.frequency.hoursEveryday.length - shown notification today (4)
+          // 20 = Math.floor(28 / studyInfo.pingsFrequency.length) * studyInfo.pingsFrequency.length - shown notification today (4)
           expect(spyScheduleNotificationAsync).toBeCalledTimes(20);
 
           for (const eachCall of spyScheduleNotificationAsync.mock.calls) {
@@ -276,7 +296,7 @@ export const notificationsTest = () => {
 
           expect(spyCancelAllScheduledNotificationsAsync).toBeCalledTimes(1);
 
-          // 21 = Math.floor(28 / studyInfo.frequency.hoursEveryday.length) * studyInfo.frequency.hoursEveryday.length - shown notification today (3)
+          // 21 = Math.floor(28 / studyInfo.pingsFrequency.length) * studyInfo.pingsFrequency.length - shown notification today (3)
           expect(spyScheduleNotificationAsync).toBeCalledTimes(21);
 
           for (const eachCall of spyScheduleNotificationAsync.mock.calls) {
@@ -305,7 +325,7 @@ export const notificationsTest = () => {
         spyGetNotificationTimesAsync = jest
           .spyOn(notificationTimesAsyncStorage, "getNotificationTimesAsync")
           .mockImplementation(async () => {
-            return [
+            return getMockNotificationTimesInfos([
               new Date("2010-05-11T08:11:07Z"),
               new Date("2010-05-11T10:22:07Z"),
               new Date("2010-05-11T12:33:07Z"),
@@ -318,7 +338,7 @@ export const notificationsTest = () => {
               new Date("2010-05-12T16:56:07Z"),
               new Date("2010-05-12T18:55:07Z"),
               new Date("2010-05-12T22:54:07Z"),
-            ];
+            ]);
           });
       });
 
@@ -372,7 +392,7 @@ export const notificationsTest = () => {
         spyGetNotificationTimesAsync = jest
           .spyOn(notificationTimesAsyncStorage, "getNotificationTimesAsync")
           .mockImplementation(async () => {
-            return [
+            return getMockNotificationTimesInfos([
               new Date("2010-05-11T08:11:07Z"),
               new Date("2010-05-11T10:22:07Z"),
               new Date("2010-05-11T12:33:07Z"),
@@ -385,7 +405,7 @@ export const notificationsTest = () => {
               new Date("2010-05-12T16:56:07Z"),
               new Date("2010-05-12T18:55:07Z"),
               new Date("2010-05-12T22:54:07Z"),
-            ];
+            ]);
           });
       });
 
