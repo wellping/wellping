@@ -1,6 +1,7 @@
 module.exports = {
   extends: ["universe/native", "prettier"],
   plugins: ["prettier"],
+  ignorePatterns: ["**/*.snap"],
   rules: {
     "prettier/prettier": "error",
 
