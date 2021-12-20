@@ -97,12 +97,12 @@ export const HOME_SCREEN_DEBUG_VIEW_SYMBOLS = {
   },
 };
 
-export function logError(error: Error) {
+export function logError(error: Error | unknown) {
   console.error(error);
 }
 
 // https://stackoverflow.com/a/49435648/2603230
-export function logAndThrowError(error: Error): never {
+export function logAndThrowError(error: Error | unknown): never {
   logError(error);
   throw error;
 }
