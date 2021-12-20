@@ -43,8 +43,9 @@ export const notificationsTest = () => {
   let mathRandomSpy: FunctionSpyInstance<typeof global.Math.random>;
 
   beforeEach(() => {
+    // We no longer use Math.random (https://github.com/wellping/wellping/pull/92).
+    // Also, we don't need to mock `seedrandom` because it is random based on fixed seeds anyway.
     /*
-    // TODO: we no longer use Math.random (https://github.com/wellping/wellping/pull/92). Instead, we should mock `seedrandom`.
     mathRandomSpy = jest
       .spyOn(global.Math, "random")
       .mockReturnValue(0.123456789);
