@@ -49,13 +49,11 @@ async function clickOptionAsync(
   fireEvent.press(await findByA11yLabel(`select ${option}`));
 }
 
-const TWO_TYPES: (
-  | "ChoicesWithSingleAnswer"
-  | "ChoicesWithMultipleAnswers"
-)[] = [
-  QuestionType.ChoicesWithSingleAnswer,
-  QuestionType.ChoicesWithMultipleAnswers,
-];
+const TWO_TYPES: ("ChoicesWithSingleAnswer" | "ChoicesWithMultipleAnswers")[] =
+  [
+    QuestionType.ChoicesWithSingleAnswer,
+    QuestionType.ChoicesWithMultipleAnswers,
+  ];
 
 describe.each(TWO_TYPES)(
   "without meaningful specialCasesStartId - %s: ",

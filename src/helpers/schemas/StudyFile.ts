@@ -420,9 +420,8 @@ const _StudyInfoSchema = z.object({
     })
     .optional(),
 });
-export const StudyInfoSchema = (__DEV__
-  ? _StudyInfoSchema.strict()
-  : _StudyInfoSchema
+export const StudyInfoSchema = (
+  __DEV__ ? _StudyInfoSchema.strict() : _StudyInfoSchema
 )
   .refine((data) => data.endDate > data.startDate, {
     message: "`endDate` needs to be later than `startDate`.",

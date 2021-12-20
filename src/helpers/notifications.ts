@@ -148,7 +148,8 @@ export async function setNotificationsAsync() {
       const earliestPingNotificationTimeSinceMidnight =
         pingTimeInfo.earliestPingNotificationTime;
 
-      const seedValue_secondsSinceMidnight = earliestPingNotificationTimeSinceMidnight;
+      const seedValue_secondsSinceMidnight =
+        earliestPingNotificationTimeSinceMidnight;
       const seedValue =
         seedValue_username + seedValue_date + seedValue_secondsSinceMidnight;
       const rng = seedrandom(seedValue);

@@ -204,11 +204,10 @@ export default class HomeScreen extends React.Component<
     // Do this initially too.
     await this.checkIfPingHasExpiredAsync();
 
-    this.notificationResponseReceivedListener = Notifications.addNotificationResponseReceivedListener(
-      async () => {
+    this.notificationResponseReceivedListener =
+      Notifications.addNotificationResponseReceivedListener(async () => {
         await this.checkIfPingHasExpiredAsync();
-      },
-    );
+      });
 
     AppState.addEventListener("change", this._handleAppStateChange);
 
@@ -517,14 +516,14 @@ export default class HomeScreen extends React.Component<
                                       {
                                         text: "All Data",
                                         onPress: async () => {
-                                          const allData = await getAllDataAsync();
+                                          const allData =
+                                            await getAllDataAsync();
                                           await alertWithShareButtonContainingDebugInfoAsync(
                                             JSON.stringify(allData),
                                             "All Data",
                                             [
                                               {
-                                                text:
-                                                  "Force Upload ALL Current Data",
+                                                text: "Force Upload ALL Current Data",
                                                 onPress: async () => {
                                                   await this._forceUploadAllDataAsync(
                                                     {
@@ -543,7 +542,8 @@ export default class HomeScreen extends React.Component<
                                       {
                                         text: "Unuploaded Data",
                                         onPress: async () => {
-                                          const unuploadedData = await getUnuploadedDataAsync();
+                                          const unuploadedData =
+                                            await getUnuploadedDataAsync();
                                           await alertWithShareButtonContainingDebugInfoAsync(
                                             JSON.stringify(unuploadedData),
                                             "Unuploaded Data",
@@ -553,16 +553,15 @@ export default class HomeScreen extends React.Component<
                                                 onPress: async () => {
                                                   await this._uploadUnuploadedDataAndRemoveFromThemIfSuccessfulAsync(
                                                     {
-                                                      doAfterResponseAsync: async (
-                                                        response,
-                                                      ) => {
-                                                        await alertWithShareButtonContainingDebugInfoAsync(
-                                                          `Response: ${JSON.stringify(
-                                                            response,
-                                                          )}`,
-                                                          "Data Uploaded Successfully!",
-                                                        );
-                                                      },
+                                                      doAfterResponseAsync:
+                                                        async (response) => {
+                                                          await alertWithShareButtonContainingDebugInfoAsync(
+                                                            `Response: ${JSON.stringify(
+                                                              response,
+                                                            )}`,
+                                                            "Data Uploaded Successfully!",
+                                                          );
+                                                        },
                                                       doAfterErrorAsync: async (
                                                         error,
                                                       ) => {
@@ -780,7 +779,8 @@ export default class HomeScreen extends React.Component<
             color="orange"
             title="getCurrentNotificationTimeAsync()"
             onPress={async () => {
-              const currentNotificationTime = await getCurrentNotificationTimeAsync();
+              const currentNotificationTime =
+                await getCurrentNotificationTimeAsync();
               await alertWithShareButtonContainingDebugInfoAsync(
                 JSON.stringify(currentNotificationTime),
               );
@@ -825,7 +825,8 @@ export default class HomeScreen extends React.Component<
             color="orange"
             title="getNumbersOfPingsForAllStreamNamesAsync()"
             onPress={async () => {
-              const typesOfPingsAnswered = await getNumbersOfPingsForAllStreamNamesAsync();
+              const typesOfPingsAnswered =
+                await getNumbersOfPingsForAllStreamNamesAsync();
               await alertWithShareButtonContainingDebugInfoAsync(
                 JSON.stringify(typesOfPingsAnswered),
               );

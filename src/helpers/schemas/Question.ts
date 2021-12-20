@@ -232,25 +232,29 @@ export const ChoicesQuestionSchema = BaseQuestionSchema.extend({
   );
 
 // https://github.com/colinhacks/zod/issues/454
-export const ChoicesWithSingleAnswerQuestionSchema = ChoicesQuestionSchema.refine(
-  (question) => {
-    return question.type === QuestionTypeSchema.enum.ChoicesWithSingleAnswer;
-  },
-  {
-    message: `The type of ChoicesWithSingleAnswerQuestionSchema must be ${QuestionTypeSchema.enum.ChoicesWithSingleAnswer}`,
-    path: ["type"],
-  },
-);
+export const ChoicesWithSingleAnswerQuestionSchema =
+  ChoicesQuestionSchema.refine(
+    (question) => {
+      return question.type === QuestionTypeSchema.enum.ChoicesWithSingleAnswer;
+    },
+    {
+      message: `The type of ChoicesWithSingleAnswerQuestionSchema must be ${QuestionTypeSchema.enum.ChoicesWithSingleAnswer}`,
+      path: ["type"],
+    },
+  );
 
-export const ChoicesWithMultipleAnswersQuestionSchema = ChoicesQuestionSchema.refine(
-  (question) => {
-    return question.type === QuestionTypeSchema.enum.ChoicesWithMultipleAnswers;
-  },
-  {
-    message: `The type of ChoicesWithMultipleAnswersQuestionSchema must be ${QuestionTypeSchema.enum.ChoicesWithMultipleAnswers}`,
-    path: ["type"],
-  },
-);
+export const ChoicesWithMultipleAnswersQuestionSchema =
+  ChoicesQuestionSchema.refine(
+    (question) => {
+      return (
+        question.type === QuestionTypeSchema.enum.ChoicesWithMultipleAnswers
+      );
+    },
+    {
+      message: `The type of ChoicesWithMultipleAnswersQuestionSchema must be ${QuestionTypeSchema.enum.ChoicesWithMultipleAnswers}`,
+      path: ["type"],
+    },
+  );
 
 export const YesNoQuestionSchema = BaseQuestionSchema.extend({
   type: z.literal(QuestionTypeSchema.enum.YesNo),
@@ -336,13 +340,12 @@ export const BranchQuestionSchema = BaseQuestionSchema.extend({
   }),
 });
 
-export const BranchWithRelativeComparisonQuestionSchema = BaseQuestionSchema.extend(
-  {
+export const BranchWithRelativeComparisonQuestionSchema =
+  BaseQuestionSchema.extend({
     // This is not actually a question (it will not be displayed to the user)
     type: z.literal(QuestionTypeSchema.enum.BranchWithRelativeComparison),
     branchStartId: z.record(QuestionIdSchema.nullable()),
-  },
-);
+  });
 
 /**
  * This question is used so that we could first follow the `innerNext` until

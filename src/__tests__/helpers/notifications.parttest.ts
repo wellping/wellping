@@ -61,8 +61,12 @@ export const notificationsTest = () => {
   });
 
   describe("setNotificationsAsync", () => {
-    let spyCancelAllScheduledNotificationsAsync: FunctionSpyInstance<typeof Notifications.cancelAllScheduledNotificationsAsync>;
-    let spyScheduleNotificationAsync: FunctionSpyInstance<typeof Notifications.scheduleNotificationAsync>;
+    let spyCancelAllScheduledNotificationsAsync: FunctionSpyInstance<
+      typeof Notifications.cancelAllScheduledNotificationsAsync
+    >;
+    let spyScheduleNotificationAsync: FunctionSpyInstance<
+      typeof Notifications.scheduleNotificationAsync
+    >;
     beforeEach(() => {
       spyScheduleNotificationAsync = jest.spyOn(
         Notifications,
@@ -126,7 +130,9 @@ export const notificationsTest = () => {
         new Date("2010-05-12T22:54:07Z"),
       ]);
 
-      let spyGetNotificationTimesAsync: FunctionSpyInstance<typeof notificationTimesAsyncStorage.getNotificationTimesAsync>;
+      let spyGetNotificationTimesAsync: FunctionSpyInstance<
+        typeof notificationTimesAsyncStorage.getNotificationTimesAsync
+      >;
       beforeEach(() => {
         spyGetNotificationTimesAsync = jest
           .spyOn(notificationTimesAsyncStorage, "getNotificationTimesAsync")
@@ -320,7 +326,9 @@ export const notificationsTest = () => {
 
   describe("getCurrentNotificationTimeAsync", () => {
     describe("with stored notification times", () => {
-      let spyGetNotificationTimesAsync: FunctionSpyInstance<typeof notificationTimesAsyncStorage.getNotificationTimesAsync>;
+      let spyGetNotificationTimesAsync: FunctionSpyInstance<
+        typeof notificationTimesAsyncStorage.getNotificationTimesAsync
+      >;
       beforeEach(() => {
         spyGetNotificationTimesAsync = jest
           .spyOn(notificationTimesAsyncStorage, "getNotificationTimesAsync")
@@ -387,7 +395,9 @@ export const notificationsTest = () => {
 
   describe("getIncomingNotificationTimeAsync", () => {
     describe("with stored notification times", () => {
-      let spyGetNotificationTimesAsync: FunctionSpyInstance<typeof notificationTimesAsyncStorage.getNotificationTimesAsync>;
+      let spyGetNotificationTimesAsync: FunctionSpyInstance<
+        typeof notificationTimesAsyncStorage.getNotificationTimesAsync
+      >;
       beforeEach(() => {
         spyGetNotificationTimesAsync = jest
           .spyOn(notificationTimesAsyncStorage, "getNotificationTimesAsync")

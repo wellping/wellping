@@ -31,9 +31,7 @@ export async function getNumberOfPingsForStreamNameAsync(
 export type NumbersOfPingsForAllStreamNames = {
   [stream: string /* actually StreamName */]: number;
 };
-export async function getNumbersOfPingsForAllStreamNamesAsync(): Promise<
-  NumbersOfPingsForAllStreamNames
-> {
+export async function getNumbersOfPingsForAllStreamNamesAsync(): Promise<NumbersOfPingsForAllStreamNames> {
   const streamNames = await getAllStreamNamesAsync();
 
   const results: NumbersOfPingsForAllStreamNames = {};

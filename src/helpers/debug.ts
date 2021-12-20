@@ -56,29 +56,28 @@ export type UserInstallationInfo = {
     osVersion: typeof Device.osVersion;
   };
 };
-export const getUserInstallationInfoAsync: () => Promise<
-  UserInstallationInfo
-> = async () => {
-  return {
-    app: {
-      installationId: await getInstallationIDAsync(),
-      jsVersion: JS_VERSION_NUMBER,
-      nativeVersion: NATIVE_VERSION_NUMBER,
-      nativeBuild: NATIVE_BUILD_NUMBER,
-      expoVersion: EXPO_VERSION,
-    },
-    device: {
-      brand: Device.brand,
-      manufacturer: Device.manufacturer,
-      modelName: Device.modelName,
-      modelId: Device.modelId,
-      designName: Device.designName,
-      productName: Device.productName,
-      osName: Device.osName,
-      osVersion: Device.osVersion,
-    },
+export const getUserInstallationInfoAsync: () => Promise<UserInstallationInfo> =
+  async () => {
+    return {
+      app: {
+        installationId: await getInstallationIDAsync(),
+        jsVersion: JS_VERSION_NUMBER,
+        nativeVersion: NATIVE_VERSION_NUMBER,
+        nativeBuild: NATIVE_BUILD_NUMBER,
+        expoVersion: EXPO_VERSION,
+      },
+      device: {
+        brand: Device.brand,
+        manufacturer: Device.manufacturer,
+        modelName: Device.modelName,
+        modelId: Device.modelId,
+        designName: Device.designName,
+        productName: Device.productName,
+        osName: Device.osName,
+        osVersion: Device.osVersion,
+      },
+    };
   };
-};
 
 export const HOME_SCREEN_DEBUG_VIEW_SYMBOLS = {
   SERVER_USED: {

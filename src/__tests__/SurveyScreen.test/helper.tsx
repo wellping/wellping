@@ -79,9 +79,8 @@ export async function tearDownSurveyScreenTestAsync(
   }
 
   if (options.shouldCheckAnswers) {
-    const answersQuestionIdsListForPing = await getAnswersQuestionIdsListForPingAsync(
-      ping.id,
-    );
+    const answersQuestionIdsListForPing =
+      await getAnswersQuestionIdsListForPingAsync(ping.id);
     // Expect the answersQuestionIdsListForPing to be unique.
     // https://stackoverflow.com/q/57001262/2603230
     expect(
@@ -90,7 +89,8 @@ export async function tearDownSurveyScreenTestAsync(
           new Set(answersQuestionIdsListForPing).size,
     ).toBeTruthy();
 
-    const answersPingIdsQuestionIdsList = await getAnswersPingIdsQuestionIdsListAsync();
+    const answersPingIdsQuestionIdsList =
+      await getAnswersPingIdsQuestionIdsListAsync();
     // Just a easy way to compare if two arrays are equal.
     expect(JSON.stringify(answersPingIdsQuestionIdsList)).toEqual(
       JSON.stringify(

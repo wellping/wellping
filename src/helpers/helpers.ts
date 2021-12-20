@@ -116,7 +116,7 @@ export const treatPlaceholderReplacementValue = (
 
 // https://stackoverflow.com/a/2450976/2603230
 export function shuffle(array: any[]): any[] {
-  var currentIndex = array.length,
+  let currentIndex = array.length,
     temporaryValue: any,
     randomIndex: number;
 

@@ -18,9 +18,8 @@ export async function addToAnswersQuestionIdsListForPingIfNeededAsync(
   answer: Answer,
 ) {
   try {
-    const currentAnswersQuestionIdsListForPing = await getAnswersQuestionIdsListForPingAsync(
-      answer.pingId,
-    );
+    const currentAnswersQuestionIdsListForPing =
+      await getAnswersQuestionIdsListForPingAsync(answer.pingId);
     if (currentAnswersQuestionIdsListForPing.includes(answer.questionId)) {
       // Do not add it to the list if it is in the list already.
       return;
@@ -73,16 +72,16 @@ export async function getAnswersPingIdsQuestionIdsListAsync({
   }
 
   // https://stackoverflow.com/q/28066429/2603230
-  const answersQuestionIdsNested: AnswersPingIdsQuestionIdsList[] = await Promise.all(
-    pingsList.map(async (pingId) => {
-      const answersQuestionIdsForPing = await getAnswersQuestionIdsListForPingAsync(
-        pingId,
-      );
-      return answersQuestionIdsForPing.map<AnswerPingIdQuestionId>(
-        (answerQuestionId) => [pingId, answerQuestionId],
-      );
-    }),
-  );
+  const answersQuestionIdsNested: AnswersPingIdsQuestionIdsList[] =
+    await Promise.all(
+      pingsList.map(async (pingId) => {
+        const answersQuestionIdsForPing =
+          await getAnswersQuestionIdsListForPingAsync(pingId);
+        return answersQuestionIdsForPing.map<AnswerPingIdQuestionId>(
+          (answerQuestionId) => [pingId, answerQuestionId],
+        );
+      }),
+    );
 
   // As currently `answersQuestionIdsNested` stores e.g.
   // `[ [[pingId1, qId1], [pingId1, qId2]], [[pingId2, qId1], [pingId2, qId2]] ]`

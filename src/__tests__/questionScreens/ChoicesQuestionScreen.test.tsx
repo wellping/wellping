@@ -301,10 +301,8 @@ test.each(CHOICES_TEST_TABLE)(
       next: null,
     } as ChoicesWithSingleAnswerQuestion;
 
-    const {
-      renderResults,
-      mockOnDataChangeFn,
-    } = await basicTestForChoicesQuestionScreenAsync(question);
+    const { renderResults, mockOnDataChangeFn } =
+      await basicTestForChoicesQuestionScreenAsync(question);
 
     await inputTestForChoicesWithSingleAnswerQuestionAsync(
       renderResults,
@@ -332,11 +330,8 @@ test.each(CHOICES_TEST_TABLE)(
       next: null,
     } as ChoicesWithMultipleAnswersQuestion;
 
-    const {
-      displayedList,
-      renderResults,
-      mockOnDataChangeFn,
-    } = await basicTestForChoicesQuestionScreenAsync(question);
+    const { displayedList, renderResults, mockOnDataChangeFn } =
+      await basicTestForChoicesQuestionScreenAsync(question);
 
     await inputTestForChoicesWithMultipleAnswersQuestionAsync(
       displayedList,

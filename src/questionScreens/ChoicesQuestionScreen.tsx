@@ -83,9 +83,8 @@ const ChoicesQuestionScreen: React.ElementType<ChoicesQuestionScreenProps> = ({
 
   const listRef = React.useRef<FlatList<{ id: string; title: string }>>(null);
 
-  const [selected, setSelected] = React.useState<
-    ChoicesWithMultipleAnswersAnswerChoices
-  >([]);
+  const [selected, setSelected] =
+    React.useState<ChoicesWithMultipleAnswersAnswerChoices>([]);
 
   type FlatListData = {
     id: string;

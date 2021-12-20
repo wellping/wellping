@@ -16,7 +16,9 @@ interface MultipleTextQuestionScreenProps extends QuestionScreenProps {
   question: MultipleTextQuestion;
 }
 
-const MultipleTextQuestionScreen: React.ElementType<MultipleTextQuestionScreenProps> = ({
+const MultipleTextQuestionScreen: React.ElementType<
+  MultipleTextQuestionScreenProps
+> = ({
   question,
   loadingCompleted,
   onDataChange,

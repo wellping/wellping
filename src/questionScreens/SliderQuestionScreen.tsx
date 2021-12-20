@@ -63,10 +63,8 @@ const SliderQuestionScreen: React.ElementType<SliderQuestionScreenProps> = ({
   }
 
   // This value is for display only - it should not be used for anything else.
-  const [
-    __FOR_DISPLAY_ONLY__sliderValue,
-    __FOR_DISPLAY_ONLY__setSliderValue,
-  ] = React.useState<number | null>(null);
+  const [__FOR_DISPLAY_ONLY__sliderValue, __FOR_DISPLAY_ONLY__setSliderValue] =
+    React.useState<number | null>(null);
 
   return (
     <View style={{ paddingVertical: 30 }}>

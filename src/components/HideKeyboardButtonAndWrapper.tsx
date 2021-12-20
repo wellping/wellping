@@ -10,9 +10,9 @@ interface HideKeyboardButtonAndWrapperProps {
  *
  * If the keyboard is not active, returns `children`.
  */
-const HideKeyboardButtonAndWrapper: React.FunctionComponent<HideKeyboardButtonAndWrapperProps> = ({
-  children,
-}) => {
+const HideKeyboardButtonAndWrapper: React.FunctionComponent<
+  HideKeyboardButtonAndWrapperProps
+> = ({ children }) => {
   // https://reactnative.dev/docs/keyboard
   React.useEffect(() => {
     const keyboardShowEventName =

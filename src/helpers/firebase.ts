@@ -219,9 +219,8 @@ export async function firebaseUploadDataForUserAsync(
       firebaseRef(database, firebaseUserRootKey),
     );
     if (serverInfoSnapshot.exists()) {
-      returnValues.new_pings_count = serverInfoSnapshot.child(
-        firebaseUserPingsKey,
-      ).size;
+      returnValues.new_pings_count =
+        serverInfoSnapshot.child(firebaseUserPingsKey).size;
       returnValues.new_answers_count = serverInfoSnapshot.child(
         firebaseUserAnswersKey,
       ).size;
