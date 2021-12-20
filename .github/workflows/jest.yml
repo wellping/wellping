@@ -23,7 +23,11 @@ jobs:
     - uses: actions/checkout@v2
 
     - name: Install modules
-      run: yarn
+      run: |
+        # https://github.com/yarnpkg/yarn/issues/7212#issuecomment-506155894
+        mkdir .yarncache
+        yarn install --cache-folder ./.yarncache
+        rm -rf .yarncache
     - name: tsc
       run: yarn tsc --noEmit
     - name: Run tests
