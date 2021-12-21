@@ -1,5 +1,4 @@
 import {
-  QuestionScreenProps,
   ChoicesWithMultipleAnswersAnswerChoices,
   YesNoAnswerData,
   ChoicesWithSingleAnswerAnswerData,
@@ -22,6 +21,7 @@ import {
 
 import { QuestionType, shuffle } from "../helpers/helpers";
 import { getReusableChoicesIncludeErrorAsync } from "../helpers/studyFile";
+import { QuestionScreenProps } from "../helpers/types";
 
 export interface ChoiceItemProps {
   id: string;

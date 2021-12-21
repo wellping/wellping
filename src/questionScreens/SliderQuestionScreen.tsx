@@ -1,6 +1,5 @@
 import Slider from "@react-native-community/slider";
 import {
-  QuestionScreenProps,
   SliderAnswerData,
   SliderAnswer,
 } from "@wellping/study-schemas/lib/answerTypes";
@@ -12,6 +11,7 @@ import {
   getNonCriticalProblemTextForUser,
   alertWithShareButtonContainingDebugInfoAsync,
 } from "../helpers/debug";
+import { QuestionScreenProps } from "../helpers/types";
 import { SLIDER_DEFAULTS } from "./constants";
 
 export const getQuestionDefaultSliderValue = (question: SliderQuestion) => {

@@ -1,5 +1,4 @@
 import {
-  QuestionScreenProps,
   MultipleTextAnswerData,
   MultipleTextAnswer,
 } from "@wellping/study-schemas/lib/answerTypes";
@@ -12,6 +11,7 @@ import React from "react";
 import { View, Text, TextInput, Alert, Platform } from "react-native";
 
 import { getReusableChoicesIncludeErrorAsync } from "../helpers/studyFile";
+import { QuestionScreenProps } from "../helpers/types";
 // @ts-ignore
 import SearchableDropdown from "../inc/react-native-searchable-dropdown";
 

@@ -1,6 +1,5 @@
 import {
   AnswersList,
-  QuestionScreenProps,
   AnswerData,
   YesNoAnswerData,
   MultipleTextAnswerData,
@@ -10,7 +9,6 @@ import {
   Answer,
   MultipleTextAnswer,
   SliderAnswer,
-  DataValidationFunction,
 } from "@wellping/study-schemas/lib/answerTypes";
 import {
   Question,
@@ -60,6 +58,7 @@ import {
   NON_USER_QUESTION_TYPES,
 } from "./helpers/helpers";
 import { addEndTimeToPingAsync } from "./helpers/pings";
+import { DataValidationFunction, QuestionScreenProps } from "./helpers/types";
 import ChoicesQuestionScreen from "./questionScreens/ChoicesQuestionScreen";
 import HowLongAgoQuestionScreen from "./questionScreens/HowLongAgoQuestion";
 import MultipleTextQuestionScreen from "./questionScreens/MultipleTextQuestionScreen";
