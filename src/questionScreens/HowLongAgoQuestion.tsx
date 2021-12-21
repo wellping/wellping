@@ -1,12 +1,12 @@
-import React from "react";
-import { View, FlatList } from "react-native";
-
 import {
   QuestionScreenProps,
   HowLongAgoAnswerData,
   HowLongAgoAnswerDataType,
-} from "../helpers/answerTypes";
-import { HowLongAgoQuestion } from "../helpers/types";
+} from "@wellping/study-schemas/lib/answerTypes";
+import { HowLongAgoQuestion } from "@wellping/study-schemas/lib/types";
+import React from "react";
+import { View, FlatList } from "react-native";
+
 import { ChoiceItem } from "./ChoicesQuestionScreen";
 
 const numberChoices: { [key: string]: string } = {

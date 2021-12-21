@@ -1,14 +1,17 @@
-import cloneDeep from "lodash/cloneDeep";
-import React from "react";
-import { View, Text, TextInput, Alert, Platform } from "react-native";
-
 import {
   QuestionScreenProps,
   MultipleTextAnswerData,
   MultipleTextAnswer,
-} from "../helpers/answerTypes";
+} from "@wellping/study-schemas/lib/answerTypes";
+import {
+  MultipleTextQuestion,
+  ChoicesList,
+} from "@wellping/study-schemas/lib/types";
+import cloneDeep from "lodash/cloneDeep";
+import React from "react";
+import { View, Text, TextInput, Alert, Platform } from "react-native";
+
 import { getReusableChoicesIncludeErrorAsync } from "../helpers/studyFile";
-import { MultipleTextQuestion, ChoicesList } from "../helpers/types";
 // @ts-ignore
 import SearchableDropdown from "../inc/react-native-searchable-dropdown";
 

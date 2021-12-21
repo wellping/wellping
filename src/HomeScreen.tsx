@@ -1,3 +1,9 @@
+import {
+  Streams,
+  StreamName,
+  StudyInfo,
+  Ping,
+} from "@wellping/study-schemas/lib/types";
 import { format, getDay } from "date-fns";
 import * as Linking from "expo-linking";
 import { Subscription } from "expo-modules-core";
@@ -93,7 +99,6 @@ import {
   getStudyInfoAsync,
 } from "./helpers/studyFile";
 import { styles } from "./helpers/styles";
-import { Streams, StreamName, StudyInfo, Ping } from "./helpers/types";
 import LoadingScreen from "./screens/LoadingScreen";
 
 interface HomeScreenProps {

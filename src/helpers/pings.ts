@@ -1,3 +1,5 @@
+import { PingSchema } from "@wellping/study-schemas/lib/schemas/Ping";
+import { StreamName, Ping } from "@wellping/study-schemas/lib/types";
 import { isToday } from "date-fns";
 
 import {
@@ -9,14 +11,12 @@ import {
   getUnuploadedPingsListAsync,
   clearUnuploadedPingsListAsync,
 } from "./asyncStorage/unuploadedPingsList";
-import { PingSchema } from "./schemas/Ping";
 import {
   secureStorePingAsync,
   secureGetPingAsync,
   secureRemovePingAsync,
 } from "./secureStore/ping";
 import { isTimeThisWeekAsync, getAllStreamNamesAsync } from "./studyFile";
-import { StreamName, Ping } from "./types";
 
 export async function getNumberOfPingsForStreamNameAsync(
   streamName: StreamName,

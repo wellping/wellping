@@ -1,7 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { StreamName } from "@wellping/study-schemas/lib/types";
 
 import { logAndThrowError } from "../debug";
-import { StreamName } from "../types";
 import { getASKeyAsync } from "./asyncStorage";
 
 /** FUTURE PING QUEUE TABLE (used for storing follow-up streams) **/

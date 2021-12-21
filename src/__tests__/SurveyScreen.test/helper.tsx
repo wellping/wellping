@@ -1,3 +1,4 @@
+import { Ping, StudyInfo } from "@wellping/study-schemas/lib/types";
 import {
   fireEvent,
   waitFor,
@@ -14,7 +15,6 @@ import {
 import { getPingsListAsync } from "../../helpers/asyncStorage/pingsList";
 import { clearAllPingsAndAnswersAsync } from "../../helpers/cleanup";
 import { insertPingAsync, getPingsAsync } from "../../helpers/pings";
-import { Ping, StudyInfo } from "../../helpers/types";
 import { PINGS_STUDY_INFO } from "../data/pings";
 import { mockCurrentStudyInfo } from "../helper";
 

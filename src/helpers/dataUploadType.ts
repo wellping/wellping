@@ -1,6 +1,7 @@
-import { Answer } from "./answerTypes";
+import { Answer } from "@wellping/study-schemas/lib/answerTypes";
+import { Ping } from "@wellping/study-schemas/lib/types";
+
 import { UserInstallationInfo } from "./debug";
-import { Ping } from "./types";
 
 export type UserData = {
   username: string;

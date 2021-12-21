@@ -1,5 +1,10 @@
+import {
+  StudyInfo,
+  FirebaseServerConfig,
+  BeiweServerConfig,
+} from "@wellping/study-schemas/lib/types";
+
 import { HOME_SCREEN_DEBUG_VIEW_SYMBOLS } from "./debug";
-import { StudyInfo, FirebaseServerConfig, BeiweServerConfig } from "./types";
 
 export type ServerType = "firebase" | "beiwe";
 

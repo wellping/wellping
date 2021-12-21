@@ -1,22 +1,16 @@
+import {
+  QuestionId,
+  PlaceholderReplacementValueTreatmentOptions,
+  StudyInfo,
+} from "@wellping/study-schemas/lib/types";
 import { addMinutes } from "date-fns";
 import * as Crypto from "expo-crypto";
 
-import { QuestionTypeSchema } from "./schemas/Question";
-import {
-  QuestionId,
-  QuestionTypeType,
-  PlaceholderReplacementValueTreatmentOptions,
-  StudyInfo,
-} from "./types";
-
-export const QuestionType = QuestionTypeSchema.enum;
-export const QUESTION_TYPES = QuestionTypeSchema.options;
-
-export const NON_USER_QUESTION_TYPES: QuestionTypeType[] = [
-  QuestionType.Branch,
-  QuestionType.BranchWithRelativeComparison,
-  QuestionType.Wrapper,
-];
+export {
+  QuestionType,
+  QUESTION_TYPES,
+  NON_USER_QUESTION_TYPES,
+} from "@wellping/study-schemas/lib/helpers";
 
 // This is mostly for Beiwe.
 export async function getHashedPasswordAsync(

@@ -1,5 +1,6 @@
-import { StudyInfoSchema } from "../../helpers/schemas/StudyFile";
-import { StudyInfo } from "../../helpers/types";
+import { StudyInfoSchema } from "@wellping/study-schemas/lib/schemas/StudyFile";
+import { StudyInfo } from "@wellping/study-schemas/lib/types";
+
 import { BASE_STUDY_INFO } from "./studyInfo";
 
 const PINGS_PARTIAL = [

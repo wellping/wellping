@@ -1,3 +1,4 @@
+import { StudyInfo } from "@wellping/study-schemas/lib/types";
 import { setStatusBarStyle } from "expo-status-bar";
 import { User as FirebaseUser } from "firebase/auth";
 import React from "react";
@@ -13,7 +14,6 @@ import {
   getTodayPingsAsync,
 } from "../helpers/pings";
 import { secureGetUserAsync } from "../helpers/secureStore/user";
-import { StudyInfo } from "../helpers/types";
 
 const TIMEZONE_OFFSET_PLACEHOLDER = "__TIMEZONE_OFFSET__";
 const INSTALLATION_ID_PLACEHOLDER = "__INSTALLATION_ID__";

@@ -1,3 +1,4 @@
+import { StudyInfo } from "@wellping/study-schemas/lib/types";
 import { addSeconds } from "date-fns";
 import * as Notifications from "expo-notifications";
 import * as DateMock from "jest-date-mock";
@@ -9,7 +10,6 @@ import {
   getIncomingNotificationTimeAsync,
   ANDROID_CHANNEL_NAME,
 } from "../../helpers/notifications";
-import { StudyInfo } from "../../helpers/types";
 import { PINGS_STUDY_INFO } from "../data/pings";
 import { mockCurrentStudyInfo } from "../helper";
 import { FunctionSpyInstance } from "../jestHelper";

@@ -1,9 +1,9 @@
+import { SliderAnswerData } from "@wellping/study-schemas/lib/answerTypes";
+import { SliderQuestion } from "@wellping/study-schemas/lib/types";
 import React from "react";
 import { render } from "react-native-testing-library";
 
-import { SliderAnswerData } from "../../helpers/answerTypes";
 import { QuestionType } from "../../helpers/helpers";
-import { SliderQuestion } from "../../helpers/types";
 import SliderQuestionScreen, {
   getQuestionDefaultSliderValue,
 } from "../../questionScreens/SliderQuestionScreen";

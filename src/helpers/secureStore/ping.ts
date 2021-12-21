@@ -1,10 +1,10 @@
+import { PingSchema } from "@wellping/study-schemas/lib/schemas/Ping";
+import { Ping, PingId } from "@wellping/study-schemas/lib/types";
 import { parseJSON } from "date-fns";
 import * as SecureStore from "expo-secure-store";
 
 import { addToPingsListIfNeededAsync } from "../asyncStorage/pingsList";
 import { logAndThrowError } from "../debug";
-import { PingSchema } from "../schemas/Ping";
-import { Ping, PingId } from "../types";
 import { getSSKeyAsync } from "./secureStore";
 
 const PING_PREFIX = `ping.`;

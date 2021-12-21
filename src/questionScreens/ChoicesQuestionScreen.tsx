@@ -1,3 +1,15 @@
+import {
+  QuestionScreenProps,
+  ChoicesWithMultipleAnswersAnswerChoices,
+  YesNoAnswerData,
+  ChoicesWithSingleAnswerAnswerData,
+  ChoicesWithMultipleAnswersAnswerData,
+} from "@wellping/study-schemas/lib/answerTypes";
+import {
+  ChoicesQuestion,
+  YesNoQuestion,
+  Choice,
+} from "@wellping/study-schemas/lib/types";
 import cloneDeep from "lodash/cloneDeep";
 import React from "react";
 import {
@@ -8,16 +20,8 @@ import {
   StyleSheet,
 } from "react-native";
 
-import {
-  QuestionScreenProps,
-  ChoicesWithMultipleAnswersAnswerChoices,
-  YesNoAnswerData,
-  ChoicesWithSingleAnswerAnswerData,
-  ChoicesWithMultipleAnswersAnswerData,
-} from "../helpers/answerTypes";
 import { QuestionType, shuffle } from "../helpers/helpers";
 import { getReusableChoicesIncludeErrorAsync } from "../helpers/studyFile";
-import { ChoicesQuestion, YesNoQuestion, Choice } from "../helpers/types";
 
 export interface ChoiceItemProps {
   id: string;

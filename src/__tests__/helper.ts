@@ -1,5 +1,6 @@
+import { StudyInfo, ExtraData } from "@wellping/study-schemas/lib/types";
+
 import * as studyFileAsyncStorage from "../helpers/asyncStorage/studyFile";
-import { StudyInfo, ExtraData } from "../helpers/types";
 import { FunctionSpyInstance } from "./jestHelper";
 
 export const simplePipeInExtraMetaData = (id: string) => id;

@@ -1,3 +1,15 @@
+import {
+  YesNoAnswerData,
+  ChoicesWithSingleAnswerAnswerData,
+  ChoicesWithMultipleAnswersAnswerData,
+  ChoicesWithMultipleAnswersAnswerChoices,
+} from "@wellping/study-schemas/lib/answerTypes";
+import {
+  YesNoQuestion,
+  ChoicesWithSingleAnswerQuestion,
+  ChoicesWithMultipleAnswersQuestion,
+  ChoicesList,
+} from "@wellping/study-schemas/lib/types";
 import React from "react";
 import { Alert } from "react-native";
 import {
@@ -10,19 +22,7 @@ import {
 } from "react-native-testing-library";
 import { ReactTestInstance } from "react-test-renderer";
 
-import {
-  YesNoAnswerData,
-  ChoicesWithSingleAnswerAnswerData,
-  ChoicesWithMultipleAnswersAnswerData,
-  ChoicesWithMultipleAnswersAnswerChoices,
-} from "../../helpers/answerTypes";
 import { QuestionType } from "../../helpers/helpers";
-import {
-  YesNoQuestion,
-  ChoicesWithSingleAnswerQuestion,
-  ChoicesWithMultipleAnswersQuestion,
-  ChoicesList,
-} from "../../helpers/types";
 import ChoicesQuestionScreen from "../../questionScreens/ChoicesQuestionScreen";
 import {
   simplePipeInExtraMetaData,

@@ -3,6 +3,7 @@
  * `isUsingFirebase(studyInfo) === true`.
  */
 
+import { StudyInfo } from "@wellping/study-schemas/lib/types";
 import {
   initializeApp as firebaseInitializeApp,
   getApp as firebaseGetApp,
@@ -37,7 +38,6 @@ import {
 import { getLoginSessionIDAsync } from "./loginSession";
 import { User } from "./secureStore/user";
 import { DataUploadServerResponse, getFirebaseServerConfig } from "./server";
-import { StudyInfo } from "./types";
 
 /**
  * Firebase requires to use an email as the user's login name.

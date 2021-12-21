@@ -1,7 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Ping, PingId } from "@wellping/study-schemas/lib/types";
 
 import { logAndThrowError } from "../debug";
-import { Ping, PingId } from "../types";
 import { getASKeyAsync } from "./asyncStorage";
 
 export type PingsList = PingId[];
