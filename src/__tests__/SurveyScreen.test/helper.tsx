@@ -1,4 +1,4 @@
-import { Ping, StudyInfo } from "@wellping/study-file/lib/types";
+import { Ping, StudyInfo } from "@wellping/study-schemas/lib/types";
 import {
   fireEvent,
   waitFor,

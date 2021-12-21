@@ -2,11 +2,11 @@ import {
   AnswersList,
   MultipleTextAnswerData,
   MultipleTextAnswer,
-} from "@wellping/study-file/lib/answerTypes";
+} from "@wellping/study-schemas/lib/answerTypes";
 import {
   MultipleTextQuestion,
   ChoicesList,
-} from "@wellping/study-file/lib/types";
+} from "@wellping/study-schemas/lib/types";
 import React from "react";
 import { Alert } from "react-native";
 import {

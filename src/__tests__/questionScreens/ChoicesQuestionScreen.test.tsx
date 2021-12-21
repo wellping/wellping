@@ -3,13 +3,13 @@ import {
   ChoicesWithSingleAnswerAnswerData,
   ChoicesWithMultipleAnswersAnswerData,
   ChoicesWithMultipleAnswersAnswerChoices,
-} from "@wellping/study-file/lib/answerTypes";
+} from "@wellping/study-schemas/lib/answerTypes";
 import {
   YesNoQuestion,
   ChoicesWithSingleAnswerQuestion,
   ChoicesWithMultipleAnswersQuestion,
   ChoicesList,
-} from "@wellping/study-file/lib/types";
+} from "@wellping/study-schemas/lib/types";
 import React from "react";
 import { Alert } from "react-native";
 import {

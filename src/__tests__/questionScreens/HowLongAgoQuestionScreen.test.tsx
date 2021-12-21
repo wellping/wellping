@@ -1,8 +1,8 @@
 import {
   HowLongAgoAnswerDataType,
   HowLongAgoAnswerData,
-} from "@wellping/study-file/lib/answerTypes";
-import { HowLongAgoQuestion } from "@wellping/study-file/lib/types";
+} from "@wellping/study-schemas/lib/answerTypes";
+import { HowLongAgoQuestion } from "@wellping/study-schemas/lib/types";
 import React from "react";
 import { Alert } from "react-native";
 import {

@@ -1,4 +1,4 @@
-import { StudyInfo } from "@wellping/study-file/lib/types";
+import { StudyInfo } from "@wellping/study-schemas/lib/types";
 
 import { clearCurrentStudyFileAsync } from "./asyncStorage/studyFile";
 import { clearTempStudyFileAsync } from "./asyncStorage/tempStudyFile";

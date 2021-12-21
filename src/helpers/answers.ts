@@ -1,6 +1,6 @@
-import { AnswerData, Answer } from "@wellping/study-file/lib/answerTypes";
-import { AnswerSchema } from "@wellping/study-file/lib/schemas/Answer";
-import { Question, Ping } from "@wellping/study-file/lib/types";
+import { AnswerData, Answer } from "@wellping/study-schemas/lib/answerTypes";
+import { AnswerSchema } from "@wellping/study-schemas/lib/schemas/Answer";
+import { Question, Ping } from "@wellping/study-schemas/lib/types";
 
 import {
   getAnswersPingIdsQuestionIdsListAsync,

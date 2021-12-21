@@ -1,5 +1,5 @@
-import { StudyInfoSchema } from "@wellping/study-file/lib/schemas/StudyFile";
-import { StudyInfo } from "@wellping/study-file/lib/types";
+import { StudyInfoSchema } from "@wellping/study-schemas/lib/schemas/StudyFile";
+import { StudyInfo } from "@wellping/study-schemas/lib/types";
 
 import { BASE_STUDY_INFO } from "./studyInfo";
 

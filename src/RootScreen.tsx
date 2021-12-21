@@ -1,4 +1,4 @@
-import { StudyFile } from "@wellping/study-file/lib/types";
+import { StudyFile } from "@wellping/study-schemas/lib/types";
 import React from "react";
 import { Text } from "react-native";
 

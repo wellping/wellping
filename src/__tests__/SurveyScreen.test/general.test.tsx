@@ -2,7 +2,7 @@ import {
   QuestionsList,
   Question,
   QuestionTypeType,
-} from "@wellping/study-file/lib/types";
+} from "@wellping/study-schemas/lib/types";
 import React from "react";
 import { render } from "react-native-testing-library";
 

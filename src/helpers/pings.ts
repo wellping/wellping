@@ -1,5 +1,5 @@
-import { PingSchema } from "@wellping/study-file/lib/schemas/Ping";
-import { StreamName, Ping } from "@wellping/study-file/lib/types";
+import { PingSchema } from "@wellping/study-schemas/lib/schemas/Ping";
+import { StreamName, Ping } from "@wellping/study-schemas/lib/types";
 import { isToday } from "date-fns";
 
 import {

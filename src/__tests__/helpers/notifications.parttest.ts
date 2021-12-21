@@ -1,4 +1,4 @@
-import { StudyInfo } from "@wellping/study-file/lib/types";
+import { StudyInfo } from "@wellping/study-schemas/lib/types";
 import { addSeconds } from "date-fns";
 import * as Notifications from "expo-notifications";
 import * as DateMock from "jest-date-mock";

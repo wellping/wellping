@@ -1,5 +1,5 @@
-import { PingSchema } from "@wellping/study-file/lib/schemas/Ping";
-import { Ping, PingId } from "@wellping/study-file/lib/types";
+import { PingSchema } from "@wellping/study-schemas/lib/schemas/Ping";
+import { Ping, PingId } from "@wellping/study-schemas/lib/types";
 import { parseJSON } from "date-fns";
 import * as SecureStore from "expo-secure-store";
 

@@ -11,7 +11,7 @@ import {
   MultipleTextAnswer,
   SliderAnswer,
   DataValidationFunction,
-} from "@wellping/study-file/lib/answerTypes";
+} from "@wellping/study-schemas/lib/answerTypes";
 import {
   Question,
   ChoicesWithSingleAnswerQuestion,
@@ -27,7 +27,7 @@ import {
   Ping,
   QuestionImageOptions,
   WrapperQuestion,
-} from "@wellping/study-file/lib/types";
+} from "@wellping/study-schemas/lib/types";
 import { addDays } from "date-fns";
 import React from "react";
 import {

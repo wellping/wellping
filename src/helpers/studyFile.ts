@@ -1,4 +1,4 @@
-import { parseJsonToStudyFile } from "@wellping/study-file/lib/schemas/StudyFile";
+import { parseJsonToStudyFile } from "@wellping/study-schemas/lib/schemas/StudyFile";
 import {
   StudyFile,
   StudyInfo,
@@ -6,7 +6,7 @@ import {
   Streams,
   ExtraData,
   ChoicesList,
-} from "@wellping/study-file/lib/types";
+} from "@wellping/study-schemas/lib/types";
 import { isThisWeek } from "date-fns";
 import * as Crypto from "expo-crypto";
 

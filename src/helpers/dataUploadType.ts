@@ -1,5 +1,5 @@
-import { Answer } from "@wellping/study-file/lib/answerTypes";
-import { Ping } from "@wellping/study-file/lib/types";
+import { Answer } from "@wellping/study-schemas/lib/answerTypes";
+import { Ping } from "@wellping/study-schemas/lib/types";
 
 import { UserInstallationInfo } from "./debug";
 

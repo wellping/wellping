@@ -4,12 +4,12 @@ import {
   YesNoAnswerData,
   ChoicesWithSingleAnswerAnswerData,
   ChoicesWithMultipleAnswersAnswerData,
-} from "@wellping/study-file/lib/answerTypes";
+} from "@wellping/study-schemas/lib/answerTypes";
 import {
   ChoicesQuestion,
   YesNoQuestion,
   Choice,
-} from "@wellping/study-file/lib/types";
+} from "@wellping/study-schemas/lib/types";
 import cloneDeep from "lodash/cloneDeep";
 import React from "react";
 import {

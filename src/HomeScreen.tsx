@@ -3,7 +3,7 @@ import {
   StreamName,
   StudyInfo,
   Ping,
-} from "@wellping/study-file/lib/types";
+} from "@wellping/study-schemas/lib/types";
 import { format, getDay } from "date-fns";
 import * as Linking from "expo-linking";
 import { Subscription } from "expo-modules-core";

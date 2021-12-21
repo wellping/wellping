@@ -1,4 +1,4 @@
-import { StudyInfo } from "@wellping/study-file/lib/types";
+import { StudyInfo } from "@wellping/study-schemas/lib/types";
 import { setStatusBarStyle } from "expo-status-bar";
 import { User as FirebaseUser } from "firebase/auth";
 import React from "react";

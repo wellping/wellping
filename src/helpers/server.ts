@@ -2,7 +2,7 @@ import {
   StudyInfo,
   FirebaseServerConfig,
   BeiweServerConfig,
-} from "@wellping/study-file/lib/types";
+} from "@wellping/study-schemas/lib/types";
 
 import { HOME_SCREEN_DEBUG_VIEW_SYMBOLS } from "./debug";
 
