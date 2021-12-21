@@ -4507,6 +4507,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@wellping/study-file@https://github.com/wellping/study-file":
+  version: 1.0.0
+  resolution: "@wellping/study-file@https://github.com/wellping/study-file.git#commit=e45ef25d1a38dca1b3338c2f5fb01fa4278ded2f"
+  dependencies:
+    date-fns: ^2.27.0
+    zod: ^3.11.6
+  checksum: 585144e2cadc8ebe653a4bb1031b06b6cb5e10c25985803df00fdde7e17797b0a2994e9863c572533f37c70338472451c825daed68993d5189c10cd17569e737
+  languageName: node
+  linkType: hard
+
 "@xmldom/xmldom@npm:~0.7.0":
   version: 0.7.5
   resolution: "@xmldom/xmldom@npm:0.7.5"
@@ -6126,6 +6136,13 @@ __metadata:
   version: 2.16.1
   resolution: "date-fns@npm:2.16.1"
   checksum: f19c2b3b9bd62fdbc55b160c87b4656b3a260d79ee7a32a9cbc19107c3d61d71b569c0957351f9a07fc84c35283f74b0af5276620d4a37e36eef1898fa6c25b2
+  languageName: node
+  linkType: hard
+
+"date-fns@npm:^2.27.0":
+  version: 2.27.0
+  resolution: "date-fns@npm:2.27.0"
+  checksum: db62036b3816eb0322c9532b353beac7f660a91e1a55dbd21c14893c621ebb8509f21c66ba287844dabd34dee0207edd54a9537bce6bb7cab9383dedc6b8bc90
   languageName: node
   linkType: hard
 
@@ -14676,6 +14693,7 @@ __metadata:
     "@types/react-test-renderer": ^17.0.1
     "@typescript-eslint/eslint-plugin": ^5.8.0
     "@typescript-eslint/parser": ^5.8.0
+    "@wellping/study-file": "https://github.com/wellping/study-file"
     babel-plugin-transform-typescript-metadata: ^0.3.0
     babel-preset-expo: 9.0.1
     date-fns: ^2.14.0

@@ -12,6 +12,7 @@
   "dependencies": {
     "@react-native-async-storage/async-storage": "~1.15.0",
     "@react-native-community/slider": "4.1.12",
+    "@wellping/study-file": "https://github.com/wellping/study-file",
     "date-fns": "^2.14.0",
     "expo": "^44.0.0",
     "expo-constants": "~13.0.0",
@@ -37,7 +38,6 @@
     "reflect-metadata": "^0.1.13",
     "seedrandom": "^3.0.5",
     "url": "^0.11.0",
-    "wellping-study-file": "https://github.com/wellping/study-file",
     "zod": "^3.11.6"
   },
   "devDependencies": {
