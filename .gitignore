@@ -60,3 +60,13 @@ android/keystores/debug.keystore
 
 # Jest coverage (https://docs.expo.io/guides/testing-with-jest/#code-coverage-reports)
 coverage/**/*
+
+
+# https://yarnpkg.com/getting-started/qa#which-files-should-be-gitignored
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
