@@ -38,13 +38,13 @@
       "errorStream": "firstQuestion"
     },
     "streamsOrder": {
-      "0": ["myStream", "myStream", "myStream", "myStream"],
-      "1": ["myStream", "myStream", "myStream", "myStream"],
-      "2": ["myStream", "myStream", "myStream", "myStream"],
-      "3": ["myStream", "myStream", "myStream", "myStream"],
-      "4": ["myStream", "myStream", "myStream", "myStream"],
-      "5": ["myStream", "myStream", "myStream", "myStream"],
-      "6": ["myStream", "myStream", "myStream", "myStream"]
+      "sunday": ["myStream", "myStream", "myStream", "myStream"],
+      "monday": ["myStream", "myStream", "myStream", "myStream"],
+      "tuesday": ["myStream", "myStream", "myStream", "myStream"],
+      "wednesday": ["myStream", "myStream", "myStream", "myStream"],
+      "thursday": ["myStream", "myStream", "myStream", "myStream"],
+      "friday": ["myStream", "myStream", "myStream", "myStream"],
+      "saturday": ["myStream", "myStream", "myStream", "myStream"]
     },
     "streamsForNthPings": {
       "1": "welcomeStream"
