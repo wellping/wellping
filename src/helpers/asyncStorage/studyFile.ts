@@ -1,8 +1,8 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { parseJsonToStreams } from "@wellping/study-schemas/lib/schemas/Stream";
+import { StreamsSchema } from "@wellping/study-schemas/lib/schemas/Stream";
 import {
-  parseJsonToStudyInfo,
-  parseJsonToExtraData,
+  StudyInfoSchema,
+  ExtraDataSchema,
 } from "@wellping/study-schemas/lib/schemas/StudyFile";
 import {
   StudyFile,
@@ -49,7 +49,7 @@ export async function getCurrentStudyInfoAsync(): Promise<StudyInfo | null> {
     if (value == null) {
       return null;
     }
-    const studyInfo: StudyInfo = parseJsonToStudyInfo(JSON.parse(value));
+    const studyInfo: StudyInfo = StudyInfoSchema.parse(JSON.parse(value));
     return studyInfo;
   } catch (error) {
     // We don't want this ill-formatted study file to be stored.
@@ -64,7 +64,7 @@ export async function getCurrentStreamsAsync(): Promise<Streams | null> {
     if (value == null) {
       return null;
     }
-    const streams: Streams = parseJsonToStreams(JSON.parse(value));
+    const streams: Streams = StreamsSchema.parse(JSON.parse(value));
     return streams;
   } catch (error) {
     // We don't want this ill-formatted study file to be stored.
@@ -79,7 +79,7 @@ export async function getCurrentExtraDataAsync(): Promise<ExtraData | null> {
     if (value == null) {
       return null;
     }
-    const extraData: ExtraData = parseJsonToExtraData(JSON.parse(value));
+    const extraData: ExtraData = ExtraDataSchema.parse(JSON.parse(value));
     return extraData;
   } catch (error) {
     // We don't want this ill-formatted study file to be stored.

@@ -1,4 +1,4 @@
-import { parseJsonToStudyFile } from "@wellping/study-schemas/lib/schemas/StudyFile";
+import { StudyFileSchema } from "@wellping/study-schemas/lib/schemas/StudyFile";
 import {
   StudyFile,
   StudyInfo,
@@ -185,7 +185,7 @@ export async function parseAndStoreStudyFileAsync(
   rawJsonString: string,
 ): Promise<string | null> {
   try {
-    const parsedStudy = parseJsonToStudyFile(JSON.parse(rawJsonString));
+    const parsedStudy = StudyFileSchema.parse(JSON.parse(rawJsonString));
     if (isUsingFirebase(parsedStudy.studyInfo)) {
       validateAndInitializeFirebaseWithConfig(parsedStudy.studyInfo);
     }
