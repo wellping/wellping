@@ -1,3 +1,4 @@
+import { Ping, StudyInfo } from "@wellping/study-file/lib/types";
 import {
   fireEvent,
   waitFor,
@@ -5,7 +6,6 @@ import {
   RenderAPI,
 } from "react-native-testing-library";
 import waitForExpect from "wait-for-expect";
-import { Ping, StudyInfo } from "wellping-study-file/lib/types";
 
 import { getAnswersAsync } from "../../helpers/answers";
 import {

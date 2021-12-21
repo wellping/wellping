@@ -1,9 +1,9 @@
+import { StudyInfo } from "@wellping/study-file/lib/types";
 import { setStatusBarStyle } from "expo-status-bar";
 import { User as FirebaseUser } from "firebase/auth";
 import React from "react";
 import { Text, View } from "react-native";
 import { WebView } from "react-native-webview";
-import { StudyInfo } from "wellping-study-file/lib/types";
 
 import { getInstallationIDAsync } from "../helpers/debug";
 import { base64ToBase64URL, getHashedPasswordAsync } from "../helpers/helpers";

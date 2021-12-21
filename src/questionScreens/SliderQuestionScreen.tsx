@@ -1,12 +1,12 @@
 import Slider from "@react-native-community/slider";
-import React from "react";
-import { View, Text } from "react-native";
 import {
   QuestionScreenProps,
   SliderAnswerData,
   SliderAnswer,
-} from "wellping-study-file/lib/answerTypes";
-import { SliderQuestion } from "wellping-study-file/lib/types";
+} from "@wellping/study-file/lib/answerTypes";
+import { SliderQuestion } from "@wellping/study-file/lib/types";
+import React from "react";
+import { View, Text } from "react-native";
 
 import {
   getNonCriticalProblemTextForUser,

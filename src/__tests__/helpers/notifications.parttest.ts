@@ -1,7 +1,7 @@
+import { StudyInfo } from "@wellping/study-file/lib/types";
 import { addSeconds } from "date-fns";
 import * as Notifications from "expo-notifications";
 import * as DateMock from "jest-date-mock";
-import { StudyInfo } from "wellping-study-file/lib/types";
 
 import * as notificationTimesAsyncStorage from "../../helpers/asyncStorage/notificationTimes";
 import {

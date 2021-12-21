@@ -1,16 +1,16 @@
-import { addMinutes } from "date-fns";
-import * as Crypto from "expo-crypto";
 import {
   QuestionId,
   PlaceholderReplacementValueTreatmentOptions,
   StudyInfo,
-} from "wellping-study-file/lib/types";
+} from "@wellping/study-file/lib/types";
+import { addMinutes } from "date-fns";
+import * as Crypto from "expo-crypto";
 
 export {
   QuestionType,
   QUESTION_TYPES,
   NON_USER_QUESTION_TYPES,
-} from "wellping-study-file/lib/helpers";
+} from "@wellping/study-file/lib/helpers";
 
 // This is mostly for Beiwe.
 export async function getHashedPasswordAsync(

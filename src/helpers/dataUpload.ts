@@ -1,4 +1,4 @@
-import { StudyInfo } from "wellping-study-file/lib/types";
+import { StudyInfo } from "@wellping/study-file/lib/types";
 
 import { getAnswersAsync } from "./answers";
 import { removeFromUnuploadedPingsListAsync } from "./asyncStorage/unuploadedPingsList";

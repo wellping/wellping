@@ -1,3 +1,12 @@
+import {
+  AnswersList,
+  MultipleTextAnswerData,
+  MultipleTextAnswer,
+} from "@wellping/study-file/lib/answerTypes";
+import {
+  MultipleTextQuestion,
+  ChoicesList,
+} from "@wellping/study-file/lib/types";
 import React from "react";
 import { Alert } from "react-native";
 import {
@@ -8,15 +17,6 @@ import {
   RenderAPI,
 } from "react-native-testing-library";
 import waitForExpect from "wait-for-expect";
-import {
-  AnswersList,
-  MultipleTextAnswerData,
-  MultipleTextAnswer,
-} from "wellping-study-file/lib/answerTypes";
-import {
-  MultipleTextQuestion,
-  ChoicesList,
-} from "wellping-study-file/lib/types";
 
 import { QuestionType } from "../../helpers/helpers";
 import * as studyFileHelper from "../../helpers/studyFile";

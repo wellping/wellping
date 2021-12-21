@@ -2,6 +2,11 @@
  * Notice that `randomizeChoicesOrder` and `randomizeExceptForChoiceIds` are not
  * tested here as they are tested in ChoicesQuestionScreen.test.tsx.
  */
+import {
+  ChoicesQuestion,
+  QuestionTypeType,
+  PlaceholderReplacementValueTreatmentOptions,
+} from "@wellping/study-file/lib/types";
 import React from "react";
 import {
   render,
@@ -9,11 +14,6 @@ import {
   waitFor,
   RenderAPI,
 } from "react-native-testing-library";
-import {
-  ChoicesQuestion,
-  QuestionTypeType,
-  PlaceholderReplacementValueTreatmentOptions,
-} from "wellping-study-file/lib/types";
 
 import SurveyScreen, { SurveyScreenProps } from "../../SurveyScreen";
 import { QuestionType } from "../../helpers/helpers";

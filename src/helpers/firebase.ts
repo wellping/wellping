@@ -3,6 +3,7 @@
  * `isUsingFirebase(studyInfo) === true`.
  */
 
+import { StudyInfo } from "@wellping/study-file/lib/types";
 import {
   initializeApp as firebaseInitializeApp,
   getApp as firebaseGetApp,
@@ -26,7 +27,6 @@ import {
   push as firebasePush,
   Database as FirebaseDatabase,
 } from "firebase/database";
-import { StudyInfo } from "wellping-study-file/lib/types";
 
 import {
   UploadData,

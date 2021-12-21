@@ -1,3 +1,8 @@
+import {
+  HowLongAgoAnswerDataType,
+  HowLongAgoAnswerData,
+} from "@wellping/study-file/lib/answerTypes";
+import { HowLongAgoQuestion } from "@wellping/study-file/lib/types";
 import React from "react";
 import { Alert } from "react-native";
 import {
@@ -8,11 +13,6 @@ import {
   waitFor,
 } from "react-native-testing-library";
 import { ReactTestInstance } from "react-test-renderer";
-import {
-  HowLongAgoAnswerDataType,
-  HowLongAgoAnswerData,
-} from "wellping-study-file/lib/answerTypes";
-import { HowLongAgoQuestion } from "wellping-study-file/lib/types";
 
 import { QuestionType } from "../../helpers/helpers";
 import HowLongAgoQuestionScreen from "../../questionScreens/HowLongAgoQuestion";

@@ -1,5 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { StreamName } from "wellping-study-file/lib/types";
+import { StreamName } from "@wellping/study-file/lib/types";
 
 import { logAndThrowError } from "../debug";
 import { getASKeyAsync } from "./asyncStorage";

@@ -1,14 +1,3 @@
-import { addDays } from "date-fns";
-import React from "react";
-import {
-  Button,
-  Text,
-  View,
-  ScrollView,
-  Image,
-  Dimensions,
-  Platform,
-} from "react-native";
 import {
   AnswersList,
   QuestionScreenProps,
@@ -22,7 +11,7 @@ import {
   MultipleTextAnswer,
   SliderAnswer,
   DataValidationFunction,
-} from "wellping-study-file/lib/answerTypes";
+} from "@wellping/study-file/lib/answerTypes";
 import {
   Question,
   ChoicesWithSingleAnswerQuestion,
@@ -38,7 +27,18 @@ import {
   Ping,
   QuestionImageOptions,
   WrapperQuestion,
-} from "wellping-study-file/lib/types";
+} from "@wellping/study-file/lib/types";
+import { addDays } from "date-fns";
+import React from "react";
+import {
+  Button,
+  Text,
+  View,
+  ScrollView,
+  Image,
+  Dimensions,
+  Platform,
+} from "react-native";
 
 import { _DEBUG_CONFIGS } from "../config/debug";
 import { insertAnswerAsync } from "./helpers/answers";

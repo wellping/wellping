@@ -1,6 +1,4 @@
-import { isThisWeek } from "date-fns";
-import * as Crypto from "expo-crypto";
-import { parseJsonToStudyFile } from "wellping-study-file/lib/schemas/StudyFile";
+import { parseJsonToStudyFile } from "@wellping/study-file/lib/schemas/StudyFile";
 import {
   StudyFile,
   StudyInfo,
@@ -8,7 +6,9 @@ import {
   Streams,
   ExtraData,
   ChoicesList,
-} from "wellping-study-file/lib/types";
+} from "@wellping/study-file/lib/types";
+import { isThisWeek } from "date-fns";
+import * as Crypto from "expo-crypto";
 
 import { _DEBUG_CONFIGS } from "../../config/debug";
 import { STUDY_FILE_URL_PREFIXES_WHITELIST } from "../../config/studyWhitelist";

@@ -1,8 +1,8 @@
+import { Answer } from "@wellping/study-file/lib/answerTypes";
+import { AnswerSchema } from "@wellping/study-file/lib/schemas/Answer";
+import { PingId, QuestionId } from "@wellping/study-file/lib/types";
 import { parseJSON } from "date-fns";
 import * as SecureStore from "expo-secure-store";
-import { Answer } from "wellping-study-file/lib/answerTypes";
-import { AnswerSchema } from "wellping-study-file/lib/schemas/Answer";
-import { PingId, QuestionId } from "wellping-study-file/lib/types";
 
 import { addToAnswersQuestionIdsListForPingIfNeededAsync } from "../asyncStorage/answersPingIdsQuestionIdsList";
 import { logAndThrowError } from "../debug";

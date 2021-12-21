@@ -1,3 +1,9 @@
+import {
+  Streams,
+  StreamName,
+  StudyInfo,
+  Ping,
+} from "@wellping/study-file/lib/types";
 import { format, getDay } from "date-fns";
 import * as Linking from "expo-linking";
 import { Subscription } from "expo-modules-core";
@@ -21,12 +27,6 @@ import {
   AppState,
   AppStateStatus,
 } from "react-native";
-import {
-  Streams,
-  StreamName,
-  StudyInfo,
-  Ping,
-} from "wellping-study-file/lib/types";
 
 import SurveyScreen, { SurveyScreenState } from "./SurveyScreen";
 import DashboardComponent, {

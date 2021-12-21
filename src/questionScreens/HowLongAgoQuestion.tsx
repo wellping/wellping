@@ -1,11 +1,11 @@
-import React from "react";
-import { View, FlatList } from "react-native";
 import {
   QuestionScreenProps,
   HowLongAgoAnswerData,
   HowLongAgoAnswerDataType,
-} from "wellping-study-file/lib/answerTypes";
-import { HowLongAgoQuestion } from "wellping-study-file/lib/types";
+} from "@wellping/study-file/lib/answerTypes";
+import { HowLongAgoQuestion } from "@wellping/study-file/lib/types";
+import React from "react";
+import { View, FlatList } from "react-native";
 
 import { ChoiceItem } from "./ChoicesQuestionScreen";
 

@@ -1,7 +1,7 @@
+import { SliderAnswerData } from "@wellping/study-file/lib/answerTypes";
+import { SliderQuestion } from "@wellping/study-file/lib/types";
 import React from "react";
 import { render } from "react-native-testing-library";
-import { SliderAnswerData } from "wellping-study-file/lib/answerTypes";
-import { SliderQuestion } from "wellping-study-file/lib/types";
 
 import { QuestionType } from "../../helpers/helpers";
 import SliderQuestionScreen, {

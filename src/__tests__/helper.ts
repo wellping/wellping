@@ -1,4 +1,4 @@
-import { StudyInfo, ExtraData } from "wellping-study-file/lib/types";
+import { StudyInfo, ExtraData } from "@wellping/study-file/lib/types";
 
 import * as studyFileAsyncStorage from "../helpers/asyncStorage/studyFile";
 import { FunctionSpyInstance } from "./jestHelper";

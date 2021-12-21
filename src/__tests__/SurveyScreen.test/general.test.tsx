@@ -1,10 +1,10 @@
-import React from "react";
-import { render } from "react-native-testing-library";
 import {
   QuestionsList,
   Question,
   QuestionTypeType,
-} from "wellping-study-file/lib/types";
+} from "@wellping/study-file/lib/types";
+import React from "react";
+import { render } from "react-native-testing-library";
 
 import SurveyScreen, { SurveyScreenProps } from "../../SurveyScreen";
 import { QuestionType } from "../../helpers/helpers";
