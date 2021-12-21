@@ -37,10 +37,7 @@ npm install -g expo-cli
 npm install -g eas-cli
 
 # Installation
-yarn
-
-# We have to include a `study.json` file here as otherwise the program will not build (see https://github.com/facebook/react-native/issues/6391).
-echo "{}" > local/private/study.json
+yarn install
 
 # Start
 yarn start
