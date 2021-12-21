@@ -48,11 +48,7 @@ yarn test
 
 ### `@wellping/study-schemas`
 
-After updating https://github.com/wellping/study-schemas, run
-```bash
-yarn up @wellping/study-schemas@https://github.com/wellping/study-schemas
-```
-to use the newest `@wellping/study-schemas` on the main branch of https://github.com/wellping/study-schemas.
+See https://github.com/wellping/study-schemas/blob/main/README-FOR-USERS.md.
 
 ## Deployment
 
