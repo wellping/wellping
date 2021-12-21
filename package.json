@@ -40,6 +40,7 @@
     "zod": "^3.11.6"
   },
   "devDependencies": {
+    "@expo/ngrok": "^4.1.0",
     "@testing-library/jest-native": "^3.3.0",
     "@testing-library/react-native": "^7.0.1",
     "@types/jest": "^26.0.9",
