@@ -74,16 +74,21 @@ const _treatPlaceholderReplacementValue = (
   let treatedValue = value;
 
   let shouldDecap = false;
-  const decapOptions = treatment.decapitalizeFirstCharacter;
-  if (decapOptions && decapOptions.enabled) {
-    if (decapOptions.includes) {
-      if (decapOptions.includes.includes(value)) {
-        shouldDecap = true;
-      }
-    } else if (decapOptions.excludes) {
-      if (!decapOptions.excludes.includes(value)) {
-        shouldDecap = true;
-      }
+  const decapFirstChar = treatment.decapitalizeFirstCharacter;
+  if (decapFirstChar?.enabled) {
+    const decapOptions = decapFirstChar.options;
+    if (
+      decapOptions &&
+      "includes" in decapOptions &&
+      decapOptions.includes.includes(value)
+    ) {
+      shouldDecap = true;
+    } else if (
+      decapOptions &&
+      "excludes" in decapOptions &&
+      !decapOptions.excludes.includes(value)
+    ) {
+      shouldDecap = true;
     } else {
       shouldDecap = true;
     }
