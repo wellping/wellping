@@ -78,14 +78,12 @@ const _treatPlaceholderReplacementValue = (
   if (decapFirstChar?.enabled) {
     const decapOptions = decapFirstChar.options;
     if (
-      decapOptions &&
-      "includes" in decapOptions &&
+      decapOptions?.includes !== undefined &&
       decapOptions.includes.includes(value)
     ) {
       shouldDecap = true;
     } else if (
-      decapOptions &&
-      "excludes" in decapOptions &&
+      decapOptions?.excludes !== undefined &&
       !decapOptions.excludes.includes(value)
     ) {
       shouldDecap = true;
