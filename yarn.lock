@@ -4695,11 +4695,11 @@ __metadata:
 
 "@wellping/study-schemas@https://github.com/wellping/study-schemas":
   version: 1.0.0
-  resolution: "@wellping/study-schemas@https://github.com/wellping/study-schemas.git#commit=b909e67abf0de85d19bd8b3a80eff5e0884dc7f3"
+  resolution: "@wellping/study-schemas@https://github.com/wellping/study-schemas.git#commit=61063224e77f97cc97808c40cb5ad314c3a5104f"
   dependencies:
     date-fns: ^2.27.0
     zod: ^3.11.6
-  checksum: c3d15d402bdfe947a695bd4989b596f3a34635390819ce03e810d21dd3f83235f60e6e0566e992d73e016dc5452b502feba10473ab8e0456078697ab38b94e43
+  checksum: 1d353f7f3d03e001c6dd2c979bfb9d59ba3d937e2dff282dd4777eef1e0c29396e6da1d91614240e5bd0c0acca8d8153ba859b57f243d2359d987d79daa8bbfd
   languageName: node
   linkType: hard
 

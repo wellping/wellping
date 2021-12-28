@@ -19,7 +19,6 @@ import {
 import waitForExpect from "wait-for-expect";
 
 import { QuestionType } from "../../helpers/helpers";
-import * as studyFileHelper from "../../helpers/studyFile";
 import MultipleTextQuestionScreen from "../../questionScreens/MultipleTextQuestionScreen";
 import { simplePipeInExtraMetaData, mockCurrentExtraData } from "../helper";
 import { changeTextAndWaitForUpdateAsync } from "../reactNativeTestingLibraryHelper";
@@ -37,7 +36,7 @@ const findTextInputAsync = async (
 };
 
 const MOCK_EMOJI_CHOICES_KEY = "emojis";
-const MOCK_EMOJI_CHOICES_LIST = ["😀", "🤪", "🧐", "😎"] as ChoicesList;
+const MOCK_EMOJI_CHOICES_LIST: ChoicesList = ["😀", "🤪", "🧐", "😎"];
 const basicTestForQuestionAsync = async (
   question: MultipleTextQuestion,
   allAnswers: AnswersList,
@@ -87,16 +86,16 @@ const basicTestForQuestionAsync = async (
   }
 
   let choices!: ChoicesList | undefined;
-  if (typeof question.choices === "string") {
-    if (question.choices === MOCK_EMOJI_CHOICES_KEY) {
+  if (typeof question.dropdownChoices?.choices === "string") {
+    if (question.dropdownChoices.choices === MOCK_EMOJI_CHOICES_KEY) {
       choices = MOCK_EMOJI_CHOICES_LIST;
     } else {
       choices = [
-        `ERROR: reusable choices with key "${question.choices}" is not found.`,
+        `ERROR: reusable choices with key "${question.dropdownChoices.choices}" is not found.`,
       ]; // For that error string
     }
   } else {
-    choices = question.choices;
+    choices = question.dropdownChoices?.choices;
   }
 
   // For each choices
@@ -148,7 +147,11 @@ const basicTestForQuestionAsync = async (
     );
 
     let isInputValid = true;
-    if (question.choices && question.forceChoice && inputValue.length > 0) {
+    if (
+      question.dropdownChoices &&
+      question.dropdownChoices.forceChoice &&
+      inputValue.length > 0
+    ) {
       const isInputInChoice = choices?.includes(inputValue);
 
       if (!isInputInChoice) {
@@ -229,7 +232,7 @@ test.each([
 ])(
   "input `%p` with max %d without choices",
   async (inputValues, max, placeholder, indexName) => {
-    const question = {
+    const question: MultipleTextQuestion = {
       id: "WithoutChoicesDict",
       type: QuestionType.MultipleText,
       question: "A question",
@@ -238,7 +241,7 @@ test.each([
       variableName: "TARGET_CATEGORY",
       indexName,
       next: null,
-    } as MultipleTextQuestion;
+    };
 
     await basicTestForQuestionAsync(question, {}, inputValues);
   },
@@ -301,7 +304,7 @@ test.each([
 ])(
   "input `%p` with max %d and maxMinus %p without choices",
   async (inputValues, max, maxMinus, placeholder, indexName, allAnswers) => {
-    const question = {
+    const question: MultipleTextQuestion = {
       id: "WithoutChoicesWithMaxMinusDict",
       type: QuestionType.MultipleText,
       question: "A question",
@@ -311,13 +314,13 @@ test.each([
       variableName: "TARGET_CATEGORY",
       indexName,
       next: null,
-    } as MultipleTextQuestion;
+    };
 
     await basicTestForQuestionAsync(question, allAnswers as any, inputValues);
   },
 );
 
-const CHOICES = [
+const CHOICES: ChoicesList = [
   "Friend",
   "Co-worker",
   "Parent",
@@ -351,18 +354,20 @@ test.each([
 ])(
   "input `%p` with max %d and forceChoice %p with a choices object",
   async (inputValues, max, forceChoice, placeholder) => {
-    const question = {
+    const question: MultipleTextQuestion = {
       id: "WithChoicesDict",
       type: QuestionType.MultipleText,
       question: "A question",
       placeholder,
-      choices: CHOICES,
-      forceChoice,
+      dropdownChoices: {
+        choices: CHOICES,
+        forceChoice,
+      },
       max,
       variableName: "TARGET_CATEGORY",
       indexName: "INDEX",
       next: null,
-    } as MultipleTextQuestion;
+    };
 
     await basicTestForQuestionAsync(question, {}, inputValues);
   },
@@ -389,25 +394,27 @@ test.each([
       },
     });
 
-    const question = {
+    const question: MultipleTextQuestion = {
       id: "WithChoicesDict",
       type: QuestionType.MultipleText,
       question: "A question",
       placeholder,
-      choices: MOCK_EMOJI_CHOICES_KEY,
-      forceChoice,
+      dropdownChoices: {
+        choices: MOCK_EMOJI_CHOICES_KEY,
+        forceChoice,
+      },
       max,
       variableName: "TARGET_CATEGORY",
       indexName: "INDEX",
       next: null,
-    } as MultipleTextQuestion;
+    };
 
     await basicTestForQuestionAsync(question, {}, inputValues);
   },
 );
 
 test("max - maxMinus = 0", async () => {
-  const question = {
+  const question: MultipleTextQuestion = {
     id: "NoTextField",
     type: QuestionType.MultipleText,
     question: "A question",
@@ -416,7 +423,7 @@ test("max - maxMinus = 0", async () => {
     variableName: "TARGET_CATEGORY",
     indexName: "INDEX",
     next: null,
-  } as MultipleTextQuestion;
+  };
 
   await basicTestForQuestionAsync(
     question,
@@ -449,17 +456,19 @@ test.each([
     },
   });
 
-  const question = {
+  const question: MultipleTextQuestion = {
     id: "WithChoicesDict",
     type: QuestionType.MultipleText,
     question: "A question",
-    choices: "invalid-reusable-choice",
-    forceChoice: true,
+    dropdownChoices: {
+      choices: "invalid-reusable-choice",
+      forceChoice: true,
+    },
     max: 3,
     variableName: "TARGET_CATEGORY",
     indexName: "INDEX",
     next: null,
-  } as MultipleTextQuestion;
+  };
 
   await basicTestForQuestionAsync(question, {}, inputValues);
 });

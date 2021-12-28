@@ -114,10 +114,12 @@
           "position": "left"
         },
         "placeholder": "Enter a number...",
-        "choices": ["1", "2", "3", "4", "5", "6", "7", "8", "9"],
+        "dropdownChoices": {
+          "choices": ["1", "2", "3", "4", "5", "6", "7", "8", "9"],
+          "forceChoice": true
+        },
         "max": 1,
         "keyboardType": "number-pad",
-        "forceChoice": true,
         "variableName": "LEVEL",
         "indexName": "INDEX",
         "next": "Feel_Ideal"
@@ -195,7 +197,9 @@
         "type": "MultipleText",
         "question": "Who were you talking to?",
         "placeholder": "Enter a name...",
-        "choices": "NAMES",
+        "dropdownChoices": {
+          "choices": "NAMES"
+        },
         "max": 3,
         "variableName": "TARGET_NAME",
         "indexName": "INDEX",
@@ -243,9 +247,11 @@
         "type": "MultipleText",
         "question": "What non-students were you talking to?",
         "placeholder": "Select a category...",
-        "choices": "RELATIONSHIPS",
-        "forceChoice": true,
-        "alwaysShowChoices": true,
+        "dropdownChoices": {
+          "choices": "RELATIONSHIPS",
+          "forceChoice": true,
+          "alwaysShowChoices": true
+        },
         "max": 3,
         "maxMinus": "SocInteraction_Names",
         "variableName": "TARGET_CATEGORY",

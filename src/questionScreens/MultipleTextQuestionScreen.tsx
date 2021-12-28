@@ -60,14 +60,14 @@ const MultipleTextQuestionScreen: React.ElementType<
 
   React.useEffect(() => {
     async function setupTextFieldsDropdownItemsAsync() {
-      if (question.choices !== undefined) {
+      if (question.dropdownChoices !== undefined) {
         let tempChoices!: ChoicesList;
-        if (typeof question.choices === "string") {
+        if (typeof question.dropdownChoices.choices === "string") {
           tempChoices = await getReusableChoicesIncludeErrorAsync(
-            question.choices,
+            question.dropdownChoices.choices,
           );
         } else {
-          tempChoices = question.choices;
+          tempChoices = question.dropdownChoices.choices;
         }
         setTextFieldsDropdownItems(
           tempChoices.map((choice) => ({
@@ -81,7 +81,7 @@ const MultipleTextQuestionScreen: React.ElementType<
     }
     // So that async can be used in `setupTextFieldsDropdownItemsAsync`.
     setupTextFieldsDropdownItemsAsync();
-  }, [question.choices]);
+  }, [question.dropdownChoices]);
 
   React.useEffect(() => {
     // We have to `setDataValidationFunction` again when `textFieldsDropdownItems`
@@ -136,7 +136,7 @@ const MultipleTextQuestionScreen: React.ElementType<
         }}
         itemsContainerStyle={{
           maxHeight: 100,
-          ...(!question.alwaysShowChoices &&
+          ...(!question.dropdownChoices?.alwaysShowChoices &&
             isInputEmpty[index] && { display: "none" }),
         }}
         items={textFieldsDropdownItems}
@@ -187,7 +187,7 @@ const MultipleTextQuestionScreen: React.ElementType<
 
   let alertDisplaying = false;
   const dataValidationFunction = () => {
-    if (!question.forceChoice) {
+    if (!question.dropdownChoices?.forceChoice) {
       // If there is no `forceChoice`, the data is always valid.
       return true;
     }
