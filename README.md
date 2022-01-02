@@ -17,6 +17,7 @@ A React Native survey app that pings you once a while to answer questions!
 *Work in Progress*
 
 - [Docs](https://wellping.github.io/)
+- [Well Ping Study File Editor](https://wellping.github.io/study-file-editor/)
 
 ## Demo
 
