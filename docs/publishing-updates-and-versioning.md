@@ -120,7 +120,7 @@ in the project folder to build binaries for iOS and Android. Wait until both bui
 
 #### Creating A New Release Tag on GitHub
 
-To make sure we know what code the current version on App Stores is running, we will create a release tag a GitHub before submitting the binaries. All release tags could be found at [https://github.com/wellping/wellping/releases](https://github.com/wellping/wellping/releases). To create a new release, click "Draft a new release" on that page. Create a new tag in the format such as `v1.1.2` and a release title such as " Version 1.1.2". For Target, if you want to tag the latest commit, select `main`; if you want to tag a old commit, refer to documents such as [this](https://github.community/t/create-releases-for-old-commits/872/10).
+To make sure we know what code the current version on App Stores is running, we will create a release tag a GitHub before submitting the binaries. All release tags could be found at [https://github.com/wellping/wellping/releases](https://github.com/wellping/wellping/releases). To create a new release, click "Draft a new release" on that page. Create a new "Tag" in the format such as `v1.1.2` and a "Release title" such as `Version 1.1.2`. For "Target", if you want to tag the latest commit, select `main`; if you want to tag a old commit, refer to documents such as [this](https://github.community/t/create-releases-for-old-commits/872/10).
 
 Note that if App Store or Google Play rejects your update, you should note that in the release log accordingly and create a new release tag again when you submit the updated binary.
 
