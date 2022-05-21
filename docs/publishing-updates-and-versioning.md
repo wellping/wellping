@@ -35,6 +35,8 @@ One important thing to keep in mind is that the first launch of the app after a 
 
 When publishing your changes through OTA, you should also use appropriate Release Channels (see [Build Version](#build-version) below).
 
+Note: OTA Updates will **not** work if your current Expo SDK version is different from the Expo SDK version used on the app published on the App Stores. See [Important Note section on the Upgrading Expo page](./upgrading-expo.md#important-note).
+
 ### App Store & Google Play Updates
 
 Publishing updates on App Stores allow all new users (and existing users who update through App Stores) to directly launch into the app with the changes.
