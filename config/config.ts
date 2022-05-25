@@ -1,4 +1,4 @@
 export const CONFIG = {
   LOGIN_CODE_SEPARATOR: "-",
-  DEFAULT_STUDY_FILE_URL: "https://ssnl.lifesensing.org/studyFile",
+  DEFAULT_STUDY_FILE_URL: "https://wellping.communitiesproject.stanfordsnl.org/studyFile",
 };
