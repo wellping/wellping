@@ -1,4 +1,6 @@
 <div align="center">
+  <img width="400" src="./.images/SSNL.jpg">
+  <br>
   <img width="200" height="200" src="./assets/icon-android-foreground.png">
 </div>
 
