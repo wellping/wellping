@@ -1,7 +1,7 @@
 <div align="center">
-  <img width="400" src="./.images/SSNL.jpg">
-  <br>
-  <img width="200" height="200" src="./assets/icon-android-foreground.png">
+  <a href="https://ssnl.stanford.edu/"><img width="350" src="./.images/SSNL.jpg"></a>
+  <br><br>
+  <a href="https://wellping.github.io/"><img width="200" height="200" src="./assets/icon-android-foreground.png"></a>
 </div>
 
 # Well Ping
