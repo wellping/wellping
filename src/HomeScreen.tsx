@@ -100,6 +100,7 @@ import {
 } from "./helpers/studyFile";
 import { styles } from "./helpers/styles";
 import LoadingScreen from "./screens/LoadingScreen";
+import { formatDateInShort, isStudyDateBased } from "./helpers/dateBaseStreamHelpers";
 
 interface HomeScreenProps {
   studyInfo: StudyInfo;
@@ -149,7 +150,7 @@ export default class HomeScreen extends React.Component<
       currentNotificationTime: null,
       currentPing: null,
       isLoading: true,
-      displayDebugView: false,
+      displayDebugView: true,
       storedPingStateAsync: null,
       uploadStatusSymbol: HOME_SCREEN_DEBUG_VIEW_SYMBOLS.UPLOAD.INITIAL,
       firebaseUser: null,
@@ -316,17 +317,23 @@ export default class HomeScreen extends React.Component<
   }
 
   async startSurveyAsync() {
+    debugger;
     await new Promise<void>((resolve) =>
       this.setState({ isLoading: true }, resolve),
     );
 
     const studyInfo = this.props.studyInfo;
 
-    const todayWeekday = getDay(new Date());
+    const today = new Date();
+    const todayWeekday = getDay(today);
+    const todayAsDate = formatDateInShort(today);
+
     const todayPings = await getTodayPingsAsync();
 
     const pingsList = await getPingsListAsync();
     const newPingNth = pingsList.length + 1;
+
+    const studyDateBased = isStudyDateBased(studyInfo);
 
     let newStreamName: StreamName;
     if (todayPings.length >= studyInfo.pingsFrequency.length) {
@@ -343,7 +350,18 @@ export default class HomeScreen extends React.Component<
     ) {
       newStreamName = studyInfo.streamsForNthPings[`${newPingNth}`];
     } else {
-      newStreamName = studyInfo.streamsOrder[todayWeekday][todayPings.length];
+      if (!studyDateBased) {
+        newStreamName = studyInfo.streamsOrder[todayWeekday][todayPings.length];
+      } else {
+        newStreamName = "";
+        const matchingStream = (studyInfo.streamsOrder as Array<{
+          streams: string[];
+          date: string;
+          }>).find(x => x.date === todayAsDate);
+          if (matchingStream && matchingStream.streams.length > todayPings.length) {
+            newStreamName = matchingStream.streams[todayPings.length];
+          } 
+      }
 
       if (
         !(studyInfo.streamsNotReplacedByFollowupStream || []).includes(
@@ -413,7 +431,7 @@ export default class HomeScreen extends React.Component<
     // Create new ping.
     const { currentNotificationTime } = this.state;
     const newPing = await insertPingAsync({
-      notificationTime: currentNotificationTime!,
+      notificationTime: currentNotificationTime || new Date(), //todo: remove this,
       startTime: new Date(),
       streamName,
     });
@@ -782,6 +800,13 @@ export default class HomeScreen extends React.Component<
           />
           <Button
             color="orange"
+            title="start survey"
+            onPress={async () => {
+              await this.startSurveyAsync();
+            }}
+          />
+          <Button
+            color="orange"
             title="getCurrentNotificationTimeAsync()"
             onPress={async () => {
               const currentNotificationTime =
@@ -802,6 +827,16 @@ export default class HomeScreen extends React.Component<
               } else {
                 alert("No current ping.");
               }
+            }}
+          />
+          <Button
+            color="orange"
+            title="getPingsListAsync()"
+            onPress={async () => {
+              const pingsList = await getPingsListAsync();
+              await alertWithShareButtonContainingDebugInfoAsync(
+                JSON.stringify(pingsList),
+              );
             }}
           />
           <Button
@@ -1008,8 +1043,10 @@ export default class HomeScreen extends React.Component<
         </ScrollView>
       );
     };
-
-    if (currentNotificationTime == null) {
+    console.log("currentNotTime", currentNotificationTime);
+    console.log("currentPing", currentPing);
+    let x = this.state.currentPing?.notificationTime
+    if (x == null) {
       // We include `> endDate` and `< startDate` inside
       // `currentNotificationTime == null` so that the user can normally finish
       // their last ping even if it's after the end date.
@@ -1076,7 +1113,7 @@ export default class HomeScreen extends React.Component<
           </View>
         );
       }
-
+      debugger;
       if (new Date() < getStudyStartDate(studyInfo)) {
         return (
           <View style={{ height: "100%" }}>
@@ -1296,3 +1333,4 @@ export default class HomeScreen extends React.Component<
     );
   }
 }
+

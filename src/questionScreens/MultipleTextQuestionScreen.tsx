@@ -28,6 +28,7 @@ const MultipleTextQuestionScreen: React.ElementType<
   allAnswers,
   pipeInExtraMetaData,
   setDataValidationFunction,
+  isDisabled
 }) => {
   type DropdownItem = {
     id: string;
@@ -47,9 +48,15 @@ const MultipleTextQuestionScreen: React.ElementType<
     }
   }
 
-  const initTextValues = Array(numberOfTextFields).fill("");
+  let initTextValues = Array(numberOfTextFields).fill("");
 
-  const [textValues, setTextValues] = React.useState<string[]>(initTextValues);
+  const [textValues, setTextValues] = React.useState<string[]>(initTextValues)
+
+  React.useEffect(() => {
+    if (isDisabled && (allAnswers[question?.id] as MultipleTextAnswer)?.data) {
+      setTextValues((allAnswers[question?.id] as MultipleTextAnswer).data?.value!);
+    }
+  }, [isDisabled, question])
 
   const [textFieldsDropdownItems, setTextFieldsDropdownItems] = React.useState<
     DropdownItem[]
@@ -94,6 +101,7 @@ const MultipleTextQuestionScreen: React.ElementType<
   }, [textValues, textFieldsDropdownItems]);
 
   const updateTextValue = (text: string, index: number) => {
+    debugger;
     const newTextValues: string[] = cloneDeep(textValues);
     newTextValues[index] = text.trim();
     setTextValues(newTextValues);
@@ -145,6 +153,8 @@ const MultipleTextQuestionScreen: React.ElementType<
           ref: (ref: TextInput) => {
             textFieldsRef.current[index] = ref;
           },
+          value: isDisabled ? textValues[index] : undefined,
+          editable: !isDisabled,
           placeholder: question.placeholder,
           underlineColorAndroid: "transparent",
           style: {

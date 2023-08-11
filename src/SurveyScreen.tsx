@@ -36,6 +36,7 @@ import {
   Image,
   Dimensions,
   Platform,
+  Alert,
 } from "react-native";
 
 import { _DEBUG_CONFIGS } from "../config/debug";
@@ -90,6 +91,7 @@ type NextQuestionData = CurrentQuestionData & {
    */
   questionId: QuestionId;
 };
+
 
 export interface SurveyScreenProps {
   /**
@@ -154,6 +156,9 @@ export interface SurveyScreenState {
    * If true, this sets the whole screen's opacity to 0.
    */
   isInTransition: boolean;
+
+  questionsStack: CurrentQuestionData[];
+  startingPoint: string| null;
 }
 
 export default class SurveyScreen extends React.Component<
@@ -174,12 +179,18 @@ export default class SurveyScreen extends React.Component<
         nextQuestionsDataStack: [],
         answers: {},
         isInTransition: false,
+        questionsStack: [],
+        startingPoint: null
       };
     }
   }
 
   componentDidMount() {
     storePingStateAsync(this.props.ping.id, this.state);
+  }
+
+  isFormDisabled(){
+    return this.state.startingPoint !== null && this.state.startingPoint !== this.state.currentQuestionData.questionId;
   }
 
   /**
@@ -199,7 +210,6 @@ export default class SurveyScreen extends React.Component<
   ): string {
     const { questions, studyInfo } = this.props;
     const { currentQuestionData, answers } = state;
-
     let output = input;
     function _replaceWithExtraData(extraData: ExtraData) {
       for (const [key, value] of Object.entries(extraData)) {
@@ -496,7 +506,7 @@ export default class SurveyScreen extends React.Component<
         extraData: prevExtraData,
       });
     };
-
+    debugger;
     if (NON_USER_QUESTION_TYPES.includes(prevQuestion.type)) {
       // Handle branching questions.
       switch (prevQuestion.type) {
@@ -580,21 +590,38 @@ export default class SurveyScreen extends React.Component<
     return newNextQuestionsStack;
   }
 
+  goBack(questionId: string) {
+    //if startingPoint is not set, then set it as it is the first time we are going back
+    // pop the item from questions and load them
+    const prevQuestionStack = this.state.questionsStack.pop();
+    debugger;
+    if (!this.state.startingPoint) {
+      this.setState({startingPoint: questionId})
+    }
+    if (prevQuestionStack) {
+      this.setState({currentQuestionData: prevQuestionStack})
+    }
+  }
+
   /**
    * Goes to the next question.
    */
   onNextSelect() {
+    debugger;
+   
     // Reset this so that the new `QuestionScreen` can set it.
     this.dataValidationFunction = null;
 
     const { questions, ping } = this.props;
+
+    const questionsStack = this.state.questionsStack;
 
     const setStateCallback = () => {
       storePingStateAsync(ping.id, this.state);
 
       const {
         currentQuestionData: { questionId: currentQuestionid },
-      } = this.state;
+      } = this.state;  
 
       if (
         currentQuestionid &&
@@ -615,6 +642,7 @@ export default class SurveyScreen extends React.Component<
 
     this.setState({ isInTransition: true });
     this.setState((prevState) => {
+      debugger;
       const {
         currentQuestionData: {
           questionId: prevQuestionId,
@@ -622,12 +650,18 @@ export default class SurveyScreen extends React.Component<
         },
         answers,
         nextQuestionsDataStack: prevNextQuestionsDataStack,
+        questionsStack
       } = prevState;
 
       if (prevQuestionId === null) {
         throw new Error("prevQuestionId === null");
       }
 
+      //Add this to the stack so that we can go back
+      questionsStack.push({  questionId: prevQuestionId,
+        extraData: prevExtraData})
+
+      debugger;
       const prevQuestion = questions[prevQuestionId];
       const prevAnswer =
         answers[this.getRealQuestionId(prevQuestion, prevState)];
@@ -654,7 +688,15 @@ export default class SurveyScreen extends React.Component<
             extraData: {},
           };
         }
+
+          //clear the starting point for back button
+          let startingPoint = prevState.startingPoint;
+          if (prevState.startingPoint === nextQuestionData.questionId) {
+            startingPoint = null;
+          }
+
         return {
+          startingPoint: startingPoint,
           currentQuestionData: nextQuestionData,
           nextQuestionsDataStack: prevNextQuestionsDataStack,
         };
@@ -662,7 +704,16 @@ export default class SurveyScreen extends React.Component<
         // We pop the `jumpQuestionsDataStack` to find what question we should
         // immediately go.
         const immediateNext = newNextQuestionsStack.pop()!;
+
+        //clear the starting point for back button
+        let startingPoint = prevState.startingPoint;
+        if (prevState.startingPoint === immediateNext.questionId) {
+          startingPoint = null;
+        }
+
+
         return {
+          startingPoint: startingPoint,
           currentQuestionData: immediateNext,
           nextQuestionsDataStack: [
             // We add any additional `jumpQuestionsDataStack` on top of the
@@ -737,6 +788,8 @@ export default class SurveyScreen extends React.Component<
 
     const { questions, studyInfo } = this.props;
 
+    console.log("questions", questions);
+
     const question = questions[questionId] as Question;
     if (question === undefined) {
       return (
@@ -801,6 +854,10 @@ export default class SurveyScreen extends React.Component<
           }}
         />
       );
+
+    const backButtonIsDisabled = (): boolean => {
+      return this.state.questionsStack.length === 0;
+    }  
 
     const nextButtonIsDisabled = (): boolean => {
       if (studyInfo.alwaysEnableNextButton) {
@@ -912,7 +969,9 @@ export default class SurveyScreen extends React.Component<
             <View style={{ flex: 1 }}>
               <QuestionScreen
                 /* https://stackoverflow.com/a/21750576/2603230 */
+                realQuestionId={realQuestionId}
                 key={question.id}
+                isDisabled={this.isFormDisabled()}
                 question={question}
                 loadingCompleted={() => {
                   this.setState({ isInTransition: false });
@@ -939,7 +998,7 @@ export default class SurveyScreen extends React.Component<
           </View>
         </View>
         {question.extraCustomNextWithoutAnsweringButton && (
-          <Button
+          <Button disabled={this.isFormDisabled()}
             onPress={async () => {
               // Clicking this button is equivalent to clicking "Next" without answering.
               await this.addAnswerToAnswersListAsync(question, {
@@ -959,12 +1018,23 @@ export default class SurveyScreen extends React.Component<
             flex: 0,
           }}
         >
-          <Button
+          <Button disabled={backButtonIsDisabled()}
+          onPress={() => this.goBack(questionId)}
+                      accessibilityLabel="Previous question"
+                      title="Back">          
+          </Button>
+          <Button disabled={this.isFormDisabled()}
             onPress={async () => {
               await this.addAnswerToAnswersListAsync(question, {
                 preferNotToAnswer: true,
               });
-              this.onNextSelect();
+              Alert.alert("Are you sure?", 'Are you sure you want to skip this question?', [
+                {
+                  text: 'Cancel',
+                  style: 'cancel',
+                },
+                {text: 'Yes', onPress: () => this.onNextSelect()}
+              ])
             }}
             accessibilityLabel="Prefer not to answer the current question"
             title="Prefer not to answer"

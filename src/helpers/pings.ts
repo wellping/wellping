@@ -91,10 +91,12 @@ export async function addEndTimeToPingAsync(
 }
 
 export async function getLatestPingAsync(): Promise<Ping | null> {
+  debugger;
   const pingsList = await getPingsListAsync();
   if (pingsList.length === 0) {
     return null;
   }
+  console.log("pings", pingsList);
   const latestPingId = pingsList[pingsList.length - 1];
   return await secureGetPingAsync(latestPingId);
 }

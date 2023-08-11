@@ -155,7 +155,7 @@ export default class RootScreen extends React.Component<
           return;
         }
       }
-
+      debugger;
       const user = await secureGetUserAsync();
       if (user === null) {
         // One reason this might happen is that the newly downloaded study file

@@ -140,6 +140,7 @@ export default class LoginScreen extends React.Component<
   }
 
   loginFnAsync = async () => {
+    debugger;
     this.setState({
       errorText: null,
       loadingText: null,
@@ -162,6 +163,7 @@ export default class LoginScreen extends React.Component<
     let user!: User;
     let studyFileURL!: string;
     try {
+      debugger;
       const loginCode = this.state.formData?.trim();
       if (!loginCode) {
         throw new Error("You have not entered your login code.");

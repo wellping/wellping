@@ -10,4 +10,5 @@ export const STUDY_FILE_URL_PREFIXES_WHITELIST = [
   "https://stanfordsocialneurosciencelab.github.io/",
   "https://ssnl.lifesensing.org/",
   "https://wellping.communitiesproject.stanfordsnl.org/",
+  "https://raw.githubusercontent.com/"
 ];

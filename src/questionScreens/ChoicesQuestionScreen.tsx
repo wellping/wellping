@@ -27,12 +27,14 @@ export interface ChoiceItemProps {
   id: string;
   title: string;
   selected: boolean;
+  disabled: boolean;
   onSelect: () => void;
 }
-export function ChoiceItem({ title, selected, onSelect }: ChoiceItemProps) {
+export function ChoiceItem({ title, selected, onSelect, disabled }: ChoiceItemProps) {
   return (
     <TouchableOpacity
       onPress={() => onSelect()}
+      disabled={disabled}
       style={[
         styles.item,
         { backgroundColor: selected ? "#b3995d" : "#F9F6EF" },
@@ -65,9 +67,13 @@ const ChoicesQuestionScreen: React.ElementType<ChoicesQuestionScreenProps> = ({
   question,
   loadingCompleted,
   onDataChange,
+  allAnswers,
   pipeInExtraMetaData,
+  isDisabled,
+  realQuestionId
 }) => {
   let answerType: ChoicesAnswerType;
+  console.log("isdisabled", isDisabled);
   switch (question.type) {
     case QuestionType.ChoicesWithSingleAnswer:
       answerType = ChoicesAnswerType.SINGLE_SELECTION;
@@ -90,12 +96,12 @@ const ChoicesQuestionScreen: React.ElementType<ChoicesQuestionScreenProps> = ({
   const [selected, setSelected] =
     React.useState<ChoicesWithMultipleAnswersAnswerChoices>([]);
 
+
   type FlatListData = {
     id: string;
     title: string;
   }[];
   const [flatListData, setFlatListData] = React.useState<FlatListData>([]);
-
   const initAnswerDataWithFlatListData = (
     inputFlatListData: FlatListData = flatListData,
   ) => {
@@ -107,6 +113,7 @@ const ChoicesQuestionScreen: React.ElementType<ChoicesQuestionScreenProps> = ({
       false,
     ]) as ChoicesWithMultipleAnswersAnswerChoices;
   };
+
 
   React.useEffect(() => {
     // We have to use `useEffect(..., [])` here to ensure this only runs once.
@@ -154,7 +161,23 @@ const ChoicesQuestionScreen: React.ElementType<ChoicesQuestionScreenProps> = ({
       // We have to specify `tempFlatListData` variable here (instead of using
       // the `flatListData` variable) because `flatListData` might still not be
       // updated here.
-      setSelected(initAnswerDataWithFlatListData(tempFlatListData));
+      if (allAnswers[realQuestionId] && allAnswers[realQuestionId].data) {
+        if (question.type === QuestionType.ChoicesWithMultipleAnswers) {
+          setSelected(allAnswers[realQuestionId].data?.value as ChoicesWithMultipleAnswersAnswerChoices)
+        } else if (question.type === QuestionType.ChoicesWithSingleAnswer) {
+          const s = allAnswers[realQuestionId].data?.value as string;
+          let options = initAnswerDataWithFlatListData(tempFlatListData);
+          for (let i=0; i<options.length; i++){
+            if (options[i][0] === s) {
+              options[i][1] = true;
+            }
+          }
+          setSelected(options);
+        }
+      }
+      else {
+        setSelected(initAnswerDataWithFlatListData(tempFlatListData));
+      }
 
       loadingCompleted();
     }
@@ -180,6 +203,7 @@ const ChoicesQuestionScreen: React.ElementType<ChoicesQuestionScreenProps> = ({
         renderItem={({ item, index }) => (
           <ChoiceItem
             id={item.id}
+            disabled={isDisabled}
             title={item.title}
             selected={(selected[index] && selected[index][1]) || false}
             onSelect={() => {

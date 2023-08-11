@@ -28,6 +28,8 @@ import {
   getStudyStartDate,
   getStudyEndDate,
 } from "./studyFile";
+import { StudyFile, StudyInfo } from "@wellping/study-schemas/lib/types";
+import { isStudyDateBased, getStartDate, getEndDate, getNextDate } from "./dateBaseStreamHelpers";
 
 export const ANDROID_CHANNEL_NAME = "ssnlPingChannel";
 
@@ -95,6 +97,7 @@ function getNotificationRequestInput(
 
 const seedrandom = require("seedrandom");
 export async function setNotificationsAsync() {
+  debugger;
   const user = await secureGetUserAsync();
   const seedValue_username = user?.username ?? "defaultusername";
 
@@ -108,14 +111,22 @@ export async function setNotificationsAsync() {
   const thisMorning = new Date();
   thisMorning.setHours(1, 0, 0, 0); // 1AM this morning
 
-  const startDate = max([getStudyStartDate(studyInfo), thisMorning]);
+  let startDate = max([getStudyStartDate(studyInfo), thisMorning]);
   const studyEndDate = getStudyEndDate(studyInfo);
+  let endDate = studyEndDate;
+  const studyDateBased = isStudyDateBased(studyInfo);
+  
+  if (studyDateBased){
+    startDate = getStartDate(studyInfo, thisMorning) || thisMorning;
+    endDate = getEndDate(studyInfo) || endDate;
+  }
+
   // You can only schedule at most 64 local notifications on iOS.
   // Some say on Android, the limit is even lower: 50 (https://stackoverflow.com/a/36677835/2603230)
   // To be safe, we schedule at most 28 notifications, which means (28 / hoursEveryday.length) days.
   const setNotificationsUntil = min([
     addDays(startDate, Math.floor(28 / pingsFrequency.length)),
-    studyEndDate,
+    endDate,
   ]);
   const notificationTimes: NotificationDateWithExpirationDate[] = [];
 
@@ -134,9 +145,9 @@ export async function setNotificationsAsync() {
     let date =
       currentlySetNotifications.length === 0
         ? startDate
-        : addDays(startDate, 1);
+        : !studyDateBased ? addDays(startDate, 1) : getNextDate(studyInfo, addDays(startDate, 1)) || endDate; //if study is date based then find the next date
     date < setNotificationsUntil;
-    date = addDays(date, 1)
+    !studyDateBased ? date = addDays(date, 1) : date = (getNextDate(studyInfo, addDays(date, 1)) || endDate)
   ) {
     const dateMidnight = setHours(
       setMinutes(setSeconds(setMilliseconds(date, 0), 0), 0),
