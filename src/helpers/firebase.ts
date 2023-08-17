@@ -6,12 +6,15 @@
 import { StudyInfo } from "@wellping/study-schemas/lib/types";
 import {
   initializeApp as firebaseInitializeApp,
+  getApps,
   getApp as firebaseGetApp,
   deleteApp as firebaseDeleteApp,
   FirebaseApp,
   FirebaseError,
 } from "firebase/app";
 import {
+  Auth,
+  initializeAuth,
   getAuth as firebaseGetAuth,
   signInWithEmailAndPassword as firebaseSignInWithEmailAndPassword,
   signOut as firebaseSignOut,
@@ -38,6 +41,9 @@ import {
 import { getLoginSessionIDAsync } from "./loginSession";
 import { User } from "./secureStore/user";
 import { DataUploadServerResponse, getFirebaseServerConfig } from "./server";
+
+import { getReactNativePersistence } from 'firebase/auth/react-native'
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 /**
  * Firebase requires to use an email as the user's login name.
@@ -68,7 +74,22 @@ export function getFirebaseDatabase(): FirebaseDatabase {
 
 export function validateAndInitializeFirebaseWithConfig(studyInfo: StudyInfo) {
   if (!firebaseInitialized()) {
+    // Old code here:
     firebaseInitializeApp(getFirebaseServerConfig(studyInfo).config);
+
+    // New initializing flow: -> Did not need to use because we applied manual patch
+    // let firebaseApp: FirebaseApp;
+    // let fireAuth: Auth;
+
+    // if (getApps().length < 1) {
+    //   firebaseApp = firebaseInitializeApp(getFirebaseServerConfig(studyInfo).config);
+    //   fireAuth = initializeAuth(firebaseApp, {
+    //     persistence: getReactNativePersistence(AsyncStorage),
+    //   });
+    // } else {
+    //   firebaseApp = firebaseGetApp();
+    //   fireAuth = firebaseGetAuth();
+    // }
   }
 
   try {
