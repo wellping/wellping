@@ -126,6 +126,7 @@ export async function downloadStudyFileAsync({
     )
     .join("&");
 
+    //__debug__-__test__-https://debug.local.wellping.ssnl.stanford.edu/DEBUG_STUDY.json/
   let response: Response;
   try {
     response = await fetch(`${url}?${query}`, {

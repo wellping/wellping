@@ -204,6 +204,7 @@ export default class RootScreen extends React.Component<
 
   render() {
     const { isLoading, userInfo, studyFileErrorText } = this.state;
+    
     if (isLoading) {
       return <LoadingScreen />;
     }
@@ -216,6 +217,7 @@ export default class RootScreen extends React.Component<
       // The user hasn't logged in.
       return (
         <LoginScreen
+          userInfo={this.state.userInfo}
           downloadAndParseStudyFileAsync={async (...parameter) => {
             return await this.downloadAndParseStudyFileAsync(...parameter);
           }}
@@ -241,6 +243,7 @@ export default class RootScreen extends React.Component<
       <HomeScreen
         studyInfo={this.state.survey.studyInfo}
         streams={this.state.survey.streams}
+        userInfo={this.state.userInfo}
         logout={async () => {
           await this.logoutFnAsync();
         }}

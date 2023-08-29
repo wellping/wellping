@@ -10,6 +10,7 @@ import {
   Alert,
   Keyboard,
   TouchableWithoutFeedback,
+  Pressable,
 } from "react-native";
 
 import { CONFIG } from "../../config/config";
@@ -40,6 +41,7 @@ interface LoginScreenProps {
     options: ParamDownloadAndParseStudyFileAsync,
   ) => Promise<boolean>;
   loggedInAsync: (user: User) => Promise<void>;
+  userInfo: User | null;
 }
 
 interface LoginScreenState {
@@ -107,10 +109,6 @@ export default class LoginScreen extends React.Component<
       firstTimeLoadingLoginScreen = false;
     }
     Linking.addEventListener("url", this.listenToUrlWhenForegroundHandler);
-  }
-
-  componentWillUnmount() {
-    Linking.removeEventListener("url", this.listenToUrlWhenForegroundHandler);
   }
 
   async confirmAgeAsync(): Promise<boolean> {
@@ -294,16 +292,20 @@ export default class LoginScreen extends React.Component<
           <Text style={{ fontSize: 30, marginBottom: 20, textAlign: "center" }}>
             Welcome to Well Ping!
           </Text>
-          <Text style={{ fontSize: 20 }}>
-            Please log in using the login code sent to you.
-          </Text>
+          <Pressable
+            onPress={()=>console.log('asdf', this.props.userInfo)}
+          >
+            <Text style={{ fontSize: 20 }}>
+              Please log in using the login code sent to you.
+            </Text>
+          </Pressable>
         </View>
         <TextInput
           onChangeText={(text) => this.setState({ formData: text })}
           value={this.state.formData}
           autoCorrect={false}
           autoCapitalize="none"
-          autoCompleteType="off"
+          // autoCompleteType="off"
           placeholder="Paste your login code here…"
           multiline
           textAlignVertical="top" // https://reactnative.dev/docs/textinput#multiline

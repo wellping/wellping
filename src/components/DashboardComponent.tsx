@@ -155,6 +155,7 @@ const DashboardComponent: React.FunctionComponent<DashboardComponentProps> = ({
         <WebView
           source={{ uri: url }}
           cacheEnabled={false}
+          style={{width: '50%', height: 100}}
           // TODO: Use `autoManageStatusBarEnabled` after https://github.com/react-native-community/react-native-webview/pull/914 is in Expo
           // https://github.com/react-native-community/react-native-webview/issues/735#issuecomment-629073261
           onNavigationStateChange={(navState) => {

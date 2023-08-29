@@ -4,6 +4,7 @@ import {
   StudyInfo,
   Ping,
 } from "@wellping/study-schemas/lib/types";
+import { User } from "./helpers/secureStore/user";
 import { format, getDay } from "date-fns";
 import * as Linking from "expo-linking";
 import { Subscription } from "expo-modules-core";
@@ -17,16 +18,21 @@ import React from "react";
 import {
   Button,
   Text,
+  TextInput,
   View,
   ScrollView,
   Alert,
   Clipboard,
+  Image,
   Platform,
   TouchableWithoutFeedback,
   TouchableOpacity,
   AppState,
   AppStateStatus,
+  Dimensions,
+  Pressable,
 } from "react-native";
+const { height, width } = Dimensions.get('screen')
 
 import SurveyScreen, { SurveyScreenState } from "./SurveyScreen";
 import DashboardComponent, {
@@ -105,6 +111,7 @@ interface HomeScreenProps {
   studyInfo: StudyInfo;
   streams: Streams;
   logout: () => Promise<void>;
+  userInfo: User | null;
 }
 
 interface HomeScreenState {
@@ -304,7 +311,7 @@ export default class HomeScreen extends React.Component<
   componentWillUnmount() {
     clearInterval(this.interval);
 
-    AppState.removeEventListener("change", this._handleAppStateChange);
+    // AppState.removeEventListener("change", this._handleAppStateChange);
 
     if (this.unregisterAuthObserver) {
       this.unregisterAuthObserver();
@@ -1098,17 +1105,37 @@ export default class HomeScreen extends React.Component<
       }
 
       return (
-        <View style={{ height: "100%" }}>
+        <View style={{flex: 1}}>
           {ExtraView}
-          <DebugView />
-          <Text style={styles.onlyTextStyle}>
+          <View style={{width: width, height: height*.8, backgroundColor: '#fefae0', alignItems: 'center', justifyContent: 'space-around'}}>
+            <Image source={require('../assets/icon-android-foreground.png')} style={{height: height/3, width: height/3}}/>
+
+            <Text 
+              numberOfLines={2}
+              style={{fontSize: 35, fontWeight: 'bold', width: '50%', textAlign: 'center'}}
+            >
+                Welcome to Well Ping! {"(Home)"}
+            </Text>
+
+            <Pressable
+              onPress={()=>console.log('asdf', this.props.userInfo)}
+            >
+              <Text>Please enter your login code to get authenticated.</Text>
+            </Pressable>
+            
+            <TextInput
+              placeholder="Enter login code here..."
+            ></TextInput>
+          </View>
+          {/* <DebugView /> */}
+          {/* <Text style={[styles.onlyTextStyle, {backgroundColor: 'gray', width: width*.8}]}>
             There is currently no active survey. You will receive a notification
             with a survey soon!
-          </Text>
-          <DashboardComponent
+          </Text> */}
+          {/* <DashboardComponent
             firebaseUser={firebaseUser}
             studyInfo={studyInfo}
-          />
+          /> */}
         </View>
       );
     }
@@ -1132,11 +1159,15 @@ export default class HomeScreen extends React.Component<
         <View style={{ height: "100%" }}>
           {ExtraView}
           <DebugView>{streamButtons}</DebugView>
-          <Text
-            style={{ fontSize: 30, marginVertical: 20, textAlign: "center" }}
-          >
+          <Text style={{ fontSize: 30, marginVertical: 20, textAlign: "center" }}>
             Welcome to Well Ping!
           </Text>
+          <Pressable 
+            onPress={()=>{
+              console.log('asdf', currentPing, JSON.stringify(studyInfo,null,2), getAllStreamNames(studyInfo));
+            }}>
+            <Text>Exit</Text>
+          </Pressable>
           <View style={{ marginHorizontal: 20 }}>
             <Button
               title="Click here to start the survey"
@@ -1170,6 +1201,13 @@ export default class HomeScreen extends React.Component<
                 {"\n"}
                 Please close the app entirely.
               </Text>
+              <Pressable 
+                onPress={()=>{
+                  console.log('asdf', currentPing);
+                  this.setState({ currentPing: null });
+                }}>
+                <Text>Exit</Text>
+              </Pressable>
               <DashboardComponent
                 firebaseUser={firebaseUser}
                 studyInfo={studyInfo}
