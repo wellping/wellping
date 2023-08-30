@@ -16,9 +16,9 @@ import {
 } from "firebase/auth";
 import React from "react";
 import {
-  Button,
+  // Button,
   Text,
-  TextInput,
+  // TextInput,
   View,
   ScrollView,
   Alert,
@@ -33,6 +33,11 @@ import {
   Pressable,
 } from "react-native";
 const { height, width } = Dimensions.get('screen')
+import {
+  Button,
+  TextInput
+} from 'react-native-paper'
+
 
 import SurveyScreen, { SurveyScreenState } from "./SurveyScreen";
 import DashboardComponent, {
@@ -123,6 +128,7 @@ interface HomeScreenState {
   isLoading: boolean;
   storedPingStateAsync: SurveyScreenState | null;
   uploadStatusSymbol: string;
+  text: string | undefined;
 
   /**
    * Only used for the upload process after a ping has been completed.
@@ -161,6 +167,7 @@ export default class HomeScreen extends React.Component<
       uploadStatusSymbol: HOME_SCREEN_DEBUG_VIEW_SYMBOLS.UPLOAD.INITIAL,
       firebaseUser: null,
       afterFinishingPing_isUploading: false,
+      text: undefined,
     };
   }
 
@@ -491,7 +498,7 @@ export default class HomeScreen extends React.Component<
           }
         }}
       >
-        <View style={{ height: 20 }}>
+        <View style={{ position: 'absolute', height: 20 }}>
           <HideKeyboardButtonAndWrapper>
             <View
               style={{
@@ -1016,7 +1023,8 @@ export default class HomeScreen extends React.Component<
       );
     };
 
-    if (currentNotificationTime == null) {
+    // Display Study is no longer active?
+    if (currentNotificationTime === null) {
       // We include `> endDate` and `< startDate` inside
       // `currentNotificationTime == null` so that the user can normally finish
       // their last ping even if it's after the end date.
@@ -1033,7 +1041,7 @@ export default class HomeScreen extends React.Component<
               <Text
                 style={{
                   marginVertical: 10,
-                  textAlign: "center",
+                  textAlign: "center", 
                 }}
               >
                 The study has concluded on{"\n"}
@@ -1106,27 +1114,80 @@ export default class HomeScreen extends React.Component<
 
       return (
         <View style={{flex: 1}}>
-          {ExtraView}
-          <View style={{width: width, height: height*.8, backgroundColor: '#fefae0', alignItems: 'center', justifyContent: 'space-around'}}>
-            <Image source={require('../assets/icon-android-foreground.png')} style={{height: height/3, width: height/3}}/>
-
-            <Text 
-              numberOfLines={2}
-              style={{fontSize: 35, fontWeight: 'bold', width: '50%', textAlign: 'center'}}
-            >
-                Welcome to Well Ping! {"(Home)"}
+          <View style={{width: width, height: height*1, backgroundColor: '#f8f9fa', alignItems: 'center', justifyContent: 'space-around'}}>
+            {ExtraView} 
+            <Text style={{position: 'absolute', top: 100, fontSize: 18, fontWeight: 'bold', color: 'gray'}}>
+              {"(Home)"} - user info exists
             </Text>
+            <View style={{width: width*.9, height: height*.7, backgroundColor: '#f8f9fa', alignItems: 'center', justifyContent: 'space-around'}}>
+              <View style={{height: 120, width: 120, backgroundColor: 'rgba(0,0,0,0.0)'}}>
+                <Image source={require('../assets/icon-android-foreground.png')} style={{height: 120, width: 120, backgroundColor: 'transparent', transform: [{scale: 2.5}]}}/>
+              </View>
+              <Text 
+                numberOfLines={3}
+                style={{fontSize: 36, fontWeight: 'bold', width: '70%', textAlign: 'center'}}
+              >
+                Welcome to Well Ping!
+              </Text>
+              <Text 
+                style={{fontSize: 18, width: '70%', textAlign: 'center'}}
+              >
+                Please enter your login code to get authenticated.
+              </Text>
 
-            <Pressable
+              <TextInput
+                // label="Login code"
+                placeholder="Enter login code here..."
+                textColor="black"
+                selectionColor="black"
+                underlineColor="gray"
+                activeUnderlineColor="gray"
+                contentStyle={{backgroundColor: '#f5f5f5'}}
+                outlineStyle={{borderColor: 'transparent'}}
+                underlineStyle={{borderColor: 'transparent'}}
+                value={this.state.text}
+                onChangeText={text => this.setState({text})}
+                style={{width: 297, fontSize: 18}}
+              />
+              <Button 
+                buttonColor="#761A15" 
+                mode="contained" 
+                onPress={() => console.log('Pressed')}
+                style={{borderRadius: 12, width: 294, alignItems: 'center', paddingVertical: 10}}
+                labelStyle={{fontSize: 18, textAlignVertical: 'center'}}
+              >
+                Log in
+              </Button>
+              {/* <Button 
+                textColor="#6C6C6C"
+                mode="text" 
+                onPress={() => console.log('Pressed')}
+                style={{borderRadius: 12, width: 4/5*width, paddingVertical: 18}}
+                labelStyle={{fontSize: 21}}
+              >
+                Skip for now
+              </Button> */}
+              <Pressable 
+                onPress={() => console.log('Pressed')}
+                style={{borderRadius: 12, width: 4/5*width, alignItems: 'center'}}
+              >
+                <Text style={{color: '#6C6C6C', fontSize: 21}}>
+                  Skip for now
+                </Text>
+              </Pressable>
+            </View>
+
+            {/* <Pressable
               onPress={()=>console.log('asdf', this.props.userInfo)}
             >
               <Text>Please enter your login code to get authenticated.</Text>
-            </Pressable>
-            
-            <TextInput
+            </Pressable> */}
+
+            {/* <TextInput
               placeholder="Enter login code here..."
-            ></TextInput>
+            ></TextInput> */}
           </View>
+
           {/* <DebugView /> */}
           {/* <Text style={[styles.onlyTextStyle, {backgroundColor: 'gray', width: width*.8}]}>
             There is currently no active survey. You will receive a notification
@@ -1140,7 +1201,8 @@ export default class HomeScreen extends React.Component<
       );
     }
 
-    if (currentPing == null) {
+    // Display Survey Start flow
+    if (currentPing === null) {
       const streamButtons = [];
       for (const streamName of getAllStreamNames(studyInfo)) {
         streamButtons.push(
@@ -1156,7 +1218,7 @@ export default class HomeScreen extends React.Component<
       }
 
       return (
-        <View style={{ height: "100%" }}>
+        <View style={styles0.container}>
           {ExtraView}
           <DebugView>{streamButtons}</DebugView>
           <Text style={{ fontSize: 30, marginVertical: 20, textAlign: "center" }}>
@@ -1164,9 +1226,17 @@ export default class HomeScreen extends React.Component<
           </Text>
           <Pressable 
             onPress={()=>{
-              console.log('asdf', currentPing, JSON.stringify(studyInfo,null,2), getAllStreamNames(studyInfo));
+              // console.log('asdf', currentPing, JSON.stringify(studyInfo,null,2), getAllStreamNames(studyInfo));
+              this.setState({ currentPing: null, currentNotificationTime: null })
             }}>
-            <Text>Exit</Text>
+            <Text>Exit to home</Text>
+          </Pressable>
+          <Pressable 
+            onPress={()=>{
+              console.log('asdf', new Date(), JSON.stringify(studyInfo,null,2), new Date() > getStudyEndDate(studyInfo));
+              console.log(currentNotificationTime, currentPing)
+            }}> 
+            <Text>Log study info</Text>
           </Pressable>
           <View style={{ marginHorizontal: 20 }}>
             <Button
@@ -1176,17 +1246,18 @@ export default class HomeScreen extends React.Component<
               }}
             />
           </View>
-          <DashboardComponent
+          {/* <DashboardComponent
             firebaseUser={firebaseUser}
             studyInfo={studyInfo}
-          />
+          /> */}
         </View>
       );
     }
 
+    // Display End of Survey screen
     if (currentPing.endTime) {
       return (
-        <View style={{ height: "100%" }}>
+        <View style={styles0.container}>
           {ExtraView}
           <DebugView />
           {this.state.afterFinishingPing_isUploading ? (
@@ -1195,23 +1266,30 @@ export default class HomeScreen extends React.Component<
             </Text>
           ) : (
             <>
-              <Text style={styles.onlyTextStyle}>
+              <Text style={[styles.onlyTextStyle, {fontSize: 25}]}>
                 Thank you for completing the survey for this ping!{"\n"}
-                Well Ping will send a notification for the next survey soon!
+                {/* Well Ping will send a notification for the next survey soon!
                 {"\n"}
-                Please close the app entirely.
+                Please close the app entirely. */} 
               </Text>
               <Pressable 
                 onPress={()=>{
                   console.log('asdf', currentPing);
-                  this.setState({ currentPing: null });
+                  this.setState({ currentPing: null , currentNotificationTime: null});
                 }}>
-                <Text>Exit</Text>
+                <Text>Return to Home</Text>
               </Pressable>
-              <DashboardComponent
+              <Pressable 
+                onPress={()=>{
+                  console.log('asdf', JSON.stringify(currentPing,null,2));
+                  // this.setState({ currentPing: null });
+                }}>
+                <Text>Current ping</Text>
+              </Pressable>
+              {/* <DashboardComponent
                 firebaseUser={firebaseUser}
                 studyInfo={studyInfo}
-              />
+              /> */}
             </>
           )}
         </View>
@@ -1332,5 +1410,13 @@ export default class HomeScreen extends React.Component<
         <DebugView />
       </View>
     );
+  }
+}
+
+const styles0 = {
+  container: {
+    height: "100%", 
+    alignItems: 'center', 
+    justifyContent: 'center' 
   }
 }

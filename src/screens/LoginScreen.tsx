@@ -2,8 +2,8 @@ import * as Linking from "expo-linking";
 import * as WebBrowser from "expo-web-browser";
 import React from "react";
 import {
-  Button,
-  TextInput,
+  // Button,
+  // TextInput,
   Text,
   View,
   ScrollView,
@@ -11,7 +11,14 @@ import {
   Keyboard,
   TouchableWithoutFeedback,
   Pressable,
+  Dimensions,
+  Image,
 } from "react-native";
+const { height, width } = Dimensions.get('screen')
+import {
+  Button,
+  TextInput
+} from 'react-native-paper'
 
 import { CONFIG } from "../../config/config";
 import {
@@ -285,47 +292,68 @@ export default class LoginScreen extends React.Component<
 
     return (
       <ScrollView
-        style={{ height: "100%", paddingHorizontal: 20 }}
+        style={{ height: "100%", paddingHorizontal: 20, backgroundColor: '#f8f9fa' }}
         keyboardShouldPersistTaps="handled" /* https://github.com/facebook/react-native/issues/9404#issuecomment-252474548 */
       >
-        <View style={{ marginVertical: 20 }}>
-          <Text style={{ fontSize: 30, marginBottom: 20, textAlign: "center" }}>
-            Welcome to Well Ping!
-          </Text>
-          <Pressable
-            onPress={()=>console.log('asdf', this.props.userInfo)}
-          >
-            <Text style={{ fontSize: 20 }}>
-              Please log in using the login code sent to you.
+        <View style={{marginVertical: 20, width: width-40, height: height*.8, backgroundColor: '#f8f9fa', alignItems: 'center', justifyContent: 'space-around'}}>
+          <Text style={{position: 'absolute', top: 10, fontSize: 18, fontWeight: 'bold', color: 'gray'}}>
+              {"(Login)"} - no user info
             </Text>
-          </Pressable>
+
+          <View style={{width: width*.9, height: height*.7, backgroundColor: '#f8f9fa', alignItems: 'center', justifyContent: 'space-around'}}>
+            <View style={{height: 120, width: 120, backgroundColor: 'rgba(0,0,0,0.0)'}}>
+              <Image source={require('../../assets/icon-android-foreground.png')} style={{height: 120, width: 120, backgroundColor: 'transparent', transform: [{scale: 2.5}]}}/>
+            </View>
+            <Text style={{ fontSize: 36, fontWeight: 'bold', width: '70%', textAlign: "center" }}>
+              Welcome to Well Ping!
+            </Text>
+            <Pressable
+              onPress={()=>console.log('asdf', this.props.userInfo)}
+              style={{width: '70%'}}
+            >
+              <Text style={{ fontSize: 18, textAlign: 'center' }}>
+                Please log in using the login code sent to you.
+              </Text>
+            </Pressable>
+            <TextInput
+              onChangeText={(text) => this.setState({ formData: text })}
+              value={this.state.formData}
+              autoCorrect={false}
+              autoCapitalize="none"
+              placeholder="Enter login code here..."
+              textColor="black"
+              selectionColor="black"
+              underlineColor="gray"
+              activeUnderlineColor="gray"
+              contentStyle={{backgroundColor: '#f5f5f5'}}
+              outlineStyle={{borderColor: 'transparent'}}
+              underlineStyle={{borderColor: 'transparent'}}
+              blurOnSubmit // https://stackoverflow.com/a/38988668/2603230
+              onSubmitEditing={this.loginFnAsync}
+              editable={!this.state.disableLoginButton}
+              style={{width: 297, fontSize: 18}}
+            />
+            <Button
+              buttonColor="#761A15" 
+              mode="contained" 
+              style={{borderRadius: 12, width: 294, alignItems: 'center', paddingVertical: 10}}
+              disabled={this.state.disableLoginButton}
+              labelStyle={{fontSize: 18}}
+              onPress={() => console.log('Pressed')}
+              // onPress={this.loginFnAsync}
+            >
+              Log in
+            </Button>
+            <Pressable 
+              onPress={() => console.log('Pressed')}
+              style={{borderRadius: 12, width: 4/5*width, alignItems: 'center'}}
+            >
+              <Text style={{color: '#6C6C6C', fontSize: 21}}>
+                Skip for now
+              </Text>
+            </Pressable>
+          </View>
         </View>
-        <TextInput
-          onChangeText={(text) => this.setState({ formData: text })}
-          value={this.state.formData}
-          autoCorrect={false}
-          autoCapitalize="none"
-          // autoCompleteType="off"
-          placeholder="Paste your login code here…"
-          multiline
-          textAlignVertical="top" // https://reactnative.dev/docs/textinput#multiline
-          blurOnSubmit // https://stackoverflow.com/a/38988668/2603230
-          onSubmitEditing={this.loginFnAsync}
-          editable={!this.state.disableLoginButton}
-          style={{
-            padding: 8,
-            borderWidth: 1,
-            borderColor: "#ccc",
-            borderRadius: 5,
-            marginBottom: 10,
-            height: 75,
-          }}
-        />
-        <Button
-          title="Log In"
-          disabled={this.state.disableLoginButton}
-          onPress={this.loginFnAsync}
-        />
         {errorText ? (
           <View
             style={{
