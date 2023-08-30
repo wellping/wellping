@@ -36,6 +36,7 @@ import {
   Image,
   Dimensions,
   Platform,
+  StyleSheet,
 } from "react-native";
 
 import { _DEBUG_CONFIGS } from "../config/debug";
@@ -787,15 +788,13 @@ export default class SurveyScreen extends React.Component<
       question.image &&
       question.image.position === position && (
         <Image
-          style={{
-            margin: 5,
-            alignSelf: "center",
-            width: question.image.style.width,
-            height: question.image.style.height,
-            maxHeight: question.image.style.maxHeight,
-            maxWidth: question.image.style.maxWidth,
-            aspectRatio: question.image.style.aspectRatio,
-          }}
+          style={[styles.image, {
+            // width: question.image.style.width,
+            // height: question.image.style.height,
+            // maxHeight: question.image.style.maxHeight,
+            // maxWidth: question.image.style.maxWidth,
+            // aspectRatio: question.image.style.aspectRatio,
+          }]}
           source={{
             uri: question.image.url,
           }}
@@ -1019,3 +1018,10 @@ export default class SurveyScreen extends React.Component<
     );
   }
 }
+
+const styles = StyleSheet.create({
+  image: {
+    margin: 5,
+    alignSelf: "center",
+  }
+})
