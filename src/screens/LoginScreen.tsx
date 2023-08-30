@@ -2,7 +2,7 @@ import * as Linking from "expo-linking";
 import * as WebBrowser from "expo-web-browser";
 import React from "react";
 import {
-  // Button,
+  Button,
   // TextInput,
   Text,
   View,
@@ -16,7 +16,7 @@ import {
 } from "react-native";
 const { height, width } = Dimensions.get('screen')
 import {
-  Button,
+  Button as PaperButton,
   TextInput
 } from 'react-native-paper'
 
@@ -84,7 +84,7 @@ export default class LoginScreen extends React.Component<
         url.queryParams &&
         url.queryParams["code"]
       ) {
-        const loginCode = decodeURIComponent(url.queryParams["code"]);
+        const loginCode = decodeURIComponent(url.queryParams["code"] as string);
 
         this.setState({ formData: loginCode });
         Alert.alert(
@@ -333,7 +333,7 @@ export default class LoginScreen extends React.Component<
               editable={!this.state.disableLoginButton}
               style={{width: 297, fontSize: 18}}
             />
-            <Button
+            <PaperButton
               buttonColor="#761A15" 
               mode="contained" 
               style={{borderRadius: 12, width: 294, alignItems: 'center', paddingVertical: 10}}
@@ -343,7 +343,7 @@ export default class LoginScreen extends React.Component<
               // onPress={this.loginFnAsync}
             >
               Log in
-            </Button>
+            </PaperButton>
             <Pressable 
               onPress={() => console.log('Pressed')}
               style={{borderRadius: 12, width: 4/5*width, alignItems: 'center'}}

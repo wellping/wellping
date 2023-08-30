@@ -16,7 +16,7 @@ import {
 } from "firebase/auth";
 import React from "react";
 import {
-  // Button,
+  Button,
   Text,
   // TextInput,
   View,
@@ -31,10 +31,11 @@ import {
   AppStateStatus,
   Dimensions,
   Pressable,
+  StyleSheet
 } from "react-native";
 const { height, width } = Dimensions.get('screen')
 import {
-  Button,
+  Button as PaperButton,
   TextInput
 } from 'react-native-paper'
 
@@ -706,7 +707,9 @@ export default class HomeScreen extends React.Component<
       </View>
     );
 
-    const DebugView: React.FunctionComponent = ({ children }) => {
+    const DebugView: React.FunctionComponent = ({ 
+      // children 
+    }) => {
       if (!this.state.displayDebugView) {
         return <></>;
       }
@@ -1018,7 +1021,7 @@ export default class HomeScreen extends React.Component<
             }}
             title="Reset pings/app (restart needed)"
           />
-          {children}
+          {/* {children} */}
         </ScrollView>
       );
     };
@@ -1149,7 +1152,7 @@ export default class HomeScreen extends React.Component<
                 onChangeText={text => this.setState({text})}
                 style={{width: 297, fontSize: 18}}
               />
-              <Button 
+              <PaperButton 
                 buttonColor="#761A15" 
                 mode="contained" 
                 onPress={() => console.log('Pressed')}
@@ -1157,7 +1160,7 @@ export default class HomeScreen extends React.Component<
                 labelStyle={{fontSize: 18, textAlignVertical: 'center'}}
               >
                 Log in
-              </Button>
+              </PaperButton>
               {/* <Button 
                 textColor="#6C6C6C"
                 mode="text" 
@@ -1220,7 +1223,7 @@ export default class HomeScreen extends React.Component<
       return (
         <View style={styles0.container}>
           {ExtraView}
-          <DebugView>{streamButtons}</DebugView>
+          {/* <DebugView>{streamButtons}</DebugView> */}
           <Text style={{ fontSize: 30, marginVertical: 20, textAlign: "center" }}>
             Welcome to Well Ping!
           </Text>
@@ -1413,10 +1416,10 @@ export default class HomeScreen extends React.Component<
   }
 }
 
-const styles0 = {
+const styles0 = StyleSheet.create({
   container: {
     height: "100%", 
     alignItems: 'center', 
     justifyContent: 'center' 
   }
-}
+})

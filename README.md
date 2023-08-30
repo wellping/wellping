@@ -40,7 +40,13 @@ Alternatively, click this link on your phone to automatically enter the login co
 
 ## Development
 
+Note the following commands are deprecated. See https://blog.expo.dev/the-new-expo-cli-f4250d8e3421
 ```bash
+# Use ONE of these commands to install the expo package
+npm install expo
+yarn add expo
+
+# Do not use these commands
 npm install -g expo-cli
 npm install -g eas-cli
 
