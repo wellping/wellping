@@ -339,8 +339,8 @@ export default class LoginScreen extends React.Component<
               style={{borderRadius: 12, width: 294, alignItems: 'center', paddingVertical: 10}}
               disabled={this.state.disableLoginButton}
               labelStyle={{fontSize: 18}}
-              onPress={() => console.log('Pressed')}
-              // onPress={this.loginFnAsync}
+              // onPress={() => console.log('Pressed')}
+              onPress={this.loginFnAsync}
             >
               Log in
             </PaperButton>

@@ -1,6 +1,17 @@
 import { StudyFile } from "@wellping/study-schemas/lib/types";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import React from "react";
-import { Text } from "react-native";
+import { 
+  Text,
+  View,
+  Dimensions,
+  Pressable,
+} from "react-native";
+const { height, width } = Dimensions.get('screen')
+import {
+  Button as PaperButton
+} from 'react-native-paper'
+import { StudyFileSchema } from "@wellping/study-schemas/lib/schemas/StudyFile";
 
 import HomeScreen from "./HomeScreen";
 import { clearCurrentStudyFileAsync } from "./helpers/asyncStorage/studyFile";
@@ -204,17 +215,29 @@ export default class RootScreen extends React.Component<
 
   render() {
     const { isLoading, userInfo, studyFileErrorText } = this.state;
-    
-    if (isLoading) {
-      return <LoadingScreen />;
-    }
 
-    if (studyFileErrorText) {
-      return <StudyFileErrorScreen errorText={studyFileErrorText} />;
-    }
+    if (isLoading) return <LoadingScreen />;
+    if (studyFileErrorText) return <StudyFileErrorScreen errorText={studyFileErrorText} />;
+    if (this.state.survey == null) {
+      if (userInfo != null || userInfo != undefined) {
+        <>
+          <Text>
+            {getCriticalProblemTextForUser("this.state.survey == null")}
+          </Text>
+          <Pressable 
+            // onPress={async ()=> await this.logoutFnAsync()}
+            onPress={async ()=> console.log(
+              await studyFileExistsAsync(),
+              'userInfo: ',userInfo,
+              'survey: ', this.state.survey,
+              (userInfo != null || userInfo != undefined)
+            )}
+            >
+            <Text>Press this to store async study file info</Text>
+          </Pressable>
 
-    if (userInfo === null) {
-      // The user hasn't logged in.
+        </>
+      }
       return (
         <LoginScreen
           userInfo={this.state.userInfo}
@@ -228,26 +251,51 @@ export default class RootScreen extends React.Component<
             });
           }}
         />
-      );
-    }
+      )}
 
-    if (this.state.survey == null) {
-      return (
-        <Text>
-          {getCriticalProblemTextForUser("this.state.survey == null")}
-        </Text>
-      );
-    }
-
-    return (
-      <HomeScreen
+    return <>
+      {userInfo? <HomeScreen
         studyInfo={this.state.survey.studyInfo}
         streams={this.state.survey.streams}
         userInfo={this.state.userInfo}
         logout={async () => {
           await this.logoutFnAsync();
         }}
-      />
-    );
+      /> 
+      :
+      <LoginScreen
+        userInfo={this.state.userInfo}
+        downloadAndParseStudyFileAsync={async (...parameter) => {
+          return await this.downloadAndParseStudyFileAsync(...parameter);
+        }}
+        loggedInAsync={async (user) => {
+          this.setState({
+            userInfo: user,
+            survey: await getStudyFileAsync(),
+          });
+        }}
+      />}
+
+      {/* Add Nav Bar here */}
+      <View style={{width: width, height: height*.2, backgroundColor: '#f8f9fa', justifyContent: 'flex-start', alignItems: 'flex-end', paddingHorizontal: 20, paddingVertical: 10}}>
+
+        <PaperButton
+          buttonColor="#f8f9fa" 
+          textColor="black"
+          mode="elevated" 
+          style={{borderRadius: 12, width: 160, alignItems: 'center', paddingVertical: 10}}
+          // disabled={this.state.disableLoginButton}
+          labelStyle={{fontSize: 18}}
+          // onPress={() => console.log('Pressed')}
+          onPress={async () => {
+            await this.logoutFnAsync();
+            // console.log('logout goes here')
+          }}
+        >
+          Log out
+        </PaperButton>
+      </View>
+    </>
+
   }
 }

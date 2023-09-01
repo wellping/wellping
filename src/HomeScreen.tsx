@@ -18,27 +18,27 @@ import React from "react";
 import {
   Button,
   Text,
-  // TextInput,
   View,
   ScrollView,
   Alert,
-  Clipboard,
-  Image,
-  Platform,
+  // Clipboard,
   TouchableWithoutFeedback,
   TouchableOpacity,
   AppState,
   AppStateStatus,
   Dimensions,
   Pressable,
-  StyleSheet
+  StyleSheet,
+  FlatList,
+  Platform,
 } from "react-native";
 const { height, width } = Dimensions.get('screen')
 import {
   Button as PaperButton,
   TextInput
 } from 'react-native-paper'
-
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { studyFileExistsAsync } from "./helpers/studyFile";
 
 import SurveyScreen, { SurveyScreenState } from "./SurveyScreen";
 import DashboardComponent, {
@@ -110,6 +110,7 @@ import {
   getStudyEndDate,
   getStudyInfoAsync,
 } from "./helpers/studyFile";
+import { clearCurrentStudyFileAsync } from "./helpers/asyncStorage/studyFile";
 import { styles } from "./helpers/styles";
 import LoadingScreen from "./screens/LoadingScreen";
 
@@ -146,6 +147,11 @@ interface HomeScreenState {
   // DEBUG
   displayDebugView: boolean;
 }
+
+type ItemData = {
+  id: string;
+  title: string;
+};
 
 export default class HomeScreen extends React.Component<
   HomeScreenProps,
@@ -948,11 +954,11 @@ export default class HomeScreen extends React.Component<
             color="orange"
             title="copy dashboard url"
             onPress={async () => {
-              const url =
-                (await getDashboardUrlAsync(studyInfo, firebaseUser)) ??
-                "No dashboard URL.";
-              Clipboard.setString(url);
-              await alertWithShareButtonContainingDebugInfoAsync(url);
+              // const url =
+              //   (await getDashboardUrlAsync(studyInfo, firebaseUser)) ??
+              //   "No dashboard URL.";
+              // Clipboard.setString(url);
+              // await alertWithShareButtonContainingDebugInfoAsync(url);
             }}
           />
           <Button
@@ -1032,6 +1038,7 @@ export default class HomeScreen extends React.Component<
       // `currentNotificationTime == null` so that the user can normally finish
       // their last ping even if it's after the end date.
 
+      // Study has concluded screen
       if (new Date() > getStudyEndDate(studyInfo)) {
         return (
           <View style={{ height: "100%" }}>
@@ -1095,7 +1102,9 @@ export default class HomeScreen extends React.Component<
         );
       }
 
+      // Home screen current replaced with survey screen
       if (new Date() < getStudyStartDate(studyInfo)) {
+        // When participant sees study before it begins
         return (
           <View style={{ height: "100%" }}>
             {ExtraView}
@@ -1115,81 +1124,59 @@ export default class HomeScreen extends React.Component<
         );
       }
 
-      return (
-        <View style={{flex: 1}}>
-          <View style={{width: width, height: height*1, backgroundColor: '#f8f9fa', alignItems: 'center', justifyContent: 'space-around'}}>
-            {ExtraView} 
-            <Text style={{position: 'absolute', top: 100, fontSize: 18, fontWeight: 'bold', color: 'gray'}}>
-              {"(Home)"} - user info exists
-            </Text>
-            <View style={{width: width*.9, height: height*.7, backgroundColor: '#f8f9fa', alignItems: 'center', justifyContent: 'space-around'}}>
-              <View style={{height: 120, width: 120, backgroundColor: 'rgba(0,0,0,0.0)'}}>
-                <Image source={require('../assets/icon-android-foreground.png')} style={{height: 120, width: 120, backgroundColor: 'transparent', transform: [{scale: 2.5}]}}/>
-              </View>
-              <Text 
-                numberOfLines={3}
-                style={{fontSize: 36, fontWeight: 'bold', width: '70%', textAlign: 'center'}}
-              >
-                Welcome to Well Ping!
-              </Text>
-              <Text 
-                style={{fontSize: 18, width: '70%', textAlign: 'center'}}
-              >
-                Please enter your login code to get authenticated.
-              </Text>
+      // const DATA: ItemData[] = [{id: 'a', title: 'hello'}, {id: 'b', title: 'hello2'}]
+      const DATA: ItemData[] = [{id: studyInfo.id, title: studyInfo.studyFileURL}]
+      const renderItem = ({item}: {item: ItemData}) => {
+        return <View style={{marginTop: 10, width: width*.9, height: 72, backgroundColor: '#fffae2', alignItems: 'flex-start', justifyContent: 'space-around', padding: 10, paddingHorizontal: 20, borderRadius: 12}}>
+          <Text style={{fontSize: 18, fontWeight: 'bold', color: '#3a3a3a'}}>{item.id}</Text>
+          <Text numberOfLines={1} style={{fontSize: 16, color: '#4a4a4a'}}>{item.title}</Text>
+        </View>
+      }
 
-              <TextInput
-                // label="Login code"
-                placeholder="Enter login code here..."
-                textColor="black"
-                selectionColor="black"
-                underlineColor="gray"
-                activeUnderlineColor="gray"
-                contentStyle={{backgroundColor: '#f5f5f5'}}
-                outlineStyle={{borderColor: 'transparent'}}
-                underlineStyle={{borderColor: 'transparent'}}
-                value={this.state.text}
-                onChangeText={text => this.setState({text})}
-                style={{width: 297, fontSize: 18}}
+      // When participant see's study and it's ready to go
+      return (
+        // <View style={{flex: 1}}>
+          <View style={{width: width, height: height*.8, backgroundColor: '#f8f9fa', alignItems: 'center', justifyContent: 'flex-start', paddingTop: Platform.OS === 'ios'? 84:0 }}>
+            {ExtraView} 
+            <View style={{width: width*.9, backgroundColor: '#f8f9fa', alignItems: 'flex-start', justifyContent: 'flex-start'}}>
+              <Text style={{
+                fontSize: 36, 
+                fontWeight: 'bold', 
+                width: '70%', 
+                textAlign: 'left', 
+                color: "#3a3a3a"
+              }}>
+                Your survey{"(s)"}
+              </Text>
+            </View>
+            {/* <Text>
+              There is currently no active survey. You will receive a notification
+              with a survey soon!
+            </Text> */}
+            <View style={{ width: '100%', height: height*.7, backgroundColor: 'rgba(0,0,0,0.0)', alignItems: 'center'}}>
+              <FlatList
+                data={DATA}
+                renderItem={renderItem}
+                keyExtractor={item => item.id}
               />
-              <PaperButton 
-                buttonColor="#761A15" 
-                mode="contained" 
-                onPress={() => console.log('Pressed')}
-                style={{borderRadius: 12, width: 294, alignItems: 'center', paddingVertical: 10}}
-                labelStyle={{fontSize: 18, textAlignVertical: 'center'}}
-              >
-                Log in
-              </PaperButton>
-              {/* <Button 
-                textColor="#6C6C6C"
-                mode="text" 
-                onPress={() => console.log('Pressed')}
-                style={{borderRadius: 12, width: 4/5*width, paddingVertical: 18}}
-                labelStyle={{fontSize: 21}}
-              >
-                Skip for now
-              </Button> */}
               <Pressable 
-                onPress={() => console.log('Pressed')}
-                style={{borderRadius: 12, width: 4/5*width, alignItems: 'center'}}
+                style={{ position: 'absolute', top: 100, left: 20, }} 
+                onPress={async ()=>console.log(
+                  // JSON.stringify(this.state,null,2), 
+                  // JSON.stringify(this.props.userInfo,null,2),
+                  // typeof this.props.studyInfo,
+                  new Date < getStudyStartDate(studyInfo),
+                  // getStudyStartDate(studyInfo),
+                  // JSON.stringify(studyInfo,null,2),
+                  JSON.stringify(await AsyncStorage.getAllKeys(),null,2)
+                )}
               >
-                <Text style={{color: '#6C6C6C', fontSize: 21}}>
-                  Skip for now
+                <Text style={{ fontSize: 18, textAlign: 'left', color: 'lightgray'}}>
+                  {"(Debug)"} Log response to terminal
                 </Text>
               </Pressable>
             </View>
-
-            {/* <Pressable
-              onPress={()=>console.log('asdf', this.props.userInfo)}
-            >
-              <Text>Please enter your login code to get authenticated.</Text>
-            </Pressable> */}
-
-            {/* <TextInput
-              placeholder="Enter login code here..."
-            ></TextInput> */}
-          </View>
+          {/* </View> */}
 
           {/* <DebugView /> */}
           {/* <Text style={[styles.onlyTextStyle, {backgroundColor: 'gray', width: width*.8}]}>
@@ -1227,28 +1214,55 @@ export default class HomeScreen extends React.Component<
           <Text style={{ fontSize: 30, marginVertical: 20, textAlign: "center" }}>
             Welcome to Well Ping!
           </Text>
-          <Pressable 
-            onPress={()=>{
-              // console.log('asdf', currentPing, JSON.stringify(studyInfo,null,2), getAllStreamNames(studyInfo));
-              this.setState({ currentPing: null, currentNotificationTime: null })
-            }}>
-            <Text>Exit to home</Text>
-          </Pressable>
-          <Pressable 
-            onPress={()=>{
+          <PaperButton
+            buttonColor="#761A15" 
+            mode="contained" 
+            style={{borderRadius: 12, width: 294, alignItems: 'center', paddingVertical: 10}}
+            // disabled={this.state.disableLoginButton}
+            labelStyle={{fontSize: 18}}
+            onPress={() => {
+              this.setState({ currentPing: null, currentNotificationTime: null });
+            }}
+            // onPress={this.loginFnAsync}
+          >
+            Exit to home
+          </PaperButton>
+          <PaperButton
+            buttonColor="gray" 
+            mode="contained" 
+            style={{borderRadius: 12, width: 294, alignItems: 'center', paddingVertical: 10}}
+            // disabled={this.state.disableLoginButton}
+            labelStyle={{fontSize: 18}}
+            onPress={() => {
               console.log('asdf', new Date(), JSON.stringify(studyInfo,null,2), new Date() > getStudyEndDate(studyInfo));
               console.log(currentNotificationTime, currentPing)
-            }}> 
-            <Text>Log study info</Text>
-          </Pressable>
-          <View style={{ marginHorizontal: 20 }}>
+              console.log(JSON.stringify(this.state,null,2))
+            }}
+            // onPress={this.loginFnAsync}
+          >
+            Log study info
+          </PaperButton>
+          <PaperButton
+            buttonColor="blue" 
+            mode="contained" 
+            style={{borderRadius: 12, width: 294, alignItems: 'center', paddingVertical: 10}}
+            // disabled={this.state.disableLoginButton}
+            labelStyle={{fontSize: 18}}
+            onPress={() => {
+              this.startSurveyAsync();
+            }}
+            // onPress={this.loginFnAsync}
+          >
+            Click here to start the survey
+          </PaperButton>
+          {/* <View style={{ marginHorizontal: 20 }}>
             <Button
               title="Click here to start the survey"
               onPress={() => {
                 this.startSurveyAsync();
               }}
             />
-          </View>
+          </View> */}
           {/* <DashboardComponent
             firebaseUser={firebaseUser}
             studyInfo={studyInfo}
@@ -1283,16 +1297,22 @@ export default class HomeScreen extends React.Component<
                 <Text>Return to Home</Text>
               </Pressable>
               <Pressable 
-                onPress={()=>{
-                  console.log('asdf', JSON.stringify(currentPing,null,2));
+                onPress={async ()=>{
+                  // console.log('asdf', JSON.stringify(currentPing,null,2));
                   // this.setState({ currentPing: null });
+                  const allKeys = await AsyncStorage.getAllKeys()
+                  console.log(JSON.stringify(allKeys,null,2))
+                  // allKeys.map(async (key) => {
+                  //   console.log(JSON.stringify(await AsyncStorage.getItem(key),null,2))
+                  // })
+                  console.log(await studyFileExistsAsync())
                 }}>
                 <Text>Current ping</Text>
               </Pressable>
-              {/* <DashboardComponent
+              <DashboardComponent
                 firebaseUser={firebaseUser}
                 studyInfo={studyInfo}
-              /> */}
+              />
             </>
           )}
         </View>
@@ -1420,6 +1440,7 @@ const styles0 = StyleSheet.create({
   container: {
     height: "100%", 
     alignItems: 'center', 
-    justifyContent: 'center' 
+    justifyContent: 'flex-start',
+    paddingTop: Platform.OS === 'ios'? 50 : 0
   }
 })
