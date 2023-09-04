@@ -1,20 +1,25 @@
-import { StudyFile } from "@wellping/study-schemas/lib/types";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import {
+  Streams,
+  StreamName,
+  StudyInfo,
+  StudyFile,
+  Ping,
+} from "@wellping/study-schemas/lib/types";
 import React from "react";
 import { 
   Text,
   View,
   Dimensions,
   Pressable,
+  Platform,
+  StyleSheet
 } from "react-native";
 const { height, width } = Dimensions.get('screen')
 import {
   Button as PaperButton
 } from 'react-native-paper'
-import { StudyFileSchema } from "@wellping/study-schemas/lib/schemas/StudyFile";
 
 import HomeScreen from "./HomeScreen";
-import { clearCurrentStudyFileAsync } from "./helpers/asyncStorage/studyFile";
 import {
   storeTempStudyFileAsync,
   getTempStudyFileAsync,
@@ -40,6 +45,14 @@ import LoginScreen, {
   ParamDownloadAndParseStudyFileAsync,
 } from "./screens/LoginScreen";
 import StudyFileErrorScreen from "./screens/StudyFileErrorScreen";
+import {
+  NavigationContainer
+} from '@react-navigation/native'
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
+import { createNativeStackNavigator, NativeStackScreenProps } from "@react-navigation/native-stack";
+import { AppStateStatus } from "react-native";
+import { SurveyScreenState } from "./SurveyScreen";
+import { User as FirebaseUser } from 'firebase/auth'
 
 interface RootScreenProps {}
 
@@ -50,7 +63,54 @@ interface RootScreenState {
   survey?: StudyFile;
 }
 
-export default class RootScreen extends React.Component<
+export type RootStackParamList = {
+  // HomeScreen: React.Component<HomeScreenProps, HomeScreenState>;
+  HomeScreen: undefined;
+  Profile: { userId: string };
+  Feed: { sort: 'latest' | 'top' } | undefined;
+};
+
+type Props = NativeStackScreenProps<RootStackParamList, 'Profile'>;
+
+type HomeScreenProps = {
+  studyInfo: StudyInfo;
+  streams: Streams;
+  logout: () => Promise<void>;
+  userInfo: User | null;
+}
+
+type HomeScreenState = {
+  appState: AppStateStatus;
+  time: Date;
+  allowsNotifications: boolean;
+  currentNotificationTime: Date | null;
+  currentPing: Ping | null;
+  isLoading: boolean;
+  storedPingStateAsync: SurveyScreenState | null;
+  uploadStatusSymbol: string;
+  text: string | undefined;
+
+  /**
+   * Only used for the upload process after a ping has been completed.
+   */
+  afterFinishingPing_isUploading: boolean;
+
+  /**
+   * For when Firebase server is used.
+   *
+   * If Firebase server is not used, it is always `null`.
+   */
+  firebaseUser: FirebaseUser | null;
+
+  // DEBUG
+  displayDebugView: boolean;
+}
+
+export default function Main () {
+  return <RootScreen/>
+}
+
+class RootScreen extends React.Component<
   RootScreenProps,
   RootScreenState
 > {
@@ -215,6 +275,88 @@ export default class RootScreen extends React.Component<
 
   render() {
     const { isLoading, userInfo, studyFileErrorText } = this.state;
+    const Stack = createNativeStackNavigator<RootStackParamList>();
+
+    const AppStack = () => (
+      <View style={{height: height*.8, width: '100%', backgroundColor: '#f8f9fa', alignItems: 'center', justifyContent: 'flex-start', paddingTop: Platform.OS === 'ios'? 50:0 }}>
+        <View style={{height: '100%', width: '100%'}}>
+          <NavigationContainer>
+            <Stack.Navigator initialRouteName='HomeScreen'>
+              <Stack.Screen name="HomeScreen" options={{headerShown: false, contentStyle: {paddingTop: 30}}}>
+                {(props)=> this.state.survey === undefined? <View style={{height: 100, width: 200, backgroundColor: 'gray'}}>
+                    <Text>survey is undefined</Text>
+                  </View>
+                  : 
+                  <HomeScreen
+                    {...props}
+                    studyInfo={this.state.survey.studyInfo}
+                    streams={this.state.survey.streams}
+                    userInfo={this.state.userInfo}
+                    logout={async () => {
+                      await this.logoutFnAsync();
+                    }}
+                  /> }
+              </Stack.Screen>
+            </Stack.Navigator>
+          </NavigationContainer>
+        </View>
+      </View>
+    )
+
+    const AppStackWithLogout = () => (
+      <>
+        <AppStack/>
+        <TemporaryLogoutBar/>
+      </>
+    )
+
+    const AuthStack = () => (
+      <LoginScreen
+        userInfo={this.state.userInfo}
+        downloadAndParseStudyFileAsync={async (...parameter) => {
+          return await this.downloadAndParseStudyFileAsync(...parameter);
+        }}
+        loggedInAsync={async (user) => {
+          this.setState({
+            userInfo: user,
+            survey: await getStudyFileAsync(),
+          });
+        }}
+      />
+    )
+
+    const TemporaryLogoutBar = () => (
+      <View style={{height: Platform.OS==='ios'? height*.1 : height*.1, width: width, backgroundColor: '#f8f9fa', flexDirection: 'row'}}>
+        <Pressable 
+          style={[styles.center, styles.navButton, {backgroundColor: 'white'}]}
+          onPress={()=>console.log('go home')}
+        >
+          <Text style={{fontSize: 30}}>🏡</Text>
+          <Text style={{fontSize: 12}}>Home</Text>
+        </Pressable>
+        <Pressable style={[styles.center, styles.navButton, {backgroundColor: 'white'}]}>
+          <Text style={{fontSize: 30}}>🛎️</Text>
+          <Text style={{fontSize: 12}}>Notifications</Text>
+        </Pressable>
+        <Pressable style={[styles.center, styles.navButton, {backgroundColor: 'white'}]}>
+          <Text style={{fontSize: 30}}>🙆</Text>
+          <Text style={{fontSize: 12}}>Account</Text>
+        </Pressable>
+        {/* <PaperButton
+          buttonColor="#f8f9fa" 
+          textColor="black"
+          mode="elevated" 
+          style={{borderRadius: 12, width: 160, alignItems: 'center', paddingVertical: 10}}
+          // disabled={this.state.disableLoginButton}
+          labelStyle={{fontSize: 18}}
+          onPress={async () => {
+            await this.logoutFnAsync();
+          }}
+        >
+          Log out
+        </PaperButton> */}
+      </View>
+    )
 
     if (isLoading) return <LoadingScreen />;
     if (studyFileErrorText) return <StudyFileErrorScreen errorText={studyFileErrorText} />;
@@ -225,7 +367,6 @@ export default class RootScreen extends React.Component<
             {getCriticalProblemTextForUser("this.state.survey == null")}
           </Text>
           <Pressable 
-            // onPress={async ()=> await this.logoutFnAsync()}
             onPress={async ()=> console.log(
               await studyFileExistsAsync(),
               'userInfo: ',userInfo,
@@ -251,51 +392,21 @@ export default class RootScreen extends React.Component<
             });
           }}
         />
-      )}
+      )
+    }
 
-    return <>
-      {userInfo? <HomeScreen
-        studyInfo={this.state.survey.studyInfo}
-        streams={this.state.survey.streams}
-        userInfo={this.state.userInfo}
-        logout={async () => {
-          await this.logoutFnAsync();
-        }}
-      /> 
-      :
-      <LoginScreen
-        userInfo={this.state.userInfo}
-        downloadAndParseStudyFileAsync={async (...parameter) => {
-          return await this.downloadAndParseStudyFileAsync(...parameter);
-        }}
-        loggedInAsync={async (user) => {
-          this.setState({
-            userInfo: user,
-            survey: await getStudyFileAsync(),
-          });
-        }}
-      />}
-
-      {/* Add Nav Bar here */}
-      <View style={{width: width, height: height*.2, backgroundColor: '#f8f9fa', justifyContent: 'flex-start', alignItems: 'flex-end', paddingHorizontal: 20, paddingVertical: 10}}>
-
-        <PaperButton
-          buttonColor="#f8f9fa" 
-          textColor="black"
-          mode="elevated" 
-          style={{borderRadius: 12, width: 160, alignItems: 'center', paddingVertical: 10}}
-          // disabled={this.state.disableLoginButton}
-          labelStyle={{fontSize: 18}}
-          // onPress={() => console.log('Pressed')}
-          onPress={async () => {
-            await this.logoutFnAsync();
-            // console.log('logout goes here')
-          }}
-        >
-          Log out
-        </PaperButton>
-      </View>
-    </>
+    return userInfo? <AppStackWithLogout/> : <AuthStack/>
 
   }
 }
+
+const styles = StyleSheet.create({
+  center: {
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  navButton: {
+    width: '33.33%', 
+    height: '100%', 
+  }
+})

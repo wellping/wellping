@@ -110,18 +110,18 @@ import {
   getStudyEndDate,
   getStudyInfoAsync,
 } from "./helpers/studyFile";
-import { clearCurrentStudyFileAsync } from "./helpers/asyncStorage/studyFile";
 import { styles } from "./helpers/styles";
 import LoadingScreen from "./screens/LoadingScreen";
+import { RootStackParamList } from "./RootScreen";
 
-interface HomeScreenProps {
+type HomeScreenProps = {
   studyInfo: StudyInfo;
   streams: Streams;
   logout: () => Promise<void>;
   userInfo: User | null;
 }
 
-interface HomeScreenState {
+type HomeScreenState = {
   appState: AppStateStatus;
   time: Date;
   allowsNotifications: boolean;
@@ -155,7 +155,8 @@ type ItemData = {
 
 export default class HomeScreen extends React.Component<
   HomeScreenProps,
-  HomeScreenState
+  HomeScreenState//,
+  // RootStackParamList
 > {
   interval!: ReturnType<typeof setInterval>;
 
@@ -1135,18 +1136,19 @@ export default class HomeScreen extends React.Component<
 
       // When participant see's study and it's ready to go
       return (
-        // <View style={{flex: 1}}>
-          <View style={{width: width, height: height*.8, backgroundColor: '#f8f9fa', alignItems: 'center', justifyContent: 'flex-start', paddingTop: Platform.OS === 'ios'? 84:0 }}>
+        <View style={{flex: 1}}>
+          {/* <View style={{width: width, height: height*.8, backgroundColor: '#f8f9fa', alignItems: 'center', justifyContent: 'flex-start', paddingTop: Platform.OS === 'ios'? 84:0 }}> */}
             {ExtraView} 
-            <View style={{width: width*.9, backgroundColor: '#f8f9fa', alignItems: 'flex-start', justifyContent: 'flex-start'}}>
+            <View style={{width: width, backgroundColor: '#f8f9fa', alignItems: 'flex-start', justifyContent: 'flex-start'}}>
               <Text style={{
                 fontSize: 36, 
                 fontWeight: 'bold', 
-                width: '70%', 
+                width: '100%', 
                 textAlign: 'left', 
-                color: "#3a3a3a"
+                color: "#3a3a3a",
+                paddingLeft: 20
               }}>
-                Your survey{"(s)"}
+                Your survey
               </Text>
             </View>
             {/* <Text>
@@ -1162,12 +1164,7 @@ export default class HomeScreen extends React.Component<
               <Pressable 
                 style={{ position: 'absolute', top: 100, left: 20, }} 
                 onPress={async ()=>console.log(
-                  // JSON.stringify(this.state,null,2), 
-                  // JSON.stringify(this.props.userInfo,null,2),
-                  // typeof this.props.studyInfo,
                   new Date < getStudyStartDate(studyInfo),
-                  // getStudyStartDate(studyInfo),
-                  // JSON.stringify(studyInfo,null,2),
                   JSON.stringify(await AsyncStorage.getAllKeys(),null,2)
                 )}
               >
