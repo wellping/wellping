@@ -112,7 +112,6 @@ import {
 } from "./helpers/studyFile";
 import { styles } from "./helpers/styles";
 import LoadingScreen from "./screens/LoadingScreen";
-import { RootStackParamList } from "./RootScreen";
 
 type HomeScreenProps = {
   studyInfo: StudyInfo;
@@ -151,12 +150,12 @@ type HomeScreenState = {
 type ItemData = {
   id: string;
   title: string;
+  contactEmail: string | undefined;
 };
 
 export default class HomeScreen extends React.Component<
   HomeScreenProps,
-  HomeScreenState//,
-  // RootStackParamList
+  HomeScreenState
 > {
   interval!: ReturnType<typeof setInterval>;
 
@@ -1110,7 +1109,13 @@ export default class HomeScreen extends React.Component<
           <View style={{ height: "100%" }}>
             {ExtraView}
             <DebugView />
-            <Text style={styles.onlyTextStyle}>Welcome to Well Ping!</Text>
+            <Text style={{
+              textAlign: "center",
+              marginTop: 30,
+              fontSize: 25,
+              marginHorizontal: 10,
+              fontFamily: 'Roboto_700Bold'
+            }}>Welcome to Well Ping!</Text>
             <Text
               style={{
                 marginTop: 10,
@@ -1126,12 +1131,13 @@ export default class HomeScreen extends React.Component<
       }
 
       // const DATA: ItemData[] = [{id: 'a', title: 'hello'}, {id: 'b', title: 'hello2'}]
-      const DATA: ItemData[] = [{id: studyInfo.id, title: studyInfo.studyFileURL}]
+      const DATA: ItemData[] = [{id: studyInfo.id, title: studyInfo.studyFileURL, contactEmail: studyInfo.contactEmail}]
       const renderItem = ({item}: {item: ItemData}) => {
-        return <View style={{marginTop: 10, width: width*.9, height: 72, backgroundColor: '#fffae2', alignItems: 'flex-start', justifyContent: 'space-around', padding: 10, paddingHorizontal: 20, borderRadius: 12}}>
+        return <Pressable onPress={()=>console.log(JSON.stringify(studyInfo,null,2))} style={{marginTop: 10, width: width*.9, height: 272, backgroundColor: '#fffae2', alignItems: 'flex-start', justifyContent: 'flex-start', padding: 10, paddingHorizontal: 20, borderRadius: 12}}>
           <Text style={{fontSize: 18, fontWeight: 'bold', color: '#3a3a3a'}}>{item.id}</Text>
           <Text numberOfLines={1} style={{fontSize: 16, color: '#4a4a4a'}}>{item.title}</Text>
-        </View>
+          <Text numberOfLines={1} style={{fontSize: 16, color: '#4a4a4a'}}>{item.contactEmail}</Text>
+        </Pressable>
       }
 
       // When participant see's study and it's ready to go

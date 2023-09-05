@@ -3,7 +3,6 @@ import "./src/helpers/global";
 import { StatusBar } from "expo-status-bar";
 import React from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-
 import RootScreen from "./src/RootScreen";
 
 // TODO: USE https://github.com/carloscuesta/react-native-error-boundary

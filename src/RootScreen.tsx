@@ -1,11 +1,7 @@
 import {
-  Streams,
-  StreamName,
-  StudyInfo,
   StudyFile,
-  Ping,
 } from "@wellping/study-schemas/lib/types";
-import React from "react";
+import React, { SetStateAction } from "react";
 import { 
   Text,
   View,
@@ -14,11 +10,9 @@ import {
   Platform,
   StyleSheet
 } from "react-native";
-const { height, width } = Dimensions.get('screen')
-import {
-  Button as PaperButton
-} from 'react-native-paper'
-
+const { height, width } = Dimensions.get('window')
+import AccountScreen from "./screens/AccountScreen";
+import NotificationScreen from "./screens/NotificationScreen";
 import HomeScreen from "./HomeScreen";
 import {
   storeTempStudyFileAsync,
@@ -46,68 +40,99 @@ import LoginScreen, {
 } from "./screens/LoginScreen";
 import StudyFileErrorScreen from "./screens/StudyFileErrorScreen";
 import {
-  NavigationContainer
+  NavigationContainer,
+  NavigationContainerRef,
+  RouteProp,
+  useRoute
 } from '@react-navigation/native'
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
-import { createNativeStackNavigator, NativeStackScreenProps } from "@react-navigation/native-stack";
-import { AppStateStatus } from "react-native";
-import { SurveyScreenState } from "./SurveyScreen";
-import { User as FirebaseUser } from 'firebase/auth'
+import { createNativeStackNavigator, } from "@react-navigation/native-stack";
+import AppLoading from 'expo-app-loading';
+import { Feather, FontAwesome, MaterialCommunityIcons, Foundation } from '@expo/vector-icons';
+import * as SplashScreen from 'expo-splash-screen';
+import {
+  useFonts,
+  Roboto_100Thin,
+  Roboto_100Thin_Italic,
+  Roboto_300Light,
+  Roboto_300Light_Italic,
+  Roboto_400Regular,
+  Roboto_400Regular_Italic,
+  Roboto_500Medium,
+  Roboto_500Medium_Italic,
+  Roboto_700Bold,
+  Roboto_700Bold_Italic,
+  Roboto_900Black,
+  Roboto_900Black_Italic,
+} from '@expo-google-fonts/roboto';
 
-interface RootScreenProps {}
+SplashScreen.preventAutoHideAsync();
 
+interface RootScreenProps {
+  tab: number;
+  setTab: React.Dispatch<SetStateAction<number>>;
+  handleNav: (n:number, where:string)=>void;
+}
 interface RootScreenState {
   userInfo: User | null;
   isLoading: boolean;
   studyFileErrorText: string | null;
   survey?: StudyFile;
+  tab: number;
 }
 
 export type RootStackParamList = {
-  // HomeScreen: React.Component<HomeScreenProps, HomeScreenState>;
-  HomeScreen: undefined;
+  Home: undefined;
+  Account: undefined;
+  Notification: undefined;
   Profile: { userId: string };
   Feed: { sort: 'latest' | 'top' } | undefined;
 };
 
-type Props = NativeStackScreenProps<RootStackParamList, 'Profile'>;
-
-type HomeScreenProps = {
-  studyInfo: StudyInfo;
-  streams: Streams;
-  logout: () => Promise<void>;
-  userInfo: User | null;
-}
-
-type HomeScreenState = {
-  appState: AppStateStatus;
-  time: Date;
-  allowsNotifications: boolean;
-  currentNotificationTime: Date | null;
-  currentPing: Ping | null;
-  isLoading: boolean;
-  storedPingStateAsync: SurveyScreenState | null;
-  uploadStatusSymbol: string;
-  text: string | undefined;
-
-  /**
-   * Only used for the upload process after a ping has been completed.
-   */
-  afterFinishingPing_isUploading: boolean;
-
-  /**
-   * For when Firebase server is used.
-   *
-   * If Firebase server is not used, it is always `null`.
-   */
-  firebaseUser: FirebaseUser | null;
-
-  // DEBUG
-  displayDebugView: boolean;
-}
+export const navRef = React.createRef<NavigationContainerRef<RootStackParamList>>();
 
 export default function Main () {
-  return <RootScreen/>
+  const [tab, setTab] = React.useState(0)
+  // const route = useRoute();
+
+  const handleNav = (n:number, where:string) => {
+    setTab(n)
+    // navigation.current.resetRoot({index: 0, routes: [{name: where}]})
+    const path = (n:number) => {
+      if(n===1) return 'Notification'
+      if(n===2) return "Account"
+      else return 'Home'
+    } 
+    
+    navRef.current?.navigate(path(n))
+    // console.log('from: ',tab,'to:', n)
+    // animateProcess(tab,n,500)
+  }
+
+  let [fontsLoaded] = useFonts({
+    Roboto_100Thin,
+    Roboto_100Thin_Italic,
+    Roboto_300Light,
+    Roboto_300Light_Italic,
+    Roboto_400Regular,
+    Roboto_400Regular_Italic,
+    Roboto_500Medium,
+    Roboto_500Medium_Italic,
+    Roboto_700Bold,
+    Roboto_700Bold_Italic,
+    Roboto_900Black,
+    Roboto_900Black_Italic,
+  });
+
+  // const onLayoutRootView = React.useCallback(async () => {
+  //   if (fontsLoaded) {
+  //     await SplashScreen.hideAsync();
+  //   }
+  // }, [fontsLoaded]);
+
+  if (!fontsLoaded) {
+    return <AppLoading />;
+  } else
+  return <RootScreen tab={tab} setTab={setTab} handleNav={handleNav}/>
 }
 
 class RootScreen extends React.Component<
@@ -121,6 +146,7 @@ class RootScreen extends React.Component<
       userInfo: null,
       isLoading: true,
       studyFileErrorText: null,
+      tab: 0,
     };
   }
 
@@ -278,11 +304,21 @@ class RootScreen extends React.Component<
     const Stack = createNativeStackNavigator<RootStackParamList>();
 
     const AppStack = () => (
-      <View style={{height: height*.8, width: '100%', backgroundColor: '#f8f9fa', alignItems: 'center', justifyContent: 'flex-start', paddingTop: Platform.OS === 'ios'? 50:0 }}>
+      <View style={{height: Platform.OS==='ios'? height*.9:height*.9-20, width: '100%', backgroundColor: '#f8f9fa', alignItems: 'center', justifyContent: 'flex-start', paddingTop: Platform.OS === 'ios'? 50:0 }}>
         <View style={{height: '100%', width: '100%'}}>
-          <NavigationContainer>
-            <Stack.Navigator initialRouteName='HomeScreen'>
-              <Stack.Screen name="HomeScreen" options={{headerShown: false, contentStyle: {paddingTop: 30}}}>
+          <NavigationContainer ref={navRef}>
+            <Stack.Navigator initialRouteName='Home'>
+              <Stack.Screen name="Notification" component={NotificationScreen}/>
+              <Stack.Screen name="Account" options={{headerShown: false}}>
+                {(props)=> 
+                  <AccountScreen 
+                    {...props}
+                    userInfo={this.state.userInfo}
+                    studyInfo={this.state.survey?.studyInfo}
+                    logout={async () => {await this.logoutFnAsync()}}
+                  />}
+              </Stack.Screen>
+              <Stack.Screen name="Home" options={{headerShown: false, contentStyle: {paddingTop: 30}}}>
                 {(props)=> this.state.survey === undefined? <View style={{height: 100, width: 200, backgroundColor: 'gray'}}>
                     <Text>survey is undefined</Text>
                   </View>
@@ -303,11 +339,12 @@ class RootScreen extends React.Component<
       </View>
     )
 
-    const AppStackWithLogout = () => (
-      <>
+    const AppStackWithNavBar = () => (
+      <View style={{height: '100%', backgroundColor: 'gray'}}>
         <AppStack/>
-        <TemporaryLogoutBar/>
-      </>
+        {/* <Text>{height}</Text> */}
+        <BottomNavigationBar/>
+      </View>
     )
 
     const AuthStack = () => (
@@ -325,44 +362,30 @@ class RootScreen extends React.Component<
       />
     )
 
-    const TemporaryLogoutBar = () => (
-      <View style={{height: Platform.OS==='ios'? height*.1 : height*.1, width: width, backgroundColor: '#f8f9fa', flexDirection: 'row'}}>
-        <Pressable 
-          style={[styles.center, styles.navButton, {backgroundColor: 'white'}]}
-          onPress={()=>console.log('go home')}
-        >
-          <Text style={{fontSize: 30}}>🏡</Text>
-          <Text style={{fontSize: 12}}>Home</Text>
-        </Pressable>
-        <Pressable style={[styles.center, styles.navButton, {backgroundColor: 'white'}]}>
-          <Text style={{fontSize: 30}}>🛎️</Text>
-          <Text style={{fontSize: 12}}>Notifications</Text>
-        </Pressable>
-        <Pressable style={[styles.center, styles.navButton, {backgroundColor: 'white'}]}>
-          <Text style={{fontSize: 30}}>🙆</Text>
-          <Text style={{fontSize: 12}}>Account</Text>
-        </Pressable>
-        {/* <PaperButton
-          buttonColor="#f8f9fa" 
-          textColor="black"
-          mode="elevated" 
-          style={{borderRadius: 12, width: 160, alignItems: 'center', paddingVertical: 10}}
-          // disabled={this.state.disableLoginButton}
-          labelStyle={{fontSize: 18}}
-          onPress={async () => {
-            await this.logoutFnAsync();
-          }}
-        >
-          Log out
-        </PaperButton> */}
-      </View>
-    )
+    const BottomButton = ({
+      path='Home', 
+      icon=this.props.tab===0?
+        <Foundation name="home" size={24} color="#761A15" />
+        : <Feather name="home" size={24} color="#761A15" />,
+      navFn=()=>{this.props.handleNav(0,'Home')}
+    }) => 
+    <Pressable onPress={navFn} style={[styles.center, styles.navButton, {backgroundColor: 'white'}]}>
+      {icon}
+      <Text style={{fontSize: 12, color: '#761A15'}}>{path}</Text>
+    </Pressable>
+
+    const BottomNavigationBar = () => <View style={{height: Platform.OS==='ios'? height*.1 : height*.1, width: width, backgroundColor: '#f8f9fa', flexDirection: 'row'}}>
+      <BottomButton path="Home"/>
+      <BottomButton path="Notification" icon={<FontAwesome name={this.props.tab===1?"bell":"bell-o"} size={24} color="#761A15" />} navFn={()=>{this.props.handleNav(1,'Notification')}}/>
+      <BottomButton path="Account" icon={<MaterialCommunityIcons name={this.props.tab===2?"account":"account-outline"} size={24} color="#761A15" />} navFn={()=>{this.props.handleNav(2,'Account')}}/>
+    </View>
+  
 
     if (isLoading) return <LoadingScreen />;
     if (studyFileErrorText) return <StudyFileErrorScreen errorText={studyFileErrorText} />;
     if (this.state.survey == null) {
       if (userInfo != null || userInfo != undefined) {
-        <>
+        return <>
           <Text>
             {getCriticalProblemTextForUser("this.state.survey == null")}
           </Text>
@@ -394,9 +417,7 @@ class RootScreen extends React.Component<
         />
       )
     }
-
-    return userInfo? <AppStackWithLogout/> : <AuthStack/>
-
+    return userInfo? <AppStackWithNavBar/> : <AuthStack/>
   }
 }
 
