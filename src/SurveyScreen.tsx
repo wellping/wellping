@@ -29,7 +29,6 @@ import {
 import { addDays } from "date-fns";
 import React from "react";
 import {
-  Button,
   Text,
   View,
   ScrollView,
@@ -37,7 +36,10 @@ import {
   Dimensions,
   Platform,
   StyleSheet,
+  Pressable,
 } from "react-native";
+import { Button as PaperButton } from 'react-native-paper'
+import { AntDesign } from '@expo/vector-icons';
 
 import { _DEBUG_CONFIGS } from "../config/debug";
 import { insertAnswerAsync } from "./helpers/answers";
@@ -831,21 +833,39 @@ export default class SurveyScreen extends React.Component<
         testID="mainSurveyScreenView"
         style={{
           paddingHorizontal: 20,
-          marginTop: 5,
+          marginTop: 0,
           marginBottom: 10,
-          flex: 1,
+          // flex: 1,
+          height: '100%',
           // We use `opacity` so that `QuestionScreen` still loads and are able
           // to call `loadingCompleted` and set `isInTransition`.
           // We use 0.05 instead 0 so that if there's error, we can still see it.
           opacity: isInTransition ? 0.025 : 1,
+          backgroundColor: '#f8f9fa'  // Make transparent to show previous / debug screen
         }}
       >
+        {/* Header */}
+        <Pressable onPress={()=>console.log(JSON.stringify(question, null, 2))} style={{width: '100%', height: 50, alignItems: 'center', flexDirection: 'row'}}>
+          <AntDesign style={{width: '80%'}} name="arrowleft" size={30} color="black" />
+          <Text style={{ fontSize: 18, width: '20%', textAlign: 'right', letterSpacing: 5, color: '#3A3A3A'}}>2/5</Text>
+        </Pressable>
+        {/* Slider */}
+        {true? // TODO: Add Slider conditional option later on 
+          <View style={{width: '100%', height: 50, flexDirection: 'row'}}>
+            <View style={{width: '50%', height: 5, backgroundColor: '#761A15'}}/>
+            <View style={{width: '50%', height: 5, backgroundColor: '#D9D9D9'}}/>
+          </View>:<></>
+        }
+        {/* Header Items */}
         <View style={{ flex: 0 }}>
+          {/* Title */}
           <Text
             testID="questionTitle"
             style={{
               textAlign: "center",
-              fontSize: 18,
+              fontSize: 26,
+              fontFamily: 'Roboto_700Bold',
+              color: '#3a3a3a'
             }}
           >
             {this.replacePlaceholders(
@@ -895,10 +915,12 @@ export default class SurveyScreen extends React.Component<
             </>
           )}
         </View>
+
+        {/* Question Screen */}
         <View
           style={{
-            // Change this to `1` if we always want the "Next" button to be on the bottom.
-            flex: -1,
+            // Change '-1' to `1` if we always want the "Next" button to be on the bottom.
+            flex: 1,
           }}
         >
           <View
@@ -908,7 +930,7 @@ export default class SurveyScreen extends React.Component<
             }}
           >
             {getImageIfAnyForPosition("left")}
-            <View style={{ flex: 1 }}>
+            <View style={{ flex: 1 , paddingTop: 20 }}>
               <QuestionScreen
                 /* https://stackoverflow.com/a/21750576/2603230 */
                 key={question.id}
@@ -937,7 +959,8 @@ export default class SurveyScreen extends React.Component<
             </View>
           </View>
         </View>
-        {question.extraCustomNextWithoutAnsweringButton && (
+        {/* Temporarily removing this button for styling */}
+        {/* {question.extraCustomNextWithoutAnsweringButton && (
           <Button
             onPress={async () => {
               // Clicking this button is equivalent to clicking "Next" without answering.
@@ -949,27 +972,38 @@ export default class SurveyScreen extends React.Component<
             accessibilityLabel={question.extraCustomNextWithoutAnsweringButton}
             title={question.extraCustomNextWithoutAnsweringButton}
           />
-        )}
+        )} */}
+
+        {/* Participant Navigation Buttons (Proceed/Not answer) */}
         <View
           style={{
             flexDirection: "row",
+            alignItems: 'center',
             justifyContent: "space-between",
             marginTop: Platform.OS === "ios" ? 10 : 20,
-            flex: 0,
+            flex: 0, 
+            paddingBottom: 20,
           }}
         >
-          <Button
+          <PaperButton
+            mode="text"
+            labelStyle={{fontSize: 18, color: '#4F4F4F'}}
             onPress={async () => {
               await this.addAnswerToAnswersListAsync(question, {
                 preferNotToAnswer: true,
               });
               this.onNextSelect();
             }}
-            accessibilityLabel="Prefer not to answer the current question"
-            title="Prefer not to answer"
-          />
-          <Button
+          >Prefer not to answer</PaperButton>
+          
+          <PaperButton
             disabled={nextButtonIsDisabled()}
+            icon={()=> <AntDesign name="arrowright" size={24} color="white" />}
+            mode="contained"
+            buttonColor="#4E8B44" 
+            labelStyle={{fontSize: 18, color: '#f8f9fa'}}
+            style={{borderRadius: 12, alignItems: 'center', justifyContent: 'center'}}
+            contentStyle={{flexDirection: 'row-reverse', paddingVertical: 5}}
             onPress={async () => {
               if (answers[realQuestionId] == null) {
                 // The user clicks "Next" without answering.
@@ -986,9 +1020,9 @@ export default class SurveyScreen extends React.Component<
               }
               this.onNextSelect();
             }}
-            accessibilityLabel="Next question"
-            title="Next"
-          />
+          >
+            Next
+          </PaperButton>
         </View>
         {__DEV__ && _DEBUG_CONFIGS().showCurrentStatesInSurveyScreen && (
           <ScrollView

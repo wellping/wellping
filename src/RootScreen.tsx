@@ -1,7 +1,5 @@
-import {
-  StudyFile,
-} from "@wellping/study-schemas/lib/types";
-import React, { SetStateAction } from "react";
+import { StudyFile } from "@wellping/study-schemas/lib/types";
+import React, { SetStateAction, useEffect } from "react";
 import { 
   Text,
   View,
@@ -14,6 +12,31 @@ const { height, width } = Dimensions.get('window')
 import AccountScreen from "./screens/AccountScreen";
 import NotificationScreen from "./screens/NotificationScreen";
 import HomeScreen from "./HomeScreen";
+import LoadingScreen from "./screens/LoadingScreen";
+import LoginScreen, { ParamDownloadAndParseStudyFileAsync } from "./screens/LoginScreen";
+import StudyFileErrorScreen from "./screens/StudyFileErrorScreen";
+
+import { NavigationContainer, NavigationContainerRef } from '@react-navigation/native'
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import AppLoading from 'expo-app-loading';
+import { Feather, FontAwesome, MaterialCommunityIcons, Foundation } from '@expo/vector-icons';
+import * as SplashScreen from 'expo-splash-screen';
+import {
+  useFonts,
+  Roboto_100Thin,
+  Roboto_100Thin_Italic,
+  Roboto_300Light,
+  Roboto_300Light_Italic,
+  Roboto_400Regular,
+  Roboto_400Regular_Italic,
+  Roboto_500Medium,
+  Roboto_500Medium_Italic,
+  Roboto_700Bold,
+  Roboto_700Bold_Italic,
+  Roboto_900Black,
+  Roboto_900Black_Italic,
+} from '@expo-google-fonts/roboto';
+
 import {
   storeTempStudyFileAsync,
   getTempStudyFileAsync,
@@ -34,36 +57,6 @@ import {
   studyFileExistsAsync,
 } from "./helpers/studyFile";
 import { logoutAsync } from "./helpers/users";
-import LoadingScreen from "./screens/LoadingScreen";
-import LoginScreen, {
-  ParamDownloadAndParseStudyFileAsync,
-} from "./screens/LoginScreen";
-import StudyFileErrorScreen from "./screens/StudyFileErrorScreen";
-import {
-  NavigationContainer,
-  NavigationContainerRef,
-  RouteProp,
-  useRoute
-} from '@react-navigation/native'
-import { createNativeStackNavigator, } from "@react-navigation/native-stack";
-import AppLoading from 'expo-app-loading';
-import { Feather, FontAwesome, MaterialCommunityIcons, Foundation } from '@expo/vector-icons';
-import * as SplashScreen from 'expo-splash-screen';
-import {
-  useFonts,
-  Roboto_100Thin,
-  Roboto_100Thin_Italic,
-  Roboto_300Light,
-  Roboto_300Light_Italic,
-  Roboto_400Regular,
-  Roboto_400Regular_Italic,
-  Roboto_500Medium,
-  Roboto_500Medium_Italic,
-  Roboto_700Bold,
-  Roboto_700Bold_Italic,
-  Roboto_900Black,
-  Roboto_900Black_Italic,
-} from '@expo-google-fonts/roboto';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -79,7 +72,6 @@ interface RootScreenState {
   survey?: StudyFile;
   tab: number;
 }
-
 export type RootStackParamList = {
   Home: undefined;
   Account: undefined;
@@ -87,26 +79,11 @@ export type RootStackParamList = {
   Profile: { userId: string };
   Feed: { sort: 'latest' | 'top' } | undefined;
 };
-
 export const navRef = React.createRef<NavigationContainerRef<RootStackParamList>>();
 
 export default function Main () {
-  const [tab, setTab] = React.useState(0)
-  // const route = useRoute();
-
-  const handleNav = (n:number, where:string) => {
-    setTab(n)
-    // navigation.current.resetRoot({index: 0, routes: [{name: where}]})
-    const path = (n:number) => {
-      if(n===1) return 'Notification'
-      if(n===2) return "Account"
-      else return 'Home'
-    } 
-    
-    navRef.current?.navigate(path(n))
-    // console.log('from: ',tab,'to:', n)
-    // animateProcess(tab,n,500)
-  }
+  const [tab, setTab] = React.useState(0);
+  const isFirstRender = React.useRef(true);
 
   let [fontsLoaded] = useFonts({
     Roboto_100Thin,
@@ -123,11 +100,25 @@ export default function Main () {
     Roboto_900Black_Italic,
   });
 
-  // const onLayoutRootView = React.useCallback(async () => {
-  //   if (fontsLoaded) {
-  //     await SplashScreen.hideAsync();
-  //   }
-  // }, [fontsLoaded]);
+  const handleNav = (n:number, where:string) => {
+    setTab(n)
+  }
+
+  const path = (n:number) => {
+    if(n===1) return 'Notification'
+    if(n===2) return "Account"
+    else return 'Home'
+  } 
+
+  useEffect(()=>{ // Used to trigger navigation effect
+    if(!isFirstRender.current) {
+      navRef.current?.navigate(path(tab))
+    }
+  },[tab])
+
+  useEffect(()=>{ // Set value to false in order to allow navigation effect after first load
+    isFirstRender.current = false
+  },[])
 
   if (!fontsLoaded) {
     return <AppLoading />;
@@ -304,11 +295,11 @@ class RootScreen extends React.Component<
     const Stack = createNativeStackNavigator<RootStackParamList>();
 
     const AppStack = () => (
-      <View style={{height: Platform.OS==='ios'? height*.9:height*.9-20, width: '100%', backgroundColor: '#f8f9fa', alignItems: 'center', justifyContent: 'flex-start', paddingTop: Platform.OS === 'ios'? 50:0 }}>
+      <View style={{height: Platform.OS==='ios'? height*.9:height*.9-20, width: '100%', backgroundColor: 'white', alignItems: 'center', justifyContent: 'flex-start', paddingTop: Platform.OS === 'ios'? 50:0 }}>
         <View style={{height: '100%', width: '100%'}}>
           <NavigationContainer ref={navRef}>
             <Stack.Navigator initialRouteName='Home'>
-              <Stack.Screen name="Notification" component={NotificationScreen}/>
+              <Stack.Screen name="Notification" component={NotificationScreen} options={{headerShown: false}}/>
               <Stack.Screen name="Account" options={{headerShown: false}}>
                 {(props)=> 
                   <AccountScreen 
@@ -318,7 +309,7 @@ class RootScreen extends React.Component<
                     logout={async () => {await this.logoutFnAsync()}}
                   />}
               </Stack.Screen>
-              <Stack.Screen name="Home" options={{headerShown: false, contentStyle: {paddingTop: 30}}}>
+              <Stack.Screen name="Home" options={{headerShown: false}}>
                 {(props)=> this.state.survey === undefined? <View style={{height: 100, width: 200, backgroundColor: 'gray'}}>
                     <Text>survey is undefined</Text>
                   </View>
@@ -371,7 +362,7 @@ class RootScreen extends React.Component<
     }) => 
     <Pressable onPress={navFn} style={[styles.center, styles.navButton, {backgroundColor: 'white'}]}>
       {icon}
-      <Text style={{fontSize: 12, color: '#761A15'}}>{path}</Text>
+      <Text style={{fontSize: 12, color: '#761A15'}}>{path == 'Notification'? 'Notifications' : path}</Text>
     </Pressable>
 
     const BottomNavigationBar = () => <View style={{height: Platform.OS==='ios'? height*.1 : height*.1, width: width, backgroundColor: '#f8f9fa', flexDirection: 'row'}}>

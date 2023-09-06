@@ -31,6 +31,7 @@ import {
   StyleSheet,
   FlatList,
   Platform,
+  Image,
 } from "react-native";
 const { height, width } = Dimensions.get('screen')
 import {
@@ -38,8 +39,8 @@ import {
   TextInput
 } from 'react-native-paper'
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { studyFileExistsAsync } from "./helpers/studyFile";
 
+import { studyFileExistsAsync } from "./helpers/studyFile";
 import SurveyScreen, { SurveyScreenState } from "./SurveyScreen";
 import DashboardComponent, {
   getDashboardUrlAsync,
@@ -112,6 +113,7 @@ import {
 } from "./helpers/studyFile";
 import { styles } from "./helpers/styles";
 import LoadingScreen from "./screens/LoadingScreen";
+import { AntDesign } from '@expo/vector-icons';
 
 type HomeScreenProps = {
   studyInfo: StudyInfo;
@@ -151,6 +153,8 @@ type ItemData = {
   id: string;
   title: string;
   contactEmail: string | undefined;
+  startDate: Date;
+  endDate: Date;
 };
 
 export default class HomeScreen extends React.Component<
@@ -1131,24 +1135,69 @@ export default class HomeScreen extends React.Component<
       }
 
       // const DATA: ItemData[] = [{id: 'a', title: 'hello'}, {id: 'b', title: 'hello2'}]
-      const DATA: ItemData[] = [{id: studyInfo.id, title: studyInfo.studyFileURL, contactEmail: studyInfo.contactEmail}]
+      const DATA: ItemData[] = [{
+        id: studyInfo.id, 
+        title: studyInfo.studyFileURL, 
+        contactEmail: studyInfo.contactEmail,
+        startDate: studyInfo.startDate,
+        endDate: studyInfo.endDate
+      }]
       const renderItem = ({item}: {item: ItemData}) => {
-        return <Pressable onPress={()=>console.log(JSON.stringify(studyInfo,null,2))} style={{marginTop: 10, width: width*.9, height: 272, backgroundColor: '#fffae2', alignItems: 'flex-start', justifyContent: 'flex-start', padding: 10, paddingHorizontal: 20, borderRadius: 12}}>
-          <Text style={{fontSize: 18, fontWeight: 'bold', color: '#3a3a3a'}}>{item.id}</Text>
-          <Text numberOfLines={1} style={{fontSize: 16, color: '#4a4a4a'}}>{item.title}</Text>
-          <Text numberOfLines={1} style={{fontSize: 16, color: '#4a4a4a'}}>{item.contactEmail}</Text>
+        return <Pressable onPress={async ()=>{
+          console.log(JSON.stringify(studyInfo,null,2));
+          console.log('today ping', JSON.stringify(await getTodayPingsAsync(),null,2));
+          // console.log(JSON.stringify(await AsyncStorage.getAllKeys(),null,2));
+          // console.log(JSON.stringify(
+          // const result = await AsyncStorage.multiGet(await AsyncStorage.getAllKeys())
+          // console.log(result)
+          // result.map(req => JSON.parse(req))
+          // ,null,2))
+
+ 
+          const keys = await AsyncStorage.getAllKeys()
+          const itemsArray = await AsyncStorage.multiGet(keys)
+          // let object = {}
+          itemsArray.map(item => {
+            // object[`${item[0]}`] = item[1]
+            // console.log(item[0],JSON.stringify(JSON.parse(item[1]),null,2))
+          })
+          // console.log(JSON.stringify(itemsArray,null,2))
+        }} style={[styles0.shadow, {marginTop: 20, width: width*.9, height: 272, backgroundColor: '#fffae2', alignItems: 'flex-start', justifyContent: 'space-around', padding: 10, paddingHorizontal: 20, borderRadius: 12}]}>
+          <View>
+            <Text style={{fontSize: 18, fontFamily: 'Roboto_700Bold', color: '#3a3a3a'}}>Study ID</Text>
+            <Text style={{fontFamily: 'Roboto_400Regular', fontSize: 16, color: '#3a3a3a'}}>{item.id}</Text>
+          </View>
+
+          <View>
+          <Text style={{fontSize: 18, fontFamily: 'Roboto_700Bold', color: '#3a3a3a'}}>URL</Text>
+          <Text numberOfLines={1} style={{fontSize: 16, fontFamily: 'Roboto_400Regular', color: '#4a4a4a'}}>{item.title}</Text>
+          <Text style={{fontSize: 18, fontFamily: 'Roboto_700Bold', color: '#3a3a3a'}}>E-mail</Text>
+          <Text numberOfLines={1} style={{fontSize: 16, fontFamily: 'Roboto_400Regular', color: '#4a4a4a'}}>{item.contactEmail}</Text>
+          </View>
+
+          <View style={{width: '100%', height: 50, backgroundColor: 'transparent', flexDirection: 'row'}}>
+            <View style={[styles0.center, {width: '50%', height: '100%', alignItems: 'flex-start'}]}>
+              <Text style={{fontSize: 18, fontFamily: 'Roboto_700Bold', color: '#3a3a3a'}}>Start date</Text>
+              <Text style={{fontFamily: 'Roboto_400Regular', color: "#4a4a4a"}}>{item.startDate.toLocaleDateString()}</Text>
+            </View>
+            <View style={[styles0.center, {width: '50%', height: '100%', alignItems: 'flex-end'}]}>
+              <Text style={{fontSize: 18, fontFamily: 'Roboto_700Bold', color: '#3a3a3a'}}>End date</Text>
+              <Text style={{fontFamily: 'Roboto_400Regular', color: "#4a4a4a"}}>{item.endDate.toLocaleDateString()}</Text>
+            </View>
+          </View>
+
         </Pressable>
       }
 
       // When participant see's study and it's ready to go
       return (
-        <View style={{flex: 1}}>
+        <View style={{height: '100%', backgroundColor: 'white'}}>
           {/* <View style={{width: width, height: height*.8, backgroundColor: '#f8f9fa', alignItems: 'center', justifyContent: 'flex-start', paddingTop: Platform.OS === 'ios'? 84:0 }}> */}
             {ExtraView} 
-            <View style={{width: width, backgroundColor: '#f8f9fa', alignItems: 'flex-start', justifyContent: 'flex-start'}}>
+            <View style={{width: width, backgroundColor: 'white', alignItems: 'flex-start', justifyContent: 'flex-start', paddingTop: 30}}>
               <Text style={{
+                fontFamily: 'Roboto_700Bold',
                 fontSize: 36, 
-                fontWeight: 'bold', 
                 width: '100%', 
                 textAlign: 'left', 
                 color: "#3a3a3a",
@@ -1161,21 +1210,25 @@ export default class HomeScreen extends React.Component<
               There is currently no active survey. You will receive a notification
               with a survey soon!
             </Text> */}
-            <View style={{ width: '100%', height: height*.7, backgroundColor: 'rgba(0,0,0,0.0)', alignItems: 'center'}}>
+            <View style={{ width: '100%', height: height*.7, backgroundColor: 'white', alignItems: 'center'}}>
+              {/* <View style={{position: 'absolute', height: '70%', width: '100%', backgroundColor: 'gray'}}></View> */}
               <FlatList
+                contentContainerStyle={[styles0.center, {backgroundColor: 'white', width: width, height: height*.7, justifyContent: 'flex-start'}]}
                 data={DATA}
                 renderItem={renderItem}
                 keyExtractor={item => item.id}
               />
+
+              {/* Console Log button */}
               <Pressable 
-                style={{ position: 'absolute', top: 100, left: 20, }} 
+                style={{ position: 'absolute', top: -10, left: 20, }} 
                 onPress={async ()=>console.log(
                   new Date < getStudyStartDate(studyInfo),
                   JSON.stringify(await AsyncStorage.getAllKeys(),null,2)
                 )}
               >
                 <Text style={{ fontSize: 18, textAlign: 'left', color: 'lightgray'}}>
-                  {"(Debug)"} Log response to terminal
+                  {/* {"(Debug)"} Log response to terminal */}
                 </Text>
               </Pressable>
             </View>
@@ -1211,61 +1264,53 @@ export default class HomeScreen extends React.Component<
       }
 
       return (
-        <View style={styles0.container}>
-          {ExtraView}
+        <View style={[styles0.container, {justifyContent: 'center', backgroundColor: '#f8f9fa'}]}>
+          <Pressable onPress={()=>this.setState({ currentPing: null, currentNotificationTime: null })} style={{position: 'absolute', top: 20, backgroundColor: 'transparent', justifyContent: 'flex-start', alignItems: 'center', width: '100%', paddingLeft: 20, flexDirection: 'row'}}>
+            <AntDesign name="arrowleft" size={30} color="black" />
+            <Text style={{fontFamily: 'Roboto_700Bold', fontSize: 20, color: '#3a3a3a'}}> Back</Text>
+          </Pressable>
+          {/* {ExtraView} */}
           {/* <DebugView>{streamButtons}</DebugView> */}
-          <Text style={{ fontSize: 30, marginVertical: 20, textAlign: "center" }}>
-            Welcome to Well Ping!
-          </Text>
-          <PaperButton
-            buttonColor="#761A15" 
-            mode="contained" 
-            style={{borderRadius: 12, width: 294, alignItems: 'center', paddingVertical: 10}}
-            // disabled={this.state.disableLoginButton}
-            labelStyle={{fontSize: 18}}
-            onPress={() => {
-              this.setState({ currentPing: null, currentNotificationTime: null });
-            }}
-            // onPress={this.loginFnAsync}
-          >
-            Exit to home
-          </PaperButton>
-          <PaperButton
-            buttonColor="gray" 
-            mode="contained" 
-            style={{borderRadius: 12, width: 294, alignItems: 'center', paddingVertical: 10}}
-            // disabled={this.state.disableLoginButton}
-            labelStyle={{fontSize: 18}}
-            onPress={() => {
-              console.log('asdf', new Date(), JSON.stringify(studyInfo,null,2), new Date() > getStudyEndDate(studyInfo));
-              console.log(currentNotificationTime, currentPing)
-              console.log(JSON.stringify(this.state,null,2))
-            }}
-            // onPress={this.loginFnAsync}
-          >
-            Log study info
-          </PaperButton>
-          <PaperButton
-            buttonColor="blue" 
-            mode="contained" 
-            style={{borderRadius: 12, width: 294, alignItems: 'center', paddingVertical: 10}}
-            // disabled={this.state.disableLoginButton}
-            labelStyle={{fontSize: 18}}
-            onPress={() => {
-              this.startSurveyAsync();
-            }}
-            // onPress={this.loginFnAsync}
-          >
-            Click here to start the survey
-          </PaperButton>
-          {/* <View style={{ marginHorizontal: 20 }}>
-            <Button
-              title="Click here to start the survey"
+
+          <View style={{height: height*.5, width: '100%', backgroundColor: 'transparent', justifyContent: 'space-around', alignItems: 'center'}}>
+
+
+            <View style={{height: 120, width: 120, backgroundColor: 'rgba(0,0,0,0.0)'}}>
+              <Image source={require('../assets/icon-android-foreground.png')} style={{height: 120, width: 120, backgroundColor: 'transparent', transform: [{scale: 2.5}]}}/>
+            </View>
+
+            <View style={{width: '100%', flexDirection: 'row', justifyContent: 'center'}}>
+              <Text style={{ width: '50%',fontFamily: 'Roboto_700Bold', fontSize: 36, marginVertical: 20, textAlign: "center" }}>
+                Welcome to Well Ping!
+              </Text>
+            </View>
+
+            <Pressable 
+              style={{ position: 'absolute', top: -10, left: 20, }} 
+              onPress={async ()=>{
+                console.log('asdf', new Date(), JSON.stringify(studyInfo,null,2), new Date() > getStudyEndDate(studyInfo))
+                console.log(currentNotificationTime, currentPing)
+                console.log(JSON.stringify(this.state,null,2))
+              }}
+            >
+              <Text style={{ fontSize: 18, textAlign: 'left', color: 'lightgray'}}>
+                {/* {"(Debug)"} Log response to terminal */}
+              </Text>
+            </Pressable>
+            <PaperButton
+              buttonColor="#f8f9fa" 
+              mode="elevated" 
+              style={{borderRadius: 12, width: 294, alignItems: 'center', paddingVertical: 10, borderWidth: 1, borderColor: 'black'}}
+              // disabled={this.state.disableLoginButton}
+              labelStyle={{fontSize: 18, color: '#0F4EC7'}}
               onPress={() => {
                 this.startSurveyAsync();
               }}
-            />
-          </View> */}
+              // onPress={this.loginFnAsync}
+            >
+              Click here to start the survey
+            </PaperButton>
+          </View>
           {/* <DashboardComponent
             firebaseUser={firebaseUser}
             studyInfo={studyInfo}
@@ -1444,6 +1489,25 @@ const styles0 = StyleSheet.create({
     height: "100%", 
     alignItems: 'center', 
     justifyContent: 'flex-start',
-    paddingTop: Platform.OS === 'ios'? 50 : 0
-  }
+    // paddingTop: Platform.OS === 'ios'? 0 : 0
+  },
+  center: {
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  shadow: Platform.OS!=="ios"? {
+    // Android styles
+		shadowColor: 'black', 
+		shadowOffset: {height: 5, width: 5}, 
+		shadowRadius: 6, 
+		shadowOpacity: 1, 
+		elevation: 4,
+	} : {
+    // iOS styles
+		shadowColor: 'lightgray', 
+		shadowOffset: {height: 5, width: 5}, 
+		shadowRadius: 3, 
+		shadowOpacity: 1, 
+		elevation: 5,
+	},
 })

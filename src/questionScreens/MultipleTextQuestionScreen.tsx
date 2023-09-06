@@ -127,14 +127,18 @@ const MultipleTextQuestionScreen: React.ElementType<
           updateTextValue(item.name, index);
           focusOnNextIfNotLast();
         }}
-        containerStyle={{ padding: 5 }}
+        containerStyle={{ padding: 5 ,}}
         itemStyle={{
           padding: 10,
           backgroundColor: "#F9F6EF",
           borderColor: "#bbb",
           borderWidth: 1,
+          borderRadius: 12,
+          height: 48,
         }}
         itemsContainerStyle={{
+          // borderRadius: 12,
+          // height: 48,
           maxHeight: 100,
           ...(!question.dropdownChoices?.alwaysShowChoices &&
             isInputEmpty[index] && { display: "none" }),
@@ -149,10 +153,12 @@ const MultipleTextQuestionScreen: React.ElementType<
           underlineColorAndroid: "transparent",
           style: {
             paddingVertical: Platform.OS === "android" ? 0 : 10,
-            paddingHorizontal: Platform.OS === "android" ? 5 : 10,
+            paddingHorizontal: Platform.OS === "android" ? 20 : 20,
             borderWidth: 1,
             borderColor: "#ccc",
-            borderRadius: 5,
+            borderRadius: 12,
+            height: 48,
+            fontSize: 18,
           },
           autoCorrect: false,
           keyboardType: question.keyboardType || "default",
@@ -250,7 +256,7 @@ const MultipleTextQuestionScreen: React.ElementType<
     );
   }
 
-  return <View style={{ paddingVertical: 5 }}>{textFields}</View>;
+  return <View style={{ paddingVertical: 0 }}>{textFields}</View>;
 };
 
 export default MultipleTextQuestionScreen;
