@@ -79,31 +79,30 @@ export async function downloadStudyFileAsync({
   username: string;
   password: string;
 }): Promise<string> {
-  // const localStudyFilePath = getLocalStudyFileType(url);
-  // if (localStudyFilePath !== null) {
-  //   await new Promise((r) => setTimeout(r, 100)); // Simulate loading.
-  //   let rawJsonString: string;
-  //   switch (localStudyFilePath) {
-  //     case "debug":
-  //       rawJsonString = JSON.stringify(require(WELLPING_LOCAL_DEBUG_FILEPATH));
-  //       break;
-  //   }
-  //   return rawJsonString;
-  // }
+  const localStudyFilePath = getLocalStudyFileType(url);
+  if (localStudyFilePath !== null) {
+    await new Promise((r) => setTimeout(r, 100)); // Simulate loading.
+    let rawJsonString: string;
+    switch (localStudyFilePath) {
+      case "debug":
+        rawJsonString = JSON.stringify(require(WELLPING_LOCAL_DEBUG_FILEPATH));
+        break;
+    }
+    return rawJsonString;
+  }
 
   console.log('running downloadstudyfileasync...')
 
-  // if (
-  //   !STUDY_FILE_URL_PREFIXES_WHITELIST.some((whitelistPrefix) =>
-  //     url.startsWith(whitelistPrefix),
-  //   )
-  // ) {
-  //   throw new Error(
-  //     "This study file URL is not in the whitelist. Please refer to " +
-  //       "https://github.com/wellping/wellping for more information.",
-  //   );
-  // }
-  console.log('asdf')
+  if (
+    !STUDY_FILE_URL_PREFIXES_WHITELIST.some((whitelistPrefix) =>
+      url.startsWith(whitelistPrefix),
+    )
+  ) {
+    throw new Error(
+      "This study file URL is not in the whitelist. Please refer to " +
+        "https://github.com/wellping/wellping for more information.",
+    );
+  }
 
 
   // TODO: Currently the password is hashed this way to make it works with Beiwe default authentication. It certainly does not have to be this way and could be changed later.
