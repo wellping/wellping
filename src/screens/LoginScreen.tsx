@@ -31,6 +31,7 @@ import { LoginSchema } from "../helpers/schemas/Login";
 import { User } from "../helpers/secureStore/user";
 import { getStudyFileAsync } from "../helpers/studyFile";
 import { loginAsync, logoutAsync } from "../helpers/users";
+import { parse } from "path";
 
 // This is an ugly hack so that the init url won't pop up again if the user log
 // in and then immediately log out.
@@ -168,14 +169,17 @@ export default class LoginScreen extends React.Component<
     let studyFileURL!: string;
     try {
       const loginCode = this.state.formData?.trim();
+      console.log('loginCode: ', loginCode)
       if (!loginCode) {
         throw new Error("You have not entered your login code.");
       }
 
       const parsedLoginCode = loginCode.split(CONFIG.LOGIN_CODE_SEPARATOR);
+      console.log('parsedLoginCode: ', JSON.stringify(parsedLoginCode,null,2))
+
       const loginInfo = LoginSchema.parse({
         username: parsedLoginCode[0] || "",
-        password: parsedLoginCode[1] || "",
+        password: parsedLoginCode[1] || "", 
         studyFileURL:
           // https://stackoverflow.com/a/25177077/2603230
           parsedLoginCode.splice(2).join(CONFIG.LOGIN_CODE_SEPARATOR) ||
@@ -195,6 +199,9 @@ export default class LoginScreen extends React.Component<
       return;
     }
 
+    console.log('props passed to dlParseAsync', studyFileURL, JSON.stringify(user,null,2))
+
+
     this.setState({
       loadingText: "Loading study data...",
     });
@@ -213,7 +220,7 @@ export default class LoginScreen extends React.Component<
       }))
     ) {
       // We don't have to set `disableLoginButton` here because the page
-      // will be unmounted anyway (to show stuty file error page).
+      // will be unmounted anyway (to show study file error page).
       return;
     }
 
@@ -297,7 +304,7 @@ export default class LoginScreen extends React.Component<
       >
         <View style={{marginVertical: 20, width: width-40, height: height*.8, backgroundColor: '#f8f9fa', alignItems: 'center', justifyContent: 'space-around'}}>
           <Text style={{position: 'absolute', top: 10, fontSize: 18, fontWeight: 'bold', color: 'gray'}}>
-              {"(Login)"} - no user info
+              {/* {"(Login)"} - no user info */}
             </Text>
 
           <View style={{width: width*.9, height: height*.7, backgroundColor: '#f8f9fa', alignItems: 'center', justifyContent: 'space-around'}}>
@@ -349,7 +356,7 @@ export default class LoginScreen extends React.Component<
               style={{borderRadius: 12, width: 4/5*width, alignItems: 'center'}}
             >
               <Text style={{color: '#6C6C6C', fontSize: 21}}>
-                Skip for now
+                {/* Skip for now */}
               </Text>
             </Pressable>
           </View>
@@ -357,6 +364,7 @@ export default class LoginScreen extends React.Component<
         {errorText ? (
           <View
             style={{
+              position: 'absolute',
               marginVertical: 5,
               padding: 10,
               borderColor: "lightcoral",

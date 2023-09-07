@@ -9,13 +9,10 @@ const TEXT_COLOR = "#ededed";
 const LoadingScreen: React.FunctionComponent = () => {
   return (
     <View style={{ flex: 1, marginHorizontal: 0, backgroundColor: 'white'}}>
-      <Text style={{ ...styles.onlyTextStyle, fontWeight: "bold", color: '#f8f9fa'}}>
-        Loading...
-      </Text>
       <Text
         style={{
           textAlign: "center",
-          marginTop: 50,
+          marginTop: 100,
           color: TEXT_COLOR,
         }}
       >
@@ -25,6 +22,9 @@ const LoadingScreen: React.FunctionComponent = () => {
       <View style={{height: 120, width: '100%', backgroundColor: 'rgba(0,0,0,0.0)', alignItems: 'center', justifyContent: 'center', opacity: .1}}>
         <Image source={require('../../assets/icon-android-foreground.png')} style={{height: 120, width: 120, backgroundColor: 'transparent', transform: [{scale: 2.5}]}}/>
       </View>
+      <Text style={{ ...styles.onlyTextStyle, fontWeight: "bold", color: '#761A15'}}>
+        Loading...
+      </Text>
       {/* <Button
         title="Share Error"
         color={TEXT_COLOR}

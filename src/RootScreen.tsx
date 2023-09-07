@@ -168,11 +168,13 @@ class RootScreen extends React.Component<
   }: ParamDownloadAndParseStudyFileAsync): Promise<boolean> {
     let rawJsonString: string;
     try {
+      console.log('trying...')
       rawJsonString = await downloadStudyFileAsync({
         url,
         username: user.username,
         password: user.password,
       });
+      console.log(rawJsonString.length)
     } catch (e) {
       let downloadErrorMessage: string;
       if (e instanceof Error) {

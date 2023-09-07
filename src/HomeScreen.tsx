@@ -80,7 +80,7 @@ import {
   HOME_SCREEN_DEBUG_VIEW_SYMBOLS,
 } from "./helpers/debug";
 import {
-  firebaseLoginAsync,
+firebaseLoginAsync,
   firebaseInitialized,
   getFirebaseAuth,
 } from "./helpers/firebase";
@@ -724,315 +724,319 @@ export default class HomeScreen extends React.Component<
         return <></>;
       }
       return (
-        <ScrollView
-          style={{
-            backgroundColor: "yellow",
-            maxHeight: 140,
-          }}
-          contentContainerStyle={{
-            padding: 5,
-          }}
-        >
-          <Text>
-            Time: {format(this.state.time, "yyyy-MM-dd'T'HH:mm:ss.SSSxxx")}
-          </Text>
-          <Text>
-            Current ping's notification time:{" "}
-            {this.state.currentNotificationTime
-              ? format(
-                  this.state.currentNotificationTime,
-                  "yyyy-MM-dd'T'HH:mm:ss.SSSxxx",
-                )
-              : "IS NULL"}
-          </Text>
-          <Text>
-            this.state.currentPing: {JSON.stringify(this.state.currentPing)}
-          </Text>
-          <Text>
-            this.state.firebaseUser: {JSON.stringify(this.state.firebaseUser)}
-          </Text>
-          <Button
-            color="green"
-            title="hide debug view"
-            onPress={() => {
-              this.setState({ displayDebugView: false });
+        <View style={{position: 'absolute', bottom: 0, width: '100%', height: '40%', backgroundColor: 'transparent'}}>
+          <ScrollView
+            style={{
+              backgroundColor: "yellow",
+              opacity: .4,
+              maxHeight: '100%',
             }}
-          />
-          <Button
-            color="orange"
-            title="getStudyInfoAsync()"
-            onPress={async () => {
-              await alertWithShareButtonContainingDebugInfoAsync(
-                JSON.stringify(await getStudyInfoAsync()),
-              );
+            contentContainerStyle={{
+              padding: 5,
             }}
-          />
-          <Button
-            color="orange"
-            title="getStudyStartDate()"
-            onPress={async () => {
-              await alertWithShareButtonContainingDebugInfoAsync(
-                getStudyStartDate(await getStudyInfoAsync()).toString(),
-              );
-            }}
-          />
-          <Button
-            color="orange"
-            title="getStudyEndDate()"
-            onPress={async () => {
-              await alertWithShareButtonContainingDebugInfoAsync(
-                getStudyEndDate(await getStudyInfoAsync()).toString(),
-              );
-            }}
-          />
-          <Button
-            color="orange"
-            title="getIncomingNotificationTimeAsync()"
-            onPress={async () => {
-              const nextPingTime = await getIncomingNotificationTimeAsync();
-              await alertWithShareButtonContainingDebugInfoAsync(
-                nextPingTime
-                  ? format(nextPingTime, "yyyy-MM-dd' T 'HH:mm:ss.SSSxxx")
-                  : "IS NULL",
-              );
-            }}
-          />
-          <Button
-            color="orange"
-            title="getLatestPingAsync()"
-            onPress={async () => {
-              const latestStartedPing = await getLatestPingAsync();
-              await alertWithShareButtonContainingDebugInfoAsync(
-                JSON.stringify(latestStartedPing),
-              );
-            }}
-          />
-          <Button
-            color="orange"
-            title="getCurrentNotificationTimeAsync()"
-            onPress={async () => {
-              const currentNotificationTime =
-                await getCurrentNotificationTimeAsync();
-              await alertWithShareButtonContainingDebugInfoAsync(
-                JSON.stringify(currentNotificationTime),
-              );
-            }}
-          />
-          <Button
-            color="red"
-            title="clear current ping state"
-            onPress={async () => {
-              const latestStartedPing = await getLatestPingAsync();
-              if (latestStartedPing) {
-                await clearPingStateAsync(latestStartedPing.id);
-                alert("Cleared. Please restart app");
-              } else {
-                alert("No current ping.");
-              }
-            }}
-          />
-          <Button
-            color="orange"
-            title="getNotificationTimesAsync()"
-            onPress={async () => {
-              const notificationsTimes = await getNotificationTimesAsync();
-              let text = "";
-              notificationsTimes!.forEach((element) => {
-                text +=
-                  format(
-                    element.notificationDate,
+          >
+            <Text>
+              Time: {format(this.state.time, "yyyy-MM-dd'T'HH:mm:ss.SSSxxx")}
+            </Text>
+            <Text>
+              Current ping's notification time:{" "}
+              {this.state.currentNotificationTime
+                ? format(
+                    this.state.currentNotificationTime,
                     "yyyy-MM-dd'T'HH:mm:ss.SSSxxx",
-                  ) +
-                  ", expire at " +
-                  format(
-                    element.expirationDate,
-                    "yyyy-MM-dd'T'HH:mm:ss.SSSxxx",
-                  ) +
-                  `\n`;
-              });
-              await alertWithShareButtonContainingDebugInfoAsync(text);
-            }}
-          />
-          <Button
-            color="orange"
-            title="getNumbersOfPingsForAllStreamNamesAsync()"
-            onPress={async () => {
-              const typesOfPingsAnswered =
-                await getNumbersOfPingsForAllStreamNamesAsync();
-              await alertWithShareButtonContainingDebugInfoAsync(
-                JSON.stringify(typesOfPingsAnswered),
-              );
-            }}
-          />
-          <Button
-            color="orange"
-            title="secureGetUserAsync()"
-            onPress={async () => {
-              const user = await secureGetUserAsync();
-              await alertWithShareButtonContainingDebugInfoAsync(
-                JSON.stringify(user),
-              );
-            }}
-          />
-          <Button
-            color="orange"
-            title="getFuturePingsQueue()"
-            onPress={async () => {
-              const futurePingsQueues = await getFuturePingsQueue();
-              await alertWithShareButtonContainingDebugInfoAsync(
-                JSON.stringify(futurePingsQueues),
-              );
-            }}
-          />
-          <Button
-            color="red"
-            title="reset/initFuturePingQueueAsync()"
-            onPress={async () => {
-              await initFuturePingQueueAsync();
-            }}
-          />
-          <Button
-            color="orange"
-            title="getAllDataAsync()"
-            onPress={async () => {
-              const allData = await getAllDataAsync();
-              await alertWithShareButtonContainingDebugInfoAsync(
-                JSON.stringify(allData),
-              );
-            }}
-          />
-          <Button
-            color="orange"
-            title="getUnuploadedDataAsync()"
-            onPress={async () => {
-              const unuploadedData = await getUnuploadedDataAsync();
-              await alertWithShareButtonContainingDebugInfoAsync(
-                JSON.stringify(unuploadedData),
-              );
-            }}
-          />
-          <Button
-            color="orange"
-            title="uploadDataAsync(all)"
-            onPress={async () => {
-              try {
-                const response = await uploadDataAsync(
-                  studyInfo,
-                  this.setUploadStatusSymbol,
-                  { unuploadedOnly: false },
-                );
+                  )
+                : "IS NULL"}
+            </Text>
+            <Text>
+              this.state.currentPing: {JSON.stringify(this.state.currentPing)}
+            </Text>
+            <Text>
+              this.state.firebaseUser: {JSON.stringify(this.state.firebaseUser)}
+            </Text>
+            <Button
+              color="green"
+              title="hide debug view"
+              onPress={() => {
+                this.setState({ displayDebugView: false });
+              }}
+            />
+            <Button
+              color="orange"
+              title="getStudyInfoAsync()"
+              onPress={async () => {
                 await alertWithShareButtonContainingDebugInfoAsync(
-                  JSON.stringify(response),
+                  JSON.stringify(await getStudyInfoAsync()),
                 );
-              } catch (e) {
-                await alertWithShareButtonContainingDebugInfoAsync(`${e}`);
-              }
-            }}
-          />
-          <Button
-            color="orange"
-            title="uploadDataAsync(unuploaded)"
-            onPress={async () => {
-              try {
-                const response = await uploadDataAsync(
-                  studyInfo,
-                  this.setUploadStatusSymbol,
-                  { unuploadedOnly: true },
-                );
+              }}
+            />
+            <Button
+              color="orange"
+              title="getStudyStartDate()"
+              onPress={async () => {
                 await alertWithShareButtonContainingDebugInfoAsync(
-                  JSON.stringify(response),
+                  getStudyStartDate(await getStudyInfoAsync()).toString(),
                 );
-              } catch (e) {
-                await alertWithShareButtonContainingDebugInfoAsync(`${e}`);
-              }
-            }}
-          />
-          <Button
-            color="orange"
-            title="send a local notification"
-            onPress={async () => {
-              await _sendTestNotificationAsync();
-            }}
-          />
-          <Button
-            color="orange"
-            title="copy dashboard url"
-            onPress={async () => {
-              // const url =
-              //   (await getDashboardUrlAsync(studyInfo, firebaseUser)) ??
-              //   "No dashboard URL.";
-              // Clipboard.setString(url);
-              // await alertWithShareButtonContainingDebugInfoAsync(url);
-            }}
-          />
-          <Button
-            color="red"
-            onPress={() => {
-              Alert.alert("Log out", "Are you sure you want to log out?", [
-                {
-                  text: "Cancel",
-                  style: "cancel",
-                },
-                {
-                  text: "Log out",
-                  style: "destructive",
-                  onPress: async () => {
-                    await this.props.logout();
-                  },
-                },
-              ]);
-            }}
-            title="Logout"
-          />
-          <Button
-            color="red"
-            onPress={() => {
-              Alert.alert(
-                "Dangerous",
-                "This will clear future notifications. Restart the app to reset future notifications.",
-                [
+              }}
+            />
+            <Button
+              color="orange"
+              title="getStudyEndDate()"
+              onPress={async () => {
+                await alertWithShareButtonContainingDebugInfoAsync(
+                  getStudyEndDate(await getStudyInfoAsync()).toString(),
+                );
+              }}
+            />
+            <Button
+              color="orange"
+              title="getIncomingNotificationTimeAsync()"
+              onPress={async () => {
+                const nextPingTime = await getIncomingNotificationTimeAsync();
+                await alertWithShareButtonContainingDebugInfoAsync(
+                  nextPingTime
+                    ? format(nextPingTime, "yyyy-MM-dd' T 'HH:mm:ss.SSSxxx")
+                    : "IS NULL",
+                );
+              }}
+            />
+            <Button
+              color="orange"
+              title="getLatestPingAsync()"
+              onPress={async () => {
+                const latestStartedPing = await getLatestPingAsync();
+                await alertWithShareButtonContainingDebugInfoAsync(
+                  JSON.stringify(latestStartedPing),
+                );
+              }}
+            />
+            <Button
+              color="orange"
+              title="getCurrentNotificationTimeAsync()"
+              onPress={async () => {
+                const currentNotificationTime =
+                  await getCurrentNotificationTimeAsync();
+                await alertWithShareButtonContainingDebugInfoAsync(
+                  JSON.stringify(currentNotificationTime),
+                );
+              }}
+            />
+            <Button
+              color="red"
+              title="clear current ping state"
+              onPress={async () => {
+                const latestStartedPing = await getLatestPingAsync();
+                if (latestStartedPing) {
+                  await clearPingStateAsync(latestStartedPing.id);
+                  alert("Cleared. Please restart app");
+                } else {
+                  alert("No current ping.");
+                }
+              }}
+            />
+            <Button
+              color="orange"
+              title="getNotificationTimesAsync()"
+              onPress={async () => {
+                const notificationsTimes = await getNotificationTimesAsync();
+                let text = "";
+                notificationsTimes!.forEach((element) => {
+                  text += element.notificationDate.toLocaleString()+" expires at " + element.expirationDate.toLocaleTimeString()+'\n';
+                  // text +=
+                  //   format(
+                  //     element.notificationDate,
+                  //     "yyyy-MM-dd'T'HH:mm:ss.SSSxxx",
+                  //   ) +
+                  //   ", expire at " +
+                  //   format(
+                  //     element.expirationDate,
+                  //     "yyyy-MM-dd'T'HH:mm:ss.SSSxxx",
+                  //   ) +
+                  //   `\n`;
+                });
+                await alertWithShareButtonContainingDebugInfoAsync(text);
+              }}
+            />
+            <Button
+              color="orange"
+              title="getNumbersOfPingsForAllStreamNamesAsync()"
+              onPress={async () => {
+                const typesOfPingsAnswered =
+                  await getNumbersOfPingsForAllStreamNamesAsync();
+                await alertWithShareButtonContainingDebugInfoAsync(
+                  JSON.stringify(typesOfPingsAnswered),
+                );
+              }}
+            />
+            <Button
+              color="orange"
+              title="secureGetUserAsync()"
+              onPress={async () => {
+                const user = await secureGetUserAsync();
+                await alertWithShareButtonContainingDebugInfoAsync(
+                  JSON.stringify(user),
+                );
+              }}
+            />
+            <Button
+              color="orange"
+              title="getFuturePingsQueue()"
+              onPress={async () => {
+                const futurePingsQueues = await getFuturePingsQueue();
+                await alertWithShareButtonContainingDebugInfoAsync(
+                  JSON.stringify(futurePingsQueues),
+                );
+              }}
+            />
+            <Button
+              color="red"
+              title="reset/initFuturePingQueueAsync()"
+              onPress={async () => {
+                await initFuturePingQueueAsync();
+              }}
+            />
+            <Button
+              color="orange"
+              title="getAllDataAsync()"
+              onPress={async () => {
+                const allData = await getAllDataAsync();
+                await alertWithShareButtonContainingDebugInfoAsync(
+                  JSON.stringify(allData),
+                );
+              }}
+            />
+            <Button
+              color="orange"
+              title="getUnuploadedDataAsync()"
+              onPress={async () => {
+                const unuploadedData = await getUnuploadedDataAsync();
+                await alertWithShareButtonContainingDebugInfoAsync(
+                  JSON.stringify(unuploadedData),
+                );
+              }}
+            />
+            <Button
+              color="orange"
+              title="uploadDataAsync(all)"
+              onPress={async () => {
+                try {
+                  const response = await uploadDataAsync(
+                    studyInfo,
+                    this.setUploadStatusSymbol,
+                    { unuploadedOnly: false },
+                  );
+                  await alertWithShareButtonContainingDebugInfoAsync(
+                    JSON.stringify(response),
+                  );
+                } catch (e) {
+                  await alertWithShareButtonContainingDebugInfoAsync(`${e}`);
+                }
+              }}
+            />
+            <Button
+              color="orange"
+              title="uploadDataAsync(unuploaded)"
+              onPress={async () => {
+                try {
+                  const response = await uploadDataAsync(
+                    studyInfo,
+                    this.setUploadStatusSymbol,
+                    { unuploadedOnly: true },
+                  );
+                  await alertWithShareButtonContainingDebugInfoAsync(
+                    JSON.stringify(response),
+                  );
+                } catch (e) {
+                  await alertWithShareButtonContainingDebugInfoAsync(`${e}`);
+                }
+              }}
+            />
+            <Button
+              color="orange"
+              title="send a local notification"
+              onPress={async () => {
+                await _sendTestNotificationAsync();
+              }}
+            />
+            <Button
+              color="orange"
+              title="copy dashboard url"
+              onPress={async () => {
+                // const url =
+                //   (await getDashboardUrlAsync(studyInfo, firebaseUser)) ??
+                //   "No dashboard URL.";
+                // Clipboard.setString(url);
+                // await alertWithShareButtonContainingDebugInfoAsync(url);
+              }}
+            />
+            <Button
+              color="red"
+              onPress={() => {
+                Alert.alert("Log out", "Are you sure you want to log out?", [
                   {
                     text: "Cancel",
                     style: "cancel",
                   },
                   {
-                    text: "Confirm",
+                    text: "Log out",
                     style: "destructive",
                     onPress: async () => {
-                      await clearNotificationTimesAsync();
+                      await this.props.logout();
                     },
                   },
-                ],
-              );
-            }}
-            title="Reset notifications (restart needed)"
-          />
-          <Button
-            color="red"
-            onPress={() => {
-              Alert.alert(
-                "Dangerous",
-                "Doing this will reset all your previous survey data both locally and on the server.",
-                [
-                  {
-                    text: "Cancel",
-                    style: "cancel",
-                  },
-                  {
-                    text: "Confirm",
-                    style: "destructive",
-                    onPress: async () => {
-                      await clearAllPingsAndAnswersAsync();
-                      alert("Done! Please restart the app.");
+                ]);
+              }}
+              title="Logout"
+            />
+            <Button
+              color="red"
+              onPress={() => {
+                Alert.alert(
+                  "Dangerous",
+                  "This will clear future notifications. Restart the app to reset future notifications.",
+                  [
+                    {
+                      text: "Cancel",
+                      style: "cancel",
                     },
-                  },
-                ],
-              );
-            }}
-            title="Reset pings/app (restart needed)"
-          />
-          {/* {children} */}
-        </ScrollView>
+                    {
+                      text: "Confirm",
+                      style: "destructive",
+                      onPress: async () => {
+                        await clearNotificationTimesAsync();
+                      },
+                    },
+                  ],
+                );
+              }}
+              title="Reset notifications (restart needed)"
+            />
+            <Button
+              color="red"
+              onPress={() => {
+                Alert.alert(
+                  "Dangerous",
+                  "Doing this will reset all your previous survey data both locally and on the server.",
+                  [
+                    {
+                      text: "Cancel",
+                      style: "cancel",
+                    },
+                    {
+                      text: "Confirm",
+                      style: "destructive",
+                      onPress: async () => {
+                        await clearAllPingsAndAnswersAsync();
+                        alert("Done! Please restart the app.");
+                      },
+                    },
+                  ],
+                );
+              }}
+              title="Reset pings/app (restart needed)"
+            />
+            {/* {children} */}
+          </ScrollView>
+        </View>
       );
     };
 
@@ -1047,7 +1051,7 @@ export default class HomeScreen extends React.Component<
         return (
           <View style={{ height: "100%" }}>
             {ExtraView}
-            <DebugView />
+            <DebugView></DebugView>
             <View style={{ marginHorizontal: 20 }}>
               <Text style={styles.onlyTextStyle}>
                 Thank you for your participation!
@@ -1144,7 +1148,7 @@ export default class HomeScreen extends React.Component<
       }]
       const renderItem = ({item}: {item: ItemData}) => {
         return <Pressable onPress={async ()=>{
-          console.log(JSON.stringify(studyInfo,null,2));
+          // console.log(JSON.stringify(studyInfo,null,2));
           console.log('today ping', JSON.stringify(await getTodayPingsAsync(),null,2));
           // console.log(JSON.stringify(await AsyncStorage.getAllKeys(),null,2));
           // console.log(JSON.stringify(
@@ -1153,15 +1157,22 @@ export default class HomeScreen extends React.Component<
           // result.map(req => JSON.parse(req))
           // ,null,2))
 
- 
+          // Figure out how to display survey
+          console.log('CONDITIONS')
+          console.log('currentNotifTime', currentNotificationTime)
+          console.log(' Date > End ', new Date() > getStudyEndDate(studyInfo))
+          console.log(' Date < Start ', new Date() < getStudyStartDate(studyInfo))
+
+          console.log('currentPing', currentPing)
+          console.log('currentPing.endTime', currentPing?.endTime)
+
+          const pingCheck = await this.checkIfPingHasExpiredAsync()
+          console.log('CheckPingExpired,', pingCheck)
+          console.log('prevNotifTime', this.state.currentNotificationTime)
+
           const keys = await AsyncStorage.getAllKeys()
-          const itemsArray = await AsyncStorage.multiGet(keys)
-          // let object = {}
-          itemsArray.map(item => {
-            // object[`${item[0]}`] = item[1]
-            // console.log(item[0],JSON.stringify(JSON.parse(item[1]),null,2))
-          })
-          // console.log(JSON.stringify(itemsArray,null,2))
+          // const itemsArray = await AsyncStorage.multiGet(keys)
+
         }} style={[styles0.shadow, {marginTop: 20, width: width*.9, height: 272, backgroundColor: '#fffae2', alignItems: 'flex-start', justifyContent: 'space-around', padding: 10, paddingHorizontal: 20, borderRadius: 12}]}>
           <View>
             <Text style={{fontSize: 18, fontFamily: 'Roboto_700Bold', color: '#3a3a3a'}}>Study ID</Text>
@@ -1189,56 +1200,38 @@ export default class HomeScreen extends React.Component<
         </Pressable>
       }
 
-      // When participant see's study and it's ready to go
+      // When participant see's but Ping is not active
       return (
         <View style={{height: '100%', backgroundColor: 'white'}}>
-          {/* <View style={{width: width, height: height*.8, backgroundColor: '#f8f9fa', alignItems: 'center', justifyContent: 'flex-start', paddingTop: Platform.OS === 'ios'? 84:0 }}> */}
-            {ExtraView} 
-            <View style={{width: width, backgroundColor: 'white', alignItems: 'flex-start', justifyContent: 'flex-start', paddingTop: 30}}>
-              <Text style={{
-                fontFamily: 'Roboto_700Bold',
-                fontSize: 36, 
-                width: '100%', 
-                textAlign: 'left', 
-                color: "#3a3a3a",
-                paddingLeft: 20
-              }}>
-                Your survey
-              </Text>
-            </View>
-            {/* <Text>
-              There is currently no active survey. You will receive a notification
-              with a survey soon!
-            </Text> */}
-            <View style={{ width: '100%', height: height*.7, backgroundColor: 'white', alignItems: 'center'}}>
-              {/* <View style={{position: 'absolute', height: '70%', width: '100%', backgroundColor: 'gray'}}></View> */}
-              <FlatList
-                contentContainerStyle={[styles0.center, {backgroundColor: 'white', width: width, height: height*.7, justifyContent: 'flex-start'}]}
-                data={DATA}
-                renderItem={renderItem}
-                keyExtractor={item => item.id}
-              />
-
-              {/* Console Log button */}
-              <Pressable 
-                style={{ position: 'absolute', top: -10, left: 20, }} 
-                onPress={async ()=>console.log(
-                  new Date < getStudyStartDate(studyInfo),
-                  JSON.stringify(await AsyncStorage.getAllKeys(),null,2)
-                )}
-              >
-                <Text style={{ fontSize: 18, textAlign: 'left', color: 'lightgray'}}>
-                  {/* {"(Debug)"} Log response to terminal */}
-                </Text>
-              </Pressable>
-            </View>
-          {/* </View> */}
-
+          {ExtraView} 
           {/* <DebugView /> */}
-          {/* <Text style={[styles.onlyTextStyle, {backgroundColor: 'gray', width: width*.8}]}>
-            There is currently no active survey. You will receive a notification
-            with a survey soon!
-          </Text> */}
+          <View style={{width: width, backgroundColor: 'white', alignItems: 'flex-start', justifyContent: 'flex-start', paddingTop: 30}}>
+            <Text style={{fontFamily: 'Roboto_700Bold', fontSize: 36,  width: '100%',  textAlign: 'left',  color: "#3a3a3a", paddingLeft: 20}}>
+              Your survey
+            </Text>
+          </View>
+          <View style={{ width: '100%', height: height*.7, backgroundColor: 'white', alignItems: 'center'}}>
+            {/* Survey Flatlist */}
+            <FlatList
+              contentContainerStyle={[styles0.center, {backgroundColor: 'white', width: width, height: height*.7, justifyContent: 'flex-start'}]}
+              data={DATA}
+              renderItem={renderItem}
+              keyExtractor={item => item.id}
+            />
+            {/* Debug/Console.Log Button */}
+            <Pressable 
+              style={{ position: 'absolute', top: -10, left: 20, }} 
+              onPress={async ()=>console.log(
+                new Date < getStudyStartDate(studyInfo),
+                JSON.stringify(await AsyncStorage.getAllKeys(),null,2)
+              )}
+            >
+              <Text style={{ fontSize: 18, textAlign: 'left', color: 'lightgray'}}>
+                {/* {"(Debug)"} Log response to terminal */}
+              </Text>
+            </Pressable>
+          </View>
+          <DebugView />
           {/* <DashboardComponent
             firebaseUser={firebaseUser}
             studyInfo={studyInfo}
@@ -1269,12 +1262,9 @@ export default class HomeScreen extends React.Component<
             <AntDesign name="arrowleft" size={30} color="black" />
             <Text style={{fontFamily: 'Roboto_700Bold', fontSize: 20, color: '#3a3a3a'}}> Back</Text>
           </Pressable>
-          {/* {ExtraView} */}
+          {ExtraView}
           {/* <DebugView>{streamButtons}</DebugView> */}
-
           <View style={{height: height*.5, width: '100%', backgroundColor: 'transparent', justifyContent: 'space-around', alignItems: 'center'}}>
-
-
             <View style={{height: 120, width: 120, backgroundColor: 'rgba(0,0,0,0.0)'}}>
               <Image source={require('../assets/icon-android-foreground.png')} style={{height: 120, width: 120, backgroundColor: 'transparent', transform: [{scale: 2.5}]}}/>
             </View>
@@ -1306,7 +1296,6 @@ export default class HomeScreen extends React.Component<
               onPress={() => {
                 this.startSurveyAsync();
               }}
-              // onPress={this.loginFnAsync}
             >
               Click here to start the survey
             </PaperButton>
@@ -1367,6 +1356,7 @@ export default class HomeScreen extends React.Component<
       );
     }
 
+    // Finally, display SurveyScreen
     return (
       <View style={{ height: "100%" }}>
         {ExtraView}
@@ -1489,7 +1479,6 @@ const styles0 = StyleSheet.create({
     height: "100%", 
     alignItems: 'center', 
     justifyContent: 'flex-start',
-    // paddingTop: Platform.OS === 'ios'? 0 : 0
   },
   center: {
     justifyContent: 'center',
