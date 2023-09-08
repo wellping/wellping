@@ -720,15 +720,15 @@ export default class HomeScreen extends React.Component<
     const DebugView: React.FunctionComponent = ({ 
       // children 
     }) => {
-      if (!this.state.displayDebugView) {
-        return <></>;
-      }
+      // if (!this.state.displayDebugView) {
+      //   return <></>;
+      // }
       return (
         <View style={{position: 'absolute', bottom: 0, width: '100%', height: '40%', backgroundColor: 'transparent'}}>
           <ScrollView
             style={{
-              backgroundColor: "yellow",
-              opacity: .4,
+              backgroundColor: "#bde0fe",
+              opacity: 1,
               maxHeight: '100%',
             }}
             contentContainerStyle={{
@@ -765,7 +765,7 @@ export default class HomeScreen extends React.Component<
               title="getStudyInfoAsync()"
               onPress={async () => {
                 await alertWithShareButtonContainingDebugInfoAsync(
-                  JSON.stringify(await getStudyInfoAsync()),
+                  JSON.stringify(await getStudyInfoAsync(),null,2),
                 );
               }}
             />
