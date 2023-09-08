@@ -19,7 +19,6 @@ import StudyFileErrorScreen from "./screens/StudyFileErrorScreen";
 import { NavigationContainer, NavigationContainerRef } from '@react-navigation/native'
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { Feather, FontAwesome, MaterialCommunityIcons, Foundation } from '@expo/vector-icons';
-import * as SplashScreen from 'expo-splash-screen';
 import {
   useFonts,
   Roboto_100Thin,
@@ -56,8 +55,6 @@ import {
   studyFileExistsAsync,
 } from "./helpers/studyFile";
 import { logoutAsync } from "./helpers/users";
-
-SplashScreen.preventAutoHideAsync();
 
 interface RootScreenProps {
   tab: number;
