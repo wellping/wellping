@@ -18,7 +18,6 @@ import StudyFileErrorScreen from "./screens/StudyFileErrorScreen";
 
 import { NavigationContainer, NavigationContainerRef } from '@react-navigation/native'
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import AppLoading from 'expo-app-loading';
 import { Feather, FontAwesome, MaterialCommunityIcons, Foundation } from '@expo/vector-icons';
 import * as SplashScreen from 'expo-splash-screen';
 import {
@@ -121,7 +120,7 @@ export default function Main () {
   },[])
 
   if (!fontsLoaded) {
-    return <AppLoading />;
+    return <LoadingScreen />;
   } else
   return <RootScreen tab={tab} setTab={setTab} handleNav={handleNav}/>
 }
