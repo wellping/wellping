@@ -297,7 +297,18 @@ class RootScreen extends React.Component<
         <View style={{height: '100%', width: '100%'}}>
           <NavigationContainer ref={navRef}>
             <Stack.Navigator initialRouteName='Home'>
-              <Stack.Screen name="Notification" component={NotificationScreen} options={{headerShown: false}}/>
+              <Stack.Screen name="Notification" options={{headerShown: false}}>
+                {(props)=> this.state.survey === undefined?
+                  <><Text>Stream is undefined</Text></> 
+                  :
+                  <NotificationScreen 
+                    {...props}
+                    streams={this.state.survey.streams}
+                    userInfo={this.state.userInfo}
+                    studyInfo={this.state.survey?.studyInfo}
+                    logout={async () => {await this.logoutFnAsync()}}
+                  />}
+              </Stack.Screen>
               <Stack.Screen name="Account" options={{headerShown: false}}>
                 {(props)=> 
                   <AccountScreen 

@@ -841,7 +841,7 @@ export default class SurveyScreen extends React.Component<
           // to call `loadingCompleted` and set `isInTransition`.
           // We use 0.05 instead 0 so that if there's error, we can still see it.
           opacity: isInTransition ? 0.025 : 1,
-          backgroundColor: '#f8f9fa'  // Make transparent to show previous / debug screen
+          backgroundColor: 'white'  // Make transparent to show previous / background screen
         }}
       >
         {/* Header */}

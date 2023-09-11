@@ -728,7 +728,7 @@ export default class HomeScreen extends React.Component<
           <ScrollView
             style={{
               backgroundColor: "#bde0fe",
-              opacity: 1,
+              opacity: .2,
               maxHeight: '100%',
             }}
             contentContainerStyle={{
@@ -793,9 +793,12 @@ export default class HomeScreen extends React.Component<
               onPress={async () => {
                 const nextPingTime = await getIncomingNotificationTimeAsync();
                 await alertWithShareButtonContainingDebugInfoAsync(
+                  // nextPingTime
+                  //   ? format(nextPingTime, "yyyy-MM-dd' T 'HH:mm:ss.SSSxxx")
+                  //   : "IS NULL",
                   nextPingTime
-                    ? format(nextPingTime, "yyyy-MM-dd' T 'HH:mm:ss.SSSxxx")
-                    : "IS NULL",
+                    ? nextPingTime.toLocaleString()
+                    : "Null"
                 );
               }}
             />
@@ -816,7 +819,7 @@ export default class HomeScreen extends React.Component<
                 const currentNotificationTime =
                   await getCurrentNotificationTimeAsync();
                 await alertWithShareButtonContainingDebugInfoAsync(
-                  JSON.stringify(currentNotificationTime),
+                  JSON.stringify(currentNotificationTime?.toLocaleString()),
                 );
               }}
             />
@@ -1262,8 +1265,9 @@ export default class HomeScreen extends React.Component<
             <AntDesign name="arrowleft" size={30} color="black" />
             <Text style={{fontFamily: 'Roboto_700Bold', fontSize: 20, color: '#3a3a3a'}}> Back</Text>
           </Pressable>
-          {ExtraView}
+          {/* {ExtraView} */}
           {/* <DebugView>{streamButtons}</DebugView> */}
+          <DebugView/>
           <View style={{height: height*.5, width: '100%', backgroundColor: 'transparent', justifyContent: 'space-around', alignItems: 'center'}}>
             <View style={{height: 120, width: 120, backgroundColor: 'rgba(0,0,0,0.0)'}}>
               <Image source={require('../assets/icon-android-foreground.png')} style={{height: 120, width: 120, backgroundColor: 'transparent', transform: [{scale: 2.5}]}}/>
@@ -1360,6 +1364,9 @@ export default class HomeScreen extends React.Component<
     return (
       <View style={{ height: "100%" }}>
         {ExtraView}
+        {/* <Pressable onPress={()=>console.log(JSON.stringify(streams))} style={{width: '100%', height: 50, backgroundColor: 'tan'}}>
+          <Text>log to terminal</Text>
+        </Pressable> */}
         <SurveyScreen
           questions={streams[currentPing.streamName]}
           startingQuestionId={
