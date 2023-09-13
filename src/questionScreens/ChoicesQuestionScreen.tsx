@@ -278,7 +278,16 @@ const styles = StyleSheet.create({
   item: {
     backgroundColor: "#f9c2ff",
     padding: 10,
+    borderWidth: 1,
     marginVertical: 8,
+    borderColor: "#8E8E8E",
+    paddingTop: 8,
+    paddingBottom: 5,
+    height: 49,
+    paddingLeft: 25,
+    display: "flex",
+    alignItems: "flex-start",
+    margin: "auto"
   },
   title: {
     fontSize: 20,

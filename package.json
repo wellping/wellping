@@ -18,7 +18,7 @@
     "@react-navigation/native-stack": "^6.9.13",
     "@wellping/study-schemas": "https://github.com/wellping/study-schemas",
     "date-fns": "^2.14.0",
-    "expo": "^49.0.7",
+    "expo": "^49.0.9",
     "expo-app-loading": "^2.1.1",
     "expo-constants": "~14.4.2",
     "expo-crypto": "~12.4.1",
