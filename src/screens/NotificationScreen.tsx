@@ -451,7 +451,11 @@ const NotificationScreen = ({streams, studyInfo, logout, userInfo}: Notification
       notificationTime: list[2].notificationDate,
       startTime: new Date(),
       // streamName,
-      streamName: 'myStream'
+      // streamName: 'welcomeStream'
+      // streamName: 'myStream'
+      streamName: 'exampleStream'
+      // streamName: 'errorStream'
+      
     });
 
     console.log('np',newPing)
