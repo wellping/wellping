@@ -30,6 +30,7 @@ import { addDays } from "date-fns";
 import React from "react";
 import {
   Text,
+  Button,
   View,
   ScrollView,
   Image,
@@ -38,6 +39,7 @@ import {
   StyleSheet,
   Pressable,
 } from "react-native";
+const { height, width } = Dimensions.get('window')
 import { Button as PaperButton } from 'react-native-paper'
 import { AntDesign } from '@expo/vector-icons';
 
@@ -847,13 +849,13 @@ export default class SurveyScreen extends React.Component<
         {/* Header */}
         <Pressable onPress={()=>console.log(JSON.stringify(question, null, 2))} style={{width: '100%', height: 50, alignItems: 'center', flexDirection: 'row'}}>
           <AntDesign style={{width: '80%'}} name="arrowleft" size={30} color="black" />
-          <Text style={{ fontSize: 18, width: '20%', textAlign: 'right', letterSpacing: 5, color: '#3A3A3A'}}>2/5</Text>
+          <Text style={{ fontSize: 15, width: '20%', textAlign: 'right', color: '#3A3A3A'}}>streamId</Text>
         </Pressable>
         {/* Slider */}
         {true? // TODO: Add Slider conditional option later on 
           <View style={{width: '100%', height: 50, flexDirection: 'row'}}>
-            <View style={{width: '50%', height: 5, backgroundColor: '#761A15'}}/>
-            <View style={{width: '50%', height: 5, backgroundColor: '#D9D9D9'}}/>
+            <View style={{width: '100%', height: 5, backgroundColor: '#761A15'}}/>
+            {/* <View style={{width: '50%', height: 5, backgroundColor: '#D9D9D9'}}/> */}
           </View>:<></>
         }
         {/* Header Items */}
@@ -890,7 +892,7 @@ export default class SurveyScreen extends React.Component<
               <ScrollView
                 style={{
                   marginBottom: 5,
-                  maxHeight: Dimensions.get("window").height / 10,
+                  maxHeight: Dimensions.get("window").height / 3,
                   borderWidth: 1,
                   borderColor: "lightgray",
                 }}
@@ -911,6 +913,11 @@ export default class SurveyScreen extends React.Component<
                   </Text>
                 )}
                 {getImageIfAnyForPosition("inDescriptionBox")}
+                <Pressable onPress={()=>console.log(question.image?.url)}>
+                  <Text>{'test'}</Text>
+                  <Image style={{height: width, width: '100%'}} source={{uri: question.image?.url}}/>
+                  <Image style={{height: width, width: '100%'}} source={{uri: 'https://stanforduniversity.qualtrics.com/ControlPanel/Graphic.php?IM=IM_1N6paCijbp14bRk'}}/>
+                </Pressable>
               </ScrollView>
             </>
           )}
@@ -959,8 +966,9 @@ export default class SurveyScreen extends React.Component<
             </View>
           </View>
         </View>
-        {/* Temporarily removing this button for styling */}
-        {/* {question.extraCustomNextWithoutAnsweringButton && (
+
+        {/* "Not interacted" button */}
+        {question.extraCustomNextWithoutAnsweringButton && (
           <Button
             onPress={async () => {
               // Clicking this button is equivalent to clicking "Next" without answering.
@@ -972,7 +980,7 @@ export default class SurveyScreen extends React.Component<
             accessibilityLabel={question.extraCustomNextWithoutAnsweringButton}
             title={question.extraCustomNextWithoutAnsweringButton}
           />
-        )} */}
+        )}
 
         {/* Participant Navigation Buttons (Proceed/Not answer) */}
         <View

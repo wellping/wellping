@@ -25,7 +25,7 @@ import { isUsingFirebase } from "./server";
 
 export const WELLPING_LOCAL_DEBUG_URL =
   "https://debug.local.wellping.ssnl.stanford.edu/DEBUG_STUDY.json";
-const WELLPING_LOCAL_DEBUG_FILEPATH = "../../local/debug/DEBUG_STUDY.json";
+const WELLPING_LOCAL_DEBUG_FILEPATH = "../../local/debug/EXAMPLE_STUDY_FILE.json";
 
 export type LocalStudyFileType = "debug";
 export function getLocalStudyFileType(

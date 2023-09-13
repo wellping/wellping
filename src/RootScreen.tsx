@@ -220,6 +220,9 @@ class RootScreen extends React.Component<
   }
 
   async componentDidMount() {
+    // Makes sure app opens on Home tab, should be removed if bottom nav is not being used
+    this.setState({tab: 0})
+
     if (await studyFileExistsAsync()) {
       if (!(await this.loadTempStudyFileAsync())) {
         return;

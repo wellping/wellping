@@ -24,7 +24,7 @@ const AccountScreen = ({logout, studyInfo, userInfo} : AccountScreenProps) => {
   return (
     <View style={{paddingHorizontal: 40, backgroundColor: 'white', height:'100%', justifyContent: 'space-around'}}>
       <View>
-        <Text style={{fontFamily: 'Roboto_700Bold', fontSize: 32, fontWeight: 'bold', color: '#3a3a3a', marginBottom: 8}}>{userInfo?.username}</Text>
+        <Text style={{fontFamily: 'Roboto_700Bold', fontSize: 32, fontWeight: 'bold', color: '#3a3a3a', marginBottom: 8}}>Patient ID: {userInfo?.username}</Text>
         <Text style={{fontFamily: 'Roboto_400Regular', fontSize: 20, color: '#3a3a3a'}}>{studyInfo?.contactEmail}</Text>
       </View>
 

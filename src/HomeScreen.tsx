@@ -728,7 +728,7 @@ export default class HomeScreen extends React.Component<
           <ScrollView
             style={{
               backgroundColor: "#bde0fe",
-              opacity: .2,
+              opacity: 1,
               maxHeight: '100%',
             }}
             contentContainerStyle={{
@@ -761,14 +761,54 @@ export default class HomeScreen extends React.Component<
               }}
             />
             <Button
+              color="blue"
+              title="CheckIfShouldDisableAfterFivePings"
+              onPress={async () => {
+                const data = await getAllDataAsync();
+                // await alertWithShareButtonContainingDebugInfoAsync(
+                //   JSON.stringify(info,null,2),
+                // );
+
+                // Get last up to last Five "preferNotToAnswer" values
+                const answers = data.answers.slice(-5)
+                // Round up all prefNotAnswer values into an array, 1 for true, 0 for false
+                const responses = answers.map(e=>e.preferNotToAnswer? 1:0)
+
+                // If all elements are 1 e.g. [1,1,1,1,1] and length more than 5, 
+                // meaning the Participant repeatedly chose not to respond, take action
+                if(responses.length>=5 && responses.every(e => e===1)) {
+                  console.log('take action')
+                  // await clearNotificationTimesAsync()
+                }
+                else {
+                  console.log('take no action')
+                }
+                // console.log(JSON.stringify(answers,null,2), responses)
+                console.log(responses)
+                console.log(answers.length, 'length')
+                
+                // const latestPing = await getLatestPingAsync()
+                // const currentNotificationTime = await getCurrentNotificationTimeAsync();
+                // console.log(latestPing
+                //   ? JSON.stringify(await getPingStateAsync(latestPing.id),null,2)
+                //   : 'no ping')
+
+                // console.log(await getPingsListAsync())
+                // console.log(await getPingsListAsync())
+                // console.log(await getTodayPingsAsync())
+              }}
+            />
+            <Button
               color="orange"
               title="getStudyInfoAsync()"
               onPress={async () => {
+                const info = await getStudyInfoAsync();
                 await alertWithShareButtonContainingDebugInfoAsync(
-                  JSON.stringify(await getStudyInfoAsync(),null,2),
+                  JSON.stringify(info,null,2),
                 );
+                console.log(JSON.stringify(info,null,2))
               }}
-            />
+            />            
             <Button
               color="orange"
               title="getStudyStartDate()"
@@ -808,7 +848,7 @@ export default class HomeScreen extends React.Component<
               onPress={async () => {
                 const latestStartedPing = await getLatestPingAsync();
                 await alertWithShareButtonContainingDebugInfoAsync(
-                  JSON.stringify(latestStartedPing),
+                  JSON.stringify(latestStartedPing,null,2),
                 );
               }}
             />
@@ -857,6 +897,13 @@ export default class HomeScreen extends React.Component<
                   //   `\n`;
                 });
                 await alertWithShareButtonContainingDebugInfoAsync(text);
+
+                const notifs = await AsyncStorage.getItem('@WELLPING:Study_debug_study_for_v_1_0/NotificationTime')
+                const newJson = notifs? JSON.parse(notifs) : null
+                // const justLocale = newJson.map(e=>new Date(e.notificationDate).toLocaleString())
+                // const readableNotifs = newJson?.map((e : string)=> e.notificationDate)
+                // console.log(JSON.stringify(justLocale,null,2))
+                // console.log(await AsyncStorage.getAllKeys())
               }}
             />
             <Button
@@ -888,6 +935,7 @@ export default class HomeScreen extends React.Component<
                 await alertWithShareButtonContainingDebugInfoAsync(
                   JSON.stringify(futurePingsQueues),
                 );
+                console.log(futurePingsQueues)
               }}
             />
             <Button
@@ -905,6 +953,8 @@ export default class HomeScreen extends React.Component<
                 await alertWithShareButtonContainingDebugInfoAsync(
                   JSON.stringify(allData),
                 );
+                // console.log(JSON.stringify(allData.answers?.map(e=>e.preferNotToAnswer? 1:0),null,2))
+                console.log(JSON.stringify(allData,null,2))
               }}
             />
             <Button
@@ -1475,7 +1525,7 @@ export default class HomeScreen extends React.Component<
           studyInfo={studyInfo}
           setUploadStatusSymbol={this.setUploadStatusSymbol}
         />
-        <DebugView />
+        {/* <DebugView /> */}
       </View>
     );
   }

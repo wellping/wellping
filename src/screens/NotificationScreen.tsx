@@ -504,26 +504,36 @@ const NotificationScreen = ({streams, studyInfo, logout, userInfo}: Notification
       });
   }
 
+  const shouldRemoveFutureNotifications = async () => {
+    // Check if future pings should be disabled
+    // This condition is met when the last 5 consecutive answers are "prefer not to answer"
+    const data = await getAllDataAsync();
+
+    // Get last up to last Five "preferNotToAnswer" values
+    const answers = data.answers.slice(-5)
+    // Round up all prefNotAnswer values into an array, 1 for true, 0 for false
+    const responses = answers.map(e=>e.preferNotToAnswer? 1:0)
+
+    // If all elements are 1 e.g. [1,1,1,1,1] and length more than 5, 
+    // meaning the Participant repeatedly chose not to respond, disable all future pings 
+    // so the Participant won't have to receive pings. They can choose to continue
+    // answering survey questions by logging out and in again
+    if(responses.length>=5 && responses.every(e => e===1)) {
+      console.log('Since the last 5 responses have been "Prefer not to Answer" The app will log out so no further pings will be sent')
+
+      await logout()
+    }
+    else {}
+  }
+
   const startSurveyAsync = async () => {
-    // await new Promise<void>((resolve) =>
-    //   this.setState({ isLoading: true }, resolve),
-    // );
     setIsLoading(true);
   
     const todayWeekday = getDay(new Date());
     const todayPings = await getTodayPingsAsync();
-
-    // console.log(JSON.stringify(todayPings,null,2))
   
     const pingsList = await getPingsListAsync();
     const newPingNth = pingsList.length + 1;
-
-    // Log list of pings scheduled for today
-    // console.log(JSON.stringify(pingsList,null,2))
-
-    console.log(todayPings.length >= studyInfo.pingsFrequency.length, todayPings.length, studyInfo.pingsFrequency.length)
-    console.log(studyInfo.streamsForNthPings && studyInfo.streamsForNthPings[`${newPingNth}`], studyInfo.streamsForNthPings,)
-    console.log(studyInfo.streamsOrder[todayWeekday][todayPings.length])
 
     let newStreamName: StreamName;
     /*
@@ -570,7 +580,6 @@ const NotificationScreen = ({streams, studyInfo, logout, userInfo}: Notification
   
     // TODO: should this be after setNotificationsAsync?
     await new Promise<void>((resolve) =>
-      // this.setState({ isLoading: false }, resolve),
       setIsLoading(false)
     );
   
@@ -578,86 +587,9 @@ const NotificationScreen = ({streams, studyInfo, logout, userInfo}: Notification
     await setNotificationsAsync();
   }
 
-  const streamButtons = [];
-  for (const streamName of getAllStreamNames(studyInfo)) {
-    streamButtons.push(
-      <Button
-        color="orange"
-        key={streamName}
-        title={`Start "${streamName}" stream`}
-        onPress={() => {
-          _startSurveyTypeAsync(streamName);
-        }}
-      />,
-    );
-  }
-  // if(currentPing === null) {
-  //   return <View style={[styles.container, {justifyContent: 'center', backgroundColor: '#f8f9fa'}]}>
-  //     <Text style={{position: 'absolute', top: 0, left: 0}}>Start survey flow</Text>
-  //     <Pressable onPress={()=>{setCurrentPing(null); setCurrentNotificationTime(null);}} style={{position: 'absolute', top: 20, backgroundColor: 'transparent', justifyContent: 'flex-start', alignItems: 'center', width: '100%', paddingLeft: 20, flexDirection: 'row'}}>
-  //       <AntDesign name="arrowleft" size={30} color="black" />
-  //       <Text style={{fontFamily: 'Roboto_700Bold', fontSize: 20, color: '#3a3a3a'}}> Back</Text>
-  //     </Pressable>
-  //     {/* {ExtraView} */}
-  //     {/* <DebugView>{streamButtons}</DebugView> */}
-  //     <View style={{height: height*.5, width: '100%', backgroundColor: 'transparent', justifyContent: 'space-around', alignItems: 'center'}}>
-  //       <View style={{height: 120, width: 120, backgroundColor: 'rgba(0,0,0,0.0)'}}>
-  //         <Image source={require('../../assets/icon-android-foreground.png')} style={{height: 120, width: 120, backgroundColor: 'transparent', transform: [{scale: 2.5}]}}/>
-  //       </View>
-
-  //       <View style={{width: '100%', flexDirection: 'row', justifyContent: 'center'}}>
-  //         <Text style={{ width: '50%',fontFamily: 'Roboto_700Bold', fontSize: 36, marginVertical: 20, textAlign: "center" }}>
-  //           Welcome to Well Ping!
-  //         </Text>
-  //       </View>
-
-  //       <Pressable 
-  //         style={{ position: 'absolute', top: -10, left: 20, }} 
-  //         onPress={async ()=>{
-  //           console.log('asdf', new Date(), JSON.stringify(studyInfo,null,2), new Date() > getStudyEndDate(studyInfo))
-  //           console.log(currentNotificationTime, currentPing)
-  //           // console.log(JSON.stringify(this.state,null,2))
-  //         }}
-  //       >
-  //         <Text style={{ fontSize: 18, textAlign: 'left', color: 'lightgray'}}>
-  //           {/* {"(Debug)"} Log response to terminal */}
-  //         </Text>
-  //       </Pressable>
-  //       <PaperButton
-  //         buttonColor="#f8f9fa" 
-  //         mode="elevated" 
-  //         style={{borderRadius: 12, width: 294, alignItems: 'center', paddingVertical: 10, borderWidth: 1, borderColor: 'black'}}
-  //         // disabled={this.state.disableLoginButton}
-  //         labelStyle={{fontSize: 18, color: '#0F4EC7'}}
-  //         onPress={() => {
-  //           startSurveyAsync();
-  //         }}
-  //       >
-  //         Click here to start the survey
-  //       </PaperButton>
-  //     </View>
-  //     {/* <DashboardComponent
-  //       firebaseUser={firebaseUser}
-  //       studyInfo={studyInfo}
-  //     /> */}
-  //   </View>
-  // }
   return (
-    <View style={{paddingHorizontal: 40, backgroundColor: 'white', height:'100%', justifyContent: 'flex-start', paddingTop: 20}}>
-      <View>
-        <Text style={{fontFamily: 'Roboto_700Bold', fontSize: 32, fontWeight: 'bold', color: '#3a3a3a', marginBottom: 8}}>Notifications</Text>
-        {/* <Text style={{fontFamily: 'Roboto_400Regular', fontSize: 20, color: '#3a3a3a'}}>There is currently no active survey. You should receive a ping soon if you have notifications enabled.</Text> */}
-      </View>
-
-      {/* Debug View */}
-      {/* <Text></Text>
-      <View style={{width: '100%', height: 100}}>
-        <DebugView/>
-      </View>      
-      <Text></Text> */}
-
-
-      <View style={{width: '100%', height: '90%', backgroundColor: 'gray'}}>
+    <View style={{paddingHorizontal: 0, backgroundColor: 'white', height:'100%', justifyContent: 'flex-start', paddingTop: 0}}>
+      <View style={{width: '100%', backgroundColor: 'gray'}}>
         {
           currentPing===null
           ?<View style={[{
@@ -692,7 +624,6 @@ const NotificationScreen = ({streams, studyInfo, logout, userInfo}: Notification
                 onPress={async ()=>{
                   console.log('asdf', new Date(), JSON.stringify(studyInfo,null,2), new Date() > getStudyEndDate(studyInfo))
                   console.log(currentNotificationTime, currentPing)
-                  // console.log(JSON.stringify(this.state,null,2))
                 }}
               >
                 <Text style={{ fontSize: 18, textAlign: 'left', color: 'lightgray'}}>
@@ -715,9 +646,6 @@ const NotificationScreen = ({streams, studyInfo, logout, userInfo}: Notification
           </View> 
     
           :<>
-              {/* <Pressable onPress={()=>console.log(streams, studyInfo.streamsStartingQuestionIds[currentPing.streamName])}>
-                <Text>log to terminal</Text>
-              </Pressable> */}
               <SurveyScreen
                 questions={streams[currentPing.streamName]}
                 startingQuestionId={studyInfo.streamsStartingQuestionIds[currentPing.streamName]}
@@ -725,9 +653,10 @@ const NotificationScreen = ({streams, studyInfo, logout, userInfo}: Notification
                 studyInfo={studyInfo}
                 previousState={storedPingStateAsync}
                 setUploadStatusSymbol={setUploadStatusSymbol}
-                onFinish={(finishedPing)=>{
+                onFinish={async (finishedPing)=>{
                   setCurrentPing(finishedPing);
 
+                  await shouldRemoveFutureNotifications()
                 }}
               />
           </>
