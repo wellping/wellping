@@ -864,7 +864,7 @@ export default class SurveyScreen extends React.Component<
           <Text
             testID="questionTitle"
             style={{
-              textAlign: "center",
+              textAlign: "left",
               fontSize: 26,
               fontFamily: 'Roboto_700Bold',
               color: '#3a3a3a'
@@ -889,14 +889,27 @@ export default class SurveyScreen extends React.Component<
               >
                 You may need to scroll to see the full description.
               </Text>
+                {question.image
+                  ?<View style={styles.imageBox}>
+                      <Image style={styles.test} source={{uri: question.image?.url}}/>
+                    </View>
+                  :<></>
+                }
               <ScrollView
                 style={{
                   marginBottom: 5,
-                  maxHeight: Dimensions.get("window").height / 3,
+                  maxHeight: 140,
                   borderWidth: 1,
                   borderColor: "lightgray",
+                  padding: '0.7%'
                 }}
               >
+                {getImageIfAnyForPosition("inDescriptionBox")}
+                <Pressable onPress={()=>console.log(question.image?.url)}>
+                  {/* <View style={styles.imageBox}>
+                    <Image style={styles.test} source={{uri: question.image?.url}}/>
+                  </View> */}
+                </Pressable>
                 {question.description && (
                   <Text
                     testID="questionDescription"
@@ -912,12 +925,6 @@ export default class SurveyScreen extends React.Component<
                     )}
                   </Text>
                 )}
-                {getImageIfAnyForPosition("inDescriptionBox")}
-                <Pressable onPress={()=>console.log(question.image?.url)}>
-                  <Text>{'test'}</Text>
-                  <Image style={{height: width, width: '100%'}} source={{uri: question.image?.url}}/>
-                  <Image style={{height: width, width: '100%'}} source={{uri: 'https://stanforduniversity.qualtrics.com/ControlPanel/Graphic.php?IM=IM_1N6paCijbp14bRk'}}/>
-                </Pressable>
               </ScrollView>
             </>
           )}
@@ -995,7 +1002,7 @@ export default class SurveyScreen extends React.Component<
         >
           <PaperButton
             mode="text"
-            labelStyle={{fontSize: 18, color: '#4F4F4F'}}
+            labelStyle={{fontSize: 15, color: '#4F4F4F'}}
             onPress={async () => {
               await this.addAnswerToAnswersListAsync(question, {
                 preferNotToAnswer: true,
@@ -1065,5 +1072,25 @@ const styles = StyleSheet.create({
   image: {
     margin: 5,
     alignSelf: "center",
+    backgroundColor: "#000",
+  },
+  test: {
+    backgroundColor: "#000",
+    height: 150,
+    width: '100%',
+    objectFit: 'contain',
+    borderRadius: 12,
+    textAlign: "center",
+    marginTop: "2%",
+    marginBottom: "2%"
+
+  },
+
+  imageBox: {
+    width: '100%',
+    display: 'flex',
+    marginLeft: 3,
+    marginRight: 3,
+    justifyContent: 'center'
   }
 })

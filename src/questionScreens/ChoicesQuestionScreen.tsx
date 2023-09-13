@@ -37,11 +37,13 @@ export function ChoiceItem({ title, selected, onSelect }: ChoiceItemProps) {
         backgroundColor: selected ? "#FFFAE2" : "#f9f8fa",
         borderRadius: 12,
         height: 48,
+        display: "flex",
+        justifyContent: "center"
       },
       ]}
       accessibilityLabel={`select ${title}`}
     >
-      <Text style={styles.title}>{title}</Text>
+      <Text>{title}</Text>
     </TouchableOpacity>
   );
 }
@@ -212,7 +214,7 @@ const ChoicesQuestionScreen: React.ElementType<ChoicesQuestionScreenProps> = ({
           style={{
             textAlign: "center",
             color: "gray",
-            fontSize: 20,
+            // fontSize: 20,
             marginBottom: 2,
           }}
         >
@@ -268,6 +270,8 @@ const ChoicesQuestionScreen: React.ElementType<ChoicesQuestionScreenProps> = ({
         style={{
           borderWidth: 0,
           borderColor: "lightgray",
+          margin: 0,
+          padding: 0
         }}
       />
     </View>
@@ -277,21 +281,16 @@ const ChoicesQuestionScreen: React.ElementType<ChoicesQuestionScreenProps> = ({
 const styles = StyleSheet.create({
   item: {
     backgroundColor: "#f9c2ff",
-    padding: 10,
+    // padding: 10,
     borderWidth: 1,
     marginVertical: 8,
     borderColor: "#8E8E8E",
-    paddingTop: 8,
+    paddingTop: 5,
     paddingBottom: 5,
-    height: 49,
+    height: "100%",
     paddingLeft: 25,
-    display: "flex",
-    alignItems: "flex-start",
-    margin: "auto"
-  },
-  title: {
-    fontSize: 20,
-  },
+  }
+
 });
 
 export default ChoicesQuestionScreen;
