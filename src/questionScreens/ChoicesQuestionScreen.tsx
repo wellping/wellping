@@ -33,9 +33,11 @@ export function ChoiceItem({ title, selected, onSelect }: ChoiceItemProps) {
   return (
     <TouchableOpacity
       onPress={() => onSelect()}
-      style={[
-        styles.item,
-        { backgroundColor: selected ? "#b3995d" : "#F9F6EF" },
+      style={[ styles.item, { 
+        backgroundColor: selected ? "#FFFAE2" : "#f9f8fa",
+        borderRadius: 12,
+        height: 48,
+      },
       ]}
       accessibilityLabel={`select ${title}`}
     >
@@ -161,6 +163,48 @@ const ChoicesQuestionScreen: React.ElementType<ChoicesQuestionScreenProps> = ({
     setupAsync();
   }, []);
 
+  // const renderQuestion = ({item, index}) => (
+  //             <ChoiceItem
+  //           id={item.id}
+  //           title={item.title}
+  //           selected={(selected[index] && selected[index][1]) || false}
+  //           onSelect={() => {
+  //             const value = item.title;
+
+  //             let newSelected: ChoicesWithMultipleAnswersAnswerChoices;
+  //             if (answerType === ChoicesAnswerType.MULTIPLE_SELECTION) {
+  //               newSelected = cloneDeep(selected);
+  //             } else {
+  //               // Reset everything to `false` if it is a single-selection question.
+  //               newSelected = initAnswerDataWithFlatListData();
+  //             }
+  //             newSelected[index][1] = !newSelected[index][1];
+  //             setSelected(newSelected);
+
+  //             switch (answerType) {
+  //               case ChoicesAnswerType.MULTIPLE_SELECTION:
+  //                 onDataChange({
+  //                   value: newSelected,
+  //                 } as ChoicesWithMultipleAnswersAnswerData);
+  //                 break;
+
+  //               case ChoicesAnswerType.SINGLE_SELECTION:
+  //                 // Single-selection question only need the selected key as the data.
+  //                 onDataChange({
+  //                   value,
+  //                 } as ChoicesWithSingleAnswerAnswerData);
+  //                 break;
+
+  //               case ChoicesAnswerType.YESNO:
+  //                 onDataChange({
+  //                   value: value === YESNO_CHOICES_YES_VALUE,
+  //                 } as YesNoAnswerData);
+  //                 break;
+  //             }
+  //           }}
+  //         />
+  // )
+
   return (
     <View style={{ paddingVertical: 5 }}>
       {answerType !== ChoicesAnswerType.YESNO && (
@@ -168,7 +212,7 @@ const ChoicesQuestionScreen: React.ElementType<ChoicesQuestionScreenProps> = ({
           style={{
             textAlign: "center",
             color: "gray",
-            fontSize: 13,
+            fontSize: 20,
             marginBottom: 2,
           }}
         >
@@ -222,7 +266,7 @@ const ChoicesQuestionScreen: React.ElementType<ChoicesQuestionScreenProps> = ({
         extraData={selected}
         ref={listRef}
         style={{
-          borderWidth: 1,
+          borderWidth: 0,
           borderColor: "lightgray",
         }}
       />

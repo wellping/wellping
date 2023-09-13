@@ -71,7 +71,7 @@ export async function beiweUploadDataForUserAsync(
     //console.log(`${JSON.stringify(response)}`);
     endUploading();
     return response as DataUploadServerResponse;
-  } catch (e) {
+  } catch (e: any) {
     endUploading(`BW: ${e.message}`);
     throw e;
   }

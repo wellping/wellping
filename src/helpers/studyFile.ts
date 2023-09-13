@@ -25,7 +25,7 @@ import { isUsingFirebase } from "./server";
 
 export const WELLPING_LOCAL_DEBUG_URL =
   "https://debug.local.wellping.ssnl.stanford.edu/DEBUG_STUDY.json";
-const WELLPING_LOCAL_DEBUG_FILEPATH = "../../local/debug/DEBUG_STUDY.json";
+const WELLPING_LOCAL_DEBUG_FILEPATH = "../../local/debug/EXAMPLE_STUDY_FILE.json";
 
 export type LocalStudyFileType = "debug";
 export function getLocalStudyFileType(
@@ -91,6 +91,8 @@ export async function downloadStudyFileAsync({
     return rawJsonString;
   }
 
+  console.log('running downloadstudyfileasync...')
+
   if (
     !STUDY_FILE_URL_PREFIXES_WHITELIST.some((whitelistPrefix) =>
       url.startsWith(whitelistPrefix),
@@ -101,6 +103,7 @@ export async function downloadStudyFileAsync({
         "https://github.com/wellping/wellping for more information.",
     );
   }
+
 
   // TODO: Currently the password is hashed this way to make it works with Beiwe default authentication. It certainly does not have to be this way and could be changed later.
   function _base64ToBase64URL(input: string): string {
@@ -125,6 +128,8 @@ export async function downloadStudyFileAsync({
       (k) => encodeURIComponent(k) + "=" + encodeURIComponent(queryObject[k]),
     )
     .join("&");
+
+  console.log('queryObj',queryObject)
 
     //__debug__-__test__-https://debug.local.wellping.ssnl.stanford.edu/DEBUG_STUDY.json/
   let response: Response;

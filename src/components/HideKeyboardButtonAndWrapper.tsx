@@ -20,13 +20,15 @@ const HideKeyboardButtonAndWrapper: React.FunctionComponent<
     const keyboardHideEventName =
       Platform.OS === "ios" ? "keyboardWillHide" : "keyboardDidHide";
 
-    Keyboard.addListener(keyboardShowEventName, _keyboardDidShow);
-    Keyboard.addListener(keyboardHideEventName, _keyboardDidHide);
+    const willShow = Keyboard.addListener(keyboardShowEventName, _keyboardDidShow);
+    const willHide = Keyboard.addListener(keyboardHideEventName, _keyboardDidHide);
 
     // cleanup function
     return () => {
-      Keyboard.removeListener(keyboardShowEventName, _keyboardDidShow);
-      Keyboard.removeListener(keyboardHideEventName, _keyboardDidHide);
+      // Keyboard.removeListener(keyboardShowEventName, _keyboardDidShow);
+      // Keyboard.removeListener(keyboardHideEventName, _keyboardDidHide);
+      willShow?.remove()
+      willHide?.remove()
     };
   }, []);
 

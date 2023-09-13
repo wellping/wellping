@@ -1,9 +1,40 @@
 import { StudyFile } from "@wellping/study-schemas/lib/types";
-import React from "react";
-import { Text } from "react-native";
-
+import React, { SetStateAction, useEffect } from "react";
+import { 
+  Text,
+  View,
+  Dimensions,
+  Pressable,
+  Platform,
+  StyleSheet
+} from "react-native";
+const { height, width } = Dimensions.get('window')
+import AccountScreen from "./screens/AccountScreen";
+import NotificationScreen from "./screens/NotificationScreen";
 import HomeScreen from "./HomeScreen";
-import { clearCurrentStudyFileAsync } from "./helpers/asyncStorage/studyFile";
+import LoadingScreen from "./screens/LoadingScreen";
+import LoginScreen, { ParamDownloadAndParseStudyFileAsync } from "./screens/LoginScreen";
+import StudyFileErrorScreen from "./screens/StudyFileErrorScreen";
+
+import { NavigationContainer, NavigationContainerRef } from '@react-navigation/native'
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { Feather, FontAwesome, MaterialCommunityIcons, Foundation } from '@expo/vector-icons';
+import {
+  useFonts,
+  Roboto_100Thin,
+  Roboto_100Thin_Italic,
+  Roboto_300Light,
+  Roboto_300Light_Italic,
+  Roboto_400Regular,
+  Roboto_400Regular_Italic,
+  Roboto_500Medium,
+  Roboto_500Medium_Italic,
+  Roboto_700Bold,
+  Roboto_700Bold_Italic,
+  Roboto_900Black,
+  Roboto_900Black_Italic,
+} from '@expo-google-fonts/roboto';
+
 import {
   storeTempStudyFileAsync,
   getTempStudyFileAsync,
@@ -24,22 +55,74 @@ import {
   studyFileExistsAsync,
 } from "./helpers/studyFile";
 import { logoutAsync } from "./helpers/users";
-import LoadingScreen from "./screens/LoadingScreen";
-import LoginScreen, {
-  ParamDownloadAndParseStudyFileAsync,
-} from "./screens/LoginScreen";
-import StudyFileErrorScreen from "./screens/StudyFileErrorScreen";
 
-interface RootScreenProps {}
-
+interface RootScreenProps {
+  tab: number;
+  setTab: React.Dispatch<SetStateAction<number>>;
+  handleNav: (n:number, where:string)=>void;
+}
 interface RootScreenState {
   userInfo: User | null;
   isLoading: boolean;
   studyFileErrorText: string | null;
   survey?: StudyFile;
+  tab: number;
+}
+export type RootStackParamList = {
+  Home: undefined;
+  Account: undefined;
+  Notification: undefined;
+  Profile: { userId: string };
+  Feed: { sort: 'latest' | 'top' } | undefined;
+};
+export const navRef = React.createRef<NavigationContainerRef<RootStackParamList>>();
+
+export default function Main () {
+  const [tab, setTab] = React.useState(0);
+  const isFirstRender = React.useRef(true);
+
+  let [fontsLoaded] = useFonts({
+    Roboto_100Thin,
+    Roboto_100Thin_Italic,
+    Roboto_300Light,
+    Roboto_300Light_Italic,
+    Roboto_400Regular,
+    Roboto_400Regular_Italic,
+    Roboto_500Medium,
+    Roboto_500Medium_Italic,
+    Roboto_700Bold,
+    Roboto_700Bold_Italic,
+    Roboto_900Black,
+    Roboto_900Black_Italic,
+  });
+
+  const handleNav = (n:number, where:string) => {
+    setTab(n)
+  }
+
+  const path = (n:number) => {
+    if(n===1) return 'Notification'
+    if(n===2) return "Account"
+    else return 'Home'
+  } 
+
+  useEffect(()=>{ // Used to trigger navigation effect
+    if(!isFirstRender.current) {
+      navRef.current?.navigate(path(tab))
+    }
+  },[tab])
+
+  useEffect(()=>{ // Set value to false in order to allow navigation effect after first load
+    isFirstRender.current = false
+  },[])
+
+  if (!fontsLoaded) {
+    return <LoadingScreen />;
+  } else
+  return <RootScreen tab={tab} setTab={setTab} handleNav={handleNav}/>
 }
 
-export default class RootScreen extends React.Component<
+class RootScreen extends React.Component<
   RootScreenProps,
   RootScreenState
 > {
@@ -50,6 +133,7 @@ export default class RootScreen extends React.Component<
       userInfo: null,
       isLoading: true,
       studyFileErrorText: null,
+      tab: 0,
     };
   }
 
@@ -80,11 +164,13 @@ export default class RootScreen extends React.Component<
   }: ParamDownloadAndParseStudyFileAsync): Promise<boolean> {
     let rawJsonString: string;
     try {
+      console.log('trying...')
       rawJsonString = await downloadStudyFileAsync({
         url,
         username: user.username,
         password: user.password,
       });
+      console.log(rawJsonString.length)
     } catch (e) {
       let downloadErrorMessage: string;
       if (e instanceof Error) {
@@ -134,6 +220,9 @@ export default class RootScreen extends React.Component<
   }
 
   async componentDidMount() {
+    // Makes sure app opens on Home tab, should be removed if bottom nav is not being used
+    this.setState({tab: 0})
+
     if (await studyFileExistsAsync()) {
       if (!(await this.loadTempStudyFileAsync())) {
         return;
@@ -204,17 +293,118 @@ export default class RootScreen extends React.Component<
 
   render() {
     const { isLoading, userInfo, studyFileErrorText } = this.state;
-    
-    if (isLoading) {
-      return <LoadingScreen />;
-    }
+    const Stack = createNativeStackNavigator<RootStackParamList>();
 
-    if (studyFileErrorText) {
-      return <StudyFileErrorScreen errorText={studyFileErrorText} />;
-    }
+    const AppStack = () => (
+      <View style={{height: Platform.OS==='ios'? height*.9:height*.9-20, width: '100%', backgroundColor: 'white', alignItems: 'center', justifyContent: 'flex-start', paddingTop: Platform.OS === 'ios'? 50:0 }}>
+        <View style={{height: '100%', width: '100%'}}>
+          <NavigationContainer ref={navRef}>
+            <Stack.Navigator initialRouteName='Home'>
+              <Stack.Screen name="Notification" options={{headerShown: false}}>
+                {(props)=> this.state.survey === undefined?
+                  <><Text>Stream is undefined</Text></> 
+                  :
+                  <NotificationScreen 
+                    {...props}
+                    streams={this.state.survey.streams}
+                    userInfo={this.state.userInfo}
+                    studyInfo={this.state.survey?.studyInfo}
+                    logout={async () => {await this.logoutFnAsync()}}
+                  />}
+              </Stack.Screen>
+              <Stack.Screen name="Account" options={{headerShown: false}}>
+                {(props)=> 
+                  <AccountScreen 
+                    {...props}
+                    userInfo={this.state.userInfo}
+                    studyInfo={this.state.survey?.studyInfo}
+                    logout={async () => {await this.logoutFnAsync()}}
+                  />}
+              </Stack.Screen>
+              <Stack.Screen name="Home" options={{headerShown: false}}>
+                {(props)=> this.state.survey === undefined? <View style={{height: 100, width: 200, backgroundColor: 'gray'}}>
+                    <Text>survey is undefined</Text>
+                  </View>
+                  : 
+                  <HomeScreen
+                    {...props}
+                    studyInfo={this.state.survey.studyInfo}
+                    streams={this.state.survey.streams}
+                    userInfo={this.state.userInfo}
+                    logout={async () => {
+                      await this.logoutFnAsync();
+                    }}
+                  /> }
+              </Stack.Screen>
+            </Stack.Navigator>
+          </NavigationContainer>
+        </View>
+      </View>
+    )
 
-    if (userInfo === null) {
-      // The user hasn't logged in.
+    const AppStackWithNavBar = () => (
+      <View style={{height: '100%', backgroundColor: 'gray'}}>
+        <AppStack/>
+        {/* <Text>{height}</Text> */}
+        <BottomNavigationBar/>
+      </View>
+    )
+
+    const AuthStack = () => (
+      <LoginScreen
+        userInfo={this.state.userInfo}
+        downloadAndParseStudyFileAsync={async (...parameter) => {
+          return await this.downloadAndParseStudyFileAsync(...parameter);
+        }}
+        loggedInAsync={async (user) => {
+          this.setState({
+            userInfo: user,
+            survey: await getStudyFileAsync(),
+          });
+        }}
+      />
+    )
+
+    const BottomButton = ({
+      path='Home', 
+      icon=this.props.tab===0?
+        <Foundation name="home" size={24} color="#761A15" />
+        : <Feather name="home" size={24} color="#761A15" />,
+      navFn=()=>{this.props.handleNav(0,'Home')}
+    }) => 
+    <Pressable onPress={navFn} style={[styles.center, styles.navButton, {backgroundColor: 'white'}]}>
+      {icon}
+      <Text style={{fontSize: 12, color: '#761A15'}}>{path == 'Notification'? 'Notifications' : path}</Text>
+    </Pressable>
+
+    const BottomNavigationBar = () => <View style={{height: Platform.OS==='ios'? height*.1 : height*.1, width: width, backgroundColor: '#f8f9fa', flexDirection: 'row'}}>
+      <BottomButton path="Home"/>
+      <BottomButton path="Notification" icon={<FontAwesome name={this.props.tab===1?"bell":"bell-o"} size={24} color="#761A15" />} navFn={()=>{this.props.handleNav(1,'Notification')}}/>
+      <BottomButton path="Account" icon={<MaterialCommunityIcons name={this.props.tab===2?"account":"account-outline"} size={24} color="#761A15" />} navFn={()=>{this.props.handleNav(2,'Account')}}/>
+    </View>
+  
+
+    if (isLoading) return <LoadingScreen />;
+    if (studyFileErrorText) return <StudyFileErrorScreen errorText={studyFileErrorText} />;
+    if (this.state.survey == null) {
+      if (userInfo != null || userInfo != undefined) {
+        return <>
+          <Text>
+            {getCriticalProblemTextForUser("this.state.survey == null")}
+          </Text>
+          <Pressable 
+            onPress={async ()=> console.log(
+              await studyFileExistsAsync(),
+              'userInfo: ',userInfo,
+              'survey: ', this.state.survey,
+              (userInfo != null || userInfo != undefined)
+            )}
+            >
+            <Text>Press this to store async study file info</Text>
+          </Pressable>
+
+        </>
+      }
       return (
         <LoginScreen
           userInfo={this.state.userInfo}
@@ -228,26 +418,19 @@ export default class RootScreen extends React.Component<
             });
           }}
         />
-      );
+      )
     }
-
-    if (this.state.survey == null) {
-      return (
-        <Text>
-          {getCriticalProblemTextForUser("this.state.survey == null")}
-        </Text>
-      );
-    }
-
-    return (
-      <HomeScreen
-        studyInfo={this.state.survey.studyInfo}
-        streams={this.state.survey.streams}
-        userInfo={this.state.userInfo}
-        logout={async () => {
-          await this.logoutFnAsync();
-        }}
-      />
-    );
+    return userInfo? <AppStackWithNavBar/> : <AuthStack/>
   }
 }
+
+const styles = StyleSheet.create({
+  center: {
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  navButton: {
+    width: '33.33%', 
+    height: '100%', 
+  }
+})
