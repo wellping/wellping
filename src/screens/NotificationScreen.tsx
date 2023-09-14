@@ -455,7 +455,6 @@ const NotificationScreen = ({streams, studyInfo, logout, userInfo}: Notification
       // streamName: 'myStream'
       streamName: 'exampleStream'
       // streamName: 'errorStream'
-      
     });
 
     console.log('np',newPing)

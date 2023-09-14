@@ -1284,7 +1284,7 @@ export default class HomeScreen extends React.Component<
               </Text>
             </Pressable>
           </View>
-          <DebugView />
+          {/* <DebugView /> */}
           {/* <DashboardComponent
             firebaseUser={firebaseUser}
             studyInfo={studyInfo}
@@ -1313,11 +1313,11 @@ export default class HomeScreen extends React.Component<
         <View style={[styles0.container, {justifyContent: 'center', backgroundColor: '#f8f9fa'}]}>
           <Pressable onPress={()=>this.setState({ currentPing: null, currentNotificationTime: null })} style={{position: 'absolute', top: 20, backgroundColor: 'transparent', justifyContent: 'flex-start', alignItems: 'center', width: '100%', paddingLeft: 20, flexDirection: 'row'}}>
             <AntDesign name="arrowleft" size={30} color="black" />
-            <Text style={{fontFamily: 'Roboto_700Bold', fontSize: 20, color: '#3a3a3a'}}> Back</Text>
+            {/* <Text style={{fontFamily: 'Roboto_700Bold', fontSize: 20, color: '#3a3a3a'}}> Back</Text> */}
           </Pressable>
           {/* {ExtraView} */}
           {/* <DebugView>{streamButtons}</DebugView> */}
-          <DebugView/>
+          {/* <DebugView/> */}
           <View style={{height: height*.5, width: '100%', backgroundColor: 'transparent', justifyContent: 'space-around', alignItems: 'center'}}>
             <View style={{height: 120, width: 120, backgroundColor: 'rgba(0,0,0,0.0)'}}>
               <Image source={require('../assets/icon-android-foreground.png')} style={{height: 120, width: 120, backgroundColor: 'transparent', transform: [{scale: 2.5}]}}/>
