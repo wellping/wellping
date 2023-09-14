@@ -84,11 +84,12 @@ type NotificationScreenProps = {
   studyInfo: StudyInfo;
   streams: Streams;
   logout: () => Promise<void>;
+  navFn: ()=> void;
   userInfo: User | null;
 }
 
 
-const NotificationScreen = ({streams, studyInfo, logout, userInfo}: NotificationScreenProps, {navigation}: Props) => {
+const NotificationScreen = ({streams, studyInfo, logout, userInfo, navFn}: NotificationScreenProps, {navigation}: Props) => {
   const [isLoading, setIsLoading] = useState(false)
   const [time, setTime] = useState(new Date())
   const [currentNotificationTime, setCurrentNotificationTime] = useState(null)
@@ -451,9 +452,9 @@ const NotificationScreen = ({streams, studyInfo, logout, userInfo}: Notification
       notificationTime: list[2].notificationDate,
       startTime: new Date(),
       // streamName,
-      // streamName: 'welcomeStream'
+      streamName: 'welcomeStream'
       // streamName: 'myStream'
-      streamName: 'exampleStream'
+      // streamName: 'exampleStream'
       // streamName: 'errorStream'
     });
 
@@ -595,22 +596,22 @@ const NotificationScreen = ({streams, studyInfo, logout, userInfo}: Notification
       <View style={{width: '100%', backgroundColor: 'gray'}}>
         {
           currentPing===null
-          ?<View style={[{
+
+          // If Ping is null, display "Click here to start" Screen
+          ? <View style={[{ 
             justifyContent: 'flex-start', 
-            backgroundColor: '#f8f9fa', 
+            backgroundColor: 'white', 
             height: '100%', 
             width: '100%', 
-            transform: [
-              {scale: .8}, 
-              // {translateX: -width/7}, 
-              // {translateY: -height*.2}
-            ], 
             }]}>
-            <Text style={{position: 'absolute', top: 0, left: 0}}>Start survey flow</Text>
-            <Pressable onPress={()=>{setCurrentPing(null); setCurrentNotificationTime(null);}} style={{position: 'absolute', top: 20, backgroundColor: 'transparent', justifyContent: 'flex-start', alignItems: 'center', width: '100%', paddingLeft: 20, flexDirection: 'row'}}>
+
+            {/* Disclaimer / Title */}
+            <Text style={{width: '100%', paddingHorizontal: 50, textAlign: 'center', textAlignVertical: 'center', fontFamily: 'Roboto_700Bold', fontSize: 20, color: '#761A15', height: 100}}>LOCAL DEBUG SURVEY{'\n'}NOT INTENDED FOR PRODUCTION</Text>
+            <Pressable onPress={()=>{setCurrentPing(null); setCurrentNotificationTime(null); navFn()}} style={{position: 'absolute', top: 20, backgroundColor: 'transparent', justifyContent: 'flex-start', alignItems: 'center', width: '100%', paddingLeft: 20, flexDirection: 'row'}}>
               <AntDesign name="arrowleft" size={30} color="black" />
-              <Text style={{fontFamily: 'Roboto_700Bold', fontSize: 20, color: '#3a3a3a'}}> Back</Text>
             </Pressable>
+
+            {/* Main Body */}
             <View style={{height: height*.5, width: '100%', backgroundColor: 'transparent', justifyContent: 'space-around', alignItems: 'center'}}>
               <View style={{height: 120, width: 120, backgroundColor: 'rgba(0,0,0,0.0)'}}>
                 <Image source={require('../../assets/icon-android-foreground.png')} style={{height: 120, width: 120, backgroundColor: 'transparent', transform: [{scale: 2.5}]}}/>
@@ -618,25 +619,14 @@ const NotificationScreen = ({streams, studyInfo, logout, userInfo}: Notification
 
               <View style={{width: '100%', flexDirection: 'row', justifyContent: 'center'}}>
                 <Text style={{ width: '50%',fontFamily: 'Roboto_700Bold', fontSize: 36, marginVertical: 20, textAlign: "center" }}>
-                  Welcome to Well Ping!
+                  Welcome to <Text style={{fontSize: 20, color: '#761A15'}}>{'{'}debugging{'}\n'}</Text>Well Ping!
                 </Text>
               </View>
 
-              <Pressable 
-                style={{ position: 'absolute', top: -10, left: 20, }} 
-                onPress={async ()=>{
-                  console.log('asdf', new Date(), JSON.stringify(studyInfo,null,2), new Date() > getStudyEndDate(studyInfo))
-                  console.log(currentNotificationTime, currentPing)
-                }}
-              >
-                <Text style={{ fontSize: 18, textAlign: 'left', color: 'lightgray'}}>
-                  {/* {"(Debug)"} Log response to terminal */}
-                </Text>
-              </Pressable>
               <PaperButton
-                buttonColor="#f8f9fa" 
+                buttonColor="white" 
                 mode="elevated" 
-                style={{borderRadius: 12, width: 294, alignItems: 'center', paddingVertical: 10, borderWidth: 1, borderColor: 'black'}}
+                style={{borderRadius: 12, width: 294, alignItems: 'center', paddingVertical: 10, borderWidth: 0, borderColor: 'black'}}
                 // disabled={this.state.disableLoginButton}
                 labelStyle={{fontSize: 18, color: '#0F4EC7'}}
                 onPress={() => {
@@ -645,23 +635,30 @@ const NotificationScreen = ({streams, studyInfo, logout, userInfo}: Notification
               >
                 Click here to start the survey
               </PaperButton>
+
             </View>
+
+            {/* Container for Debug View */}
+            {/* <View style={{ position: 'absolute', bottom: 0, width: width, height: 100, backgroundColor: 'tan'}}>
+              <DebugView/>
+            </View> */}
           </View> 
     
-          :<>
-              <SurveyScreen
-                questions={streams[currentPing.streamName]}
-                startingQuestionId={studyInfo.streamsStartingQuestionIds[currentPing.streamName]}
-                ping={currentPing}
-                studyInfo={studyInfo}
-                previousState={storedPingStateAsync}
-                setUploadStatusSymbol={setUploadStatusSymbol}
-                onFinish={async (finishedPing)=>{
-                  setCurrentPing(finishedPing);
+          // Display the Survey Screen
+          : <>
+            <SurveyScreen
+              questions={streams[currentPing.streamName]}
+              startingQuestionId={studyInfo.streamsStartingQuestionIds[currentPing.streamName]}
+              ping={currentPing}
+              studyInfo={studyInfo}
+              previousState={storedPingStateAsync}
+              setUploadStatusSymbol={setUploadStatusSymbol}
+              onFinish={async (finishedPing)=>{
+                setCurrentPing(finishedPing);
 
-                  await shouldRemoveFutureNotifications()
-                }}
-              />
+                await shouldRemoveFutureNotifications()
+              }}
+            />
           </>
         }
       </View>

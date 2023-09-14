@@ -36,6 +36,7 @@ import {
 const { height, width } = Dimensions.get('screen')
 import {
   Button as PaperButton,
+  IconButton,
   TextInput
 } from 'react-native-paper'
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -113,13 +114,15 @@ import {
 } from "./helpers/studyFile";
 import { styles } from "./helpers/styles";
 import LoadingScreen from "./screens/LoadingScreen";
-import { AntDesign } from '@expo/vector-icons';
+import { AntDesign, Feather } from '@expo/vector-icons';
 
 type HomeScreenProps = {
   studyInfo: StudyInfo;
   streams: Streams;
   logout: () => Promise<void>;
   userInfo: User | null;
+  navFn: () => void;
+  showNavBar: boolean;
 }
 
 type HomeScreenState = {
@@ -487,7 +490,7 @@ export default class HomeScreen extends React.Component<
   }
 
   render() {
-    const { studyInfo, streams } = this.props;
+    const { studyInfo, streams, logout } = this.props;
 
     const {
       allowsNotifications,
@@ -496,6 +499,33 @@ export default class HomeScreen extends React.Component<
       firebaseUser,
       isLoading,
     } = this.state;
+
+    const BellImage = () =>
+      <View style={{height: 120, width: 120, backgroundColor: 'rgba(0,0,0,0.0)'}}>
+        <Image source={require('../assets/icon-android-foreground.png')} style={{height: 120, width: 120, backgroundColor: 'transparent', transform: [{scale: 2.5}]}}/>
+      </View>
+
+    const shouldRemoveFutureNotifications = async () => {
+      // Check if future pings should be disabled
+      // This condition is met when the last 5 consecutive answers are "prefer not to answer"
+      const data = await getAllDataAsync();
+  
+      // Get last up to last Five "preferNotToAnswer" values
+      const answers = data.answers.slice(-5)
+      // Round up all prefNotAnswer values into an array, 1 for true, 0 for false
+      const responses = answers.map(e=>e.preferNotToAnswer? 1:0)
+  
+      // If all elements are 1 e.g. [1,1,1,1,1] and length more than 5, 
+      // meaning the Participant repeatedly chose not to respond, disable all future pings 
+      // so the Participant won't have to receive pings. They can choose to continue
+      // answering survey questions by logging out and in again
+      if(responses.length>=5 && responses.every(e => e===1)) {
+        console.log('Since the last 5 responses have been "Prefer not to Answer" The app will log out so no further pings will be sent')
+  
+        await logout()
+      }
+      else {}
+    }
 
     if (isLoading) {
       return <LoadingScreen />;
@@ -1103,8 +1133,8 @@ export default class HomeScreen extends React.Component<
       if (new Date() > getStudyEndDate(studyInfo)) {
         return (
           <View style={{ height: "100%" }}>
-            {ExtraView}
-            <DebugView></DebugView>
+            {/* {ExtraView} */}
+            {/* <DebugView/> */}
             <View style={{ marginHorizontal: 20 }}>
               <Text style={styles.onlyTextStyle}>
                 Thank you for your participation!
@@ -1175,7 +1205,8 @@ export default class HomeScreen extends React.Component<
               marginTop: 30,
               fontSize: 25,
               marginHorizontal: 10,
-              fontFamily: 'Roboto_700Bold'
+              fontFamily: 'Roboto_700Bold',
+              color: '#3a3a3a'
             }}>Welcome to Well Ping!</Text>
             <Text
               style={{
@@ -1226,7 +1257,7 @@ export default class HomeScreen extends React.Component<
           const keys = await AsyncStorage.getAllKeys()
           // const itemsArray = await AsyncStorage.multiGet(keys)
 
-        }} style={[styles0.shadow, {marginTop: 20, width: width*.9, height: 272, backgroundColor: '#fffae2', alignItems: 'flex-start', justifyContent: 'space-around', padding: 10, paddingHorizontal: 20, borderRadius: 12}]}>
+        }} style={[_styles.shadow, {marginTop: 20, width: width*.9, height: 272, backgroundColor: '#fffae2', alignItems: 'flex-start', justifyContent: 'space-around', padding: 10, paddingHorizontal: 20, borderRadius: 12}]}>
           <View>
             <Text style={{fontSize: 18, fontFamily: 'Roboto_700Bold', color: '#3a3a3a'}}>Study ID</Text>
             <Text style={{fontFamily: 'Roboto_400Regular', fontSize: 16, color: '#3a3a3a'}}>{item.id}</Text>
@@ -1240,11 +1271,11 @@ export default class HomeScreen extends React.Component<
           </View>
 
           <View style={{width: '100%', height: 50, backgroundColor: 'transparent', flexDirection: 'row'}}>
-            <View style={[styles0.center, {width: '50%', height: '100%', alignItems: 'flex-start'}]}>
+            <View style={[_styles.center, {width: '50%', height: '100%', alignItems: 'flex-start'}]}>
               <Text style={{fontSize: 18, fontFamily: 'Roboto_700Bold', color: '#3a3a3a'}}>Start date</Text>
               <Text style={{fontFamily: 'Roboto_400Regular', color: "#4a4a4a"}}>{item.startDate.toLocaleDateString()}</Text>
             </View>
-            <View style={[styles0.center, {width: '50%', height: '100%', alignItems: 'flex-end'}]}>
+            <View style={[_styles.center, {width: '50%', height: '100%', alignItems: 'flex-end'}]}>
               <Text style={{fontSize: 18, fontFamily: 'Roboto_700Bold', color: '#3a3a3a'}}>End date</Text>
               <Text style={{fontFamily: 'Roboto_400Regular', color: "#4a4a4a"}}>{item.endDate.toLocaleDateString()}</Text>
             </View>
@@ -1258,15 +1289,21 @@ export default class HomeScreen extends React.Component<
         <View style={{height: '100%', backgroundColor: 'white'}}>
           {ExtraView} 
           {/* <DebugView /> */}
-          <View style={{width: width, backgroundColor: 'white', alignItems: 'flex-start', justifyContent: 'flex-start', paddingTop: 30}}>
-            <Text style={{fontFamily: 'Roboto_700Bold', fontSize: 36,  width: '100%',  textAlign: 'left',  color: "#3a3a3a", paddingLeft: 20}}>
+          <View style={{width: width, backgroundColor: 'white', alignItems: 'center', justifyContent: 'flex-start', paddingTop: 30, flexDirection: 'row'}}>
+            <Text style={{fontFamily: 'Roboto_700Bold', fontSize: 36,  width: '80%',  textAlign: 'left',  color: "#3a3a3a", paddingLeft: 20}}>
               Your survey
             </Text>
+            {this.props.showNavBar
+              ? <></>
+              : <IconButton 
+                  style={{width: '20%', alignItems: 'flex-end', paddingRight: 20}}
+                  icon={()=><Feather name="settings" size={30} color="#3A3A3A" />}
+                  onPress={this.props.navFn}/>}
           </View>
           <View style={{ width: '100%', height: height*.7, backgroundColor: 'white', alignItems: 'center'}}>
             {/* Survey Flatlist */}
             <FlatList
-              contentContainerStyle={[styles0.center, {backgroundColor: 'white', width: width, height: height*.7, justifyContent: 'flex-start'}]}
+              contentContainerStyle={[_styles.center, {backgroundColor: 'white', width: width, height: height*.7, justifyContent: 'flex-start'}]}
               data={DATA}
               renderItem={renderItem}
               keyExtractor={item => item.id}
@@ -1310,9 +1347,9 @@ export default class HomeScreen extends React.Component<
       }
 
       return (
-        <View style={[styles0.container, {justifyContent: 'center', backgroundColor: '#f8f9fa'}]}>
+        <View style={[_styles.container, {justifyContent: 'center', backgroundColor: 'white'}]}>
           <Pressable onPress={()=>this.setState({ currentPing: null, currentNotificationTime: null })} style={{position: 'absolute', top: 20, backgroundColor: 'transparent', justifyContent: 'flex-start', alignItems: 'center', width: '100%', paddingLeft: 20, flexDirection: 'row'}}>
-            <AntDesign name="arrowleft" size={30} color="black" />
+            <AntDesign name="arrowleft" size={30} color="#3a3a3a" />
             {/* <Text style={{fontFamily: 'Roboto_700Bold', fontSize: 20, color: '#3a3a3a'}}> Back</Text> */}
           </Pressable>
           {/* {ExtraView} */}
@@ -1324,7 +1361,7 @@ export default class HomeScreen extends React.Component<
             </View>
 
             <View style={{width: '100%', flexDirection: 'row', justifyContent: 'center'}}>
-              <Text style={{ width: '50%',fontFamily: 'Roboto_700Bold', fontSize: 36, marginVertical: 20, textAlign: "center" }}>
+              <Text style={{ width: '50%',fontFamily: 'Roboto_700Bold', fontSize: 36, marginVertical: 20, textAlign: "center", color: '#3a3a3a'}}>
                 Welcome to Well Ping!
               </Text>
             </View>
@@ -1342,11 +1379,11 @@ export default class HomeScreen extends React.Component<
               </Text>
             </Pressable>
             <PaperButton
-              buttonColor="#f8f9fa" 
+              buttonColor="white" 
               mode="elevated" 
-              style={{borderRadius: 12, width: 294, alignItems: 'center', paddingVertical: 10, borderWidth: 1, borderColor: 'black'}}
+              style={{borderRadius: 12, width: 294, alignItems: 'center', paddingVertical: 10, borderWidth: 0, borderColor: 'black'}}
               // disabled={this.state.disableLoginButton}
-              labelStyle={{fontSize: 18, color: '#0F4EC7'}}
+              labelStyle={{fontSize: 18, color: '#761A15'}}
               onPress={() => {
                 this.startSurveyAsync();
               }}
@@ -1365,47 +1402,39 @@ export default class HomeScreen extends React.Component<
     // Display End of Survey screen
     if (currentPing.endTime) {
       return (
-        <View style={styles0.container}>
+        <View style={_styles.container}>
           {ExtraView}
-          <DebugView />
-          {this.state.afterFinishingPing_isUploading ? (
-            <Text style={{ ...styles.onlyTextStyle, color: "red" }}>
-              Uploading…{"\n"}Please do not exit the app!
-            </Text>
-          ) : (
-            <>
-              <Text style={[styles.onlyTextStyle, {fontSize: 25}]}>
-                Thank you for completing the survey for this ping!{"\n"}
-                {/* Well Ping will send a notification for the next survey soon!
-                {"\n"}
-                Please close the app entirely. */} 
+          {this.state.afterFinishingPing_isUploading 
+            ? <Text style={{ ...styles.onlyTextStyle, color: "red" }}>
+                Uploading…{"\n"}Please do not exit the app!
               </Text>
+            : <View style={_styles.container}>
+              <View style={{height: height/8}}/>
+              <BellImage/>
+              <Text style={[styles.onlyTextStyle, {fontSize: 30, fontFamily: 'Roboto_700Bold', color: '#3a3a3a'}]}>
+                Thank you for completing the survey for this ping!{"\n"}
+              </Text>
+              <Text style={{fontFamily: "Roboto_400Regular", fontSize: 20, textAlign: 'center', paddingHorizontal: 40, color: '#3a3a3a'}}>
+                Well Ping will send a notification for the next survey soon!{"\n"}
+                {/* Please close the app entirely */}
+              </Text>
+              {/* <View style={{height: height/8/2}}/> */}
+              {/* <Text style={{fontSize: 25, fontFamily: 'Roboto_700Bold'}}>You may now exit the app</Text> */}
+              <Text style={{fontSize: 30, fontFamily: 'Roboto_700Bold', textAlign: 'center', paddingHorizontal: 20, color: '#3a3a3a'}}>Please close the app entirely</Text>
               <Pressable 
                 onPress={()=>{
                   console.log('asdf', currentPing);
                   this.setState({ currentPing: null , currentNotificationTime: null});
                 }}>
-                <Text>Return to Home</Text>
-              </Pressable>
-              <Pressable 
-                onPress={async ()=>{
-                  // console.log('asdf', JSON.stringify(currentPing,null,2));
-                  // this.setState({ currentPing: null });
-                  const allKeys = await AsyncStorage.getAllKeys()
-                  console.log(JSON.stringify(allKeys,null,2))
-                  // allKeys.map(async (key) => {
-                  //   console.log(JSON.stringify(await AsyncStorage.getItem(key),null,2))
-                  // })
-                  console.log(await studyFileExistsAsync())
-                }}>
-                <Text>Current ping</Text>
+                <Text style={{fontSize: 25, fontFamily: 'Roboto_700Bold', color: 'lightgray', marginTop: 20, textAlign: 'center'}}>{'(Development ONLY)\n'}Return to Home</Text>
               </Pressable>
               <DashboardComponent
                 firebaseUser={firebaseUser}
                 studyInfo={studyInfo}
               />
-            </>
-          )}
+            </View>
+          }
+          {/* <DebugView /> */}
         </View>
       );
     }
@@ -1517,8 +1546,11 @@ export default class HomeScreen extends React.Component<
                   }
                 }
               },
-              doFinally: () => {
+              doFinally: async () => {
                 this.setState({ afterFinishingPing_isUploading: false });
+
+                // This method implements LOGOUT when the last 5 consecutve answers are "prefer not to answer"
+                await shouldRemoveFutureNotifications()
               },
             });
           }}
@@ -1531,11 +1563,12 @@ export default class HomeScreen extends React.Component<
   }
 }
 
-const styles0 = StyleSheet.create({
+const _styles = StyleSheet.create({
   container: {
-    height: "100%", 
+    height: '100%', 
     alignItems: 'center', 
     justifyContent: 'flex-start',
+    backgroundColor: 'white'
   },
   center: {
     justifyContent: 'center',

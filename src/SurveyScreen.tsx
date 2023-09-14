@@ -38,6 +38,7 @@ import {
   Platform,
   StyleSheet,
   Pressable,
+  Alert
 } from "react-native";
 const { height, width } = Dimensions.get('window')
 import { Button as PaperButton } from 'react-native-paper'
@@ -159,6 +160,9 @@ export interface SurveyScreenState {
    * If true, this sets the whole screen's opacity to 0.
    */
   isInTransition: boolean;
+
+  questionsStack: CurrentQuestionData[];
+  startingPoint: string| null;
 }
 
 export default class SurveyScreen extends React.Component<
@@ -179,12 +183,18 @@ export default class SurveyScreen extends React.Component<
         nextQuestionsDataStack: [],
         answers: {},
         isInTransition: false,
+        questionsStack: [],
+        startingPoint: null
       };
     }
   }
 
   componentDidMount() {
     storePingStateAsync(this.props.ping.id, this.state);
+  }
+
+  isFormDisabled(){
+    return this.state.startingPoint !== null && this.state.startingPoint !== this.state.currentQuestionData.questionId;
   }
 
   /**
@@ -585,6 +595,20 @@ export default class SurveyScreen extends React.Component<
     return newNextQuestionsStack;
   }
 
+  goBack(questionId: string) {
+    //if startingPoint is not set, then set it as it is the first time we are going back
+    // pop the item from questions and load them
+    const prevQuestionStack = this.state.questionsStack.pop();
+    debugger;
+    if (!this.state.startingPoint) {
+      this.setState({startingPoint: questionId})
+    }
+    if (prevQuestionStack) {
+      this.setState({currentQuestionData: prevQuestionStack})
+    }
+  }
+
+
   /**
    * Goes to the next question.
    */
@@ -593,6 +617,8 @@ export default class SurveyScreen extends React.Component<
     this.dataValidationFunction = null;
 
     const { questions, ping } = this.props;
+
+    const questionsStack = this.state.questionsStack;
 
     const setStateCallback = () => {
       storePingStateAsync(ping.id, this.state);
@@ -627,11 +653,16 @@ export default class SurveyScreen extends React.Component<
         },
         answers,
         nextQuestionsDataStack: prevNextQuestionsDataStack,
+        questionsStack
       } = prevState;
 
       if (prevQuestionId === null) {
         throw new Error("prevQuestionId === null");
       }
+
+      //Add this to the stack so that we can go back
+      questionsStack.push({  questionId: prevQuestionId,
+        extraData: prevExtraData})
 
       const prevQuestion = questions[prevQuestionId];
       const prevAnswer =
@@ -659,7 +690,15 @@ export default class SurveyScreen extends React.Component<
             extraData: {},
           };
         }
+
+          //clear the starting point for back button
+          let startingPoint = prevState.startingPoint;
+          if (prevState.startingPoint === nextQuestionData.questionId) {
+            startingPoint = null;
+          }
+
         return {
+          startingPoint: startingPoint,
           currentQuestionData: nextQuestionData,
           nextQuestionsDataStack: prevNextQuestionsDataStack,
         };
@@ -667,7 +706,15 @@ export default class SurveyScreen extends React.Component<
         // We pop the `jumpQuestionsDataStack` to find what question we should
         // immediately go.
         const immediateNext = newNextQuestionsStack.pop()!;
+
+        //clear the starting point for back button
+        let startingPoint = prevState.startingPoint;
+        if (prevState.startingPoint === immediateNext.questionId) {
+          startingPoint = null;
+        }
+
         return {
+          startingPoint: startingPoint,
           currentQuestionData: immediateNext,
           nextQuestionsDataStack: [
             // We add any additional `jumpQuestionsDataStack` on top of the
@@ -805,6 +852,10 @@ export default class SurveyScreen extends React.Component<
         />
       );
 
+    const backButtonIsDisabled = (): boolean => {
+      return this.state.questionsStack.length === 0;
+    }  
+
     const nextButtonIsDisabled = (): boolean => {
       if (studyInfo.alwaysEnableNextButton) {
         return false;
@@ -847,9 +898,13 @@ export default class SurveyScreen extends React.Component<
         }}
       >
         {/* Header */}
-        <Pressable onPress={()=>console.log(JSON.stringify(question, null, 2))} style={{width: '100%', height: 50, alignItems: 'center', flexDirection: 'row'}}>
-          <AntDesign style={{width: '80%'}} name="arrowleft" size={30} color="black" />
-          <Text style={{ fontSize: 15, width: '20%', textAlign: 'right', color: '#3A3A3A'}}>streamId</Text>
+        <Pressable onPress={()=>console.log(
+          // JSON.stringify(question, null, 2), 
+          // JSON.stringify(studyInfo,null,2)
+          JSON.stringify(answers,null,2)
+        )} style={{width: '100%', height: 50, alignItems: 'center', flexDirection: 'row', justifyContent: 'space-between'}}>
+          <AntDesign style={{minWidth: '50%'}} name="arrowleft" size={30} color="black" />
+          <Text numberOfLines={1} style={{ maxWidth: '50%', fontSize: 15, textAlign: 'right', color: '#3A3A3A'}}>Q{Object.keys(answers).length+1}</Text>
         </Pressable>
         {/* Slider */}
         {true? // TODO: Add Slider conditional option later on 
@@ -947,7 +1002,9 @@ export default class SurveyScreen extends React.Component<
             <View style={{ flex: 1 , paddingTop: 20 }}>
               <QuestionScreen
                 /* https://stackoverflow.com/a/21750576/2603230 */
+                realQuestionId={realQuestionId}
                 key={question.id}
+                isDisabled={this.isFormDisabled()}
                 question={question}
                 loadingCompleted={() => {
                   this.setState({ isInTransition: false });
@@ -976,7 +1033,7 @@ export default class SurveyScreen extends React.Component<
 
         {/* "Not interacted" button */}
         {question.extraCustomNextWithoutAnsweringButton && (
-          <Button
+          <Button disabled={this.isFormDisabled()}
             onPress={async () => {
               // Clicking this button is equivalent to clicking "Next" without answering.
               await this.addAnswerToAnswersListAsync(question, {
@@ -1000,14 +1057,26 @@ export default class SurveyScreen extends React.Component<
             paddingBottom: 20,
           }}
         >
-          <PaperButton
+          {/* <Button 
+            disabled={backButtonIsDisabled()}
+            onPress={() => {this.goBack(questionId); console.log(questionId)}}
+            accessibilityLabel="Previous question"
+            title="Back"/> */}
+          <PaperButton disabled={this.isFormDisabled()}
             mode="text"
             labelStyle={{fontSize: 15, color: '#4F4F4F'}}
             onPress={async () => {
               await this.addAnswerToAnswersListAsync(question, {
                 preferNotToAnswer: true,
               });
-              this.onNextSelect();
+              // this.onNextSelect();
+              Alert.alert("Are you sure?", 'Are you sure you want to skip this question?', [
+                {
+                  text: 'Cancel',
+                  style: 'cancel',
+                },
+                {text: 'Yes', onPress: () => this.onNextSelect()}
+            ])
             }}
           >Prefer not to answer</PaperButton>
           
@@ -1080,7 +1149,6 @@ const styles = StyleSheet.create({
     width: '100%',
     objectFit: 'contain',
     borderRadius: 12,
-    textAlign: "center",
     marginTop: "2%",
     marginBottom: "2%"
 

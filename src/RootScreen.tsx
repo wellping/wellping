@@ -67,6 +67,8 @@ interface RootScreenState {
   studyFileErrorText: string | null;
   survey?: StudyFile;
   tab: number;
+
+  showNavBar: boolean;
 }
 export type RootStackParamList = {
   Home: undefined;
@@ -134,6 +136,7 @@ class RootScreen extends React.Component<
       isLoading: true,
       studyFileErrorText: null,
       tab: 0,
+      showNavBar: false,
     };
   }
 
@@ -221,7 +224,7 @@ class RootScreen extends React.Component<
 
   async componentDidMount() {
     // Makes sure app opens on Home tab, should be removed if bottom nav is not being used
-    this.setState({tab: 0})
+    // this.setState({tab: 0})
 
     if (await studyFileExistsAsync()) {
       if (!(await this.loadTempStudyFileAsync())) {
@@ -310,6 +313,7 @@ class RootScreen extends React.Component<
                     userInfo={this.state.userInfo}
                     studyInfo={this.state.survey?.studyInfo}
                     logout={async () => {await this.logoutFnAsync()}}
+                    navFn={()=>this.props.handleNav(0,'Home')}
                   />}
               </Stack.Screen>
               <Stack.Screen name="Account" options={{headerShown: false}}>
@@ -319,6 +323,8 @@ class RootScreen extends React.Component<
                     userInfo={this.state.userInfo}
                     studyInfo={this.state.survey?.studyInfo}
                     logout={async () => {await this.logoutFnAsync()}}
+                    navFn={()=>this.props.handleNav(0,'Home')}
+                    showNavBar={this.state.showNavBar}
                   />}
               </Stack.Screen>
               <Stack.Screen name="Home" options={{headerShown: false}}>
@@ -334,6 +340,8 @@ class RootScreen extends React.Component<
                     logout={async () => {
                       await this.logoutFnAsync();
                     }}
+                    navFn={()=>this.props.handleNav(2,'Account')}
+                    showNavBar={this.state.showNavBar}
                   /> }
               </Stack.Screen>
             </Stack.Navigator>
@@ -343,10 +351,11 @@ class RootScreen extends React.Component<
     )
 
     const AppStackWithNavBar = () => (
-      <View style={{height: '100%', backgroundColor: 'gray'}}>
+      <View style={{height: '100%', backgroundColor: 'white'}}>
         <AppStack/>
-        {/* <Text>{height}</Text> */}
-        <BottomNavigationBar/>
+        {this.state.showNavBar
+          ?<BottomNavigationBar/>
+          :<></>}
       </View>
     )
 
