@@ -1,5 +1,5 @@
-import { StyleSheet, Text, View, Pressable, ScrollView, Button, Alert, Platform, Dimensions, Image } from 'react-native'
-import React, { useState } from 'react'
+import { StyleSheet, Text, View, Pressable, ScrollView, Button, Alert, Platform, Dimensions, Image, FlatList } from 'react-native'
+import React, { useEffect, useState } from 'react'
 const { height, width } = Dimensions.get('screen')
 import {
   RootStackParamList,
@@ -88,6 +88,15 @@ type NotificationScreenProps = {
   userInfo: User | null;
 }
 
+type NotificationHistoryProp = {
+  id: string;
+  endTime: Date | null;
+  startTime: Date;
+  streamName: string;
+  notificationTime: Date;
+  tzOffset: number;
+}
+
 
 const NotificationScreen = ({streams, studyInfo, logout, userInfo, navFn}: NotificationScreenProps, {navigation}: Props) => {
   const [isLoading, setIsLoading] = useState(false)
@@ -95,16 +104,20 @@ const NotificationScreen = ({streams, studyInfo, logout, userInfo, navFn}: Notif
   const [currentNotificationTime, setCurrentNotificationTime] = useState(null)
   const [currentPing, setCurrentPing] = useState<Ping|null>(null)
   const [firebaseUser, setFirebaseUser] = useState(null)
-  const [displayDebugView, setDisplayDebugView] = useState(false)
+  const [displayDebugView, setDisplayDebugView] = useState(true)
   const [uploadStatusSymbol, setUploadStatusSymbol] = useState(HOME_SCREEN_DEBUG_VIEW_SYMBOLS.UPLOAD.INITIAL)
   const [storedPingStateAsync, setStoredPingStateAsync] = useState<SurveyScreenState|null>(null)
+  const [showDebugSurvey] = useState(false)
+  const [notificationHistory, setNotificationHistory ] = useState<Array<NotificationHistoryProp>>([])
+  
+
 
   const DebugView: React.FunctionComponent = ({ 
     // children 
   }) => {
-    // if (!this.state.displayDebugView) {
-    //   return <></>;
-    // }
+    if (!displayDebugView) {
+      return <></>;
+    }
     return (
       <View style={{width: '100%', height: '100%', backgroundColor: 'transparent'}}>
         <ScrollView
@@ -140,6 +153,15 @@ const NotificationScreen = ({streams, studyInfo, logout, userInfo, navFn}: Notif
             title="hide debug view"
             onPress={() => {
               setDisplayDebugView(false);
+            }}
+          />
+          <Button
+            color="orange"
+            title="getPingListAsync()"
+            onPress={async () => {
+              await alertWithShareButtonContainingDebugInfoAsync(
+                JSON.stringify(await getPingsListAsync(),null,2),
+              );
             }}
           />
           <Button
@@ -285,8 +307,9 @@ const NotificationScreen = ({streams, studyInfo, logout, userInfo, navFn}: Notif
             onPress={async () => {
               const allData = await getAllDataAsync();
               await alertWithShareButtonContainingDebugInfoAsync(
-                JSON.stringify(allData),
+                JSON.stringify(allData, null, 2),
               );
+              console.log(JSON.stringify(allData, null, 2))
             }}
           />
           <Button
@@ -508,7 +531,7 @@ const NotificationScreen = ({streams, studyInfo, logout, userInfo, navFn}: Notif
       });
   }
 
-  const shouldRemoveFutureNotifications = async () => {
+  const shouldPreventFutureNotifications = async () => {
     // Check if future pings should be disabled
     // This condition is met when the last 5 consecutive answers are "prefer not to answer"
     const data = await getAllDataAsync();
@@ -591,6 +614,60 @@ const NotificationScreen = ({streams, studyInfo, logout, userInfo, navFn}: Notif
     await setNotificationsAsync();
   }
 
+  const renderItem = ({item} : {item: NotificationHistoryProp}) => {
+    const endDate = item.endTime? (new Date(item.endTime)).toLocaleTimeString() : ''
+
+    return <Pressable onPress={()=>console.log(item)} style={{width: width, backgroundColor: 'white', justifyContent: 'center', alignItems: 'center', marginBottom: 20}}>
+      <View style={[styles.shadow, {width: '90%', backgroundColor: '#edf2f4', borderRadius: 12, padding: 15, paddingHorizontal: 20, flexDirection: 'row'}]}>
+        <View style={{flexDirection: 'column', justifyContent: 'center', width: '50%'}}>
+          <Text style={{fontFamily: 'Roboto_700Bold', fontSize: 18, color: '#3a3a3a'}}>Stream ID: </Text>
+          <Text style={{fontFamily: 'Roboto_400Regular', color: '#3a3a3a'}}>{item.id}</Text>
+          <Text style={{fontFamily: 'Roboto_700Bold', fontSize: 18, color: '#3a3a3a'}}>Date: </Text>
+          <Text style={{ alignSelf: 'auto', color: '#3a3a3a'}}>{(new Date(item.notificationTime)).toLocaleString()}</Text>
+        </View>
+        <View style={{flexDirection: 'column', justifyContent: 'center', width: '50%'}}>
+          <Text>{(new Date(item.startTime)).toLocaleTimeString()} <Text style={{fontFamily: 'Roboto_500Medium_Italic', color: '#3a3a3a'}}>start time</Text></Text>
+          <Text>{endDate} <Text style={{fontFamily: 'Roboto_500Medium_Italic', color: item.endTime? '#3a3a3a' : 'gray'}}>{item.endTime? 'end time' : 'no end time recorded'}</Text></Text>
+        </View>
+      </View>
+    </Pressable>
+  }
+
+  const NotificationView = () => 
+  <View style={{paddingHorizontal: 0, backgroundColor: 'white', height:'100%', justifyContent: 'flex-start', alignItems: 'center', paddingTop: 0}}>
+    <View style={{width: '100%', flexDirection: 'row', justifyContent: 'center'}}>
+      <Text style={{ width: '90%',fontFamily: 'Roboto_700Bold', fontSize: 36, marginVertical: 20, color: '#3a3a3a'}}>
+        Notifications
+      </Text>
+    </View>
+    {notificationHistory.length==0
+    ?<Text style={{ width: '90%',fontFamily: 'Roboto_400Regular', fontSize: 18, color: '#3a3a3a'}}>
+        There is currently no active survey or any previously completed Ping to list. You should receive a ping soon.
+    </Text>
+    : <>
+      <Text style={{ width: '90%',fontFamily: 'Roboto_300Light_Italic', fontSize: 18, color: '#3a3a3a', marginBottom: 10, paddingLeft: 5}}>
+        Ping History
+      </Text>
+      <FlatList
+        contentContainerStyle={[styles.center, {backgroundColor: 'white', width: width, height: height*.6, justifyContent: 'flex-start'}]}
+        data={notificationHistory}
+        renderItem={renderItem}
+        keyExtractor={item => item.id}
+      />
+    </>}
+  </View>
+
+  // @WellPing: If you want to disable Ping History, comment out this Effect hook
+  useEffect(()=>{
+    (async () => {
+      const pingData = await getAllDataAsync()
+      setNotificationHistory(pingData.pings)
+    })()
+  },[])
+
+  if(!showDebugSurvey) {
+    return <NotificationView/>
+  }
   return (
     <View style={{paddingHorizontal: 0, backgroundColor: 'white', height:'100%', justifyContent: 'flex-start', paddingTop: 0}}>
       <View style={{width: '100%', backgroundColor: 'gray'}}>
@@ -599,16 +676,16 @@ const NotificationScreen = ({streams, studyInfo, logout, userInfo, navFn}: Notif
 
           // If Ping is null, display "Click here to start" Screen
           ? <View style={[{ 
-            justifyContent: 'flex-start', 
-            backgroundColor: 'white', 
-            height: '100%', 
-            width: '100%', 
+              justifyContent: 'flex-start', 
+              backgroundColor: 'white', 
+              height: '100%', 
+              width: '100%', 
             }]}>
 
             {/* Disclaimer / Title */}
             <Text style={{width: '100%', paddingHorizontal: 50, textAlign: 'center', textAlignVertical: 'center', fontFamily: 'Roboto_700Bold', fontSize: 20, color: '#761A15', height: 100}}>LOCAL DEBUG SURVEY{'\n'}NOT INTENDED FOR PRODUCTION</Text>
             <Pressable onPress={()=>{setCurrentPing(null); setCurrentNotificationTime(null); navFn()}} style={{position: 'absolute', top: 20, backgroundColor: 'transparent', justifyContent: 'flex-start', alignItems: 'center', width: '100%', paddingLeft: 20, flexDirection: 'row'}}>
-              <AntDesign name="arrowleft" size={30} color="black" />
+              <AntDesign name="arrowleft" size={30} color="#3a3a3a" />
             </Pressable>
 
             {/* Main Body */}
@@ -618,7 +695,7 @@ const NotificationScreen = ({streams, studyInfo, logout, userInfo, navFn}: Notif
               </View>
 
               <View style={{width: '100%', flexDirection: 'row', justifyContent: 'center'}}>
-                <Text style={{ width: '50%',fontFamily: 'Roboto_700Bold', fontSize: 36, marginVertical: 20, textAlign: "center" }}>
+                <Text style={{ width: '50%',fontFamily: 'Roboto_700Bold', fontSize: 36, marginVertical: 20, textAlign: "center", color: '#3a3a3a'}}>
                   Welcome to <Text style={{fontSize: 20, color: '#761A15'}}>{'{'}debugging{'}\n'}</Text>Well Ping!
                 </Text>
               </View>
@@ -628,7 +705,7 @@ const NotificationScreen = ({streams, studyInfo, logout, userInfo, navFn}: Notif
                 mode="elevated" 
                 style={{borderRadius: 12, width: 294, alignItems: 'center', paddingVertical: 10, borderWidth: 0, borderColor: 'black'}}
                 // disabled={this.state.disableLoginButton}
-                labelStyle={{fontSize: 18, color: '#0F4EC7'}}
+                labelStyle={{fontSize: 18, color: '#3a3a3a'}}
                 onPress={() => {
                   startSurveyAsync();
                 }}
@@ -656,7 +733,10 @@ const NotificationScreen = ({streams, studyInfo, logout, userInfo, navFn}: Notif
               onFinish={async (finishedPing)=>{
                 setCurrentPing(finishedPing);
 
-                await shouldRemoveFutureNotifications()
+                await shouldPreventFutureNotifications()
+
+                // Navigate to home upon completion of debug survey
+                navFn()
               }}
             />
           </>

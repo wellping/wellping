@@ -933,54 +933,60 @@ export default class SurveyScreen extends React.Component<
           </Text>
           {(question.description || question.image) && (
             <>
-              <Text
-                style={{
-                  textAlign: "center",
-                  color: "gray",
-                  fontSize: 13,
-                  marginTop: 5,
-                  marginBottom: 2,
-                }}
-              >
-                You may need to scroll to see the full description.
-              </Text>
-                {question.image
-                  ?<View style={styles.imageBox}>
-                      <Image style={styles.test} source={{uri: question.image?.url}}/>
-                    </View>
-                  :<></>
-                }
-              <ScrollView
-                style={{
-                  marginBottom: 5,
-                  maxHeight: 140,
-                  borderWidth: 1,
-                  borderColor: "lightgray",
-                  padding: '0.7%'
-                }}
-              >
-                {getImageIfAnyForPosition("inDescriptionBox")}
-                <Pressable onPress={()=>console.log(question.image?.url)}>
-                  {/* <View style={styles.imageBox}>
+            {question.description
+              ? <Text
+                  style={{
+                    textAlign: "center",
+                    color: "gray",
+                    fontSize: 13,
+                    marginTop: 5,
+                    marginBottom: 2,
+                  }}
+                >
+                  You may need to scroll to see the full description.
+                </Text> : <></>}
+
+              {question.image
+                ?<View style={styles.imageBox}>
                     <Image style={styles.test} source={{uri: question.image?.url}}/>
-                  </View> */}
-                </Pressable>
-                {question.description && (
-                  <Text
-                    testID="questionDescription"
+                  </View>
+                :<></>
+              }
+
+              {question.description
+                ? <ScrollView
                     style={{
-                      textAlign: "left",
-                      padding: 5,
+                      marginBottom: 5,
+                      maxHeight: 140,
+                      borderWidth: 1,
+                      borderColor: "lightgray",
+                      padding: '0.7%'
                     }}
                   >
-                    {this.replacePlaceholders(
-                      question.description,
-                      this.state,
-                      question.defaultPlaceholderValues,
+                    {getImageIfAnyForPosition("inDescriptionBox")}
+                    <Pressable onPress={()=>console.log(question.image?.url)}>
+                      {/* <View style={styles.imageBox}>
+                        <Image style={styles.test} source={{uri: question.image?.url}}/>
+                      </View> */}
+                    </Pressable>
+                    {question.description && (
+                      <Text
+                        testID="questionDescription"
+                        style={{
+                          textAlign: "left",
+                          padding: 5,
+                        }}
+                      >
+                        {this.replacePlaceholders(
+                          question.description,
+                          this.state,
+                          question.defaultPlaceholderValues,
+                        )}
+                      </Text>
                     )}
-                  </Text>
-                )}
-              </ScrollView>
+                  </ScrollView>
+                : <></>
+              }
             </>
           )}
         </View>
