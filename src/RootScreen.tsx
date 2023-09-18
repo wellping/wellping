@@ -61,13 +61,16 @@ interface RootScreenProps {
   setTab: React.Dispatch<SetStateAction<number>>;
   handleNav: (n:number, where:string)=>void;
 }
+
 interface RootScreenState {
   userInfo: User | null;
   isLoading: boolean;
   studyFileErrorText: string | null;
   survey?: StudyFile;
   tab: number;
+  showNavBar: boolean;
 }
+
 export type RootStackParamList = {
   Home: undefined;
   Account: undefined;
@@ -75,6 +78,7 @@ export type RootStackParamList = {
   Profile: { userId: string };
   Feed: { sort: 'latest' | 'top' } | undefined;
 };
+
 export const navRef = React.createRef<NavigationContainerRef<RootStackParamList>>();
 
 export default function Main () {
@@ -134,6 +138,7 @@ class RootScreen extends React.Component<
       isLoading: true,
       studyFileErrorText: null,
       tab: 0,
+      showNavBar: true,
     };
   }
 
@@ -220,9 +225,6 @@ class RootScreen extends React.Component<
   }
 
   async componentDidMount() {
-    // Makes sure app opens on Home tab, should be removed if bottom nav is not being used
-    this.setState({tab: 0})
-
     if (await studyFileExistsAsync()) {
       if (!(await this.loadTempStudyFileAsync())) {
         return;
@@ -286,7 +288,10 @@ class RootScreen extends React.Component<
   }
 
   async logoutFnAsync() {
-    this.setState({ userInfo: null, survey: undefined }, async () => {
+    this.setState({ userInfo: null, survey: undefined}, async () => {
+      // reset Nav to home, to make sure first screen user sees is Home
+      this.props.handleNav(0,'Home')
+      
       await logoutAsync();
     });
   }
@@ -310,6 +315,7 @@ class RootScreen extends React.Component<
                     userInfo={this.state.userInfo}
                     studyInfo={this.state.survey?.studyInfo}
                     logout={async () => {await this.logoutFnAsync()}}
+                    navFn={()=>this.props.handleNav(0,'Home')}
                   />}
               </Stack.Screen>
               <Stack.Screen name="Account" options={{headerShown: false}}>
@@ -319,6 +325,8 @@ class RootScreen extends React.Component<
                     userInfo={this.state.userInfo}
                     studyInfo={this.state.survey?.studyInfo}
                     logout={async () => {await this.logoutFnAsync()}}
+                    navFn={()=>this.props.handleNav(0,'Home')}
+                    showNavBar={this.state.showNavBar}
                   />}
               </Stack.Screen>
               <Stack.Screen name="Home" options={{headerShown: false}}>
@@ -334,6 +342,8 @@ class RootScreen extends React.Component<
                     logout={async () => {
                       await this.logoutFnAsync();
                     }}
+                    navFn={()=>this.props.handleNav(2,'Account')}
+                    showNavBar={this.state.showNavBar}
                   /> }
               </Stack.Screen>
             </Stack.Navigator>
@@ -343,10 +353,11 @@ class RootScreen extends React.Component<
     )
 
     const AppStackWithNavBar = () => (
-      <View style={{height: '100%', backgroundColor: 'gray'}}>
+      <View style={{height: '100%', backgroundColor: 'white'}}>
         <AppStack/>
-        {/* <Text>{height}</Text> */}
-        <BottomNavigationBar/>
+        {this.state.showNavBar
+          ?<BottomNavigationBar/>
+          :<></>}
       </View>
     )
 
@@ -370,17 +381,18 @@ class RootScreen extends React.Component<
       icon=this.props.tab===0?
         <Foundation name="home" size={24} color="#761A15" />
         : <Feather name="home" size={24} color="#761A15" />,
-      navFn=()=>{this.props.handleNav(0,'Home')}
+      navFn=()=>{this.props.handleNav(0,'Home')},
+      idx=0
     }) => 
     <Pressable onPress={navFn} style={[styles.center, styles.navButton, {backgroundColor: 'white'}]}>
       {icon}
-      <Text style={{fontSize: 12, color: '#761A15'}}>{path == 'Notification'? 'Notifications' : path}</Text>
+      <Text style={{fontSize: 13, marginTop: 2, color: '#761A15', fontFamily: idx===this.props.tab? 'Roboto_700Bold':'Roboto_400Regular'}}>{path == 'Notification'? 'Notifications' : path}</Text>
     </Pressable>
 
     const BottomNavigationBar = () => <View style={{height: Platform.OS==='ios'? height*.1 : height*.1, width: width, backgroundColor: '#f8f9fa', flexDirection: 'row'}}>
-      <BottomButton path="Home"/>
-      <BottomButton path="Notification" icon={<FontAwesome name={this.props.tab===1?"bell":"bell-o"} size={24} color="#761A15" />} navFn={()=>{this.props.handleNav(1,'Notification')}}/>
-      <BottomButton path="Account" icon={<MaterialCommunityIcons name={this.props.tab===2?"account":"account-outline"} size={24} color="#761A15" />} navFn={()=>{this.props.handleNav(2,'Account')}}/>
+      <BottomButton idx={0} path="Home"/>
+      <BottomButton idx={1} path="Notification" icon={<FontAwesome name={this.props.tab===1?"bell":"bell-o"} size={24} color="#761A15" />} navFn={()=>{this.props.handleNav(1,'Notification')}}/>
+      <BottomButton idx={2} path="Account" icon={<MaterialCommunityIcons name={this.props.tab===2?"account":"account-outline"} size={24} color="#761A15" />} navFn={()=>{this.props.handleNav(2,'Account')}}/>
     </View>
   
 
@@ -420,6 +432,7 @@ class RootScreen extends React.Component<
         />
       )
     }
+    
     return userInfo? <AppStackWithNavBar/> : <AuthStack/>
   }
 }

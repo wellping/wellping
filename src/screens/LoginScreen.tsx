@@ -12,6 +12,7 @@ import {
   Pressable,
   Dimensions,
   Image,
+  Platform,
 } from "react-native";
 const { height, width } = Dimensions.get('screen')
 import {
@@ -298,27 +299,27 @@ export default class LoginScreen extends React.Component<
 
     return (
       <ScrollView
-        style={{ height: "100%", paddingHorizontal: 20, backgroundColor: '#f8f9fa' }}
+        style={{ height: "100%", paddingHorizontal: 20, backgroundColor: 'white' }}
         keyboardShouldPersistTaps="handled" /* https://github.com/facebook/react-native/issues/9404#issuecomment-252474548 */
       >
-        <View style={{marginVertical: 20, width: width-40, height: height*.8, backgroundColor: '#f8f9fa', alignItems: 'center', justifyContent: 'space-around'}}>
+        <View style={{marginVertical: 20, width: width-40, height: height*.8, backgroundColor: 'white', alignItems: 'center', justifyContent: 'space-around'}}>
           <Text style={{position: 'absolute', top: 10, fontSize: 18, fontWeight: 'bold', color: 'gray'}}>
               {/* {"(Login)"} - no user info */}
             </Text>
 
-          <View style={{width: width*.9, height: height*.7, backgroundColor: '#f8f9fa', alignItems: 'center', justifyContent: 'space-around'}}>
-            <View style={{height: 120, width: 120, backgroundColor: 'rgba(0,0,0,0.0)'}}>
+          <View style={{width: width*.9, height: height*.7, backgroundColor: 'white', alignItems: 'center', justifyContent: 'space-around'}}>
+            <View style={{height: 120, width: 120, backgroundColor: 'rgba(0,0,0,0.0)', marginTop: Platform.OS == 'ios'? 50:0}}>
               <Image source={require('../../assets/icon-android-foreground.png')} style={{height: 120, width: 120, backgroundColor: 'transparent', transform: [{scale: 2.5}]}}/>
             </View>
-            <Text style={{ fontSize: 36, fontWeight: 'bold', width: '70%', textAlign: "center" }}>
+            <Text style={{ fontSize: 36, fontFamily: 'Roboto_700Bold', width: '70%', textAlign: "center", color: '#3a3a3a' }}>
               Welcome to Well Ping!
             </Text>
             <Pressable
-              onPress={()=>console.log('asdf', this.props.userInfo)}
+              // onPress={()=>console.log('asdf', this.props.userInfo)}
               style={{width: '70%'}}
             >
-              <Text style={{ fontSize: 18, textAlign: 'center' }}>
-                Please log in using the login code sent to you.
+              <Text style={{ fontSize: 18, textAlign: 'left', fontFamily: 'Roboto_400Regular', color: '#3a3a3a'}}>
+                Please enter your login code to get authenticated.
               </Text>
             </Pressable>
             <TextInput
@@ -337,27 +338,18 @@ export default class LoginScreen extends React.Component<
               blurOnSubmit // https://stackoverflow.com/a/38988668/2603230
               onSubmitEditing={this.loginFnAsync}
               editable={!this.state.disableLoginButton}
-              style={{width: 297, fontSize: 18}}
+              style={{width: 297, fontSize: 18, fontFamily: 'Roboto_400Regular'}}
             />
             <PaperButton
               buttonColor="#761A15" 
               mode="contained" 
               style={{borderRadius: 12, width: 294, alignItems: 'center', paddingVertical: 10}}
               disabled={this.state.disableLoginButton}
-              labelStyle={{fontSize: 18}}
-              // onPress={() => console.log('Pressed')}
+              labelStyle={{fontSize: 18, fontFamily: 'Roboto_400Regular'}}
               onPress={this.loginFnAsync}
             >
               Log in
             </PaperButton>
-            <Pressable 
-              onPress={() => console.log('Pressed')}
-              style={{borderRadius: 12, width: 4/5*width, alignItems: 'center'}}
-            >
-              <Text style={{color: '#6C6C6C', fontSize: 21}}>
-                {/* Skip for now */}
-              </Text>
-            </Pressable>
           </View>
         </View>
         {errorText ? (
@@ -391,6 +383,7 @@ export default class LoginScreen extends React.Component<
                 fontWeight: "bold",
                 textAlign: "center",
                 fontSize: 20,
+                backgroundColor: 'white'
               }}
             >
               {loadingText}
@@ -410,9 +403,12 @@ export default class LoginScreen extends React.Component<
         >
           <Text
             style={{
+              position: 'absolute',
               textAlign: "center",
-              marginTop: 50,
-              marginBottom: 30,
+              width: '100%',
+              marginTop: 0,
+              marginBottom: 0,
+              bottom: 0,
               color: "lightgray",
             }}
           >

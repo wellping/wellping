@@ -36,6 +36,10 @@ export async function getPingStateAsync(
         nextQuestionsDataStack: [],
         answers: {},
         isInTransition: false,
+
+        // TODO:: These are currently set to default state. Need to reference actual
+        questionsStack: [],
+        startingPoint: null
       };
     }
     const state: SurveyScreenState = JSON.parse(value);
