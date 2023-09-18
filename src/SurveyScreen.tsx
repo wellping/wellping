@@ -898,17 +898,16 @@ export default class SurveyScreen extends React.Component<
         }}
       >
         {/* Header */}
-        <Pressable onPress={()=>console.log(
-          JSON.stringify(question, null, 2), 
-          // JSON.stringify(studyInfo,null,2)
-          // JSON.stringify(answers,null,2)
-        )} style={{width: '100%', height: 50, alignItems: 'center', flexDirection: 'row', justifyContent: 'space-between'}}>
-          <AntDesign style={{minWidth: '50%'}} name="arrowleft" size={30} color="black" />
+        <Pressable onPress={()=>(console.log('question', JSON.stringify(question, null, 2)))} style={{width: '100%', height: 50, alignItems: 'center', flexDirection: 'row', justifyContent: 'space-between'}}>
+          {/* Put back arrow button here in the future ⬇️ */}
+          {/* <AntDesign style={{minWidth: '50%'}} name="arrowleft" size={30} color="black" /> */}
+          
+          {/* Optional TODO: Answered question counter */}
           {/* <Text numberOfLines={1} style={{ maxWidth: '50%', fontSize: 15, textAlign: 'right', color: '#3A3A3A'}}>Answers:{Object.keys(answers).length+1}</Text> */}
         </Pressable>
         {/* Slider */}
         {true? // TODO: Add Slider conditional option later on 
-          <View style={{width: '100%', height: 50, flexDirection: 'row'}}>
+          <View style={{width: '100%', height: 30, flexDirection: 'row'}}>
             <View style={{width: '100%', height: 5, backgroundColor: '#761A15'}}/>
             {/* <View style={{width: '50%', height: 5, backgroundColor: '#D9D9D9'}}/> */}
           </View>:<></>

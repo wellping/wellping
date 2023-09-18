@@ -678,7 +678,7 @@ const NotificationScreen = ({streams, studyInfo, logout, userInfo, navFn}: Notif
             }]}>
 
             {/* Disclaimer / Title */}
-            <Text style={{width: '100%', paddingHorizontal: 50, textAlign: 'center', textAlignVertical: 'center', fontFamily: 'Roboto_700Bold', fontSize: 20, color: '#761A15', height: 100}}>LOCAL DEBUG SURVEY{'\n'}NOT INTENDED FOR PRODUCTION</Text>
+            <Text style={{width: '100%', paddingHorizontal: 50, textAlign: 'center', textAlignVertical: 'center', fontFamily: 'Roboto_700Bold', fontSize: 20, color: '#761A15', height: 100, marginTop: 20}}>LOCAL DEBUG SURVEY</Text>
             <Pressable onPress={()=>{setCurrentPing(null); setCurrentNotificationTime(null); navFn()}} style={{position: 'absolute', top: 20, backgroundColor: 'transparent', justifyContent: 'flex-start', alignItems: 'center', width: '100%', paddingLeft: 20, flexDirection: 'row'}}>
               <AntDesign name="arrowleft" size={30} color="#3a3a3a" />
             </Pressable>
