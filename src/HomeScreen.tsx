@@ -1383,7 +1383,7 @@ export default class HomeScreen extends React.Component<
               mode="elevated" 
               style={{borderRadius: 12, width: 294, alignItems: 'center', paddingVertical: 10, borderWidth: 0, borderColor: 'black'}}
               // disabled={this.state.disableLoginButton}
-              labelStyle={{fontSize: 18, color: '#761A15'}}
+              labelStyle={{fontSize: 18, color: '#761A15', fontFamily: 'Roboto_500Medium'}}
               onPress={() => {
                 this.startSurveyAsync();
               }}
@@ -1426,7 +1426,7 @@ export default class HomeScreen extends React.Component<
                   console.log('asdf', currentPing);
                   this.setState({ currentPing: null , currentNotificationTime: null});
                 }}>
-                <Text style={{fontSize: 25, fontFamily: 'Roboto_700Bold', color: 'lightgray', marginTop: 20, textAlign: 'center'}}>{'(Development ONLY)\n'}Return to Home</Text>
+                <Text style={{fontSize: 25, fontFamily: 'Roboto_700Bold', color: 'white', marginTop: 20, textAlign: 'center'}}>{'(Development ONLY)\n'}Return to Home</Text>
               </Pressable>
               <DashboardComponent
                 firebaseUser={firebaseUser}

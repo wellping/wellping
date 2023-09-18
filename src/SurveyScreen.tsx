@@ -899,12 +899,12 @@ export default class SurveyScreen extends React.Component<
       >
         {/* Header */}
         <Pressable onPress={()=>console.log(
-          // JSON.stringify(question, null, 2), 
+          JSON.stringify(question, null, 2), 
           // JSON.stringify(studyInfo,null,2)
-          JSON.stringify(answers,null,2)
+          // JSON.stringify(answers,null,2)
         )} style={{width: '100%', height: 50, alignItems: 'center', flexDirection: 'row', justifyContent: 'space-between'}}>
           <AntDesign style={{minWidth: '50%'}} name="arrowleft" size={30} color="black" />
-          <Text numberOfLines={1} style={{ maxWidth: '50%', fontSize: 15, textAlign: 'right', color: '#3A3A3A'}}>Q{Object.keys(answers).length+1}</Text>
+          {/* <Text numberOfLines={1} style={{ maxWidth: '50%', fontSize: 15, textAlign: 'right', color: '#3A3A3A'}}>Answers:{Object.keys(answers).length+1}</Text> */}
         </Pressable>
         {/* Slider */}
         {true? // TODO: Add Slider conditional option later on 
@@ -948,7 +948,7 @@ export default class SurveyScreen extends React.Component<
 
               {question.image
                 ?<View style={styles.imageBox}>
-                    <Image style={styles.test} source={{uri: question.image?.url}}/>
+                    <Image style={styles.imageContainer} source={{uri: question.image?.url}}/>                  
                   </View>
                 :<></>
               }
@@ -957,7 +957,7 @@ export default class SurveyScreen extends React.Component<
                 ? <ScrollView
                     style={{
                       marginBottom: 5,
-                      maxHeight: 140,
+                      maxHeight: 80,
                       borderWidth: 1,
                       borderColor: "lightgray",
                       padding: '0.7%'
@@ -1149,22 +1149,23 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     backgroundColor: "#000",
   },
-  test: {
-    backgroundColor: "#000",
+  imageContainer: {
+    // backgroundColor: "#000",
     height: 150,
     width: '100%',
     objectFit: 'contain',
     borderRadius: 12,
     marginTop: "2%",
-    marginBottom: "2%"
-
+    // marginBottom: "2%"
   },
-
   imageBox: {
-    width: '100%',
-    display: 'flex',
-    marginLeft: 3,
-    marginRight: 3,
-    justifyContent: 'center'
+    // width: '100%',
+    // height: 150,
+    // resizeMode: 'cover',
+    // aspectRatio: 1.5,
+    // borderRadius: 12,
+    // marginVertical: '2%',
+    // justifyContent: 'center',
+    // alignItems: 'center'
   }
 })

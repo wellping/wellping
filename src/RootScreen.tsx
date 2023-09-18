@@ -286,7 +286,10 @@ class RootScreen extends React.Component<
   }
 
   async logoutFnAsync() {
-    this.setState({ userInfo: null, survey: undefined }, async () => {
+    this.setState({ userInfo: null, survey: undefined}, async () => {
+      // reset Nav to home, to make sure first screen user sees is Home
+      this.props.handleNav(0,'Home')
+      
       await logoutAsync();
     });
   }

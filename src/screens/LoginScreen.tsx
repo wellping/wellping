@@ -383,6 +383,7 @@ export default class LoginScreen extends React.Component<
                 fontWeight: "bold",
                 textAlign: "center",
                 fontSize: 20,
+                backgroundColor: 'white'
               }}
             >
               {loadingText}

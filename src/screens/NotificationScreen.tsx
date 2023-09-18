@@ -77,7 +77,6 @@ import {
 import { AntDesign } from '@expo/vector-icons';
 import { Button as PaperButton } from 'react-native-paper'
 
-
 type Props = NativeStackScreenProps<RootStackParamList, 'Notification'>;
 
 type NotificationScreenProps = {
@@ -97,7 +96,6 @@ type NotificationHistoryProp = {
   tzOffset: number;
 }
 
-
 const NotificationScreen = ({streams, studyInfo, logout, userInfo, navFn}: NotificationScreenProps, {navigation}: Props) => {
   const [isLoading, setIsLoading] = useState(false)
   const [time, setTime] = useState(new Date())
@@ -107,11 +105,9 @@ const NotificationScreen = ({streams, studyInfo, logout, userInfo, navFn}: Notif
   const [displayDebugView, setDisplayDebugView] = useState(true)
   const [uploadStatusSymbol, setUploadStatusSymbol] = useState(HOME_SCREEN_DEBUG_VIEW_SYMBOLS.UPLOAD.INITIAL)
   const [storedPingStateAsync, setStoredPingStateAsync] = useState<SurveyScreenState|null>(null)
-  const [showDebugSurvey] = useState(false)
+  const [showDebugSurvey] = useState(true)
   const [notificationHistory, setNotificationHistory ] = useState<Array<NotificationHistoryProp>>([])
   
-
-
   const DebugView: React.FunctionComponent = ({ 
     // children 
   }) => {
@@ -461,36 +457,35 @@ const NotificationScreen = ({streams, studyInfo, logout, userInfo, navFn}: Notif
 
     // Needs current notification time
     const list = await getNotificationTimesAsync()
-    // console.log('list: ',JSON.stringify(list,null,2))
-    // console.log(JSON.stringify(list?.map(e=>e.notificationDate.toLocaleString()),null,2))
-    console.log('log',list?list[2].notificationDate:null)
     
     if(list == null)
       return;
     else if(list[2]?.notificationDate !== null) {
 
-    // // Create new ping.
+    // Create new ping.
     const newPing = await insertPingAsync({
-      // notificationTime: currentNotificationTime!,
       notificationTime: list[2].notificationDate,
       startTime: new Date(),
-      // streamName,
-      streamName: 'welcomeStream'
-      // streamName: 'myStream'
+      // streamName, // Original code
+
+      /* 
+      * Custom stream input 
+      */
+      // streamName: 'welcomeStream'
       // streamName: 'exampleStream'
+      streamName: 'exitStream'
       // streamName: 'errorStream'
+      // streamName: 'myStream'
     });
 
     console.log('np',newPing)
     
-    // // Add this ping to unuploaded pings list.
+    // Add this ping to unuploaded pings list.
     await addToUnuploadedPingsListIfNeededAsync(newPing);
 
     setCurrentPing(newPing)
     // setStoredPingStateAsync(null)
     }
-
-
   }
 
   const _uploadUnuploadedDataAndRemoveFromThemIfSuccessfulAsync = async ({
@@ -658,12 +653,12 @@ const NotificationScreen = ({streams, studyInfo, logout, userInfo, navFn}: Notif
   </View>
 
   // @WellPing: If you want to disable Ping History, comment out this Effect hook
-  useEffect(()=>{
-    (async () => {
-      const pingData = await getAllDataAsync()
-      setNotificationHistory(pingData.pings)
-    })()
-  },[])
+  // useEffect(()=>{
+  //   (async () => {
+  //     const pingData = await getAllDataAsync()
+  //     setNotificationHistory(pingData.pings)
+  //   })()
+  // },[])
 
   if(!showDebugSurvey) {
     return <NotificationView/>
@@ -705,7 +700,7 @@ const NotificationScreen = ({streams, studyInfo, logout, userInfo, navFn}: Notif
                 mode="elevated" 
                 style={{borderRadius: 12, width: 294, alignItems: 'center', paddingVertical: 10, borderWidth: 0, borderColor: 'black'}}
                 // disabled={this.state.disableLoginButton}
-                labelStyle={{fontSize: 18, color: '#3a3a3a'}}
+                labelStyle={{fontSize: 18, color: '#3a3a3a', fontFamily: 'Roboto_500Medium'}}
                 onPress={() => {
                   startSurveyAsync();
                 }}
