@@ -58,7 +58,7 @@ yarn global add expo-cli
 yarn install
 
 # Start
-yarn start
+npx expo start
 
 # Test
 yarn test
