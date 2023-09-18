@@ -46,9 +46,13 @@ Note the following commands are deprecated. See https://blog.expo.dev/the-new-ex
 npm install expo
 yarn add expo
 
-# Do not use these commands
-npm install -g expo-cli
+# Install eas-cli if you need Expo Application Services (EAS) i.e. app deployment
 npm install -g eas-cli
+yarn global add eas-cli
+
+# Do not use this command anymore
+npm install -g expo-cli
+yarn global add expo-cli
 
 # Installation
 yarn install
