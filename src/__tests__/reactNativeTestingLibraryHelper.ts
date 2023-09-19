@@ -1,4 +1,5 @@
 import { fireEvent, act, RenderAPI } from "react-native-testing-library";
+import { render,  } from "@testing-library/react-native"
 import { ReactTestInstance } from "react-test-renderer";
 import waitForExpect from "wait-for-expect";
 

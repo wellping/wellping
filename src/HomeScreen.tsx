@@ -36,8 +36,7 @@ import {
 const { height, width } = Dimensions.get('screen')
 import {
   Button as PaperButton,
-  IconButton,
-  TextInput
+  IconButton
 } from 'react-native-paper'
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -331,8 +330,6 @@ export default class HomeScreen extends React.Component<
 
   componentWillUnmount() {
     clearInterval(this.interval);
-
-    // AppState.removeEventListener("change", this._handleAppStateChange);
 
     if (this.unregisterAuthObserver) {
       this.unregisterAuthObserver();
@@ -795,11 +792,8 @@ export default class HomeScreen extends React.Component<
               title="CheckIfShouldDisableAfterFivePings"
               onPress={async () => {
                 const data = await getAllDataAsync();
-                // await alertWithShareButtonContainingDebugInfoAsync(
-                //   JSON.stringify(info,null,2),
-                // );
 
-                // Get last up to last Five "preferNotToAnswer" values
+                // Get up to last Five "preferNotToAnswer" values
                 const answers = data.answers.slice(-5)
                 // Round up all prefNotAnswer values into an array, 1 for true, 0 for false
                 const responses = answers.map(e=>e.preferNotToAnswer? 1:0)
@@ -807,25 +801,14 @@ export default class HomeScreen extends React.Component<
                 // If all elements are 1 e.g. [1,1,1,1,1] and length more than 5, 
                 // meaning the Participant repeatedly chose not to respond, take action
                 if(responses.length>=5 && responses.every(e => e===1)) {
-                  console.log('take action')
-                  // await clearNotificationTimesAsync()
+                  console.log('take action...')
                 }
                 else {
                   console.log('take no action')
                 }
-                // console.log(JSON.stringify(answers,null,2), responses)
+
                 console.log(responses)
                 console.log(answers.length, 'length')
-                
-                // const latestPing = await getLatestPingAsync()
-                // const currentNotificationTime = await getCurrentNotificationTimeAsync();
-                // console.log(latestPing
-                //   ? JSON.stringify(await getPingStateAsync(latestPing.id),null,2)
-                //   : 'no ping')
-
-                // console.log(await getPingsListAsync())
-                // console.log(await getPingsListAsync())
-                // console.log(await getTodayPingsAsync())
               }}
             />
             <Button
@@ -927,13 +910,6 @@ export default class HomeScreen extends React.Component<
                   //   `\n`;
                 });
                 await alertWithShareButtonContainingDebugInfoAsync(text);
-
-                const notifs = await AsyncStorage.getItem('@WELLPING:Study_debug_study_for_v_1_0/NotificationTime')
-                const newJson = notifs? JSON.parse(notifs) : null
-                // const justLocale = newJson.map(e=>new Date(e.notificationDate).toLocaleString())
-                // const readableNotifs = newJson?.map((e : string)=> e.notificationDate)
-                // console.log(JSON.stringify(justLocale,null,2))
-                // console.log(await AsyncStorage.getAllKeys())
               }}
             />
             <Button
@@ -983,7 +959,6 @@ export default class HomeScreen extends React.Component<
                 await alertWithShareButtonContainingDebugInfoAsync(
                   JSON.stringify(allData),
                 );
-                // console.log(JSON.stringify(allData.answers?.map(e=>e.preferNotToAnswer? 1:0),null,2))
                 console.log(JSON.stringify(allData,null,2))
               }}
             />
@@ -1044,6 +1019,8 @@ export default class HomeScreen extends React.Component<
               color="orange"
               title="copy dashboard url"
               onPress={async () => {
+                // Clipboard is Deprecated
+
                 // const url =
                 //   (await getDashboardUrlAsync(studyInfo, firebaseUser)) ??
                 //   "No dashboard URL.";
@@ -1222,7 +1199,9 @@ export default class HomeScreen extends React.Component<
         );
       }
 
-      // const DATA: ItemData[] = [{id: 'a', title: 'hello'}, {id: 'b', title: 'hello2'}]
+      /* 
+      *   Used to render Flatlist in HomeScreen when there is no Active Ping
+      */
       const DATA: ItemData[] = [{
         id: studyInfo.id, 
         title: studyInfo.studyFileURL, 
@@ -1230,34 +1209,11 @@ export default class HomeScreen extends React.Component<
         startDate: studyInfo.startDate,
         endDate: studyInfo.endDate
       }]
+      /* 
+      *   Survey information Card 
+      */
       const renderItem = ({item}: {item: ItemData}) => {
-        return <Pressable onPress={async ()=>{
-          // console.log(JSON.stringify(studyInfo,null,2));
-          console.log('today ping', JSON.stringify(await getTodayPingsAsync(),null,2));
-          // console.log(JSON.stringify(await AsyncStorage.getAllKeys(),null,2));
-          // console.log(JSON.stringify(
-          // const result = await AsyncStorage.multiGet(await AsyncStorage.getAllKeys())
-          // console.log(result)
-          // result.map(req => JSON.parse(req))
-          // ,null,2))
-
-          // Figure out how to display survey
-          console.log('CONDITIONS')
-          console.log('currentNotifTime', currentNotificationTime)
-          console.log(' Date > End ', new Date() > getStudyEndDate(studyInfo))
-          console.log(' Date < Start ', new Date() < getStudyStartDate(studyInfo))
-
-          console.log('currentPing', currentPing)
-          console.log('currentPing.endTime', currentPing?.endTime)
-
-          const pingCheck = await this.checkIfPingHasExpiredAsync()
-          console.log('CheckPingExpired,', pingCheck)
-          console.log('prevNotifTime', this.state.currentNotificationTime)
-
-          const keys = await AsyncStorage.getAllKeys()
-          // const itemsArray = await AsyncStorage.multiGet(keys)
-
-        }} style={[_styles.shadow, {marginTop: 20, width: width*.9, height: 272, backgroundColor: '#fffae2', alignItems: 'flex-start', justifyContent: 'space-around', padding: 10, paddingHorizontal: 20, borderRadius: 12}]}>
+        return <Pressable onPress={async ()=>{}} style={[_styles.shadow, {marginTop: 20, width: width*.9, height: 272, backgroundColor: '#fffae2', alignItems: 'flex-start', justifyContent: 'space-around', padding: 10, paddingHorizontal: 20, borderRadius: 12}]}>
           <View>
             <Text style={{fontSize: 18, fontFamily: 'Roboto_700Bold', color: '#3a3a3a'}}>Study ID</Text>
             <Text style={{fontFamily: 'Roboto_400Regular', fontSize: 16, color: '#3a3a3a'}}>{item.id}</Text>
@@ -1308,18 +1264,6 @@ export default class HomeScreen extends React.Component<
               renderItem={renderItem}
               keyExtractor={item => item.id}
             />
-            {/* Debug/Console.Log Button */}
-            <Pressable 
-              style={{ position: 'absolute', top: -10, left: 20, }} 
-              onPress={async ()=>console.log(
-                new Date < getStudyStartDate(studyInfo),
-                JSON.stringify(await AsyncStorage.getAllKeys(),null,2)
-              )}
-            >
-              <Text style={{ fontSize: 18, textAlign: 'left', color: 'lightgray'}}>
-                {/* {"(Debug)"} Log response to terminal */}
-              </Text>
-            </Pressable>
           </View>
           {/* <DebugView /> */}
           {/* <DashboardComponent
@@ -1348,11 +1292,13 @@ export default class HomeScreen extends React.Component<
 
       return (
         <View style={[_styles.container, {justifyContent: 'center', backgroundColor: 'white'}]}>
+          {/* Remove this back button when live */}
           <Pressable onPress={()=>this.setState({ currentPing: null, currentNotificationTime: null })} style={{position: 'absolute', top: 20, backgroundColor: 'transparent', justifyContent: 'flex-start', alignItems: 'center', width: '100%', paddingLeft: 20, flexDirection: 'row'}}>
-            <AntDesign name="arrowleft" size={30} color="#3a3a3a" />
-            {/* <Text style={{fontFamily: 'Roboto_700Bold', fontSize: 20, color: '#3a3a3a'}}> Back</Text> */}
+            <AntDesign name="arrowleft" size={30} color="lightgray" />
           </Pressable>
-          {/* {ExtraView} */}
+          <View style={{width: width, position: 'absolute', top: 0, alignItems: 'center'}}>
+            {ExtraView}
+          </View>
           {/* <DebugView>{streamButtons}</DebugView> */}
           {/* <DebugView/> */}
           <View style={{height: height*.5, width: '100%', backgroundColor: 'transparent', justifyContent: 'space-around', alignItems: 'center'}}>
@@ -1365,19 +1311,6 @@ export default class HomeScreen extends React.Component<
                 Welcome to Well Ping!
               </Text>
             </View>
-
-            <Pressable 
-              style={{ position: 'absolute', top: -10, left: 20, }} 
-              onPress={async ()=>{
-                console.log('asdf', new Date(), JSON.stringify(studyInfo,null,2), new Date() > getStudyEndDate(studyInfo))
-                console.log(currentNotificationTime, currentPing)
-                console.log(JSON.stringify(this.state,null,2))
-              }}
-            >
-              <Text style={{ fontSize: 18, textAlign: 'left', color: 'lightgray'}}>
-                {/* {"(Debug)"} Log response to terminal */}
-              </Text>
-            </Pressable>
             <PaperButton
               buttonColor="white" 
               mode="elevated" 
@@ -1415,7 +1348,7 @@ export default class HomeScreen extends React.Component<
                 Thank you for completing the survey for this ping!{"\n"}
               </Text>
               <Text style={{fontFamily: "Roboto_400Regular", fontSize: 20, textAlign: 'center', paddingHorizontal: 40, color: '#3a3a3a'}}>
-                Well Ping will send a notification for the next survey soon!{"\n"}
+                Well Ping will send a notification for the next survey soon.{"\n"}
                 {/* Please close the app entirely */}
               </Text>
               {/* <View style={{height: height/8/2}}/> */}

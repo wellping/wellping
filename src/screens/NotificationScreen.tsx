@@ -477,8 +477,6 @@ const NotificationScreen = ({streams, studyInfo, logout, userInfo, navFn}: Notif
       // streamName: 'errorStream'
       // streamName: 'myStream'
     });
-
-    console.log('np',newPing)
     
     // Add this ping to unuploaded pings list.
     await addToUnuploadedPingsListIfNeededAsync(newPing);
