@@ -266,7 +266,8 @@ const MultipleTextQuestionScreen: React.ElementType<
       </View>
     );
   }
-
+  
+  /* @ts-ignore */
   return <View style={{ paddingVertical: 0 }}>{textFields}</View>;
 };
 
