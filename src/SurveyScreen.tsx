@@ -963,11 +963,6 @@ export default class SurveyScreen extends React.Component<
                     }}
                   >
                     {getImageIfAnyForPosition("inDescriptionBox")}
-                    <Pressable onPress={()=>console.log(question.image?.url)}>
-                      {/* <View style={styles.imageBox}>
-                        <Image style={styles.test} source={{uri: question.image?.url}}/>
-                      </View> */}
-                    </Pressable>
                     {question.description && (
                       <Text
                         testID="questionDescription"
@@ -1062,6 +1057,7 @@ export default class SurveyScreen extends React.Component<
             paddingBottom: 20,
           }}
         >
+          {/* Temporarily removed because the participant is unable to proceed to the next Question after going back */}
           {/* <Button 
             disabled={backButtonIsDisabled()}
             onPress={() => {this.goBack(questionId); console.log(questionId)}}
@@ -1149,22 +1145,13 @@ const styles = StyleSheet.create({
     backgroundColor: "#000",
   },
   imageContainer: {
-    // backgroundColor: "#000",
     height: 150,
     width: '100%',
     objectFit: 'contain',
     borderRadius: 12,
     marginTop: "2%",
-    // marginBottom: "2%"
   },
   imageBox: {
-    // width: '100%',
-    // height: 150,
-    // resizeMode: 'cover',
-    // aspectRatio: 1.5,
-    // borderRadius: 12,
-    // marginVertical: '2%',
-    // justifyContent: 'center',
-    // alignItems: 'center'
+    // Empty for now, use this to style image div
   }
 })
