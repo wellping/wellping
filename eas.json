@@ -9,7 +9,7 @@
       "distribution": "internal"
     },
     "production": {
-      "releaseChannel": "prod-v1-1-2",
+      "releaseChannel": "prod-v1-1-4",
       "env": {
         "YARN_ENABLE_IMMUTABLE_INSTALLS": "false"
       }
