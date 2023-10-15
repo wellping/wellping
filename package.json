@@ -7,7 +7,8 @@
     "start": "expo start",
     "android": "expo start --android",
     "ios": "expo start --ios",
-    "eject": "expo eject"
+    "eject": "expo eject",
+    "postinstall": "patch-package"
   },
   "dependencies": {
     "@expo-google-fonts/roboto": "^0.2.3",
@@ -37,6 +38,7 @@
     "firebase": "9.6.1",
     "js-yaml": "^3.14.0",
     "lodash": "^4.17.19",
+    "patch-package": "^8.0.0",
     "react": "18.2.0",
     "react-native": "0.72.4",
     "react-native-paper": "^5.10.3",
