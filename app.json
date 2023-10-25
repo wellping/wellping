@@ -8,7 +8,7 @@
       "ios",
       "android"
     ],
-    "version": "1.1.5",
+    "version": "1.1.9",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "notification": {
@@ -29,14 +29,14 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "app.wellping",
-      "buildNumber": "35",
+      "buildNumber": "39",
       "associatedDomains": [
         "applinks:wellping.github.io"
       ]
     },
     "android": {
       "package": "edu.stanford.ssnl.wellping",
-      "versionCode": 35,
+      "versionCode": 39,
       "icon": "./assets/icon.png",
       "adaptiveIcon": {
         "foregroundImage": "./assets/icon-android-foreground.png",
@@ -44,7 +44,6 @@
       },
       "permissions": [],
       "softwareKeyboardLayoutMode": "pan",
-      "useNextNotificationsApi": true,
       "intentFilters": [
         {
           "action": "VIEW",

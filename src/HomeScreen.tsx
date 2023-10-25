@@ -229,10 +229,10 @@ export default class HomeScreen extends React.Component<
 
     await setNotificationsAsync();
 
-    // Check if the current notification expires.
+    // Check if the current notification has expired.
     this.interval = setInterval(async () => {
       await this.checkIfPingHasExpiredAsync();
-    }, 30 * 1000);
+    }, 30 * 1000); 
     // Do this initially too.
     await this.checkIfPingHasExpiredAsync();
 
@@ -530,13 +530,15 @@ export default class HomeScreen extends React.Component<
 
     const ExtraView = allowsNotifications ? (
       <TouchableWithoutFeedback
+        style={{backgroundColor: 'orange'}}
         onLongPress={() => {
+          console.log('long pressed')
           if (__DEV__) {
             this.setState({ displayDebugView: true });
           }
         }}
       >
-        <View style={{ position: 'absolute', height: 20 }}>
+        <View style={{ position: 'absolute', height: 20 , backgroundColor: 'orange'}}>
           <HideKeyboardButtonAndWrapper>
             <View
               style={{
@@ -747,9 +749,9 @@ export default class HomeScreen extends React.Component<
     const DebugView: React.FunctionComponent = ({ 
       // children 
     }) => {
-      // if (!this.state.displayDebugView) {
-      //   return <></>;
-      // }
+      if (!this.state.displayDebugView) {
+        return <></>;
+      }
       return (
         <View style={{position: 'absolute', bottom: 0, width: '100%', height: '40%', backgroundColor: 'transparent'}}>
           <ScrollView
@@ -838,6 +840,13 @@ export default class HomeScreen extends React.Component<
                 await alertWithShareButtonContainingDebugInfoAsync(
                   getStudyEndDate(await getStudyInfoAsync()).toString(),
                 );
+              }}
+            />
+            <Button
+              color="green"
+              title="hide debug view"
+              onPress={() => {
+                this.setState({ displayDebugView: false });
               }}
             />
             <Button
@@ -1184,7 +1193,11 @@ export default class HomeScreen extends React.Component<
               marginHorizontal: 10,
               fontFamily: 'Roboto_700Bold',
               color: '#3a3a3a'
-            }}>Welcome to Well Ping!</Text>
+            }}
+              numberOfLines={2}
+              adjustsFontSizeToFit
+              // maxFontSizeMultiplier={2}
+            >Welcome to Well Ping!</Text>
             <Text
               style={{
                 marginTop: 10,
@@ -1213,27 +1226,27 @@ export default class HomeScreen extends React.Component<
       *   Survey information Card 
       */
       const renderItem = ({item}: {item: ItemData}) => {
-        return <Pressable onPress={async ()=>{}} style={[_styles.shadow, {marginTop: 20, width: width*.9, height: 272, backgroundColor: '#fffae2', alignItems: 'flex-start', justifyContent: 'space-around', padding: 10, paddingHorizontal: 20, borderRadius: 12}]}>
-          <View>
-            <Text style={{fontSize: 18, fontFamily: 'Roboto_700Bold', color: '#3a3a3a'}}>Study ID</Text>
-            <Text style={{fontFamily: 'Roboto_400Regular', fontSize: 16, color: '#3a3a3a'}}>{item.id}</Text>
+        return <Pressable onPress={async ()=>{}} style={[_styles.shadow, {marginTop: 20, width: width*.9, height: height*.2, backgroundColor: '#fffae2', alignItems: 'flex-start', justifyContent: 'space-around', padding: 10, paddingHorizontal: 20, borderRadius: 12}]}>
+          <View style={{paddingVertical: 10, width: '100%', height: 50, marginBottom: 10}}>
+            <Text numberOfLines={1} adjustsFontSizeToFit style={{fontSize: 18, fontFamily: 'Roboto_700Bold', color: '#3a3a3a', width: '50%'}}>Study ID</Text>
+            <Text adjustsFontSizeToFit style={{fontFamily: 'Roboto_400Regular', fontSize: 16, color: '#3a3a3a', width: '100%'}}>{item.id}</Text>
           </View>
-
-          <View>
+ 
+          {/* <View>
           <Text style={{fontSize: 18, fontFamily: 'Roboto_700Bold', color: '#3a3a3a'}}>URL</Text>
-          <Text numberOfLines={1} style={{fontSize: 16, fontFamily: 'Roboto_400Regular', color: '#4a4a4a'}}>{item.title}</Text>
+          <Text numberOfLines={1} adjustsFontSizeToFit style={{fontSize: 16, fontFamily: 'Roboto_400Regular', color: '#4a4a4a'}}>{item.title}</Text>
           <Text style={{fontSize: 18, fontFamily: 'Roboto_700Bold', color: '#3a3a3a'}}>E-mail</Text>
           <Text numberOfLines={1} style={{fontSize: 16, fontFamily: 'Roboto_400Regular', color: '#4a4a4a'}}>{item.contactEmail}</Text>
-          </View>
+          </View> */}
 
           <View style={{width: '100%', height: 50, backgroundColor: 'transparent', flexDirection: 'row'}}>
-            <View style={[_styles.center, {width: '50%', height: '100%', alignItems: 'flex-start'}]}>
-              <Text style={{fontSize: 18, fontFamily: 'Roboto_700Bold', color: '#3a3a3a'}}>Start date</Text>
-              <Text style={{fontFamily: 'Roboto_400Regular', color: "#4a4a4a"}}>{item.startDate.toLocaleDateString()}</Text>
+            <View style={[_styles.center, {width: '50%', height: '100%', alignItems: 'flex-start', paddingVertical: 10}]}>
+              <Text adjustsFontSizeToFit style={{fontSize: 18, fontFamily: 'Roboto_700Bold', color: '#3a3a3a', width: '70%'}}>Start date</Text>
+              <Text adjustsFontSizeToFit style={{fontFamily: 'Roboto_400Regular', color: "#4a4a4a"}}>{item.startDate.toLocaleDateString()}</Text>
             </View>
-            <View style={[_styles.center, {width: '50%', height: '100%', alignItems: 'flex-end'}]}>
-              <Text style={{fontSize: 18, fontFamily: 'Roboto_700Bold', color: '#3a3a3a'}}>End date</Text>
-              <Text style={{fontFamily: 'Roboto_400Regular', color: "#4a4a4a"}}>{item.endDate.toLocaleDateString()}</Text>
+            <View style={[_styles.center, {width: '50%', height: '100%', alignItems: 'flex-end', paddingVertical: 10}]}>
+              <Text adjustsFontSizeToFit style={{fontSize: 18, fontFamily: 'Roboto_700Bold', color: '#3a3a3a'}}>End date</Text>
+              <Text adjustsFontSizeToFit style={{fontFamily: 'Roboto_400Regular', color: "#4a4a4a"}}>{item.endDate.toLocaleDateString()}</Text>
             </View>
           </View>
 
@@ -1246,7 +1259,7 @@ export default class HomeScreen extends React.Component<
           {ExtraView} 
           {/* <DebugView /> */}
           <View style={{width: width, backgroundColor: 'white', alignItems: 'center', justifyContent: 'flex-start', paddingTop: 30, flexDirection: 'row'}}>
-            <Text style={{fontFamily: 'Roboto_700Bold', fontSize: 36,  width: '80%',  textAlign: 'left',  color: "#3a3a3a", paddingLeft: 20}}>
+            <Text numberOfLines={1} adjustsFontSizeToFit style={{fontFamily: 'Roboto_700Bold', fontSize: 36,  width: '80%',  textAlign: 'left',  color: "#3a3a3a", paddingLeft: 20}}>
               Your survey
             </Text>
             {this.props.showNavBar
@@ -1256,6 +1269,7 @@ export default class HomeScreen extends React.Component<
                   icon={()=><Feather name="settings" size={30} color="#3A3A3A" />}
                   onPress={this.props.navFn}/>}
           </View>
+
           <View style={{ width: '100%', height: height*.7, backgroundColor: 'white', alignItems: 'center'}}>
             {/* Survey Flatlist */}
             <FlatList
@@ -1264,8 +1278,12 @@ export default class HomeScreen extends React.Component<
               renderItem={renderItem}
               keyExtractor={item => item.id}
             />
+
+            {/* Long Press to activate Debug View */}
+            <Pressable onLongPress={()=>this.setState({ displayDebugView: true })} style={{position: 'absolute', bottom: 0, width: width, height: 100, backgroundColor: 'white'}}/>
           </View>
-          {/* <DebugView /> */}
+
+          <DebugView />
           {/* <DashboardComponent
             firebaseUser={firebaseUser}
             studyInfo={studyInfo}
@@ -1293,25 +1311,31 @@ export default class HomeScreen extends React.Component<
       return (
         <View style={[_styles.container, {justifyContent: 'center', backgroundColor: 'white'}]}>
           {/* Remove this back button when live */}
-          <Pressable onPress={()=>this.setState({ currentPing: null, currentNotificationTime: null })} style={{position: 'absolute', top: 20, backgroundColor: 'transparent', justifyContent: 'flex-start', alignItems: 'center', width: '100%', paddingLeft: 20, flexDirection: 'row'}}>
-            <AntDesign name="arrowleft" size={30} color="lightgray" />
-          </Pressable>
+          {/* <Pressable onPress={()=>this.setState({ currentPing: null, currentNotificationTime: null })} style={{position: 'absolute', top: 20, backgroundColor: 'transparent', justifyContent: 'flex-start', alignItems: 'center', width: '100%', paddingLeft: 20, flexDirection: 'row'}}>
+            <AntDesign name="arrowleft" size={30} color="green" />
+            <Text adjustsFontSizeToFit>remove me</Text>
+          </Pressable> */}
+
           <View style={{width: width, position: 'absolute', top: 0, alignItems: 'center'}}>
-            {ExtraView}
+            {/* {ExtraView} */}
           </View>
           {/* <DebugView>{streamButtons}</DebugView> */}
-          {/* <DebugView/> */}
+          <DebugView/>
           <View style={{height: height*.5, width: '100%', backgroundColor: 'transparent', justifyContent: 'space-around', alignItems: 'center'}}>
             <View style={{height: 120, width: 120, backgroundColor: 'rgba(0,0,0,0.0)'}}>
               <Image source={require('../assets/icon-android-foreground.png')} style={{height: 120, width: 120, backgroundColor: 'transparent', transform: [{scale: 2.5}]}}/>
             </View>
 
             <View style={{width: '100%', flexDirection: 'row', justifyContent: 'center'}}>
-              <Text style={{ width: '50%',fontFamily: 'Roboto_700Bold', fontSize: 36, marginVertical: 20, textAlign: "center", color: '#3a3a3a'}}>
+              <Text 
+                style={{ width: '50%',fontFamily: 'Roboto_700Bold', fontSize: 36, marginVertical: 20, textAlign: "center", color: '#3a3a3a'}}
+                numberOfLines={2}
+                adjustsFontSizeToFit
+              >
                 Welcome to Well Ping!
               </Text>
             </View>
-            <PaperButton
+            {/* <PaperButton
               buttonColor="white" 
               mode="elevated" 
               style={{borderRadius: 12, width: 294, alignItems: 'center', paddingVertical: 10, borderWidth: 0, borderColor: 'black'}}
@@ -1321,9 +1345,41 @@ export default class HomeScreen extends React.Component<
                 this.startSurveyAsync();
               }}
             >
+              <Text
+                // style={{width: '100%'}}
+                numberOfLines={2}
+                adjustsFontSizeToFit
+              >
               Click here to start the survey
-            </PaperButton>
+              </Text>
+            </PaperButton> */}
+            <Pressable 
+              onPress={() => {
+                this.startSurveyAsync();
+              }}
+              style={[_styles.center, {
+                width: '80%', 
+                height: 100, 
+                borderWidth: 0.5,
+                borderColor: 'lightgray',
+                borderRadius: 20,
+                paddingHorizontal: '5%',
+                paddingVertical: '5%',
+                backgroundColor: 'white'
+              }]}>
+
+              <Text
+                  style={{color: '#761A15', fontSize: 36, fontFamily: 'Roboto_500Medium'}}
+                  numberOfLines={1}
+                  adjustsFontSizeToFit
+                >
+                Click here to start the survey
+                </Text>
+            </Pressable>
+
           </View>
+          {/* Long Press to activate Debug View */}
+          <Pressable onLongPress={()=>this.setState({ displayDebugView: true })} style={{position: 'absolute', top: 0, right: 0, width: width/2, height: 100, backgroundColor: 'white'}}/>
           {/* <DashboardComponent
             firebaseUser={firebaseUser}
             studyInfo={studyInfo}
@@ -1344,16 +1400,18 @@ export default class HomeScreen extends React.Component<
             : <View style={_styles.container}>
               <View style={{height: height/8}}/>
               <BellImage/>
-              <Text style={[styles.onlyTextStyle, {fontSize: 30, fontFamily: 'Roboto_700Bold', color: '#3a3a3a'}]}>
-                Thank you for completing the survey for this ping!{"\n"}
-              </Text>
-              <Text style={{fontFamily: "Roboto_400Regular", fontSize: 20, textAlign: 'center', paddingHorizontal: 40, color: '#3a3a3a'}}>
+              <Pressable onLongPress={()=>console.log('long')}>
+                <Text numberOfLines={3} adjustsFontSizeToFit style={[styles.onlyTextStyle, {fontSize: 30, fontFamily: 'Roboto_700Bold', color: '#3a3a3a'}]}>
+                  Thank you for completing the survey for this ping!{"\n"}
+                </Text>
+              </Pressable>
+              <Text numberOfLines={2} adjustsFontSizeToFit style={{fontFamily: "Roboto_400Regular", fontSize: 20, textAlign: 'center', paddingHorizontal: 40, color: '#3a3a3a'}}>
                 Well Ping will send a notification for the next survey soon.{"\n"}
                 {/* Please close the app entirely */}
               </Text>
               {/* <View style={{height: height/8/2}}/> */}
               {/* <Text style={{fontSize: 25, fontFamily: 'Roboto_700Bold'}}>You may now exit the app</Text> */}
-              <Text style={{fontSize: 30, fontFamily: 'Roboto_700Bold', textAlign: 'center', paddingHorizontal: 20, color: '#3a3a3a'}}>Please close the app entirely</Text>
+              <Text numberOfLines={1} adjustsFontSizeToFit style={{fontSize: 30, fontFamily: 'Roboto_700Bold', textAlign: 'center', paddingHorizontal: 20, color: '#3a3a3a'}}>Please close the app entirely</Text>
               <Pressable 
                 onPress={()=>{
                   console.log('asdf', currentPing);
@@ -1365,9 +1423,12 @@ export default class HomeScreen extends React.Component<
                 firebaseUser={firebaseUser}
                 studyInfo={studyInfo}
               />
+
+              {/* Long Press to activate Debug View */}
+              <Pressable onLongPress={()=>this.setState({ displayDebugView: true })} style={{position: 'absolute', bottom: 0, width: width, height: 100, backgroundColor: 'white'}}/>
             </View>
           }
-          {/* <DebugView /> */}
+          <DebugView />
         </View>
       );
     }

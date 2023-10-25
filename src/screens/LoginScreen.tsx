@@ -311,14 +311,22 @@ export default class LoginScreen extends React.Component<
             <View style={{height: 120, width: 120, backgroundColor: 'rgba(0,0,0,0.0)', marginTop: Platform.OS == 'ios'? 50:0}}>
               <Image source={require('../../assets/icon-android-foreground.png')} style={{height: 120, width: 120, backgroundColor: 'transparent', transform: [{scale: 2.5}]}}/>
             </View>
-            <Text style={{ fontSize: 36, fontFamily: 'Roboto_700Bold', width: '70%', textAlign: "center", color: '#3a3a3a' }}>
+            <Text 
+              style={{ fontSize: 36, fontFamily: 'Roboto_700Bold', width: '70%', textAlign: "center", color: '#3a3a3a' }}
+              numberOfLines={2}
+              adjustsFontSizeToFit
+            >
               Welcome to Well Ping!
             </Text>
             <Pressable
               // onPress={()=>console.log('asdf', this.props.userInfo)}
               style={{width: '70%'}}
             >
-              <Text style={{ fontSize: 18, textAlign: 'left', fontFamily: 'Roboto_400Regular', color: '#3a3a3a'}}>
+              <Text 
+                style={{ fontSize: 18, textAlign: 'left', fontFamily: 'Roboto_400Regular', color: '#3a3a3a'}}
+                adjustsFontSizeToFit
+                numberOfLines={2}
+              >
                 Please enter your login code to get authenticated.
               </Text>
             </Pressable>
@@ -360,6 +368,8 @@ export default class LoginScreen extends React.Component<
               padding: 10,
               borderColor: "lightcoral",
               borderWidth: 1,
+              backgroundColor: 'white',
+              opacity: .8,
             }}
           >
             <Text style={{ fontWeight: "bold" }}>

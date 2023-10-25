@@ -4,6 +4,7 @@ import {
   View,
   Pressable,
   Alert,
+  Linking
 } from 'react-native'
 import {
   StudyInfo,
@@ -20,6 +21,7 @@ type AccountScreenProps = {
   navFn: () => void;
   showNavBar: boolean;
 }
+
 
 const AccountScreen = ({logout, studyInfo, userInfo, navFn, showNavBar} : AccountScreenProps) => {
   const alertContactUs = () => {
@@ -76,24 +78,24 @@ const AccountScreen = ({logout, studyInfo, userInfo, navFn, showNavBar} : Accoun
           {showNavBar
             ? <></>
             : <AntDesign style={{marginRight: 20}} name="arrowleft" size={32} color="#3a3a3a" />}
-          <Text style={[styles.medium, { marginBottom: 8, paddingTop: 10 }]}>Settings</Text>
+          <Text numberOfLines={1} adjustsFontSizeToFit style={[styles.medium, { marginBottom: 8, paddingTop: 10 , paddingRight: 10, maxHeight: 90}]}>Settings</Text>
         </Pressable>
 
         {/* What is Well Ping */}
         <View>
-          <Text style={[styles.bold, { marginBottom: 8 }]}>What is Well Ping?</Text>
-          <Text style={[styles.regular, {fontSize: 20, color: '#0F4EC7'}]}>Learn about the methodology</Text>
+          <Text numberOfLines={1} adjustsFontSizeToFit style={[styles.bold, { marginBottom: 8 }]}>What is Well Ping?</Text>
+          <Text onPress={()=> Linking.openURL('https://www.ssnl.stanford.edu/research')} numberOfLines={1} adjustsFontSizeToFit style={[styles.regular, {fontSize: 20, color: '#0F4EC7'}]}>Learn about the methodology</Text>
         </View>
 
         {/* Contact Us Section */}
         <View style={{backgroundColor: 'transparent', height: 100, justifyContent: 'space-around'}}>
-          <Text style={styles.bold}>Help</Text>
+          <Text adjustsFontSizeToFit style={[styles.bold, {maxHeight: 50}]}>Help</Text>
           <Pressable onPress={alertContactUs} style={{width: '100%', backgroundColor: 'transparent', flexDirection: 'row'}}>
-            <Text style={[styles.regular, {width: '85%'}]}>Contact us</Text>
+            <Text numberOfLines={1} adjustsFontSizeToFit style={[styles.regular, {width: '85%', maxHeight: 30}]}>Contact us</Text>
             <AntDesign name="right" size={20} color="#3a3a3a" />
           </Pressable>
           <Pressable onPress={alertContactUs} style={{width: '100%', backgroundColor: 'transparent', flexDirection: 'row'}}>
-            <Text style={[styles.regular, {width: '85%'}]}>Report an issue</Text>
+            <Text numberOfLines={1} adjustsFontSizeToFit style={[styles.regular, {width: '85%', maxHeight: 30}]}>Report an issue</Text>
             <AntDesign name="right" size={20} color="#3a3a3a" />
           </Pressable>
         </View>

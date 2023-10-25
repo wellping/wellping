@@ -915,25 +915,32 @@ export default class SurveyScreen extends React.Component<
         {/* Header Items */}
         <View style={{ flex: 0 }}>
           {/* Title */}
-          <Text
-            testID="questionTitle"
-            style={{
-              textAlign: "left",
-              fontSize: 26,
-              fontFamily: 'Roboto_700Bold',
-              color: '#3a3a3a'
-            }}
-          >
-            {this.replacePlaceholders(
-              question.question,
-              this.state,
-              question.defaultPlaceholderValues,
-            )}
-          </Text>
+          <ScrollView>
+            <Text
+              numberOfLines={4}
+              adjustsFontSizeToFit
+              testID="questionTitle"
+              style={{
+                textAlign: "left",
+                fontSize: 26,
+                fontFamily: 'Roboto_700Bold',
+                color: '#3a3a3a',
+                maxHeight: 100
+              }}
+            >
+              {this.replacePlaceholders(
+                question.question,
+                this.state,
+                question.defaultPlaceholderValues,
+              )}
+            </Text>
+          </ScrollView>
           {(question.description || question.image) && (
             <>
             {question.description
               ? <Text
+                  numberOfLines={1}
+                  adjustsFontSizeToFit
                   style={{
                     textAlign: "center",
                     color: "gray",
@@ -999,7 +1006,7 @@ export default class SurveyScreen extends React.Component<
             }}
           >
             {getImageIfAnyForPosition("left")}
-            <View style={{ flex: 1 , paddingTop: 20 }}>
+            <View style={{ flex: 1 , paddingTop: 20, overflow: 'hidden' }}>
               <QuestionScreen
                 /* https://stackoverflow.com/a/21750576/2603230 */
                 realQuestionId={realQuestionId}
@@ -1031,9 +1038,9 @@ export default class SurveyScreen extends React.Component<
           </View>
         </View>
 
-        {/* "Not interacted" button */}
+        {/* "Not interactions" button */}
         {question.extraCustomNextWithoutAnsweringButton && (
-          <Button disabled={this.isFormDisabled()}
+          <Pressable disabled={this.isFormDisabled()}
             onPress={async () => {
               // Clicking this button is equivalent to clicking "Next" without answering.
               await this.addAnswerToAnswersListAsync(question, {
@@ -1041,9 +1048,18 @@ export default class SurveyScreen extends React.Component<
               });
               this.onNextSelect();
             }}
+            style={[styles.center, {
+              width: width-40, // We use 40 to offset paddingHorizontal 20, which is doubled
+              height: height/20, 
+              backgroundColor: '#00b4d8',
+              borderRadius: 7,
+              paddingVertical: 5
+            }]}
             accessibilityLabel={question.extraCustomNextWithoutAnsweringButton}
-            title={question.extraCustomNextWithoutAnsweringButton}
-          />
+            // title={'question.extraCustomNextWithoutAnsweringButton'}
+          >
+            <Text adjustsFontSizeToFit style={{color: 'white', width: '100%', textAlign: 'center'}}>{question.extraCustomNextWithoutAnsweringButton}</Text>
+          </Pressable>
         )}
 
         {/* Participant Navigation Buttons (Proceed/Not answer) */}
@@ -1055,6 +1071,7 @@ export default class SurveyScreen extends React.Component<
             marginTop: Platform.OS === "ios" ? 10 : 20,
             flex: 0, 
             paddingBottom: 20,
+            maxWidth: width
           }}
         >
           {/* Temporarily removed because the participant is unable to proceed to the next Question after going back */}
@@ -1063,9 +1080,10 @@ export default class SurveyScreen extends React.Component<
             onPress={() => {this.goBack(questionId); console.log(questionId)}}
             accessibilityLabel="Previous question"
             title="Back"/> */}
-          <PaperButton disabled={this.isFormDisabled()}
+          {/* <PaperButton disabled={this.isFormDisabled()}
             mode="text"
-            labelStyle={{fontSize: 15, color: '#4F4F4F'}}
+            style={{maxWidth: width/2}}
+            labelStyle={{fontSize: 15, color: '#4F4F4F', maxHeight: 50}}
             onPress={async () => {
               await this.addAnswerToAnswersListAsync(question, {
                 preferNotToAnswer: true,
@@ -1079,9 +1097,85 @@ export default class SurveyScreen extends React.Component<
                 {text: 'Yes', onPress: () => this.onNextSelect()}
             ])
             }}
-          >Prefer not to answer</PaperButton>
+          >
+            <Text adjustsFontSizeToFit style={{maxHeight: 80}}>
+              Prefer not to answer
+            </Text>
+          </PaperButton> */}
+
+          <Pressable 
+            onPress={async () => {
+              await this.addAnswerToAnswersListAsync(question, {
+                preferNotToAnswer: true,
+              });
+              // this.onNextSelect();
+              Alert.alert("Are you sure?", 'Are you sure you want to skip this question?', [
+                {
+                  text: 'Cancel',
+                  style: 'cancel',
+                },
+                {text: 'Yes', onPress: () => this.onNextSelect()}
+              ])
+            }}
+            style={[styles.center, {
+              width: '50%', 
+              height: 80, 
+              borderColor: 'lightgray',
+              borderRadius: 20,
+              paddingHorizontal: '5%',
+              paddingVertical: '5%',
+              backgroundColor: 'white'
+            }]}>
+
+            <Text
+              style={{color: '#761A15', fontSize: 36, fontFamily: 'Roboto_500Medium'}}
+              numberOfLines={1}
+              adjustsFontSizeToFit
+              >
+              Prefer not to answer
+              </Text>
+          </Pressable>
+
+          <Pressable 
+            onPress={async () => {
+              if (answers[realQuestionId] == null) {
+                // The user clicks "Next" without answering.
+                await this.addAnswerToAnswersListAsync(question, {
+                  data: null,
+                });
+              } else {
+                if (
+                  this.dataValidationFunction &&
+                  !this.dataValidationFunction()
+                ) {
+                  return;
+                }
+              }
+              this.onNextSelect();
+            }}
+            disabled={nextButtonIsDisabled()}
+            style={[styles.center, {
+              width: '50%', 
+              height: 80, 
+              borderWidth: 0.5,
+              borderColor: 'lightgray',
+              borderRadius: 20,
+              paddingHorizontal: '5%',
+              paddingVertical: '5%',
+              backgroundColor: nextButtonIsDisabled()? 'darkgray' : '#4E8B44'
+            }]}>
+
+            <Text
+              style={{color: 'white', fontSize: 36, fontFamily: 'Roboto_500Medium', textAlign: 'center'}}
+              numberOfLines={1}
+              adjustsFontSizeToFit
+              >
+              Next <AntDesign name="arrowright" size={30} color="white" />
+              </Text>
+          </Pressable>
+
           
-          <PaperButton
+          {/* <PaperButton
             disabled={nextButtonIsDisabled()}
             icon={()=> <AntDesign name="arrowright" size={24} color="white" />}
             mode="contained"
@@ -1107,7 +1201,7 @@ export default class SurveyScreen extends React.Component<
             }}
           >
             Next
-          </PaperButton>
+          </PaperButton> */}
         </View>
         {__DEV__ && _DEBUG_CONFIGS().showCurrentStatesInSurveyScreen && (
           <ScrollView
@@ -1139,6 +1233,10 @@ export default class SurveyScreen extends React.Component<
 }
 
 const styles = StyleSheet.create({
+  center: {
+    justifyContent: 'center',
+    alignContent: 'center'
+  },
   image: {
     margin: 5,
     alignSelf: "center",
@@ -1147,7 +1245,7 @@ const styles = StyleSheet.create({
   imageContainer: {
     height: 150,
     width: '100%',
-    objectFit: 'contain',
+    objectFit: 'cover',
     borderRadius: 12,
     marginTop: "2%",
   },

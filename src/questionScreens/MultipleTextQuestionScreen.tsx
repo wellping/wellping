@@ -8,7 +8,7 @@ import {
 } from "@wellping/study-schemas/lib/types";
 import cloneDeep from "lodash/cloneDeep";
 import React from "react";
-import { View, Text, TextInput, Alert, Platform } from "react-native";
+import { View, Text, TextInput, Alert, Platform, ScrollView } from "react-native";
 
 import { getReusableChoicesIncludeErrorAsync } from "../helpers/studyFile";
 import { QuestionScreenProps } from "../helpers/types";
@@ -162,6 +162,7 @@ const MultipleTextQuestionScreen: React.ElementType<
           editable: !isDisabled,
           placeholder: question.placeholder,
           underlineColorAndroid: "transparent",
+          adjustsFontSizeToFit: true,
           style: {
             paddingVertical: Platform.OS === "android" ? 0 : 10,
             paddingHorizontal: Platform.OS === "android" ? 20 : 20,
@@ -268,7 +269,7 @@ const MultipleTextQuestionScreen: React.ElementType<
   }
   
   /* @ts-ignore */
-  return <View style={{ paddingVertical: 0 }}>{textFields}</View>;
+  return <ScrollView style={{ paddingVertical: 0}}>{textFields}</ScrollView>;
 };
 
 export default MultipleTextQuestionScreen;

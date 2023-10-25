@@ -382,9 +382,9 @@ class RootScreen extends React.Component<
       navFn=()=>{this.props.handleNav(0,'Home')},
       idx=0
     }) => 
-    <Pressable onPress={navFn} style={[styles.center, styles.navButton, {backgroundColor: 'white'}]}>
+    <Pressable onPress={navFn} style={[styles.center, styles.navButton, {backgroundColor: 'white', paddingHorizontal: '5%'}]}>
       {icon}
-      <Text style={{fontSize: 13, marginTop: 2, color: '#761A15', fontFamily: idx===this.props.tab? 'Roboto_700Bold':'Roboto_400Regular'}}>{path == 'Notification'? 'Notifications' : path}</Text>
+      <Text numberOfLines={1} adjustsFontSizeToFit style={{fontSize: 13, marginTop: 2, color: '#761A15', fontFamily: idx===this.props.tab? 'Roboto_700Bold':'Roboto_400Regular'}}>{path == 'Notification'? 'Notifications' : path}</Text>
     </Pressable>
 
     const BottomNavigationBar = () => <View style={{height: Platform.OS==='ios'? height*.1 : height*.1, width: width, backgroundColor: '#f8f9fa', flexDirection: 'row'}}>

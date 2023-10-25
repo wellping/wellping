@@ -45,7 +45,7 @@ export function ChoiceItem({ title, selected, onSelect, disabled }: ChoiceItemPr
       ]}
       accessibilityLabel={`select ${title}`}
     >
-      <Text>{title}</Text>
+      <Text adjustsFontSizeToFit>{title}</Text>
     </TouchableOpacity>
   );
 }
@@ -235,6 +235,8 @@ const ChoicesQuestionScreen: React.ElementType<ChoicesQuestionScreenProps> = ({
     <View style={{ paddingVertical: 5 }}>
       {answerType !== ChoicesAnswerType.YESNO && (
         <Text
+          numberOfLines={1}
+          adjustsFontSizeToFit
           style={{
             textAlign: "center",
             color: "gray",

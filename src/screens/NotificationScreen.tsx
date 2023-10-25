@@ -471,9 +471,9 @@ const NotificationScreen = ({streams, studyInfo, logout, userInfo, navFn}: Notif
       /* 
       * Custom stream input 
       */
-      // streamName: 'welcomeStream'
+      streamName: 'welcomeStream'
       // streamName: 'exampleStream'
-      streamName: 'exitStream'
+      // streamName: 'exitStream'
       // streamName: 'errorStream'
       // streamName: 'myStream'
     });
@@ -676,7 +676,7 @@ const NotificationScreen = ({streams, studyInfo, logout, userInfo, navFn}: Notif
             }]}>
 
             {/* Disclaimer / Title */}
-            <Text style={{width: '100%', paddingHorizontal: 50, textAlign: 'center', textAlignVertical: 'center', fontFamily: 'Roboto_700Bold', fontSize: 20, color: '#761A15', height: 100, marginTop: 20}}>LOCAL DEBUG SURVEY</Text>
+            <Text numberOfLines={1} adjustsFontSizeToFit style={{width: '100%', paddingHorizontal: 50, textAlign: 'center', textAlignVertical: 'center', fontFamily: 'Roboto_700Bold', fontSize: 20, color: '#761A15', height: 100, marginTop: 20}}>LOCAL DEBUG SURVEY</Text>
             <Pressable onPress={()=>{setCurrentPing(null); setCurrentNotificationTime(null); navFn()}} style={{position: 'absolute', top: 20, backgroundColor: 'transparent', justifyContent: 'flex-start', alignItems: 'center', width: '100%', paddingLeft: 20, flexDirection: 'row'}}>
               <AntDesign name="arrowleft" size={30} color="#3a3a3a" />
             </Pressable>
@@ -688,7 +688,7 @@ const NotificationScreen = ({streams, studyInfo, logout, userInfo, navFn}: Notif
               </View>
 
               <View style={{width: '100%', flexDirection: 'row', justifyContent: 'center'}}>
-                <Text style={{ width: '50%',fontFamily: 'Roboto_700Bold', fontSize: 36, marginVertical: 20, textAlign: "center", color: '#3a3a3a'}}>
+                <Text numberOfLines={2} adjustsFontSizeToFit style={{ width: '50%',fontFamily: 'Roboto_700Bold', fontSize: 36, marginVertical: 20, textAlign: "center", color: '#3a3a3a'}}>
                   Welcome to <Text style={{fontSize: 20, color: '#761A15'}}>{'{'}debugging{'}\n'}</Text>Well Ping!
                 </Text>
               </View>

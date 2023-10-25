@@ -36,7 +36,7 @@
         "welcomeStream": "Hello",
         "exitStream": "ImageFeel",
         "myStream": "Feel_Current",
-        "exampleStream": "ExampleStressor",
+        "exampleStream": "SU_Nom_None_Digital_Nom",
         "errorStream": "firstQuestion"
       },
       "streamsOrder": {
@@ -135,6 +135,25 @@
         }
       },
       "exampleStream": {
+        "SU_Nom_None_Digital_Nom": {
+          "id": "SU_Nom_None_Digital_Nom",
+          "type": "MultipleText",
+          "question": "Think back to your last interaction(s) with a Stanford undergraduate(s). Please nominate the student(s) you had interactions with via digital media (e.g., social media, calls, texts). (max 6)",
+          "extraCustomNextWithoutAnsweringButton": "No Interactions",
+          "placeholder": "Enter a name…",
+          "dropdownChoices": {
+            "choices": "NAMES",
+            "forceChoice": true
+          },
+          "max": 6,
+          "variableName": "TARGET_NAME",
+          "indexName": "INDEX",
+          "fallbackNext": {
+            "nextWithoutAnswering": "SU_Nom_None_Most_Meaningful",
+            "preferNotToAnswer": "SU_Nom_None_Most_Meaningful"
+          },
+          "next": "ExampleStressor"
+        },
         "ExampleStressor": {
           "id": "ExampleStressor",
           "type": "ChoicesWithSingleAnswer",
