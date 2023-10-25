@@ -528,224 +528,6 @@ export default class HomeScreen extends React.Component<
       return <LoadingScreen />;
     }
 
-    const ExtraView = allowsNotifications ? (
-      <TouchableWithoutFeedback
-        style={{backgroundColor: 'orange'}}
-        onLongPress={() => {
-          console.log('long pressed')
-          if (__DEV__) {
-            this.setState({ displayDebugView: true });
-          }
-        }}
-      >
-        <View style={{ position: 'absolute', height: 20 , backgroundColor: 'orange'}}>
-          <HideKeyboardButtonAndWrapper>
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "center",
-              }}
-            >
-              <TouchableOpacity
-                onPress={async () => {
-                  Alert.alert(
-                    "Well Ping",
-                    `Thank you for using Well Ping!`,
-                    [
-                      {
-                        text: "Send me a test notification!",
-                        onPress: async () => {
-                          await _sendTestNotificationAsync();
-                        },
-                      },
-                      {
-                        text: "What's my current data?",
-                        onPress: async () => {
-                          Alert.alert(
-                            "Data",
-                            ``,
-                            [
-                              {
-                                text: "View/Upload Data",
-                                onPress: async () => {
-                                  Alert.alert(
-                                    "View/Upload Data",
-                                    `Please select the type of data you want to view and/or upload.`,
-                                    [
-                                      {
-                                        text: "All Data",
-                                        onPress: async () => {
-                                          const allData =
-                                            await getAllDataAsync();
-                                          await alertWithShareButtonContainingDebugInfoAsync(
-                                            JSON.stringify(allData),
-                                            "All Data",
-                                            [
-                                              {
-                                                text: "Force Upload ALL Current Data",
-                                                onPress: async () => {
-                                                  await this._forceUploadAllDataAsync(
-                                                    {
-                                                      successTitle:
-                                                        "Data Uploaded Successfully!",
-                                                      errorTitle:
-                                                        "Error: Data Upload Error!",
-                                                    },
-                                                  );
-                                                },
-                                              },
-                                            ],
-                                          );
-                                        },
-                                      },
-                                      {
-                                        text: "Unuploaded Data",
-                                        onPress: async () => {
-                                          const unuploadedData =
-                                            await getUnuploadedDataAsync();
-                                          await alertWithShareButtonContainingDebugInfoAsync(
-                                            JSON.stringify(unuploadedData),
-                                            "Unuploaded Data",
-                                            [
-                                              {
-                                                text: "Upload Unuploaded Data",
-                                                onPress: async () => {
-                                                  await this._uploadUnuploadedDataAndRemoveFromThemIfSuccessfulAsync(
-                                                    {
-                                                      doAfterResponseAsync:
-                                                        async (response) => {
-                                                          await alertWithShareButtonContainingDebugInfoAsync(
-                                                            `Response: ${JSON.stringify(
-                                                              response,
-                                                            )}`,
-                                                            "Data Uploaded Successfully!",
-                                                          );
-                                                        },
-                                                      doAfterErrorAsync: async (
-                                                        error,
-                                                      ) => {
-                                                        await alertWithShareButtonContainingDebugInfoAsync(
-                                                          getNonCriticalProblemTextForUser(
-                                                            `Error: ${error}`,
-                                                          ),
-                                                          "Error: Data Upload Error!",
-                                                        );
-                                                      },
-                                                    },
-                                                  );
-                                                },
-                                              },
-                                            ],
-                                          );
-                                        },
-                                      },
-                                      {
-                                        text: "Cancel",
-                                        onPress: () => {},
-                                        style: "cancel",
-                                      },
-                                    ],
-                                    { cancelable: true, onDismiss: () => {} },
-                                  );
-                                },
-                              },
-                              {
-                                text: "Validate Data",
-                                onPress: async () => {
-                                  Alert.alert("TODO", "", [
-                                    {
-                                      text: "Cancel",
-                                      onPress: () => {},
-                                      style: "cancel",
-                                    },
-                                  ]);
-                                },
-                              },
-                              {
-                                text: "Cancel",
-                                onPress: () => {},
-                                style: "cancel",
-                              },
-                            ],
-                            { cancelable: true, onDismiss: () => {} },
-                          );
-                        },
-                      },
-                      {
-                        text: "OK",
-                        onPress: () => {},
-                        style: "cancel",
-                      },
-                    ],
-                    { cancelable: true, onDismiss: () => {} },
-                  );
-                }}
-              >
-                {this.state.uploadStatusSymbol.length > 1 ? (
-                  // If it is not a one-character symbol, there is an error.
-                  // We will hide the version code to show the error code.
-                  <Text style={{ color: "orange" }}>
-                    {this.state.uploadStatusSymbol}
-                  </Text>
-                ) : (
-                  <Text style={{ color: "lightgray" }}>
-                    {JS_VERSION_NUMBER}
-                    {getSymbolsForServerTypeUsed(studyInfo)}
-                    {isUsingFirebase(studyInfo) && firebaseUser === null
-                      ? HOME_SCREEN_DEBUG_VIEW_SYMBOLS.FIREBASE_AUTH
-                          .NOT_LOGGED_IN
-                      : HOME_SCREEN_DEBUG_VIEW_SYMBOLS.FIREBASE_AUTH.LOGGED_IN}
-                    {studyInfo.version && `(${studyInfo.version})`}
-                    {this.state.uploadStatusSymbol}
-                  </Text>
-                )}
-              </TouchableOpacity>
-              {studyInfo.contactEmail && (
-                <TouchableOpacity
-                  onPress={async () => {
-                    let user = await secureGetUserAsync();
-                    if (user === null) {
-                      user = {
-                        username: "UNKNOWN ERROR CANNOT GET USER",
-                        password: "N/A",
-                        loginDate: -1,
-                      };
-                    }
-
-                    const emailSubject = encodeURIComponent(
-                      `Questions about Well Ping study ${studyInfo.id}`,
-                    );
-                    const emailBody = encodeURIComponent(
-                      `Please enter your question here (please attach a screenshot if applicable):\n\n\n\n\n\n` +
-                        `====\n` +
-                        `User ID: ${user.username}\n` +
-                        `User Login Session ID: ${await getLoginSessionIDAsync(
-                          user,
-                        )}\n` +
-                        (await getUsefulDebugInfoAsync()),
-                    );
-                    const mailtoLink = `mailto:${studyInfo.contactEmail}?subject=${emailSubject}&body=${emailBody}`;
-                    Linking.openURL(mailtoLink);
-                  }}
-                >
-                  <Text style={{ color: "lightblue", marginLeft: 20 }}>
-                    Contact Staff
-                  </Text>
-                </TouchableOpacity>
-              )}
-            </View>
-          </HideKeyboardButtonAndWrapper>
-        </View>
-      </TouchableWithoutFeedback>
-    ) : (
-      <View>
-        <Text style={{ color: "red", fontWeight: "bold" }}>
-          If you'd like to receive reminders and updates on your participation,
-          please allow Well Ping to send you notifications.
-        </Text>
-      </View>
-    );
-
     const DebugView: React.FunctionComponent = ({ 
       // children 
     }) => {
@@ -1109,6 +891,228 @@ export default class HomeScreen extends React.Component<
       );
     };
 
+    const ExtraView = allowsNotifications ? (
+      <TouchableWithoutFeedback
+        style={{backgroundColor: 'orange'}}
+        onLongPress={() => {
+          console.log('long pressed')
+          if (studyInfo.id.includes("test"))
+          {
+            this.setState({ displayDebugView: true });
+          }
+        }}
+      >
+        <View>
+          <DebugView />
+          <HideKeyboardButtonAndWrapper>
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "center",
+              }}
+            >
+              <TouchableOpacity                
+                onPress={async () => {
+                  //Commenting this out for now. Can uncomment if needed
+                  /*Alert.alert(
+                    "Well Ping",
+                    `Thank you for using Well Ping!`,
+                    [
+                      {
+                        text: "Send me a test notification!",
+                        onPress: async () => {
+                          await _sendTestNotificationAsync();
+                        },
+                      },
+                      {
+                        text: "What's my current data?",
+                        onPress: async () => {
+                          Alert.alert(
+                            "Data",
+                            ``,
+                            [
+                              {
+                                text: "View/Upload Data",
+                                onPress: async () => {
+                                  Alert.alert(
+                                    "View/Upload Data",
+                                    `Please select the type of data you want to view and/or upload.`,
+                                    [
+                                      {
+                                        text: "All Data",
+                                        onPress: async () => {
+                                          const allData =
+                                            await getAllDataAsync();
+                                          await alertWithShareButtonContainingDebugInfoAsync(
+                                            JSON.stringify(allData),
+                                            "All Data",
+                                            [
+                                              {
+                                                text: "Force Upload ALL Current Data",
+                                                onPress: async () => {
+                                                  await this._forceUploadAllDataAsync(
+                                                    {
+                                                      successTitle:
+                                                        "Data Uploaded Successfully!",
+                                                      errorTitle:
+                                                        "Error: Data Upload Error!",
+                                                    },
+                                                  );
+                                                },
+                                              },
+                                            ],
+                                          );
+                                        },
+                                      },
+                                      {
+                                        text: "Unuploaded Data",
+                                        onPress: async () => {
+                                          const unuploadedData =
+                                            await getUnuploadedDataAsync();
+                                          await alertWithShareButtonContainingDebugInfoAsync(
+                                            JSON.stringify(unuploadedData),
+                                            "Unuploaded Data",
+                                            [
+                                              {
+                                                text: "Upload Unuploaded Data",
+                                                onPress: async () => {
+                                                  await this._uploadUnuploadedDataAndRemoveFromThemIfSuccessfulAsync(
+                                                    {
+                                                      doAfterResponseAsync:
+                                                        async (response) => {
+                                                          await alertWithShareButtonContainingDebugInfoAsync(
+                                                            `Response: ${JSON.stringify(
+                                                              response,
+                                                            )}`,
+                                                            "Data Uploaded Successfully!",
+                                                          );
+                                                        },
+                                                      doAfterErrorAsync: async (
+                                                        error,
+                                                      ) => {
+                                                        await alertWithShareButtonContainingDebugInfoAsync(
+                                                          getNonCriticalProblemTextForUser(
+                                                            `Error: ${error}`,
+                                                          ),
+                                                          "Error: Data Upload Error!",
+                                                        );
+                                                      },
+                                                    },
+                                                  );
+                                                },
+                                              },
+                                            ],
+                                          );
+                                        },
+                                      },
+                                      {
+                                        text: "Cancel",
+                                        onPress: () => {},
+                                        style: "cancel",
+                                      },
+                                    ],
+                                    { cancelable: true, onDismiss: () => {} },
+                                  );
+                                },
+                              },
+                              {
+                                text: "Validate Data",
+                                onPress: async () => {
+                                  Alert.alert("TODO", "", [
+                                    {
+                                      text: "Cancel",
+                                      onPress: () => {},
+                                      style: "cancel",
+                                    },
+                                  ]);
+                                },
+                              },
+                              {
+                                text: "Cancel",
+                                onPress: () => {},
+                                style: "cancel",
+                              },
+                            ],
+                            { cancelable: true, onDismiss: () => {} },
+                          );
+                        },
+                      },
+                      {
+                        text: "OK",
+                        onPress: () => {},
+                        style: "cancel",
+                      },
+                    ],
+                    { cancelable: true, onDismiss: () => {} },
+                  );*/
+                }}
+
+              >
+                {this.state.uploadStatusSymbol.length > 1 ? (
+                  // If it is not a one-character symbol, there is an error.
+                  // We will hide the version code to show the error code.
+                  <Text style={{ color: "orange" }}>
+                    {this.state.uploadStatusSymbol}
+                  </Text>
+                ) : (
+                  <Text style={{ color: "lightgray" }}>
+                    {JS_VERSION_NUMBER}
+                    {getSymbolsForServerTypeUsed(studyInfo)}
+                    {isUsingFirebase(studyInfo) && firebaseUser === null
+                      ? HOME_SCREEN_DEBUG_VIEW_SYMBOLS.FIREBASE_AUTH
+                          .NOT_LOGGED_IN
+                      : HOME_SCREEN_DEBUG_VIEW_SYMBOLS.FIREBASE_AUTH.LOGGED_IN}
+                    {studyInfo.version && `(${studyInfo.version})`}
+                    {this.state.uploadStatusSymbol}
+                  </Text>
+                )}
+              </TouchableOpacity>
+              {studyInfo.contactEmail && (
+                <TouchableOpacity
+                  onPress={async () => {
+                    let user = await secureGetUserAsync();
+                    if (user === null) {
+                      user = {
+                        username: "UNKNOWN ERROR CANNOT GET USER",
+                        password: "N/A",
+                        loginDate: -1,
+                      };
+                    }
+
+                    const emailSubject = encodeURIComponent(
+                      `Questions about Well Ping study ${studyInfo.id}`,
+                    );
+                    const emailBody = encodeURIComponent(
+                      `Please enter your question here (please attach a screenshot if applicable):\n\n\n\n\n\n` +
+                        `====\n` +
+                        `User ID: ${user.username}\n` +
+                        `User Login Session ID: ${await getLoginSessionIDAsync(
+                          user,
+                        )}\n` +
+                        (await getUsefulDebugInfoAsync()),
+                    );
+                    const mailtoLink = `mailto:${studyInfo.contactEmail}?subject=${emailSubject}&body=${emailBody}`;
+                    Linking.openURL(mailtoLink);
+                  }}
+                >
+                  <Text style={{ color: "lightblue", marginLeft: 20 }}>
+                    Contact Staff
+                  </Text>
+                </TouchableOpacity>
+              )}
+            </View>
+          </HideKeyboardButtonAndWrapper>
+        </View>
+      </TouchableWithoutFeedback>
+    ) : (
+      <View>
+        <Text style={{ color: "red", fontWeight: "bold" }}>
+          If you'd like to receive reminders and updates on your participation,
+          please allow Well Ping to send you notifications.
+        </Text>
+      </View>
+    );
+
     // Display Study is no longer active?
     if (currentNotificationTime === null) {
       // We include `> endDate` and `< startDate` inside
@@ -1119,7 +1123,7 @@ export default class HomeScreen extends React.Component<
       if (new Date() > getStudyEndDate(studyInfo)) {
         return (
           <View style={{ height: "100%" }}>
-            {/* {ExtraView} */}
+            {ExtraView}
             {/* <DebugView/> */}
             <View style={{ marginHorizontal: 20 }}>
               <Text style={styles.onlyTextStyle}>
@@ -1185,7 +1189,6 @@ export default class HomeScreen extends React.Component<
         return (
           <View style={{ height: "100%" }}>
             {ExtraView}
-            <DebugView />
             <Text style={{
               textAlign: "center",
               marginTop: 30,
@@ -1310,17 +1313,13 @@ export default class HomeScreen extends React.Component<
 
       return (
         <View style={[_styles.container, {justifyContent: 'center', backgroundColor: 'white'}]}>
+          {ExtraView}
           {/* Remove this back button when live */}
           {/* <Pressable onPress={()=>this.setState({ currentPing: null, currentNotificationTime: null })} style={{position: 'absolute', top: 20, backgroundColor: 'transparent', justifyContent: 'flex-start', alignItems: 'center', width: '100%', paddingLeft: 20, flexDirection: 'row'}}>
             <AntDesign name="arrowleft" size={30} color="green" />
             <Text adjustsFontSizeToFit>remove me</Text>
           </Pressable> */}
 
-          <View style={{width: width, position: 'absolute', top: 0, alignItems: 'center'}}>
-            {/* {ExtraView} */}
-          </View>
-          {/* <DebugView>{streamButtons}</DebugView> */}
-          <DebugView/>
           <View style={{height: height*.5, width: '100%', backgroundColor: 'transparent', justifyContent: 'space-around', alignItems: 'center'}}>
             <View style={{height: 120, width: 120, backgroundColor: 'rgba(0,0,0,0.0)'}}>
               <Image source={require('../assets/icon-android-foreground.png')} style={{height: 120, width: 120, backgroundColor: 'transparent', transform: [{scale: 2.5}]}}/>
@@ -1412,6 +1411,7 @@ export default class HomeScreen extends React.Component<
               {/* <View style={{height: height/8/2}}/> */}
               {/* <Text style={{fontSize: 25, fontFamily: 'Roboto_700Bold'}}>You may now exit the app</Text> */}
               <Text numberOfLines={1} adjustsFontSizeToFit style={{fontSize: 30, fontFamily: 'Roboto_700Bold', textAlign: 'center', paddingHorizontal: 20, color: '#3a3a3a'}}>Please close the app entirely</Text>
+              {/*
               <Pressable 
                 onPress={()=>{
                   console.log('asdf', currentPing);
@@ -1419,6 +1419,7 @@ export default class HomeScreen extends React.Component<
                 }}>
                 <Text style={{fontSize: 25, fontFamily: 'Roboto_700Bold', color: 'white', marginTop: 20, textAlign: 'center'}}>{'(Development ONLY)\n'}Return to Home</Text>
               </Pressable>
+              */}
               <DashboardComponent
                 firebaseUser={firebaseUser}
                 studyInfo={studyInfo}
@@ -1544,7 +1545,8 @@ export default class HomeScreen extends React.Component<
                 this.setState({ afterFinishingPing_isUploading: false });
 
                 // This method implements LOGOUT when the last 5 consecutve answers are "prefer not to answer"
-                await shouldRemoveFutureNotifications()
+                // We have removed this feature
+                //await shouldRemoveFutureNotifications()
               },
             });
           }}

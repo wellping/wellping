@@ -120,19 +120,22 @@ export async function setNotificationsAsync() {
   const notificationTimes: NotificationDateWithExpirationDate[] = [];
 
   const currentlySetNotifications = (await getNotificationTimesAsync()) || [];
-  for (const currentlySetNotificationTimeInfo of currentlySetNotifications) {
-    const currentlySetNotificationTime =
-      currentlySetNotificationTimeInfo.notificationDate;
-    if (isSameDay(currentlySetNotificationTime, startDate)) {
-      notificationTimes.push(currentlySetNotificationTimeInfo);
-    } else if (currentlySetNotificationTime > startDate) {
-      break;
+  if (!__DEV__)
+  {
+    for (const currentlySetNotificationTimeInfo of currentlySetNotifications) {
+      const currentlySetNotificationTime =
+        currentlySetNotificationTimeInfo.notificationDate;
+      if (isSameDay(currentlySetNotificationTime, startDate)) {
+        notificationTimes.push(currentlySetNotificationTimeInfo);
+      } else if (currentlySetNotificationTime > startDate) {
+        break;
+      }
     }
   }
 
   for (
     let date =
-      currentlySetNotifications.length === 0
+      notificationTimes.length === 0
         ? startDate
         : addDays(startDate, 1);
     date < setNotificationsUntil;
