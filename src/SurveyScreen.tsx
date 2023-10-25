@@ -1156,22 +1156,25 @@ export default class SurveyScreen extends React.Component<
             disabled={nextButtonIsDisabled()}
             style={[styles.center, {
               width: '50%', 
-              height: 80, 
+              height: 60, 
               borderWidth: 0.5,
               borderColor: 'lightgray',
               borderRadius: 20,
               paddingHorizontal: '5%',
-              paddingVertical: '5%',
-              backgroundColor: nextButtonIsDisabled()? 'darkgray' : '#4E8B44'
+              paddingVertical: '0%',
+              backgroundColor: nextButtonIsDisabled()? 'darkgray' : '#4E8B44',
+              flexDirection: 'row',
+              alignItems: 'center'
             }]}>
 
             <Text
-              style={{color: 'white', fontSize: 36, fontFamily: 'Roboto_500Medium', textAlign: 'center'}}
+              style={{color: 'white', fontSize: 20, maxHeight: 50, fontFamily: 'Roboto_500Medium', marginRight: '5%'}}
               numberOfLines={1}
               adjustsFontSizeToFit
               >
-              Next <AntDesign name="arrowright" size={30} color="white" />
-              </Text>
+              Next 
+            </Text>
+            <AntDesign name="arrowright" size={20} color="white" />
           </Pressable>
 
           
