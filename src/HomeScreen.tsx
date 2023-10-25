@@ -894,7 +894,7 @@ export default class HomeScreen extends React.Component<
           }
         }}
       >
-        <View>
+        <View style = {{marginTop: Platform.OS === "ios" ? 10 : 0,}}>
           <DebugView />
           <HideKeyboardButtonAndWrapper>
             <View

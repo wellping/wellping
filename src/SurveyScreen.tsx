@@ -901,22 +901,22 @@ export default class SurveyScreen extends React.Component<
         var imageHeight = height / scaleFactor;
 
 
-        imageHeight = Math.min(imageHeight, maxHeight);        
+        imageHeight = Math.min(imageHeight, maxHeight); 
+        
+        screenWidth = imageHeight / height * width;
         
         this.setState({imageWidth: screenWidth, imageHeight: imageHeight});
       })
     }
 
     const screenHeight = Dimensions.get('window').height;
-
+    
     return (
       <View
         testID="mainSurveyScreenView"
         style={{
           paddingHorizontal: 20,
-          //marginTop: 0,
-          //marginBottom: 10,
-          // flex: 1,
+          marginTop: 5,
           height: '100%',
           // We use `opacity` so that `QuestionScreen` still loads and are able
           // to call `loadingCompleted` and set `isInTransition`.
@@ -936,122 +936,115 @@ export default class SurveyScreen extends React.Component<
         
 
         {/* Question Screen */}
-        <View
-          style={{
-            // Change '-1' to `1` if we always want the "Next" button to be on the bottom.
-            flex: 1,
-          }}
-        >
-                <View
-                  style={{
-                    flexDirection: "row",
-                    flex: -1,
-                  }}
-                >
-                {getImageIfAnyForPosition("left")}
-                <View style={{ flex: 1 , paddingTop: 0 }}>
-                <View style={{ flex: 0,
-                    height: 100, }}>
-                {/* Title */}
-                <Text
-                  adjustsFontSizeToFit
-                  numberOfLines={8}
-                  testID="questionTitle"
-                  style={{
-                    textAlign: "left",
-                    fontSize: 26,
-                    fontFamily: 'Roboto_700Bold',
-                    color: '#3a3a3a',
-                  }}
-                >
-                  {this.replacePlaceholders(
-                    question.question,
-                    this.state,
-                    question.defaultPlaceholderValues,
-                  )}
-                </Text>
-                {(question.description || question.image) && (
-                  <>
-                  {question.description
-                    ? <Text
-                        numberOfLines={1}
-                        adjustsFontSizeToFit
-                        style={{
-                          textAlign: "center",
-                          color: "gray",
-                          fontSize: 13,
-                          marginTop: 5,
-                          marginBottom: 2,
-                        }}
-                      >
-                        You may need to scroll to see the full description.
-                      </Text> : <></>}
+          {/*getImageIfAnyForPosition("left") // This needs to be fixed*/}
+        <View style={{ flex: 1, paddingTop: 5, paddingBottom: 20}}>
+          <View style={{ height: 110, justifyContent: 'center', alignItems: 'center'}}>
+            <Text
+              adjustsFontSizeToFit
+              numberOfLines={4}
+              testID="questionTitle"
+              style={{
+                width: width - 20,
+                textAlign: "center",
+                fontSize: 26,
+                fontFamily: 'Roboto_700Bold',
+                color: '#3a3a3a',
+                maxHeight: 100,
+              }}
+            >
+              {this.replacePlaceholders(
+                question.question,
+                this.state,
+                question.defaultPlaceholderValues,
+              )}
+            </Text>
+          </View>
+          <View style={{ height: 5, width: width*0.9, backgroundColor: '#8C1515'}}></View>
+          <View>
+            {(question.description || question.image) && (
+                <>
+                {question.description
+                  ? <Text
+                      numberOfLines={1}
+                      adjustsFontSizeToFit
+                      style={{ 
+                        flex: 0, 
+                        textAlign: "center",
+                        color: "gray",
+                        fontSize: 13,
+                        marginTop: 5,
+                        marginBottom: 2,
+                      }}
+                    >
+                      You may need to scroll to see the full description.
+                    </Text> : <></>}
 
-                  {question.description || question.image
-                    ? <ScrollView
+              {question.description || question.image
+                ? <ScrollView
+                    style={{
+                      marginBottom: 5,
+                      //This is hacky, but the best I got for now
+                      maxHeight: screenHeight - 450,
+                      //height: 500,
+                    }}
+                  >
+                    {question.image
+                      ? <View>
+                          <Image style={[styles.imageContainer, {height: this.state.imageHeight, width: this.state.imageWidth}]} source={{uri: question.image?.url}}/>                  
+                        </View>
+                      :<></>
+                    }
+                    {/*getImageIfAnyForPosition("inDescriptionBox")*/}
+                    {question.description && (
+                      <Text
+                        testID="questionDescription"
                         style={{
-                          marginBottom: 5,
-                          //This is hacky, but the best I got for nwo
-                          maxHeight: screenHeight - 350
+                          textAlign: "left",
+                          padding: 5,
                         }}
                       >
-                        {question.image
-                          ?<View style={styles.imageBox}>
-                              <Image style={[styles.imageContainer, {height: this.state.imageHeight, width: this.state.imageWidth}]} source={{uri: question.image?.url}}/>                  
-                            </View>
-                          :<></>
-                        }
-                        {/*getImageIfAnyForPosition("inDescriptionBox")*/}
-                        {question.description && (
-                          <Text
-                            testID="questionDescription"
-                            style={{
-                              textAlign: "left",
-                              padding: 5,
-                            }}
-                          >
-                            {this.replacePlaceholders(
-                              question.description,
-                              this.state,
-                              question.defaultPlaceholderValues,
-                            )}
-                          </Text>
+                        {this.replacePlaceholders(
+                          question.description,
+                          this.state,
+                          question.defaultPlaceholderValues,
                         )}
-                      </ScrollView>
-                    : <></>
-                  }
-                  </>
-                )}
-              </View>
-              
-              <QuestionScreen
-                /* https://stackoverflow.com/a/21750576/2603230 */
-                realQuestionId={realQuestionId}
-                key={question.id}
-                isDisabled={this.isFormDisabled()}
-                question={question}
-                loadingCompleted={() => {
-                  this.setState({ isInTransition: false });
-                }}
-                onDataChange={(data) => {
-                  this.addAnswerToAnswersListAsync(question, {
-                    data,
-                  });
-                }}
-                allAnswers={answers}
-                allQuestions={questions}
-                pipeInExtraMetaData={(input) =>
-                  this.replacePlaceholders(
-                    input,
-                    this.state,
-                    question.defaultPlaceholderValues,
-                  )
-                }
-                setDataValidationFunction={(func) => {
-                  this.dataValidationFunction = func;
-                }}
-              />
-            </View>
+                      </Text>
+                    )}
+                  </ScrollView>
+                : <></>
+              }
+              </>
+            )}
+          </View>
+          
+          <View style={{flex: 1}}>
+            <QuestionScreen
+              /* https://stackoverflow.com/a/21750576/2603230 */
+              realQuestionId={realQuestionId}
+              key={question.id}
+              isDisabled={this.isFormDisabled()}
+              question={question}
+              loadingCompleted={() => {
+                this.setState({ isInTransition: false });
+              }}
+              onDataChange={(data) => {
+                this.addAnswerToAnswersListAsync(question, {
+                  data,
+                });
+              }}
+              allAnswers={answers}
+              allQuestions={questions}
+              pipeInExtraMetaData={(input) =>
+                this.replacePlaceholders(
+                  input,
+                  this.state,
+                  question.defaultPlaceholderValues,
+                )
+              }
+              setDataValidationFunction={(func) => {
+                this.dataValidationFunction = func;
+              }}
+            />
           </View>
         </View>
 
@@ -1085,10 +1078,11 @@ export default class SurveyScreen extends React.Component<
             flexDirection: "row",
             alignItems: 'center',
             justifyContent: "space-between",
-            marginTop: Platform.OS === "ios" ? 10 : 20,
             flex: 0, 
-            paddingBottom: 10,
-            maxWidth: width
+            paddingVertical: 10,
+            maxWidth: width,
+            marginBottom: 20,
+            maxHeight: 80,
           }}
         >
           {/* Temporarily removed because the participant is unable to proceed to the next Question after going back */}
@@ -1138,12 +1132,13 @@ export default class SurveyScreen extends React.Component<
             }}
             style={[styles.center, {
               width: '50%', 
-              height: 80, 
+              height: 60, 
               borderColor: 'lightgray',
               borderRadius: 20,
               paddingHorizontal: '5%',
               paddingVertical: '5%',
-              backgroundColor: 'white'
+              backgroundColor: '#EEEEEE',
+              marginHorizontal: 5,
             }]}>
 
             <Text
@@ -1174,7 +1169,7 @@ export default class SurveyScreen extends React.Component<
             }}
             disabled={nextButtonIsDisabled()}
             style={[styles.center, {
-              width: '50%', 
+              width: '45%', 
               height: 60, 
               borderWidth: 0.5,
               borderColor: 'lightgray',
@@ -1183,7 +1178,8 @@ export default class SurveyScreen extends React.Component<
               paddingVertical: '0%',
               backgroundColor: nextButtonIsDisabled()? 'darkgray' : '#4E8B44',
               flexDirection: 'row',
-              alignItems: 'center'
+              alignItems: 'center',
+              marginHorizontal: 5,
             }]}>
 
             <Text

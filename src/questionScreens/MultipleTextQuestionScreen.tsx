@@ -268,7 +268,7 @@ const MultipleTextQuestionScreen: React.ElementType<
   }
   
   /* @ts-ignore */
-  return <ScrollView keyboardShouldPersistTaps = 'always' style={{ paddingBottom: 0}}>{textFields}<View style={{height: 200}}></View></ScrollView>;
+  return <ScrollView keyboardShouldPersistTaps = 'always' style={{ flex: 1, paddingBottom: 0}}>{textFields}<View style={{height: 150}}></View></ScrollView>;
 };
 
 export default MultipleTextQuestionScreen;

@@ -337,7 +337,6 @@ export default class LoginScreen extends React.Component<
               autoCapitalize="none"
               placeholder="Enter login code here..."
               textColor="black"
-              selectionColor="black"
               underlineColor="gray"
               activeUnderlineColor="gray"
               contentStyle={{backgroundColor: '#f5f5f5'}}
@@ -351,7 +350,7 @@ export default class LoginScreen extends React.Component<
             <PaperButton
               buttonColor="#761A15" 
               mode="contained" 
-              style={{borderRadius: 12, width: 294, alignItems: 'center', paddingVertical: 10}}
+              style={{borderRadius: 12, width: 294, paddingVertical: 10}}
               disabled={this.state.disableLoginButton}
               labelStyle={{fontSize: 18, fontFamily: 'Roboto_400Regular'}}
               onPress={this.loginFnAsync}
@@ -369,7 +368,7 @@ export default class LoginScreen extends React.Component<
               borderColor: "lightcoral",
               borderWidth: 1,
               backgroundColor: 'white',
-              opacity: .8,
+              opacity: .95,
             }}
           >
             <Text style={{ fontWeight: "bold" }}>

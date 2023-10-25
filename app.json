@@ -8,7 +8,7 @@
       "ios",
       "android"
     ],
-    "version": "1.1.11",
+    "version": "1.1.3",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "notification": {
@@ -29,14 +29,12 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "app.wellping",
-      "buildNumber": "40",
-      "associatedDomains": [
-        "applinks:wellping.github.io"
-      ]
+      "buildNumber": "33",
+      "associatedDomains": ["applinks:wellping.github.io"]
     },
     "android": {
       "package": "edu.stanford.ssnl.wellping",
-      "versionCode": 40,
+      "versionCode": 33,
       "icon": "./assets/icon.png",
       "adaptiveIcon": {
         "foregroundImage": "./assets/icon-android-foreground.png",
@@ -44,6 +42,7 @@
       },
       "permissions": [],
       "softwareKeyboardLayoutMode": "pan",
+      "useNextNotificationsApi": true,
       "intentFilters": [
         {
           "action": "VIEW",
@@ -61,14 +60,6 @@
           ]
         }
       ]
-    },
-    "experiments": {
-      "tsconfigPaths": true
-    },
-    "extra": {
-      "eas": {
-        "projectId": "76b2d2db-1171-4a8f-b9f0-29e359310452"
-      }
     }
   }
 }
