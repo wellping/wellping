@@ -23,7 +23,7 @@
     "@types/babel__core": "^7.20.2",
     "@wellping/study-schemas": "https://github.com/wellping/study-schemas",
     "date-fns": "^2.14.0",
-    "expo": "^49.0.9",
+    "expo": "^49.0.16",
     "expo-app-loading": "^2.1.1",
     "expo-constants": "~14.4.2",
     "expo-crypto": "~12.4.1",
