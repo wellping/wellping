@@ -298,9 +298,10 @@ class RootScreen extends React.Component<
     const { isLoading, userInfo, studyFileErrorText } = this.state;
     const Stack = createNativeStackNavigator<RootStackParamList>();
 
+    //<View style={{height: Platform.OS==='ios'? height*.9:height*.9-20, width: '100%', backgroundColor: 'white', alignItems: 'center', justifyContent: 'flex-start', paddingTop: Platform.OS === 'ios'? 50:0 }}>
     const AppStack = () => (
-      <View style={{height: Platform.OS==='ios'? height*.9:height*.9-20, width: '100%', backgroundColor: 'white', alignItems: 'center', justifyContent: 'flex-start', paddingTop: Platform.OS === 'ios'? 50:0 }}>
-        <View style={{height: '100%', width: '100%'}}>
+      <View style={{height: height-20, width: '100%', backgroundColor: 'white', alignItems: 'center', justifyContent: 'flex-start', paddingTop: Platform.OS === 'ios'? 20:0 }}>
+          <View style={{height: '100%', width: '100%'}}>
           <NavigationContainer ref={navRef}>
             <Stack.Navigator initialRouteName='Home'>
               <Stack.Screen name="Notification" options={{headerShown: false}}>

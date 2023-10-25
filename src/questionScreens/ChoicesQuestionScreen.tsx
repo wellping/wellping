@@ -298,7 +298,8 @@ const ChoicesQuestionScreen: React.ElementType<ChoicesQuestionScreenProps> = ({
           borderWidth: 0,
           borderColor: "lightgray",
           margin: 0,
-          padding: 0
+          padding: 0,
+          marginBottom: 120,
         }}
       />
     </View>

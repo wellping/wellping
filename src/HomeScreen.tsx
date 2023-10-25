@@ -232,7 +232,7 @@ export default class HomeScreen extends React.Component<
     // Check if the current notification has expired.
     this.interval = setInterval(async () => {
       await this.checkIfPingHasExpiredAsync();
-    }, 30 * 1000); 
+    }, 300 * 1000); 
     // Do this initially too.
     await this.checkIfPingHasExpiredAsync();
 
@@ -1413,7 +1413,7 @@ export default class HomeScreen extends React.Component<
 
     // Finally, display SurveyScreen
     return (
-      <View style={{ height: "100%" }}>
+      <View style={{height: '100%', backgroundColor: 'white'}}>
         {ExtraView}
         {/* <Pressable onPress={()=>console.log(JSON.stringify(streams))} style={{width: '100%', height: 50, backgroundColor: 'tan'}}>
           <Text>log to terminal</Text>

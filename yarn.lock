@@ -6925,6 +6925,11 @@ mz@^2.7.0:
     object-assign "^4.0.1"
     thenify-all "^1.0.0"
 
+nanoid@^2.1.0:
+  version "2.1.11"
+  resolved "https://registry.npmjs.org/nanoid/-/nanoid-2.1.11.tgz"
+  integrity sha512-s/snB+WGm6uwi0WjsZdaVcuf3KJXlfGl2LcxgwkEwJF0D/BWzVWAZW/XY4bFaiR7s0Jk3FPvlnepg1H1b1UwlA==
+
 nanoid@^3.1.23, nanoid@^3.3.6:
   version "3.3.6"
 
@@ -7559,7 +7564,7 @@ prompts@^2.0.1, prompts@^2.2.1, prompts@^2.3.2, prompts@^2.4.0:
     kleur "^3.0.3"
     sisteransi "^1.0.5"
 
-prop-types@*, prop-types@^15.7.2, prop-types@^15.8.1:
+prop-types@*, prop-types@^15.6.0, prop-types@^15.6.2, prop-types@^15.7.2, prop-types@^15.8.1:
   version "15.8.1"
   dependencies:
     loose-envify "^1.4.0"
@@ -7688,6 +7693,16 @@ react-devtools-core@^4.27.2:
     shell-quote "^1.6.1"
     ws "^7"
 
+"react-dom@^15.4.2 || ^16.0.0":
+  version "16.14.0"
+  resolved "https://registry.npmjs.org/react-dom/-/react-dom-16.14.0.tgz"
+  integrity sha512-1gCeQXDLoIqMgqD3IO2Ah9bnf0w9kzhwN5q4FGnHZ67hBm9yePzB5JJAIQCc8x3pFnNlwFq4RidZggNAAkzWWw==
+  dependencies:
+    loose-envify "^1.1.0"
+    object-assign "^4.1.1"
+    prop-types "^15.6.2"
+    scheduler "^0.19.1"
+
 react-freeze@^1.0.0:
   version "1.0.3"
 
@@ -7807,6 +7822,18 @@ react-native@0.72.6:
 react-refresh@^0.4.0:
   version "0.4.3"
 
+react-scale-text@^1.2.2:
+  version "1.2.2"
+  resolved "https://registry.npmjs.org/react-scale-text/-/react-scale-text-1.2.2.tgz"
+  integrity sha512-m78d/ZlQ7vUArV9MhF+JStlg2fJXkHfuRw1CMBj7B+II4/Dlin7hW8r4h2EsiBaz1joZS1B6lp3qgWbx0E6yPQ==
+  dependencies:
+    lodash "^4.17.4"
+    prop-types "^15.6.0"
+    react "^15.4.2 || ^16.0.0"
+    react-dom "^15.4.2 || ^16.0.0"
+    shortid "^2.2.8"
+    warning "^3.0.0"
+
 react-shallow-renderer@^16.13.1, react-shallow-renderer@^16.15.0:
   version "16.15.0"
   dependencies:
@@ -7820,6 +7847,15 @@ react-test-renderer@^17.0.2, react-test-renderer@~17.0.1:
     react-is "^17.0.2"
     react-shallow-renderer "^16.13.1"
     scheduler "^0.20.2"
+
+"react@^15.4.2 || ^16.0.0":
+  version "16.14.0"
+  resolved "https://registry.npmjs.org/react/-/react-16.14.0.tgz"
+  integrity sha512-0X2CImDkJGApiAlcf0ODKIneSwBPhqJawOa5wCtKbu7ZECrmS26NvtSILynQ66cgkT/RJ4LidJOc3bUESwmU8g==
+  dependencies:
+    loose-envify "^1.1.0"
+    object-assign "^4.1.1"
+    prop-types "^15.6.2"
 
 react@18.2.0:
   version "18.2.0"
@@ -8134,6 +8170,14 @@ sane@^4.0.3:
 sax@^1.2.4, sax@>=0.6.0:
   version "1.2.4"
 
+scheduler@^0.19.1:
+  version "0.19.1"
+  resolved "https://registry.npmjs.org/scheduler/-/scheduler-0.19.1.tgz"
+  integrity sha512-n/zwRWRYSUj0/3g/otKDRPMh6qv2SYMWNq85IEa8iZyAv8od9zDYpGSnpBEjNgcMNq6Scbu5KfIPxNF72R/2EA==
+  dependencies:
+    loose-envify "^1.1.0"
+    object-assign "^4.1.1"
+
 scheduler@^0.20.2:
   version "0.20.2"
   dependencies:
@@ -8278,6 +8322,13 @@ shebang-regex@^3.0.0:
 
 shell-quote@^1.6.1, shell-quote@^1.7.3:
   version "1.8.1"
+
+shortid@^2.2.8:
+  version "2.2.16"
+  resolved "https://registry.npmjs.org/shortid/-/shortid-2.2.16.tgz"
+  integrity sha512-Ugt+GIZqvGXCIItnsL+lvFJOiN7RYqlGy7QE41O3YC1xbNSeDGIRO7xg2JJXIAj1cAGnOeC1r7/T9pgrtQbv4g==
+  dependencies:
+    nanoid "^2.1.0"
 
 side-channel@^1.0.4:
   version "1.0.4"
@@ -9085,6 +9136,13 @@ walker@^1.0.7, walker@^1.0.8, walker@~1.0.5:
 
 warn-once@^0.1.0:
   version "0.1.1"
+
+warning@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.npmjs.org/warning/-/warning-3.0.0.tgz"
+  integrity sha512-jMBt6pUrKn5I+OGgtQ4YZLdhIeJmObddh6CsibPxyQ5yPZm1XExSyzC1LCNX7BzhxWgiHmizBWJTHJIjMjTQYQ==
+  dependencies:
+    loose-envify "^1.0.0"
 
 wcwidth@^1.0.1:
   version "1.0.1"

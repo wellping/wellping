@@ -148,7 +148,7 @@ const MultipleTextQuestionScreen: React.ElementType<
         itemsContainerStyle={{
           // borderRadius: 12,
           // height: 48,
-          maxHeight: 100,
+          maxHeight: 150,
           ...(!question.dropdownChoices?.alwaysShowChoices &&
             isInputEmpty[index] && { display: "none" }),
         }}
@@ -158,7 +158,6 @@ const MultipleTextQuestionScreen: React.ElementType<
           ref: (ref: TextInput) => {
             textFieldsRef.current[index] = ref;
           },
-          value: isDisabled ? textValues[index] : undefined,
           editable: !isDisabled,
           placeholder: question.placeholder,
           underlineColorAndroid: "transparent",
@@ -180,10 +179,10 @@ const MultipleTextQuestionScreen: React.ElementType<
               ...isInputEmpty,
               [index]: text.trim().length === 0,
             });
-
-            updateTextValue(text, index);
           },
-          onSubmitEditing: () => {
+          onSubmitEditing: (event) => {
+            updateTextValue(event.nativeEvent.text, index);
+
             focusOnNextIfNotLast();
           },
           onEndEditing: () => {
@@ -269,7 +268,7 @@ const MultipleTextQuestionScreen: React.ElementType<
   }
   
   /* @ts-ignore */
-  return <ScrollView style={{ paddingVertical: 0}}>{textFields}</ScrollView>;
+  return <ScrollView keyboardShouldPersistTaps = 'always' style={{ paddingBottom: 0}}>{textFields}<View style={{height: 200}}></View></ScrollView>;
 };
 
 export default MultipleTextQuestionScreen;

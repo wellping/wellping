@@ -163,6 +163,11 @@ export interface SurveyScreenState {
 
   questionsStack: CurrentQuestionData[];
   startingPoint: string| null;
+
+  // There is no freakin' way that this is the right way do this, but #$#!@ it
+  imageWidth: number;
+  imageHeight: number;
+  
 }
 
 export default class SurveyScreen extends React.Component<
@@ -881,13 +886,36 @@ export default class SurveyScreen extends React.Component<
       return false;
     };
 
+    if (question.image != null)
+    {
+      Image.getSize(question.image.url, (width, height) => {
+        // calculate image width and height 
+        var screenWidth = Dimensions.get('window').width * 0.8;
+
+        const maxHeight = 300;
+        const maxWidth = 10000;
+
+        screenWidth = Math.min(screenWidth, maxWidth);
+
+        const scaleFactor = width / screenWidth;
+        var imageHeight = height / scaleFactor;
+
+
+        imageHeight = Math.min(imageHeight, maxHeight);        
+        
+        this.setState({imageWidth: screenWidth, imageHeight: imageHeight});
+      })
+    }
+
+    const screenHeight = Dimensions.get('window').height;
+
     return (
       <View
         testID="mainSurveyScreenView"
         style={{
           paddingHorizontal: 20,
-          marginTop: 0,
-          marginBottom: 10,
+          //marginTop: 0,
+          //marginBottom: 10,
           // flex: 1,
           height: '100%',
           // We use `opacity` so that `QuestionScreen` still loads and are able
@@ -898,99 +926,14 @@ export default class SurveyScreen extends React.Component<
         }}
       >
         {/* Header */}
-        <Pressable onPress={()=>(console.log('question', JSON.stringify(question, null, 2)))} style={{width: '100%', height: 50, alignItems: 'center', flexDirection: 'row', justifyContent: 'space-between'}}>
-          {/* Put back arrow button here in the future ⬇️ */}
-          {/* <AntDesign style={{minWidth: '50%'}} name="arrowleft" size={30} color="black" /> */}
-          
-          {/* Optional TODO: Answered question counter */}
-          {/* <Text numberOfLines={1} style={{ maxWidth: '50%', fontSize: 15, textAlign: 'right', color: '#3A3A3A'}}>Answers:{Object.keys(answers).length+1}</Text> */}
-        </Pressable>
         {/* Slider */}
-        {true? // TODO: Add Slider conditional option later on 
+        {/*true? // TODO: Add Slider conditional option later on 
           <View style={{width: '100%', height: 30, flexDirection: 'row'}}>
-            <View style={{width: '100%', height: 5, backgroundColor: '#761A15'}}/>
-            {/* <View style={{width: '50%', height: 5, backgroundColor: '#D9D9D9'}}/> */}
-          </View>:<></>
+            <View style={{width: '100%', height: 5, backgroundColor: '#761A15'}}/>}
+          </View>:<></>*/
         }
         {/* Header Items */}
-        <View style={{ flex: 0 }}>
-          {/* Title */}
-          <ScrollView>
-            <Text
-              numberOfLines={4}
-              adjustsFontSizeToFit
-              testID="questionTitle"
-              style={{
-                textAlign: "left",
-                fontSize: 26,
-                fontFamily: 'Roboto_700Bold',
-                color: '#3a3a3a',
-                maxHeight: 100
-              }}
-            >
-              {this.replacePlaceholders(
-                question.question,
-                this.state,
-                question.defaultPlaceholderValues,
-              )}
-            </Text>
-          </ScrollView>
-          {(question.description || question.image) && (
-            <>
-            {question.description
-              ? <Text
-                  numberOfLines={1}
-                  adjustsFontSizeToFit
-                  style={{
-                    textAlign: "center",
-                    color: "gray",
-                    fontSize: 13,
-                    marginTop: 5,
-                    marginBottom: 2,
-                  }}
-                >
-                  You may need to scroll to see the full description.
-                </Text> : <></>}
-
-              {question.image
-                ?<View style={styles.imageBox}>
-                    <Image style={styles.imageContainer} source={{uri: question.image?.url}}/>                  
-                  </View>
-                :<></>
-              }
-
-              {question.description
-                ? <ScrollView
-                    style={{
-                      marginBottom: 5,
-                      maxHeight: 80,
-                      borderWidth: 1,
-                      borderColor: "lightgray",
-                      padding: '0.7%'
-                    }}
-                  >
-                    {getImageIfAnyForPosition("inDescriptionBox")}
-                    {question.description && (
-                      <Text
-                        testID="questionDescription"
-                        style={{
-                          textAlign: "left",
-                          padding: 5,
-                        }}
-                      >
-                        {this.replacePlaceholders(
-                          question.description,
-                          this.state,
-                          question.defaultPlaceholderValues,
-                        )}
-                      </Text>
-                    )}
-                  </ScrollView>
-                : <></>
-              }
-            </>
-          )}
-        </View>
+        
 
         {/* Question Screen */}
         <View
@@ -999,14 +942,88 @@ export default class SurveyScreen extends React.Component<
             flex: 1,
           }}
         >
-          <View
-            style={{
-              flexDirection: "row",
-              flex: -1,
-            }}
-          >
-            {getImageIfAnyForPosition("left")}
-            <View style={{ flex: 1 , paddingTop: 20, overflow: 'hidden' }}>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    flex: -1,
+                  }}
+                >
+                {getImageIfAnyForPosition("left")}
+                <View style={{ flex: 1 , paddingTop: 0 }}>
+                <View style={{ flex: 0,
+                    height: 100, }}>
+                {/* Title */}
+                <Text
+                  adjustsFontSizeToFit
+                  numberOfLines={8}
+                  testID="questionTitle"
+                  style={{
+                    textAlign: "left",
+                    fontSize: 26,
+                    fontFamily: 'Roboto_700Bold',
+                    color: '#3a3a3a',
+                  }}
+                >
+                  {this.replacePlaceholders(
+                    question.question,
+                    this.state,
+                    question.defaultPlaceholderValues,
+                  )}
+                </Text>
+                {(question.description || question.image) && (
+                  <>
+                  {question.description
+                    ? <Text
+                        numberOfLines={1}
+                        adjustsFontSizeToFit
+                        style={{
+                          textAlign: "center",
+                          color: "gray",
+                          fontSize: 13,
+                          marginTop: 5,
+                          marginBottom: 2,
+                        }}
+                      >
+                        You may need to scroll to see the full description.
+                      </Text> : <></>}
+
+                  {question.description || question.image
+                    ? <ScrollView
+                        style={{
+                          marginBottom: 5,
+                          //This is hacky, but the best I got for nwo
+                          maxHeight: screenHeight - 350
+                        }}
+                      >
+                        {question.image
+                          ?<View style={styles.imageBox}>
+                              <Image style={[styles.imageContainer, {height: this.state.imageHeight, width: this.state.imageWidth}]} source={{uri: question.image?.url}}/>                  
+                            </View>
+                          :<></>
+                        }
+                        {/*getImageIfAnyForPosition("inDescriptionBox")*/}
+                        {question.description && (
+                          <Text
+                            testID="questionDescription"
+                            style={{
+                              textAlign: "left",
+                              padding: 5,
+                            }}
+                          >
+                            {this.replacePlaceholders(
+                              question.description,
+                              this.state,
+                              question.defaultPlaceholderValues,
+                            )}
+                          </Text>
+                        )}
+                      </ScrollView>
+                    : <></>
+                  }
+                  </>
+                )}
+              </View>
+              
               <QuestionScreen
                 /* https://stackoverflow.com/a/21750576/2603230 */
                 realQuestionId={realQuestionId}
@@ -1070,7 +1087,7 @@ export default class SurveyScreen extends React.Component<
             justifyContent: "space-between",
             marginTop: Platform.OS === "ios" ? 10 : 20,
             flex: 0, 
-            paddingBottom: 20,
+            paddingBottom: 10,
             maxWidth: width
           }}
         >
@@ -1105,16 +1122,18 @@ export default class SurveyScreen extends React.Component<
 
           <Pressable 
             onPress={async () => {
-              await this.addAnswerToAnswersListAsync(question, {
-                preferNotToAnswer: true,
-              });
-              // this.onNextSelect();
               Alert.alert("Are you sure?", 'Are you sure you want to skip this question?', [
                 {
                   text: 'Cancel',
                   style: 'cancel',
                 },
-                {text: 'Yes', onPress: () => this.onNextSelect()}
+                {text: 'Yes', onPress: async () => {
+                  // Clicking this button is equivalent to clicking "Next" without answering.
+                  await this.addAnswerToAnswersListAsync(question, {
+                    data: null,
+                  });
+                  this.onNextSelect();
+                }}
               ])
             }}
             style={[styles.center, {
@@ -1246,9 +1265,8 @@ const styles = StyleSheet.create({
     backgroundColor: "#000",
   },
   imageContainer: {
-    height: 150,
-    width: '100%',
-    objectFit: 'cover',
+    alignSelf: "center",
+    objectFit: 'contain',
     borderRadius: 12,
     marginTop: "2%",
   },
