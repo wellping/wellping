@@ -1,0 +1,21 @@
+diff --git "a/node_modules/@firebase/auth/dist/rn/index.js" "b/node_modules/@firebase/auth/dist/rn/index.js"
+index 4d836c2..471b415 100644
+--- "a/node_modules/@firebase/auth/dist/rn/index.js"
++++ "b/node_modules/@firebase/auth/dist/rn/index.js"
+@@ -9,6 +9,7 @@ var tslib = require('tslib');
+ require('@firebase/util');
+ require('@firebase/component');
+ require('@firebase/logger');
++var AsyncStorage = require('../../../../@react-native-async-storage/async-storage');
+ 
+ /**
+  * @license
+@@ -124,7 +125,7 @@ function getReactNativePersistence(storage) {
+  *
+  * @public
+  */
+-var reactNativeLocalPersistence = getReactNativePersistence(reactNative.AsyncStorage);
++var reactNativeLocalPersistence = getReactNativePersistence(AsyncStorage);
+ function getAuth(app$1) {
+     if (app$1 === void 0) { app$1 = app.getApp(); }
+     var provider = app._getProvider(app$1, 'auth');

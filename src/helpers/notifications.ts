@@ -19,6 +19,7 @@ import {
   getNotificationTimesAsync,
   storeNotificationTimesAsync,
   NotificationDateWithExpirationDate,
+  clearNotificationTimesAsync,
 } from "./asyncStorage/notificationTimes";
 import { getThisWeekPingsAsync } from "./pings";
 import { secureGetUserAsync } from "./secureStore/user";
@@ -119,23 +120,26 @@ export async function setNotificationsAsync() {
   ]);
   const notificationTimes: NotificationDateWithExpirationDate[] = [];
 
-  const currentlySetNotifications = (await getNotificationTimesAsync()) || [];
-  if (!__DEV__)
+  if (__DEV__)
   {
-    for (const currentlySetNotificationTimeInfo of currentlySetNotifications) {
-      const currentlySetNotificationTime =
-        currentlySetNotificationTimeInfo.notificationDate;
-      if (isSameDay(currentlySetNotificationTime, startDate)) {
-        notificationTimes.push(currentlySetNotificationTimeInfo);
-      } else if (currentlySetNotificationTime > startDate) {
-        break;
-      }
+    //Force a refresh when in dev mode
+    await clearNotificationTimesAsync();
+  }
+
+  const currentlySetNotifications = (await getNotificationTimesAsync()) || [];
+  for (const currentlySetNotificationTimeInfo of currentlySetNotifications) {
+    const currentlySetNotificationTime =
+      currentlySetNotificationTimeInfo.notificationDate;
+    if (isSameDay(currentlySetNotificationTime, startDate)) {
+      notificationTimes.push(currentlySetNotificationTimeInfo);
+    } else if (currentlySetNotificationTime > startDate) {
+      break;
     }
   }
 
   for (
     let date =
-      notificationTimes.length === 0
+      currentlySetNotifications.length === 0
         ? startDate
         : addDays(startDate, 1);
     date < setNotificationsUntil;
