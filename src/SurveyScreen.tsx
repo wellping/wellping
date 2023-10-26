@@ -458,31 +458,47 @@ export default class SurveyScreen extends React.Component<
 
       // TODO: consider the implication of not providing `defaultPlaceholderValues` to `replacePlaceholders` here.
 
-      switch (bQ.condition.questionType) {
-        case QuestionType.MultipleText: {
-          const targetQuestionAnswer = answers[
-            this.replacePlaceholders(bQ.condition.questionId, prevState)
-          ] as MultipleTextAnswer;
-          if (targetQuestionAnswer && targetQuestionAnswer.data) {
-            if (
-              targetQuestionAnswer.data.value.length === bQ.condition.target
-            ) {
-              selectedBranchId = bQ.branchStartId.true;
-            }
-          }
-          break;
-        }
+      if (bQ.condition.questionId == "script")
+      {
+        console.log('return (' + bQ.condition.target as string + '): ' + new Function('return (' + bQ.condition.target as string + ')')());
 
-        case QuestionType.ChoicesWithSingleAnswer: {
-          const csaQuestionAnswer = answers[
-            this.replacePlaceholders(bQ.condition.questionId, prevState)
-          ] as ChoicesWithSingleAnswerAnswer;
-          if (csaQuestionAnswer && csaQuestionAnswer.data) {
-            if (csaQuestionAnswer.data?.value === bQ.condition.target) {
-              selectedBranchId = bQ.branchStartId.true;
+        if (new Function('return (' + bQ.condition.target as string + ')')())
+        {
+          selectedBranchId = bQ.branchStartId.true;
+        }
+        else
+        {
+          selectedBranchId = bQ.branchStartId.false;
+        }
+      }
+      else
+      {
+        switch (bQ.condition.questionType) {
+          case QuestionType.MultipleText: {
+            const targetQuestionAnswer = answers[
+              this.replacePlaceholders(bQ.condition.questionId, prevState)
+            ] as MultipleTextAnswer;
+            if (targetQuestionAnswer && targetQuestionAnswer.data) {
+              if (
+                targetQuestionAnswer.data.value.length === bQ.condition.target
+              ) {
+                selectedBranchId = bQ.branchStartId.true;
+              }
             }
+            break;
           }
-          break;
+
+          case QuestionType.ChoicesWithSingleAnswer: {
+            const csaQuestionAnswer = answers[
+              this.replacePlaceholders(bQ.condition.questionId, prevState)
+            ] as ChoicesWithSingleAnswerAnswer;
+            if (csaQuestionAnswer && csaQuestionAnswer.data) {
+              if (csaQuestionAnswer.data?.value === bQ.condition.target) {
+                selectedBranchId = bQ.branchStartId.true;
+              }
+            }
+            break;
+          }
         }
       }
 
