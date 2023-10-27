@@ -1097,7 +1097,7 @@ export default class SurveyScreen extends React.Component<
             flex: 0, 
             paddingVertical: 10,
             maxWidth: width,
-            marginBottom: 20,
+            marginBottom: 30,
             maxHeight: 80,
           }}
         >

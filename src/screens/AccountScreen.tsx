@@ -82,10 +82,10 @@ const AccountScreen = ({logout, studyInfo, userInfo, navFn, showNavBar} : Accoun
         </Pressable>
 
         {/* What is Well Ping */}
-        <View>
+        {/*<View>
           <Text numberOfLines={1} adjustsFontSizeToFit style={[styles.bold, { marginBottom: 8 }]}>What is Well Ping?</Text>
           <Text onPress={()=> Linking.openURL('https://www.ssnl.stanford.edu/research')} numberOfLines={1} adjustsFontSizeToFit style={[styles.regular, {fontSize: 20, color: '#0F4EC7'}]}>Learn about the methodology</Text>
-        </View>
+          </View>*/}
 
         {/* Contact Us Section */}
         <View style={{backgroundColor: 'transparent', height: 100, justifyContent: 'space-around'}}>
