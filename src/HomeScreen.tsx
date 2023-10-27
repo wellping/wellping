@@ -9,6 +9,7 @@ import { format, getDay } from "date-fns";
 import * as Linking from "expo-linking";
 import { Subscription } from "expo-modules-core";
 import * as Notifications from "expo-notifications";
+import Dialog from "react-native-dialog";
 import {
   onAuthStateChanged as firebaseOnAuthStateChanged,
   Unsubscribe as FirebaseUnsubscribe,
@@ -51,6 +52,7 @@ import {
   dequeueFuturePingIfAny,
   getFuturePingsQueue,
   initFuturePingQueueAsync,
+  enqueueToFuturePingQueue
 } from "./helpers/asyncStorage/futurePings";
 import {
   getNotificationTimesAsync,
@@ -149,6 +151,8 @@ type HomeScreenState = {
 
   // DEBUG
   displayDebugView: boolean;
+  displayAddFuturePing: boolean;
+  addFuturePingString: string
 }
 
 type ItemData = {
@@ -176,6 +180,7 @@ export default class HomeScreen extends React.Component<
       currentPing: null,
       isLoading: true,
       displayDebugView: false,
+      displayAddFuturePing: false,
       storedPingStateAsync: null,
       uploadStatusSymbol: HOME_SCREEN_DEBUG_VIEW_SYMBOLS.UPLOAD.INITIAL,
       firebaseUser: null,
@@ -354,7 +359,7 @@ export default class HomeScreen extends React.Component<
     const newPingNth = pingsList.length + 1;
 
     let newStreamName: StreamName;
-    if (todayPings.length >= studyInfo.pingsFrequency.length) {
+    if (!__DEV__ && todayPings.length >= studyInfo.pingsFrequency.length) {
       await alertWithShareButtonContainingDebugInfoAsync(
         getNonCriticalProblemTextForUser(
           `todayPings.length (${todayPings.length}) >= ${studyInfo.pingsFrequency.length}`,
@@ -370,7 +375,7 @@ export default class HomeScreen extends React.Component<
     } else {
       newStreamName = studyInfo.streamsOrder[todayWeekday][todayPings.length];
 
-      if (
+      if (__DEV__ || //Always check future streams if in DEV mode
         !(studyInfo.streamsNotReplacedByFollowupStream || []).includes(
           newStreamName,
         )
@@ -729,10 +734,50 @@ export default class HomeScreen extends React.Component<
               }}
             />
             <Button
+              color="orange"
+              title="addToFuturePingsQueue()"
+              onPress={async () => this.setState(({ 
+                displayAddFuturePing: true 
+                }))}
+            />
+            <Dialog.Container  visible={this.state.displayAddFuturePing}>
+              <Dialog.Title>Add future ping</Dialog.Title>
+              <Dialog.Description>
+                Enter the name of the stream you wish to see next.
+              </Dialog.Description>
+              <Dialog.Input onEndEditing={async (event) => {
+                const text = event.nativeEvent.text.trim();
+                for (var i = 0; i < 10; i++)
+                {
+                  await enqueueToFuturePingQueue({
+                    afterDate: new Date(),
+                    streamName: text,
+                  })
+                }
+                this.setState(({displayAddFuturePing: false}));
+              }}>                
+              </Dialog.Input>
+              <Dialog.Button label="Cancel" onPress={async () => this.setState(({ 
+                displayAddFuturePing: false 
+                }))}/>
+            </Dialog.Container>
+            <Button
               color="red"
               title="reset/initFuturePingQueueAsync()"
-              onPress={async () => {
-                await initFuturePingQueueAsync();
+              onPress={() => {
+                Alert.alert("Clear future ping list?", "Are you sure?", [
+                  {
+                    text: "Cancel",
+                    style: "cancel",
+                  },
+                  {
+                    text: "Yes",
+                    style: "destructive",
+                    onPress: async () => {
+                      await initFuturePingQueueAsync();
+                    },
+                  },
+                ]);
               }}
             />
             <Button
