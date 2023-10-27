@@ -373,7 +373,8 @@ export default class HomeScreen extends React.Component<
     ) {
       newStreamName = studyInfo.streamsForNthPings[`${newPingNth}`];
     } else {
-      newStreamName = studyInfo.streamsOrder[todayWeekday][todayPings.length];
+      var todayPingsCount = studyInfo.streamsOrder[todayWeekday].length;
+      newStreamName = studyInfo.streamsOrder[todayWeekday][todayPings.length % todayPingsCount];
 
       if (__DEV__ || //Always check future streams if in DEV mode
         !(studyInfo.streamsNotReplacedByFollowupStream || []).includes(
@@ -664,6 +665,22 @@ export default class HomeScreen extends React.Component<
                   JSON.stringify(currentNotificationTime?.toLocaleString()),
                 );
               }}
+            />
+            <Button
+              color="orange"
+              title="checkIfPingHasExpiredAsync()"
+              onPress={async () => {
+                  await this.checkIfPingHasExpiredAsync();
+              }}
+            />
+            <Button
+              color="red"
+              title="clear current ping"
+              onPress={()=>
+                {
+                this.setState({ currentPing: null, currentNotificationTime: null })            
+                this.checkIfPingHasExpiredAsync();
+                }}
             />
             <Button
               color="red"
