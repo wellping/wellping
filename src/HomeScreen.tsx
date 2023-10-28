@@ -16,6 +16,7 @@ import {
   User as FirebaseUser,
 } from "firebase/auth";
 import React from "react";
+import { getThisWeekPingsAsync } from "./helpers/pings";
 import {
   Button,
   Text,
@@ -137,6 +138,8 @@ type HomeScreenState = {
   uploadStatusSymbol: string;
   text: string | undefined;
 
+  pingsUntilBonus: number;
+
   /**
    * Only used for the upload process after a ping has been completed.
    */
@@ -152,7 +155,7 @@ type HomeScreenState = {
   // DEBUG
   displayDebugView: boolean;
   displayAddFuturePing: boolean;
-  addFuturePingString: string
+  addFuturePingString: string;
 }
 
 type ItemData = {
@@ -180,7 +183,9 @@ export default class HomeScreen extends React.Component<
       currentPing: null,
       isLoading: true,
       displayDebugView: false,
+      pingsUntilBonus: 0,
       displayAddFuturePing: false,
+      addFuturePingString: "",
       storedPingStateAsync: null,
       uploadStatusSymbol: HOME_SCREEN_DEBUG_VIEW_SYMBOLS.UPLOAD.INITIAL,
       firebaseUser: null,
@@ -207,6 +212,8 @@ export default class HomeScreen extends React.Component<
       // two pings or in a new ping. So we can reset `currentPing` state.
       this.setState({ currentPing: null });
     }
+
+    this.updatePingsUntilBonus(this.props.studyInfo);
 
     await clearSentNotificationsAsync();
   }
@@ -397,6 +404,8 @@ export default class HomeScreen extends React.Component<
 
     // So that the notification text ("n pings left") can be updated.
     await setNotificationsAsync();
+    
+    this.updatePingsUntilBonus(this.props.studyInfo);
   }
 
   async _uploadUnuploadedDataAndRemoveFromThemIfSuccessfulAsync({
@@ -456,6 +465,31 @@ export default class HomeScreen extends React.Component<
       currentPing: newPing,
       storedPingStateAsync: null,
     });
+  }
+
+  async updatePingsUntilBonus(studyInfo: StudyInfo)
+  {
+    const startedPingsThisWeek = await getThisWeekPingsAsync();
+    const numberOfPingsStartedThisWeek = startedPingsThisWeek.length;
+    const configNotificationContent = studyInfo.notificationContent;
+
+    if (configNotificationContent.bonus && configNotificationContent.bonus.numberOfCompletionEachWeek > 0)
+    {
+      var pingCount = configNotificationContent.bonus.numberOfCompletionEachWeek - numberOfPingsStartedThisWeek;
+      if (pingCount < 0)
+      {
+        pingCount = 0;
+      }
+      this.setState({
+        pingsUntilBonus: pingCount
+      });
+    }
+    else
+    {
+      this.setState({
+        pingsUntilBonus: -1
+      });
+    }
   }
 
   setUploadStatusSymbol = (symbol: string) => {
@@ -1283,11 +1317,21 @@ export default class HomeScreen extends React.Component<
       *   Survey information Card 
       */
       const renderItem = ({item}: {item: ItemData}) => {
-        return <Pressable onPress={async ()=>{}} style={[_styles.shadow, {marginTop: 20, width: width*.9, height: height*.2, backgroundColor: '#fffae2', alignItems: 'flex-start', justifyContent: 'space-around', padding: 10, paddingHorizontal: 20, borderRadius: 12}]}>
-          <View style={{paddingVertical: 10, width: '100%', height: 50, marginBottom: 10}}>
+        return <Pressable onPress={async ()=>{}} style={[_styles.shadow, {flex: 0, marginTop: 20, width: width*.9, backgroundColor: '#fffae2', alignItems: 'flex-start', justifyContent: 'space-around', padding: 10, paddingHorizontal: 20, borderRadius: 12}]}>
+          <View style={{width: '100%', marginBottom: 20}}> 
             <Text numberOfLines={1} adjustsFontSizeToFit style={{fontSize: 18, fontFamily: 'Roboto_700Bold', color: '#3a3a3a', width: '50%'}}>Study ID</Text>
             <Text adjustsFontSizeToFit style={{fontFamily: 'Roboto_400Regular', fontSize: 16, color: '#3a3a3a', width: '100%'}}>{item.id}</Text>
           </View>
+
+          {this.state.pingsUntilBonus >= 0 ?
+            <View style={{width: '100%', marginBottom: 20}}>
+              <Text style={{fontSize: 18, fontFamily: 'Roboto_700Bold', color: '#3a3a3a'}}>Bonus</Text>
+              <Text numberOfLines={2} style={{fontFamily: 'Roboto_400Regular', fontSize: 16, color: '#3a3a3a', width: '100%'}}>
+                {this.state.pingsUntilBonus == 0 ? "You have earned the weekly bonus!": "You are " + this.state.pingsUntilBonus + " ping" + (this.state.pingsUntilBonus > 1 ? "s" : "") + "  away from the weekly bonus!"}
+              </Text>
+            </View>
+            : <></>
+          }
  
           {/* <View>
           <Text style={{fontSize: 18, fontFamily: 'Roboto_700Bold', color: '#3a3a3a'}}>URL</Text>
@@ -1296,12 +1340,12 @@ export default class HomeScreen extends React.Component<
           <Text numberOfLines={1} style={{fontSize: 16, fontFamily: 'Roboto_400Regular', color: '#4a4a4a'}}>{item.contactEmail}</Text>
           </View> */}
 
-          <View style={{width: '100%', height: 50, backgroundColor: 'transparent', flexDirection: 'row'}}>
-            <View style={[_styles.center, {width: '50%', height: '100%', alignItems: 'flex-start', paddingVertical: 10}]}>
+          <View style={{width: '100%', backgroundColor: 'transparent', flexDirection: 'row'}}>
+            <View style={[_styles.center, {width: '50%', alignItems: 'flex-start', paddingVertical: 10}]}>
               <Text adjustsFontSizeToFit style={{fontSize: 18, fontFamily: 'Roboto_700Bold', color: '#3a3a3a', width: '70%'}}>Start date</Text>
               <Text adjustsFontSizeToFit style={{fontFamily: 'Roboto_400Regular', color: "#4a4a4a"}}>{item.startDate.toLocaleDateString()}</Text>
             </View>
-            <View style={[_styles.center, {width: '50%', height: '100%', alignItems: 'flex-end', paddingVertical: 10}]}>
+            <View style={[_styles.center, {width: '50%', alignItems: 'flex-end', paddingVertical: 10}]}>
               <Text adjustsFontSizeToFit style={{fontSize: 18, fontFamily: 'Roboto_700Bold', color: '#3a3a3a'}}>End date</Text>
               <Text adjustsFontSizeToFit style={{fontFamily: 'Roboto_400Regular', color: "#4a4a4a"}}>{item.endDate.toLocaleDateString()}</Text>
             </View>
@@ -1446,13 +1490,19 @@ export default class HomeScreen extends React.Component<
                     Thank you for completing the survey for this ping!{"\n"}
                   </Text>
                 </Pressable>
-                <Text numberOfLines={2} adjustsFontSizeToFit style={{fontFamily: "Roboto_400Regular", fontSize: 20, textAlign: 'center', paddingHorizontal: 40, color: '#3a3a3a'}}>
+                {this.state.pingsUntilBonus >= 0 ?
+                  <Text numberOfLines={2} style={{fontFamily: "Roboto_400Regular", fontSize: 18, textAlign: 'center', paddingHorizontal: 40, color: '#3a3a3a'}}>
+                    {this.state.pingsUntilBonus == 0 ? "You have earned the weekly bonus!": "You are " + this.state.pingsUntilBonus + " ping" + (this.state.pingsUntilBonus > 1 ? "s" : "") + "  away from the weekly bonus!"}
+                  </Text>
+                  : <></>
+                }
+                <Text numberOfLines={2} style={{fontFamily: "Roboto_400Regular", fontSize: 18, textAlign: 'center', paddingTop: 10, paddingHorizontal: 40, color: '#3a3a3a'}}>
                   Well Ping will send a notification for the next survey soon.{"\n"}
                   {/* Please close the app entirely */}
                 </Text>
                 {/* <View style={{height: height/8/2}}/> */}
                 {/* <Text style={{fontSize: 25, fontFamily: 'Roboto_700Bold'}}>You may now exit the app</Text> */}
-                <Text numberOfLines={1} adjustsFontSizeToFit style={{fontSize: 30, fontFamily: 'Roboto_700Bold', textAlign: 'center', paddingHorizontal: 20, color: '#3a3a3a'}}>Please close the app entirely</Text>
+                <Text numberOfLines={1} adjustsFontSizeToFit style={{fontSize: 30, fontFamily: 'Roboto_700Bold', textAlign: 'center', paddingTop: 20,paddingHorizontal: 20, color: '#3a3a3a'}}>Please close the app entirely</Text>
                 {/*
                 <Pressable 
                   onPress={()=>{
