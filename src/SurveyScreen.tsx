@@ -1017,6 +1017,7 @@ export default class SurveyScreen extends React.Component<
                         style={{
                           textAlign: "left",
                           padding: 5,
+                          fontSize: 18,
                         }}
                       >
                         {this.replacePlaceholders(

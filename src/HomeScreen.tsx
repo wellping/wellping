@@ -1327,7 +1327,7 @@ export default class HomeScreen extends React.Component<
             <View style={{width: '100%', marginBottom: 20}}>
               <Text style={{fontSize: 18, fontFamily: 'Roboto_700Bold', color: '#3a3a3a'}}>Bonus</Text>
               <Text numberOfLines={2} style={{fontFamily: 'Roboto_400Regular', fontSize: 16, color: '#3a3a3a', width: '100%'}}>
-                {this.state.pingsUntilBonus == 0 ? "You have earned the weekly bonus!": "You are " + this.state.pingsUntilBonus + " ping" + (this.state.pingsUntilBonus > 1 ? "s" : "") + "  away from the weekly bonus!"}
+                {this.state.pingsUntilBonus == 0 ? "You have earned the weekly bonus!": "You are " + this.state.pingsUntilBonus + " ping" + (this.state.pingsUntilBonus > 1 ? "s" : "") + " away from the weekly bonus!"}
               </Text>
             </View>
             : <></>
@@ -1492,7 +1492,7 @@ export default class HomeScreen extends React.Component<
                 </Pressable>
                 {this.state.pingsUntilBonus >= 0 ?
                   <Text numberOfLines={2} style={{fontFamily: "Roboto_400Regular", fontSize: 18, textAlign: 'center', paddingHorizontal: 40, color: '#3a3a3a'}}>
-                    {this.state.pingsUntilBonus == 0 ? "You have earned the weekly bonus!": "You are " + this.state.pingsUntilBonus + " ping" + (this.state.pingsUntilBonus > 1 ? "s" : "") + "  away from the weekly bonus!"}
+                    {this.state.pingsUntilBonus == 0 ? "You have earned the weekly bonus!": "You are " + this.state.pingsUntilBonus + " ping" + (this.state.pingsUntilBonus > 1 ? "s" : "") + " away from the weekly bonus!"}
                   </Text>
                   : <></>
                 }
